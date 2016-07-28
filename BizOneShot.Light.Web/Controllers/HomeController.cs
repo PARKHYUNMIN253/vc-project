@@ -51,8 +51,18 @@ namespace BizOneShot.Light.Web.Controllers
                 base.SetLogo("bi_main.png", "Login");
             }
 
-            if (loginId == null)
-                return View();
+            //if (loginId == null)
+            //    return View();
+            //else
+            //{
+            //    LoginViewModel lvm = new LoginViewModel();
+            //    lvm.ID = loginId;
+            //    return View(lvm);
+
+            if (Session[Global.LoginID] == null)    // 로그인 인증이 되어있지 않으면
+            {
+                return Redirect("http://tcms.or.kr"); // tcms home으로 redirection
+            }
             else
             {
                 LoginViewModel lvm = new LoginViewModel();
