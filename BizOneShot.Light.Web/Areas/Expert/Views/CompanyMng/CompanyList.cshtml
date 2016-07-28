@@ -1,0 +1,160 @@
+﻿@model IPagedList<BizOneShot.Light.Models.ViewModels.ExpertCompanyViewModel>
+
+@{
+    Layout = "~/Areas/Expert/Views/Shared/_MainLayout.cshtml";
+}
+<script>
+    $(document).ready(function () {
+        //top menu
+        $('#naviwrap_biz > .navi_biz >  a > .top_menu > .header_company_manage ').addClass('on');
+        $('#naviwrap_biz > .navi_biz >  a > .top_menu > .top_text_company ').addClass('on');
+        //left menu
+        $('#sub_leftwrap > .sub_gnbwrap > ul > li > a.gnb_CompanyList').addClass('on');
+
+        $('#BizWorkSn').change(function () {
+            $('#curPage').val(1);
+
+            var bizWorkSn = $('#BizWorkSn').val();
+
+            if (bizWorkSn == 0) {
+                $('#CompSn').html("<option value='0'>기업명 선택</option>");
+            } else {
+                $('#CompSn').html("");
+
+                $.ajax({
+                    url: '@Url.Action("GetBizWorkNm", "CompanyMng")',
+                    type: "post",
+                    dataType: "json",
+                    data: { bizWorkSn: bizWorkSn },
+                    async: false,
+                    success: function (result) {
+                        for (var i = 0; i < result.length; i++) {
+                            $('#CompSn').append("<option value='" + result[i].Value + "'>" + result[i].Text + "</option>");
+                        }
+                    }
+                });
+            }
+
+        });
+
+        $('#CompSn').change(function () {
+            $('#curPage').val(1);
+        });
+    });
+
+    function goPage(page) {
+        $('#curPage').val(page);
+        $('#searchForm').submit();
+    }
+</script>
+
+<div id="sub_rightwrap">
+    <div class="sub_right_title right_text"><img src="~/images/list.png" class="icon_list" />관리기업 현황</div>
+    <p>&nbsp;</p>
+    @using (Html.BeginForm("CompanyList", "CompanyMng", FormMethod.Post, new { area = "Expert", id = "searchForm" }))
+    {
+        <div class="tablewrap">
+            <table>
+                <!--사업명-->
+                <colgroup>
+                    <col width="160px" />
+                    <col width="590px" />
+                </colgroup>
+                <tr>
+                    <th>사업명</th>
+                    <td class="form">
+                        @Html.DropDownList("BizWorkSn", ViewBag.SelectBizWorkList as SelectList, new { @class = "w130", @id = "BizWorkSn" })
+
+                    </td>
+                </tr>
+                <tr>
+                    <th>기업명</th>
+                    <td class="form">
+                        @*@Html.TextBox("QUERY", null, new { @class = "w150", @placeholder = "기업명을 입력하세요", @id = "QUERY" })*@
+                        @Html.DropDownList("CompSn", ViewBag.SelectCompInfoList as SelectList, new { @class = "w150", @id = "CompSn" })
+                    </td>
+                </tr>
+                <tr>
+                    <th>전문분야</th>
+                    @if (Session[Global.UserDetailType].Equals("T"))
+                    {
+                        <td>세무회계</td>
+                    }
+                    else if (Session[Global.UserDetailType].Equals("L"))
+                    {
+                        <td>법무</td>
+                    }
+                    else if (Session[Global.UserDetailType].Equals("W"))
+                    {
+                        <td>노무</td>
+                    }
+                    else if (Session[Global.UserDetailType].Equals("P"))
+                    {
+                        <td>특허</td>
+                    }
+                    else if (Session[Global.UserDetailType].Equals("M"))
+                    {
+                        <td>마케팅</td>
+                    }
+                    else
+                    {
+                        <td></td>
+                    }
+
+                </tr>
+            </table>
+        </div>
+        <div class="btnwrap center"><button type="submit" class="btn_big gray" value="검색">검색</button></div>
+        @Html.Hidden("curPage", "1")
+    }
+    <div class="line_dot20"></div>
+    <div class="tablewrap">
+        <!--목록-->
+        <table class="admin_list">
+            <colgroup>
+                <col width="21%">
+                <col width="15%">
+                <col width="12%">
+                <col width="12%">
+                <col width="16%">
+                <col width="23%">
+            </colgroup>
+            <tr>
+                <th class="topcen">기업명</th>
+                <th class="topcen">대표자명</th>
+                <th class="topcen">사업자번호</th>
+                <th class="topcen">담당자</th>
+                <th class="topcen">전화번호</th>
+                <th class="topcen">이메일</th>
+            </tr>
+            @if (Model == null || Model.TotalItemCount == 0)
+            {
+                <tr>
+                    <td colspan="6" style="text-align:center;">검색 결과가 없습니다.</td>
+                </tr>
+            }
+            else
+            {
+                foreach (var item in Model)
+                {
+                    <tr>
+                        <td class="center">
+                            @*<span class="full_line">@Html.ActionLink(item.CompNm, "ComInfoDetail", new { compSn = item.CompSn })</span>*@
+                            @item.CompNm
+                        </td>
+                        <td class="center">@item.ComOwnNm</td>
+                        <td class="center">@item.ComRegistrationNo</td>
+                        <td class="center">@item.Name</td>
+                        <td class="center">@item.TelNo</td>
+                        <td class="center">@item.Email</td>
+                    </tr>
+                }
+            }
+        </table>
+    </div><!--tablewrap//-->
+    @if (Model != null && Model.TotalItemCount != 0)
+    {
+        @Html.Pagination("goPage", Model.PageNumber, Model.PageCount, Model.HasPreviousPage, Model.HasNextPage)
+    }
+
+</div><!--sub_rightwrap//-->

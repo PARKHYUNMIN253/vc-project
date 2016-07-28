@@ -1,0 +1,527 @@
+﻿@model List<object>
+
+@{
+    Layout = "~/Views/Shared/_MainDetailLayout.cshtml";
+    RiskMgmtViewModel viewModel1 = Model[0] as RiskMgmtViewModel;
+    RiskMgmtViewModel viewModel2 = Model[1] as RiskMgmtViewModel;
+    RiskMgmtViewModel viewModel3 = Model[1] as RiskMgmtViewModel;
+}
+<script type="text/javascript" src="~/Scripts/jquery.easyModal.js"></script>
+<script>
+    $(document).ready(function () {
+        $('.vc_iconSB_10 ').addClass('on01');
+        $('.vc_title_10 ').addClass('on');
+        $('.a_label10').addClass('on');
+
+        // 사이드 바를 위한 class 추가
+        $('.container').addClass('height_content_auto');
+        $('.sub_gnbwrap > .navi_left > .bg_col_g').addClass('height_rreport');
+
+        var usrType = $("#usrType").val();
+
+        if (usrType == "C") {
+
+            $('.vc_iconSB_02').addClass('on01'); // 보고서 icon
+            $('.vc_title_01').addClass('on');    // 보고서 label
+            $('.a_label02').addClass('on');      // 보고서 내부 메뉴 label (기초경영역량 보고서)
+
+        } else if (usrType == "M" || usrType == "B") {
+
+            $('.vc_iconSB_02 ').addClass('on01');   // 보고서 icon
+            $('.vc_title_01 ').addClass('on');      // 보고서 label
+            $('.a_label01 ').addClass('on');        // 보고서 내부메뉴
+
+        }
+
+        $('#mainForm').bind('submit', function () {
+
+            var valid = true;
+            if ($('#submitType').val() == "N") {
+
+                $('textarea[id^="comment"]').each(function () {
+                    if ($(this).val().length == 0 && valid == true) {
+                        alert("필수항목을 입력해 주세요");
+                        $(this).focus();
+                        valid = false;
+
+                        return false;
+                    }            var usrType = $("#usrType").val();
+
+            if (usrType == "C") {
+
+                $('.vc_iconSB_02').addClass('on01'); // 보고서 icon
+                $('.vc_title_01').addClass('on');    // 보고서 label
+                $('.a_label02').addClass('on');      // 보고서 내부 메뉴 label (기초경영역량 보고서)
+
+            } else if (usrType == "M") {
+
+                $('.vc_iconSB_02 ').addClass('on01');   // 보고서 icon
+                $('.vc_title_01 ').addClass('on');      // 보고서 label
+                $('.a_label01 ').addClass('on');        // 보고서 내부메뉴
+
+            }
+                });
+                return valid;
+            }
+
+        });
+
+        if ($('#Status').val() == "C") {
+            $('#mainForm input').attr('disabled', true);
+            $('#mainForm textarea').attr('disabled', true);
+            $('.mentorcomment').hide();
+        }
+        else {
+            $('#sub_leftwrap > .sub_gnbwrap > ul > li > a.list_33').hide();
+        }
+
+    });
+
+    function goSubmit(submitType) {
+        $('#submitType').val(submitType);
+        $('#mainForm').submit();
+    }
+    function RptCommentPopupOpen() {
+        //var year = $('#BizWorkYear').val();
+        //var month = $('#SelectMonth').val();
+        var questionSn = $('#QuestionSn').val();
+        var NumSn = $('#NumSn').val();
+        //var status = $('#Status').val();
+        var basicyear = $('#BizWorkYear').val();
+        var detailCode = $('#CommentList_0__DetailCd').val();
+        var compSn = $('#CompSn').val();
+
+        w = 700;    //팝업창의 너비
+        h = 520;    //팝업창의 높이
+        //중앙위치 구해오기
+        LeftPosition = (screen.width - w) / 2;
+        TopPosition = (screen.height - h) / 2;
+        var url = "/BasicSurveyReport/RptCommentPop?&NumSn=" + NumSn + "&QuestionSn=" + questionSn + "&BasicYear=" + basicyear + "&DetailCode=" + detailCode + "&CompSn=" + compSn;
+
+        console.log(url);
+
+        window.open(url, "popup", "resizable=yes, scrollbars=yes, left=" + LeftPosition + ", top=" + TopPosition + ", width=" + w + "px, height=" + h + "px");
+    }
+
+    $(function () {
+        $('.easy-modal').easyModal({
+            top: 200,
+            overlay: 0.2
+        });
+
+        $('.easy-modal-open').click(function (e) {
+            var target = $(this).attr('href');
+            $(target).trigger('openModal');
+            e.preventDefault();
+        });
+
+        $('.easy-modal-close').click(function (e) {
+            $('.easy-modal').trigger('closeModal');
+        });
+
+        $('.easy-modal-animated').easyModal({
+            top: 200,
+            overlay: 0.2,
+            transitionIn: 'animated bounceInLeft',
+            transitionOut: 'animated bounceOutRight',
+            closeButtonClass: '.animated-close'
+        });
+    });
+
+
+</script>
+@Styles.Render("~/css/print")
+
+<div class="tcms">
+    <div class="main_top short">
+        <div class="list_icon"></div><div class="sub_title">기초경영역량보고서</div>
+        @RenderPage("~/Views/Shared/_MainTopMenuPartial.cshtml")
+    </div>
+
+    <div id="sub_rightwrap_report">
+
+        @using (Html.BeginForm("RiskMgmtVisionStrategy", "BasicSurveyReport", FormMethod.Post, new { area = "", @class = "form-horizontal", role = "form", id = "mainForm" }))
+        {
+            @Html.HiddenFor(model => viewModel1.SubmitType, new { @id = "submitType" })
+            @Html.Hidden("NumSn", ViewBag.paramModel.NumSn as string)
+            @Html.Hidden("CompSn", ViewBag.paramModel.CompSn as string)
+            @Html.Hidden("BizWorkYear", ViewBag.paramModel.BizWorkYear as string)
+            @Html.Hidden("QuestionSn", ViewBag.paramModel.QuestionSn as string)
+            @Html.Hidden("Status", ViewBag.paramModel.Status as string)
+            @Html.Hidden("CompNm", ViewBag.paramModel.CompNm as string)
+            @Html.Hidden("PageNum", ViewBag.paramModel.PageNum as string)
+            @Html.Hidden("usrType", Session[Global.UserType] as string)
+
+            <div class="sub_report_checkbox">
+                <div class="compname">@ViewBag.paramModel.CompNm</div>
+                <div class="pagenum">15/27</div>
+                <div class="report_main_top2"></div>
+                <div class="report_main_mid">
+                    <div class="main_mid_cont">
+                        <p class="title_mid">
+                            Ⅱ. 기초역량검토 종합결과 _ <span class="small_span float_right">
+                                역량별
+                                검토결과
+                            </span>
+                        </p>
+                    </div>
+                    <div class="main_mid_cont">
+                        <div class="main_mid_listBox">
+
+                            <div class="listBox_tap longbg_on noline">
+                                <span>(3)위험관리 역량</span>
+                            </div>
+                            <table class="join_info">
+                                <colgroup>
+                                    <col width="20%">
+                                    <col width="20%">
+                                    <col width="60%">
+                                </colgroup>
+                                <tr>
+                                    <td class="left_memo">역량 검토 항목</td>
+                                    <td>
+                                        <span class="span_on">■ 기초역량 평가</span> <span class="span_weak">□ 재무지표 평가</span> <span class="span_weak">
+                                            □
+                                            전문가 평가
+                                        </span>
+                                    </td>
+                                    <td class="center_td">
+                                        <span class="label_span">
+                                            위험관리 역량 검토는 기업 내부의 인적(CEO 포함) RISK, 제도적 RISK 및 시스템 RISK 등을 사전에 예방할 수 있는 통제시스템을 구축하고 있는지에 대하여 종합적으로 역량을 점검합니다.
+                                        </span>
+                                    </td>
+                                </tr>
+                            </table>
+                        </div>
+                    </div>
+
+                    <div class="main_mid_cont">
+                        <p class="full_p">
+                            <span class="big_span" style="margin: 0">
+                                [CEO 역량] 경영목표 및
+                                전략 _
+                            </span><span class="small_span" style="margin: 0">
+                                기업의 경영목표
+                                및 경영전략이 적절하게 설정되어 있는지의 여부
+                            </span>
+                            <a class="easy-modal-open" href="#modal1"><img src="~/images/modal_info.png" /></a>
+                        </p>
+                    </div>
+
+                    <div class="main_mid_cont">
+                        <div class="main_mid_listBox nomargin2">
+                            <table class="capacity_table">
+                                <colgroup>
+                                    <col width="5%">
+                                    <col width="31.5%">
+                                    <col width="7%">
+                                    <col width="12%">
+                                    <col width="12%">
+                                    <col width="12%">
+                                    <col width="12%">
+                                    <col width="8.5%">
+                                </colgroup>
+                                <tr>
+                                    <td class="left_memo ">NO</td>
+                                    <td class="left_memo">체크리스트 항목</td>
+                                    <td class="left_memo">해당기업</td>
+                                    <td class="left_memo">
+                                        창업보육<br>단계 평균
+                                    </td>
+                                    <td class="left_memo">
+                                        보육성장<br> 단계 평균
+                                    </td>
+                                    <td class="left_memo">
+                                        자립성장<br> 단계 평균
+                                    </td>
+                                    <td class="left_memo">
+                                        참여<br>기업평균
+                                    </td>
+                                    <td class="left_memo">전체<br />평균</td>
+                                </tr>
+                                @if (viewModel1 == null || viewModel1.CheckList.Count == 0)
+                                {
+                                    <tr>
+                                        <td colspan="7" style="text-align:center;">검색 결과가 없습니다.</td>
+                                    </tr>
+                                }
+                                else
+                                {
+                                    foreach (var item in viewModel1.CheckList)
+                                    {
+                                        <tr>
+                                            <td class="center_td center">@item.Count</td>
+                                            <td class="center_td center">@item.Title</td>
+                                            @if (item.AnsVal == true)
+                                            {
+                                                <td class="center_td center">∎</td>
+                                            }
+                                            else
+                                            {
+                                                <td class="center_td center">□</td>
+                                            }
+                                            <td class="center_td center">@item.StartUpAvg %</td>
+                                            <td class="center_td center">@item.GrowthAvg %</td>
+                                            <td class="center_td center">@item.IndependentAvg %</td>
+                                            <td class="center_td center">@item.BizInCompanyAvg %</td>
+                                            <td class="center_td center">@item.TotalAvg %</td>
+                                        </tr>
+                                    }
+                                }
+                            </table>
+                        </div>
+
+                    </div>
+
+                    <div class="main_mid_cont">
+                        <p class="full_p">
+                            <span class="big_span" style="margin: 0">
+                                [CEO 역량] 경영자의
+                                리더십 _
+                            </span><span class="small_span" style="margin: 0">
+                                최고경영자가
+                                성공적인 리더십을 발휘할 수 있도록 하는데 필요한 요건
+                            </span>
+                            <a class="easy-modal-open" href="#modal2"><img src="~/images/modal_info.png" /></a>
+                        </p>
+                    </div>
+
+                    <div class="main_mid_cont">
+                        <div class="main_mid_listBox nomargin2">
+                            <table class="capacity_table">
+                                <colgroup>
+                                    <col width="5%">
+                                    <col width="29.5%">
+                                    <col width="9%">
+                                    <col width="12%">
+                                    <col width="12%">
+                                    <col width="12%">
+                                    <col width="12%">
+                                    <col width="8.5%">
+                                </colgroup>
+                                <tr>
+                                    <td class="left_memo ">NO</td>
+                                    <td class="left_memo">체크리스트 항목</td>
+                                    <td class="left_memo">해당<br />기업</td>
+                                    <td class="left_memo">
+                                        창업보육<br>단계 평균
+                                    </td>
+                                    <td class="left_memo">
+                                        보육성장<br> 단계 평균
+                                    </td>
+                                    <td class="left_memo">
+                                        자립성장<br> 단계 평균
+                                    </td>
+                                    <td class="left_memo">
+                                        참여<br>기업평균
+                                    </td>
+                                    <td class="left_memo">전체<br />평균</td>
+                                </tr>
+                                @if (viewModel2 == null || viewModel2.CheckList.Count == 0)
+                                {
+                                    <tr>
+                                        <td colspan="7" style="text-align:center;">검색 결과가 없습니다.</td>
+                                    </tr>
+                                }
+                                else
+                                {
+                                    foreach (var item in viewModel2.CheckList)
+                                    {
+                                        <tr>
+                                            <td class="center_td center">@item.Count</td>
+                                            <td class="center_td center">@item.Title</td>
+                                            @if (item.AnsVal == true)
+                                            {
+                                                <td class="center_td center">∎</td>
+                                            }
+                                            else
+                                            {
+                                                <td class="center_td center">□</td>
+                                            }
+                                            <td class="center_td center">@item.StartUpAvg %</td>
+                                            <td class="center_td center">@item.GrowthAvg %</td>
+                                            <td class="center_td center">@item.IndependentAvg %</td>
+                                            <td class="center_td center">@item.BizInCompanyAvg %</td>
+                                            <td class="center_td center">@item.TotalAvg %</td>
+                                        </tr>
+                                    }
+                                }
+                            </table>
+                        </div>
+
+                    </div>
+
+                    <div class="main_mid_cont">
+                        <p class="full_p">
+                            <span class="big_span" style="margin: 0">
+                                [CEO 역량] 경영자의
+                                신뢰성 _
+                            </span><span class="small_span" style="margin: 0">
+                                최고경영자(기업)의
+                                대내외적인 신뢰성 정도
+                            </span>
+                            <a class="easy-modal-open" href="#modal3"><img src="~/images/modal_info.png" /></a>
+                        </p>
+                    </div>
+
+                    <div class="main_mid_cont">
+                        <div class="main_mid_listBox nomargin2">
+                            <table class="capacity_table">
+                                <colgroup>
+                                    <col width="5%">
+                                    <col width="24.5%">
+                                    <col width="10%">
+                                    <col width="12%">
+                                    <col width="12%">
+                                    <col width="12%">
+                                    <col width="12%">
+                                    <col width="12.5%">
+                                </colgroup>
+                                <tr>
+                                    <td class="left_memo ">NO</td>
+                                    <td class="left_memo">체크리스트 항목</td>
+                                    <td class="left_memo">해당<br />기업</td>
+                                    <td class="left_memo">
+                                        창업보육<br>단계 평균
+                                    </td>
+                                    <td class="left_memo">
+                                        보육성장<br> 단계 평균
+                                    </td>
+                                    <td class="left_memo">
+                                        자립성장<br> 단계 평균
+                                    </td>
+                                    <td class="left_memo">
+                                        참여<br>기업평균
+                                    </td>
+                                    <td class="left_memo">전체<br />평균</td>
+                                </tr>
+                                @if (viewModel3 == null || viewModel3.CheckList.Count == 0)
+                                {
+                                    <tr>
+                                        <td colspan="7" style="text-align:center;">검색 결과가 없습니다.</td>
+                                    </tr>
+                                }
+                                else
+                                {
+                                    foreach (var item in viewModel3.CheckList)
+                                    {
+                                        <tr>
+                                            <td class="center_td center">@item.Count</td>
+                                            <td class="center_td center">@item.Title</td>
+                                            @if (item.AnsVal == true)
+                                            {
+                                                <td class="center_td center">∎</td>
+                                            }
+                                            else
+                                            {
+                                                <td class="center_td center">□</td>
+                                            }
+                                            <td class="center_td center">@item.StartUpAvg %</td>
+                                            <td class="center_td center">@item.GrowthAvg %</td>
+                                            <td class="center_td center">@item.IndependentAvg %</td>
+                                            <td class="center_td center">@item.BizInCompanyAvg %</td>
+                                            <td class="center_td center">@item.TotalAvg %</td>
+                                        </tr>
+                                    }
+                                }
+                            </table>
+                        </div>
+
+                    </div>
+                    @*<div class="main_mid_cont fix_bot list_print">
+                            <div class="main_mid_listBox nomargin2">
+                                <div class="listBox_tap bg_on">
+                                    <span>검토결과</span><a href="##" onClick="javascript:RptCommentPopupOpen();" class="btn_small gray1 mentorcomment">다른 멘토 의견보기 </a>
+                                </div>
+                                @Html.TextAreaFor(model => viewModel1.CommentList[0].Comment, new { @id = "comment0", @class = "bot_textarea_275", @maxlength = "1000", @placeholder = "1000자 내로 작성하시기 바랍니다." })
+                                @Html.HiddenFor(model => viewModel1.CommentList[0].DetailCd)
+                            </div>
+                        </div>*@
+                </div>
+            </div>
+    <!--container//-->
+            <div id="btnwrap_sub" class="bottom_left2">
+
+                <div class="rightwrap left">
+                    <a href="@Url.Action("ProductivityRelation2", "BasicSurveyReport", new { area = "", NumSn = ViewBag.paramModel.NumSn, CompSn = ViewBag.paramModel.CompSn, BizWorkYear = ViewBag.paramModel.BizWorkYear, Status = ViewBag.paramModel.Status, QuestionSn = ViewBag.paramModel.QuestionSn })" class="btn_a gray left" value="이전">이전</a>
+
+                </div>
+                <div class="rightwrap right">
+                    @if (ViewBag.paramModel.Status != "C")
+                    {
+                        <a href="@Url.Action("RiskMgmtWorkingEnv", "BasicSurveyReport", new { area = "", NumSn = ViewBag.paramModel.NumSn, CompSn = ViewBag.paramModel.CompSn, BizWorkYear = ViewBag.paramModel.BizWorkYear, Status = ViewBag.paramModel.Status, QuestionSn = ViewBag.paramModel.QuestionSn })" class="btn_a gray right" value="다음">다음</a>
+                    }
+                    else
+                    {
+                        <a href="@Url.Action("RiskMgmtWorkingEnv", "BasicSurveyReport", new { area = "", NumSn = ViewBag.paramModel.NumSn, CompSn = ViewBag.paramModel.CompSn, BizWorkYear = ViewBag.paramModel.BizWorkYear, Status = ViewBag.paramModel.Status, QuestionSn = ViewBag.paramModel.QuestionSn })" class="btn_a gray right" value="다음">다음</a>
+                    }
+                </div>
+                @*@if (ViewBag.paramModel.Status != "C")
+                    {
+                        <div class="rightwrap centerwrap">
+                            <button type="button" class="btn_big red" onclick="goSubmit('T');" value="임시저장">임시저장</button>
+                        </div>
+                    }*@
+            </div>
+        }
+    </div>
+</div>
+
+
+<div class="easy-modal" id="modal1">
+    <div class="easy-modal-inner">
+        <button class="easy-modal-close" title="Close">&times;</button>
+        <h1>경영목표 및 전략</h1>
+        <br />
+        <p>
+            • 성공적인 기업이 되기 위해서는 그 조직이 나아가야 할 방향을 미션-비전-전략의 위계에 따라 일관성 있게 설정하여야 합니다.<br />
+            &nbsp;&nbsp;&nbsp;&nbsp;미션이 기업의 존립 목적이라면 비전은 기업의 존립 목적을 기초로 설정되는 경영목표에 해당합니다.<br />
+            &nbsp;&nbsp;&nbsp;&nbsp;또한 기업의 전략은 경영목표를 달성하기 위하여 수립되는 것입니다.<br /><br />
+            • 목표와 전략이 없는 조직은 기업의 미래 발전 방향이 없는 것과 마찬가지입니다. 따라서 즉 목표 및 전략의 존재 여부는<br />
+            &nbsp;&nbsp;&nbsp;&nbsp;기업의 성공 가능성을 판단하는 중요한 지표로서 의미를 갖습니다.<br /><br />
+            • 대기업의 경우엔 미션이나 비전을 설정해 놓은 경우가 많지만 중소기업의 경우엔 목적은 커녕 목표 설정도 되어 있지 않은 회사도<br />
+            &nbsp;&nbsp;&nbsp;&nbsp;있습니다.<br /><br />
+            • 본 지표는 이런 측면에서 목표가 존재하는 지부터 평가하고자 합니다. 따라서 이러한 관점에서, 기업의 경영목표 및 경영전략이<br />
+            &nbsp;&nbsp;&nbsp;&nbsp;적절하게 수립되어 있는가를 검토합니다.
+        </p>
+    </div>
+</div>
+<div class="easy-modal" id="modal2">
+    <di class="easy-modal-inner">
+        <button class="easy-modal-close" title="Close">&times;</button>
+        <h1>경영자의 리더십</h1>
+        <br />
+        <p>
+            • 리더십은 조직의 목표달성을 위하여 사람들의 행동에 영향을 미치는 과정을 말합니다.<br /><br />
+            • 성공적인 리더십을 지닌 경영자는 다음과 같은 점에서 특징을 지닙니다. <br />
+            &nbsp;&nbsp;&nbsp;&nbsp;첫째, 성공적인 경영자는 경영에 대한 독창적인 철학이나 신념을 지니고 있으며,<br />
+            &nbsp;&nbsp;&nbsp;&nbsp;둘째, 성공적인 경영자는 기업의 성장 전략을 모색하고자 경제동향이나 경쟁사 관련 정보에 지속적인 관심을 갖고 있으며,<br />
+            &nbsp;&nbsp;&nbsp;&nbsp;셋째, 성공적인 경영자 구성원의 적극적인 참여를 유도하고자 구성원에 대한 평가 및 보상시스템을 적절히 활용합니다.<br /><br />
+            • 경영자가 리더십이 있다고 하는 것은 다른 사람, 즉 기업의 구성원들을 움직여서 조직의 목표를 달성할 수 있는<br />
+            &nbsp;&nbsp;&nbsp;&nbsp;능력이 있다는 것을 의미합니다. 따라서 경영자의 리더십 존재 여부는 경영목표의 달성 가능성을 평가하는데<br />
+            &nbsp;&nbsp;&nbsp;&nbsp;중요한 지표가 될 수 있습니다.
+
+        </p>
+    </di>
+</div>
+<div class="easy-modal" id="modal3">
+    <div class="easy-modal-inner">
+        <button class="easy-modal-close" title="Close">&times;</button>
+        <h1>경영자의 신뢰성</h1>
+        <br />
+        <p>
+            • 경영자의 자질 중 또 하나의 중요한 지표는 신뢰성입니다.<br /><br />
+            • 경영자의 신뢰성은 경영자가 사회적 책임을 다하고 있는지의 측면에서 평가할 수 있습니다.<br /><br />
+            • 경영자 또는 기업의 사회적 책임은 기업의 유지 및 발전에 대한 책임과 더불어 기업 이해관계자에 대한 책임도 있습니다.<br />
+            &nbsp;&nbsp;&nbsp;&nbsp;기업의 중요한 이해관계자로는 내부의 종업원, 외부의 공급자와 수요자, 그리고 지역사회 및 정부 등이 있습니다.<br /><br />
+            • 수요자에 대한 경영자의 책임 영역은 '고객관리'항목에서 별도로 평가될 것이므로 여기에서는 수요자를 제외한 <br />
+            &nbsp;&nbsp;&nbsp;&nbsp;나머지 이해관계자에 대한 신뢰성 측면을 위주로 평가합니다
+        </p>
+    </div>
+</div>
+
+
+
+
+
+

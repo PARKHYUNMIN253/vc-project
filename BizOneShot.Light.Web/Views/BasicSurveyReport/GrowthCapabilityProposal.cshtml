@@ -1,0 +1,415 @@
+﻿@model BizOneShot.Light.Models.ViewModels.GrowthStrategyViewModel
+
+@{
+    Layout = "~/Views/Shared/_MainDetailLayout.cshtml";
+}
+<style>
+    .sub_report_checkbox .report_main_mid .main_mid_cont TABLE TR TD {    padding: 5px 10px;
+    }
+
+</style>
+<script>
+    var arrA = ["비전과 성장전략 제시", "규정화된 채용과정 준비", "신입직원 교육훈련체계", "공부하는 분위기 조성", "개인별 전문가와</br>지원체계 구축", "교육훈련 <br/>인센티브 제도",
+                    "회사전체 목표설정", "부서별 성과관리</br>(개선목표 달성 중심)", "개인별 목표 및</br>성과관리(MBO)", "고객분석 및 회사의</br>가치사슬구성", "핵심가치부여단계 설정</br>(시제품 제작 등)", "핵심가치 활용 사업실행",
+                    "산학협력<br/>(공공R&D)", "우수인력 영입<br/>(개별)", "우수인력 영입<br/>(팀 구성)", "산산협력<br/>(아웃소싱)", "생산 프로세스 최적화", "양산설비 구축", "마케팅 제휴", "마케팅 제휴</br>(마케팅 도구제작)", "마케팅 제휴</br>(독립 영업팀 구성)",
+                    "정기적 현금시재 관리", "시스템화 도구 도입", "시나리오 플래닝</br>(재무관리 중심)", "회사단위 관련정보</br>취득체계 마련", "부서단위 관련정보</br>취득체계 마련", "정보관리 규정 및</br> 공유체계 마련</br>(그룹웨어 검토)",
+                    "기초 회사관리 규정", "범용관리 규정</br>(부문별 심화규정 마련)", "ERP 도입검토</br>(자재관리 중심)"];
+
+    var arrB = ["비전과 성장전략 제시", "규정화된 채용과정 준비</br>(스톡옵션 등 도입 검토)", "채용인센티브<br/>프로그램운영", "아이디어 제안</br>분위기 조성", "외부교육훈련</br>지원제도 운영", "아이디어의 상품화</br>지원체계 수립",
+                    "회사전체 목표설정", "부서별 성과관리</br>(창의성 중심 성과관리)", "개인별 성과관리</br>(상품화 인센티브 제도)", "타깃고객 분석 및 아이디어의 상품화 프로세스 정립", "시제품 기획", "시장 출시전략",
+                    "산학협력<br/>(공공R&D)", "우수인력 영입<br/>(개별)", "우수인력 영입</br>(팀 구성 목표)", "산산협력<br/>(아웃소싱)", "부문별 산산제휴 추진", "상품별 산산제휴 관리</br>(아웃소싱,자체 등 고려)", "마케팅 제휴</br>(대표관리)", "마케팅 제휴</br>(영업 담당 관리)", "마케팅 제휴</br>(전문 마케터 관리)",
+                    "정기적 현금시재 관리", "시스템화 도구 도입", "시나리오 플래닝</br>(투자관리 중심)", "회사단위 관련정보</br>취득체계 마련", "부서단위 관련정보</br>취득체계 마련", "개인 단위 관련 정보</br>취득체계(그룹웨어 도입)",
+                    "기초 회사관리 규정", "범용관리 규정</br>(부분별 심화규정 마련)", "단계적 시스템화 검토"];
+
+    var arrC = ["비전과 성장전략 제시", "커뮤니케이션 프로세스운영</br>(전담자, 도구 등 활용)", "파트너별 채용체계 구축</br>(영업본부 체계)", "개인별 과제 부여", "교육훈련 인센티브제도", "자체 교육훈련체계 구축",
+                        "회사전체 목표설정", "부서별 성과관리", "파트너 운영관리체계</br>(Spin-off 프로그램 등)", "고객분석 및 회사의</br>핵심역량 설정", "핵심역량제고 프로젝트 실행", "상품단순화 역량 확립</br>(표준화 및 관리체계)",
+                        "산학협력<br/>(개발인턴 운영)", "우수인력 영입<br/>(개별)", "외부상품 소싱역량 구축", "산산협력<br/>(아웃소싱)", "산산협력<br/>(아웃소싱)", "시제품 개발프로그램</br>(아웃소싱)", "영업매뉴얼 개발,</br>영업지원 도구 개발", "마케팅 제휴, SNS운영", "브랜드 역량 구축",
+                        "정기적 현금시재 관리", "(기초적 재무관리용)</br>시스템화도구 구입", "시나리오 플래닝</br>(영업관리 중심)", "회사단위 관련정보</br>취득체계 마련", "부서단위 관련정보</br>취득체계 마련", "전사적 정보관리 운영</br>(그룹웨어 도입)",
+                        "기초 회사관리 규정", "범용관리 규정</br>(부문별 심화규정 마련)", "ERP 도입</br>(영업관리/물류 부문)"];
+
+    $(document).ready(function () {
+
+        // 사이드 바를 위한 class 추가
+        $('.container').addClass('height_content_auto');
+        $('.sub_gnbwrap > .navi_left > .bg_col_g').addClass('height_rreport');
+
+
+        var hidType = $('#hidType').val();
+
+        if (hidType == 'B') {
+            fillTds(arrB);
+            $('#selectType').val('B');
+            $('#hidType').val('B');
+        }
+        else if (hidType == 'C') {
+            fillTds(arrC);
+            $('#selectType').val('C');
+            $('#hidType').val('C');
+        }
+        else {
+            fillTds(arrA);
+            $('#selectType').val('A');
+            $('#hidType').val('A');
+        }
+
+        $('.vc_iconSB_10 ').addClass('on01');
+        $('.vc_title_10 ').addClass('on');
+        $('.a_label10').addClass('on');
+
+        // type을 나타내는 select 의 값이 바뀌었을 때
+        $('#selectType').change(function () {
+            var type = $('#selectType').val();
+            if (type == 'B')
+            {
+                fillTds(arrB);
+                $('#hidType').val('B');
+            }
+            else if (type == 'C')
+            {
+                fillTds(arrC);
+                $('#hidType').val('C');
+            }
+            else
+            {
+                fillTds(arrA);
+                $('#hidType').val('A');
+            }
+        });
+
+        if ($('#Status').val() == "C") {
+            $('#mainForm input').attr('disabled', true);
+            $('#mainForm textarea').attr('disabled', true);
+            $('#selectType').attr('disabled', true);    // Complete 되어 있으면 disable
+            $('.mentorcomment').hide();
+        }
+        else {
+            $('#sub_leftwrap > .sub_gnbwrap > ul > li > a.list_33').hide();
+        }
+
+        var usrType = $("#usrType").val();
+
+        if (usrType == "C") {
+
+            $('.vc_iconSB_02').addClass('on01'); // 보고서 icon
+            $('.vc_title_01').addClass('on');    // 보고서 label
+            $('.a_label02').addClass('on');      // 보고서 내부 메뉴 label (기초경영역량 보고서)
+
+        } else if (usrType == "M" || usrType == "B") {
+
+            $('.vc_iconSB_02 ').addClass('on01');   // 보고서 icon
+            $('.vc_title_01 ').addClass('on');      // 보고서 label
+            $('.a_label01 ').addClass('on');        // 보고서 내부메뉴
+
+        }
+
+        
+    });
+
+    function goSubmit() {
+        var finish = $("a.list_gnb").hasClass("null");
+
+          //if (!confirm('작성한 내용을 저장 하시겠습니까?')) {
+          //      return false;
+          //  }
+
+        if (finish == true) {
+            confirm("작성되지 않은 코멘트를 작성해주세요.");
+        }
+        else {
+            if (!confirm('작성한 내용을 저장 하시겠습니까?')) {
+                return false;
+            }
+            $('#submitType').val(submitType);
+            $('#mainForm').submit();
+        }
+    }
+
+
+
+
+    //function goSubmit(submitType) {
+    //    $('#submitType').val(submitType);
+    //    $('#mainForm').submit();
+    //}
+
+    function RptCommentPopupOpen() {
+        //var year = $('#BizWorkYear').val();
+        //var month = $('#SelectMonth').val();
+        var questionSn = $('#QuestionSn').val();
+        var NumSn = $('#NumSn').val();
+        //var status = $('#Status').val();
+        var basicyear = $('#BizWorkYear').val();
+        var detailCode = $('#CommentList_6__DetailCd').val();
+        var compSn = $('#CompSn').val();
+
+        w = 700;    //팝업창의 너비
+        h = 520;    //팝업창의 높이
+        //중앙위치 구해오기
+        LeftPosition = (screen.width - w) / 2;
+        TopPosition = (screen.height - h) / 2;
+        var url = "/BasicSurveyReport/RptCommentPop?&NumSn=" + NumSn + "&QuestionSn=" + questionSn + "&BasicYear=" + basicyear + "&DetailCode=" + detailCode + "&CompSn=" + compSn;
+
+        console.log(url);
+
+        window.open(url, "popup", "resizable=yes, scrollbars=yes, left=" + LeftPosition + ", top=" + TopPosition + ", width=" + w + "px, height=" + h + "px");
+    }
+
+    // 해당하는 배열(Type)의 내용 값을 뷰에 채워넣는 method
+    function fillTds(arr) {
+        var tds = document.getElementsByName('roadMapType');
+        for (var i = 0; i < tds.length; i++) {
+            tds[i].innerHTML = arr[i];
+        }
+    }
+
+</script>
+@Styles.Render("~/css/print")
+
+<div class="tcms">
+    <div class="main_top short">
+        <div class="list_icon"></div><div class="sub_title">기초경영역량보고서</div>
+        @RenderPage("~/Views/Shared/_MainTopMenuPartial.cshtml")
+    </div>
+
+    <div id="sub_rightwrap_report">
+        
+        @using (Html.BeginForm("GrowthCapabilityProposal", "BasicSurveyReport", FormMethod.Post, new { area = "", @class = "form-horizontal", role = "form", id = "mainForm" }))
+        {
+            @Html.HiddenFor(model => model.SubmitType, new { @id = "submitType" })
+            @Html.Hidden("NumSn", ViewBag.paramModel.NumSn as string)
+            @Html.Hidden("CompSn", ViewBag.paramModel.CompSn as string)
+            @Html.Hidden("BizWorkYear", ViewBag.paramModel.BizWorkYear as string)
+            @Html.Hidden("QuestionSn", ViewBag.paramModel.QuestionSn as string)
+            @Html.Hidden("Status", ViewBag.paramModel.Status as string)
+            @Html.Hidden("CompNm", ViewBag.paramModel.CompNm as string)
+            @Html.Hidden("PageNum", ViewBag.paramModel.PageNum as string)
+            @Html.Hidden("usrType", Session[Global.UserType] as string)
+
+            <div class="sub_report_checkbox">
+                <div class="compname">@ViewBag.paramModel.CompNm</div>
+                <div class="pagenum">21/27</div>
+                <div class="report_main_top2"></div>
+                <div class="report_main_mid">
+                    <div class="main_mid_cont">
+                        <p class="title_mid">Ⅲ. 성장 로드맵 제안</p>
+                    </div>
+
+                    <div class="main_mid_cont">
+                        <div class="main_mid_listBox">
+                            <div class="listBox_tap longbg_on2 full_line noline">
+                                <span>성장단계별 로드맵 종합</span>
+                                @Html.HiddenFor(model => model.CommentList[0].Comment, new { @id = "hidType" })
+                                @Html.HiddenFor(model => model.CommentList[0].DetailCd)
+
+                                <select style="
+                                padding-left: 0px;
+                                padding-top: 0px;
+                                margin-left: 300px;
+                                margin-top: 5px;" id="selectType">
+
+                                    <option value="A"> 비용최적화 (A) Type </option>
+                                    <option value="B"> 가치창출 (B) Type </option>
+                                    <option value="C"> 고객맞춤 (C) Type </option>
+                                </select>
+                            </div>
+                            <table class="capacity_table03">
+                                <colgroup>
+                                    <col width="10%">
+                                    <col width="15%">
+                                    <col width="25%">
+                                    <col width="25%">
+                                    <col width="25%">
+                                </colgroup>
+                                <tr>
+                                    <td class="left_memo" rowspan="2" colspan="2">구 분</td>
+                                    <td class="left_memo" colspan="3">성장전략</td>
+                                </tr>
+                                <tr>
+                                    <td class="left_memo">창업보육 단계</td>
+                                    <td class="left_memo">보육성장 단계</td>
+                                    <td class="left_memo">자립성장 단계</td>
+                                </tr>
+                                <tr>
+                                    <td class="left_memo" rowspan="3">조직<br />역량</td>
+                                    <td class="center_td center">채용</td>
+                                    @*<td class="center_td center bold">비전과 성장전략 명시</td>
+                                        <td class="center_td center bold">규정화된 채용과정 준비</td>
+                                        <td class="center_td center bold">신입직원 교육훈련체계</td>*@
+                                    <td class="center_td center bold" name="roadMapType"></td>
+                                    <td class="center_td center bold" name="roadMapType"></td>
+                                    <td class="center_td center bold" name="roadMapType"></td>
+                                </tr>
+                                <tr>
+                                    <td class="center_td center">
+                                        역량강화<br>(교육)
+                                    </td>
+                                    @*<td class="center_td center bold">공부하는 분위기</td>
+                                        <td class="center_td center bold">개인별 전문가화<br>지원체계구축</td>
+                                        <td class="center_td center bold">교육훈련 인센티브제도</td>*@
+                                    <td class="center_td center bold" name="roadMapType"></td>
+                                    <td class="center_td center bold" name="roadMapType"></td>
+                                    <td class="center_td center bold" name="roadMapType"></td>
+                                </tr>
+                                <tr>
+                                    <td class="center_td center">관리체계</td>
+                                    @*<td class="center_td center bold">회사전체 목표설정</td>
+                                        <td class="center_td center bold">부서별 성과관리</td>
+                                        <td class="center_td center bold">개인별 목표 및<br>성과관리(MBO)</td>*@
+                                    <td class="center_td center bold" name="roadMapType"></td>
+                                    <td class="center_td center bold" name="roadMapType"></td>
+                                    <td class="center_td center bold" name="roadMapType"></td>
+                                </tr>
+                                <tr>
+                                    <td class="left_memo" rowspan="4">상품화<br />역량</td>
+                                    <td class="center_td center">상품기획</td>
+                                    @*<td class="center_td center bold">고객분석 및 회사의<br>가치사슬구성</td>
+                                        <td class="center_td center bold">핵심가치부여단계 설정</td>
+                                        <td class="center_td center bold">핵심부문역량강화체계</td>*@
+                                    <td class="center_td center bold" name="roadMapType"></td>
+                                    <td class="center_td center bold" name="roadMapType"></td>
+                                    <td class="center_td center bold" name="roadMapType"></td>
+                                </tr>
+                                <tr>
+                                    <td class="center_td center">기술개발조직</td>
+                                    @*<td class="center_td center bold">산학협력(공공R&D)</td>
+                                        <td class="center_td center bold">우수인력 영입(개별)</td>
+                                        <td class="center_td center bold">우수인력 영입(팀구성)</td>*@
+                                    <td class="center_td center bold" name="roadMapType"></td>
+                                    <td class="center_td center bold" name="roadMapType"></td>
+                                    <td class="center_td center bold" name="roadMapType"></td>
+                                </tr>
+                                <tr>
+                                    <td class="center_td center">생산시설 구축</td>
+                                    @*<td class="center_td center bold">산산협력(아웃소싱)</td>
+                                        <td class="center_td center bold">생산 프로세스 최적화<br>(외부전문가자문)</td>
+                                        <td class="center_td center bold">양산설비 구축</td>*@
+                                    <td class="center_td center bold" name="roadMapType"></td>
+                                    <td class="center_td center bold" name="roadMapType"></td>
+                                    <td class="center_td center bold" name="roadMapType"></td>
+                                </tr>
+                                <tr>
+                                    <td class="center_td center">마케팅역량</td>
+                                    @*<td class="center_td center bold">마케팅 제휴 → 영업메뉴얼</td>
+                                        <td class="center_td center bold">마케팅 제휴<br>→ 마케팅도구 제작</td>
+                                        <td class="center_td center bold">마케팅 제휴<br>→ 독립영업팀 구성</td>*@
+                                    <td class="center_td center bold" name="roadMapType"></td>
+                                    <td class="center_td center bold" name="roadMapType"></td>
+                                    <td class="center_td center bold" name="roadMapType"></td>
+                                </tr>
+                                <tr>
+                                    <td class="left_memo" rowspan="3">위험관리<br />역량</td>
+                                    <td class="center_td center">현금흐름관리</td>
+                                    @*<td class="center_td center bold">정기적 현금시재 관리</td>
+                                        <td class="center_td center bold">(기초적 채무관리용)<br>시스템화도구도입</td>
+                                        <td class="center_td center bold">시나리오 플래닝<br>(3개월단위)</td>*@
+                                    <td class="center_td center bold" name="roadMapType"></td>
+                                    <td class="center_td center bold" name="roadMapType"></td>
+                                    <td class="center_td center bold" name="roadMapType"></td>
+                                </tr>
+                                <tr>
+                                    <td class="center_td center">정보획득체계</td>
+                                    @*<td class="center_td center bold">회사단위 관련정보<br>취득체계마련</td>
+                                        <td class="center_td center bold">부서단위 관련정보<br>취득체계마련</td>
+                                        <td class="center_td center bold">정보관리 규정 및<br>공유체계마련</td>*@
+                                    <td class="center_td center bold" name="roadMapType"></td>
+                                    <td class="center_td center bold" name="roadMapType"></td>
+                                    <td class="center_td center bold" name="roadMapType"></td>
+                                </tr>
+                                <tr>
+                                    <td class="center_td center">규정 및 시스템</td>
+                                    @*<td class="center_td center bold">기초 회사관리규정</td>
+                                        <td class="center_td center bold">범용 관리규정<br>(부문별심화규정 마련)</td>
+                                        <td class="center_td center bold">ERP 도입검토<br>(자재관리중심)</td>*@
+                                    <td class="center_td center bold" name="roadMapType"></td>
+                                    <td class="center_td center bold" name="roadMapType"></td>
+                                    <td class="center_td center bold" name="roadMapType"></td>
+                                </tr>
+                            </table>
+                        </div>
+                    </div>
+
+                    <div class="main_mid_cont fix_bot list_print nomargin2">
+                        <div class="main_mid_listBox nomargin2">
+                            <div class="listBox_tap bg_on">
+                                <span>검토결과</span>
+                            </div>
+                            @Html.TextAreaFor(model => model.CommentList[1].Comment, new { @id = "comment6", @class = "bot_textarea_365", @maxlength = "800", @placeholder = "800자 내로 작성하시기 바랍니다." })
+                            @Html.HiddenFor(model => model.CommentList[1].DetailCd)
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+
+    <!--container//-->
+            <div id="btnwrap_sub" class="bottom_left2">
+
+                <div class="rightwrap left">
+                    <a href="@Url.Action("GrowthStrategyType", "BasicSurveyReport", new { area = "", NumSn = ViewBag.paramModel.NumSn, CompSn = ViewBag.paramModel.CompSn, BizWorkYear = ViewBag.paramModel.BizWorkYear, Status = ViewBag.paramModel.Status, QuestionSn = ViewBag.paramModel.QuestionSn })" class="btn_a gray left" value="이전">이전</a>
+
+                </div>
+
+                <div class="rightwrap right">
+                    @if (ViewBag.paramModel.Status != "C" && Session[Global.UserType].Equals(Global.Mentor))
+                    {
+                        <button type="button" class="btn_big red" onclick="goSubmit();" value="작성완료">작성완료</button>
+                    }
+                    else
+                    {
+                        if (Session[Global.UserType].Equals(Global.Company))
+                        {
+                            <a href="@Url.Action("BasicSurveyReport", "Report", new { area = "Company"})" class="btn_a gray left nomargin2" value="목록">목록</a>
+                        }
+                        else if (Session[Global.UserType].Equals(Global.BizManager))
+                        {
+                            <a href="@Url.Action("BasicSurveyReport", "Report", new { area = "BizManager"})" class="btn_a gray left nomargin2" value="목록">목록</a>
+                        }
+                        else if (Session[Global.UserType].Equals(Global.Mentor))
+                        {
+                            <a href="@Url.Action("BasicSurveyReport", "Report", new { area = "Mentor"})" class="btn_a gray left nomargin2" value="목록">목록</a>
+                        }
+                        else if (Session[Global.UserType].Equals(Global.Expert))
+                        {
+                            <a href="@Url.Action("BasicSurveyReport", "Report", new { area = "Expert"})" class="btn_a gray left nomargin2" value="목록">목록</a>
+                        }
+                        else if (Session[Global.UserType].Equals(Global.SysManager))
+                        {
+                            <a href="@Url.Action("BasicSurveyReport", "Report", new { area = "SysManager"})" class="btn_a gray left nomargin2" value="목록">목록</a>
+                        }
+                    }
+                </div>
+
+                @*@if (ViewBag.paramModel.Status != "C")
+                {
+                    <div class="rightwrap centerwrap">
+                        <button type="button" class="btn_big red" onclick="goSubmit('T');" value="임시저장">임시저장</button>
+                    </div>
+                }*@
+
+                @*<div class="rightwrap right">
+                    @if (ViewBag.paramModel.Status != "C")
+                {
+                        <button type="button" class="btn_big gray" onclick="goSubmit('N');" value="다음">다음</button>
+                    }
+                    else
+                    {
+                        <a href="@Url.Action("GrowthTotalProposal", "BasicSurveyReport", new { area = "" , NumSn = ViewBag.paramModel.NumSn, CompSn = ViewBag.paramModel.CompSn, BizWorkYear = ViewBag.paramModel.BizWorkYear, Status = ViewBag.paramModel.Status, QuestionSn = ViewBag.paramModel.QuestionSn})" class="btn_a gray right" value="다음">다음</a>
+                    }
+                </div>*@
+                @*@if (ViewBag.paramModel.Status != "C")
+                    {
+                        <div class="rightwrap centerwrap">
+                            <button type="button" class="btn_big red" onclick="goSubmit('T');" value="임시저장">임시저장</button>
+                        </div>
+                    }*@
+
+            </div>
+        }
+    </div>
+
+</div>
+
+
+
+
+

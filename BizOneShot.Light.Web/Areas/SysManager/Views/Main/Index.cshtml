@@ -1,0 +1,31 @@
+﻿@{
+    Layout = "~/Areas/SysManager/Views/Shared/_MainLayout.cshtml";
+}
+
+<div class="user_main">
+    <div class="main_top">
+        @RenderPage("~/Areas/SysManager/Views/Shared/_MainTopMenuPartial.cshtml")
+    </div>
+    <div class="main_mid">
+        <div id="main_cont5wrap">
+            <div class="img_box">
+                <a href="@Url.Action("CompStateManage","ConditionManagement", new { area = "SysManager"})">
+                    <div class="tcmsicon vc_iconBB_03"></div>
+                    <div class="tcmsicon_label">기업현황</div>
+                </a>
+            </div>
+            <div class="img_box">
+                <a href="@Url.Action("BaStateManage","ConditionManagement", new { area = "SysManager"})">
+                    <div class="tcmsicon vc_iconBB_04"></div>
+                    <div class="tcmsicon_label">컨설턴트 현황</div>
+                </a>
+            </div>
+            <div class="img_box">
+                <a href="@Url.Action("DeepenReport","Report", new { area = "SysManager"})">
+                    <div class="tcmsicon vc_iconBB_07"></div>
+                    <div class="tcmsicon_label">기업심화 보고서</div>
+                </a>
+            </div>
+        </div><!--main_cont2wrap//-->
+    </div>
+</div>

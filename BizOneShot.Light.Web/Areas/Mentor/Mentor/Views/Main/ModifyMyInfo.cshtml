@@ -1,0 +1,373 @@
+﻿@model BizOneShot.Light.Models.ViewModels.MentorMyInfoViewModel
+@using BizOneShot.Light.Models.ViewModels
+
+@{
+    Layout = "~/Areas/Mentor/Views/Shared/_MainLayout.cshtml";
+}
+
+@Scripts.Render("~/Js/files.js")
+
+<script>
+    $(document).ready(function () {
+        //top menu
+        $('#naviwrap_biz > .navi_biz > a.navi_mentor04').addClass('on');
+        //left menu
+        $('#sub_leftwrap > .sub_gnbwrap > ul > li > a.gnb1').addClass('on');
+
+        //Email 항목선택시 처리
+        $('#EMAIL_DOMAIN').bind('change', function () {
+            if ($(this).val() == "") {
+                $('#Email2').show("slow");
+                $('#Email2').val('');
+            } else {
+                $('#Email2').hide("slow");
+                $('#Email2').val($(this).val());
+            }
+            return false;
+        });
+
+        $('#submit_form').bind('submit', function () {
+            var inputFileCount = 0;
+            var fileIndex = 0;
+            var totalSize = 0;
+            var fileNames = new Array();
+            $('input[type="file"]').each(function () {
+                if ($(this).val() != '') {
+                    //input에서 파일이름만 추출해서 담음
+                    fileNames.push($(this).val().replace(/^.*[\\\/]/, ''));
+                    fileSize = $('input[type="file"]').get(fileIndex).files[0].size;
+                    totalSize = totalSize + fileSize;
+
+                    inputFileCount += 1;
+                }
+
+                fileIndex += 1;
+
+            });
+
+            //이미등록된 파일명 가져오기
+            var existFileCount = 0;
+            $('#ulExitFiles li').each(function () {
+                fileNames.push($(this).text());
+
+                existFileCount += 1;
+            });
+
+            //기존파일과 등록할 파일의 갯수
+            if (existFileCount + inputFileCount > 1) {
+                alert("이력서는 1개만 등록할 수 있습니다.");
+                return false;
+            }
+
+
+            if (totalSize > 4096000) {
+                alert("등록할 파일 사이즈는 4MB 를 초과할 수 없습니다.");
+                return false;
+            }
+
+            if (!confirm('저장 하시겠습니까?')) {
+                return false;
+            }
+            
+        });
+
+    });
+
+    function open_post() {
+        w = 550;    //팝업창의 너비
+        h = 485;    //팝업창의 높이
+        //중앙위치 구해오기
+        LeftPosition = (screen.width - w) / 2;
+        TopPosition = (screen.height - h) / 2;
+        var popUp = window.open('/Home/zipSearchPopup', 'zipSearchPopup', "width=" + w + ",height=" + h + ",top=" + TopPosition + ",left=" + LeftPosition + ", scrollbars=no, resizable=no");
+        popUp.focus();
+    }
+
+    function resultPostReceive(zip, address) {
+        $('#POST_NO').val(zip);
+        $('#ADDR_1').val(address);
+    }
+
+
+    function delete_file(value) {
+        $("#DeleteFileSn").val(value);
+    };
+
+</script>
+
+<div id="sub_rightwrap">
+    <div class="sub_right_title right_text"><img src="~/images/list.png" class="icon_list" />내정보 수정</div>
+
+        @using (Html.BeginForm("ModifyMyInfo", "Main", FormMethod.Post, new { area = "Mentor", id = "submit_form", @class = "form-horizontal", role = "form", enctype = "multipart/form-data" }))
+        {
+            @Html.AntiForgeryToken()
+            @Html.Hidden("LoginIdChk", Model.LoginId)
+            @Html.Hidden("LoginPwChk", Model.LoginPw)
+            @Html.Hidden("DeleteFileSn")
+            @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+
+            <div class="tablewrap">
+                <table>
+                    <!--아이디-->
+                    <colgroup>
+                        <col width="160px" />
+                        <col width="587px" />
+                    </colgroup>
+                    <tr>
+                        <th>아이디</th>
+                        <td><span class="blue bold">@Html.DisplayTextFor(model => model.LoginId)</span></td>
+                    </tr>
+
+                    <tr>
+                        <th>비밀번호</th>
+                        <td class="info">@Html.PasswordFor(model => model.LoginPw, new { @class = "w235" })@*<span class="blue">영문+숫자 8~12자 가능</span>*@  @Html.ValidationMessageFor(model => model.LoginPw, "", new { @class = "text-danger", @color = "#b94a48" })</td>
+                    </tr>
+                    <tr>
+                        <th>비밀번호 확인</th>
+                        <td class="info">@Html.PasswordFor(model => model.ConfirmLoginPw, new { @class = "w235" })@*<span class="blue">비밀번호를 한 번 더 입력하세요</span>*@  @Html.ValidationMessageFor(model => model.ConfirmLoginPw, "", new { @class = "text-danger", @color = "#b94a48" })</td>
+                    </tr>
+
+                </table>
+
+                <div class="line_dot10"></div>
+
+                <table>
+                    <!--사업명-->
+                    <colgroup>
+                        <col width="160px" />
+                        <col width="590px" />
+                    </colgroup>
+                    <tr>
+                        <th>사업명</th>
+                        <td>@Model.BizWorkNm</td>
+                    </tr>
+                </table>
+
+                <div class="line_dot10"></div>
+
+                <table>
+                    <!--이름 외-->
+                    <colgroup>
+                        <col width="160px" />
+                        <col width="590px" />
+                    </colgroup>
+                    <tr>
+                        <th>이름</th>
+                        <td>@Html.TextBoxFor(model => model.Name, new { @class = "w235", @placeholder = "이름은필수값입니다." })  
+                             @Html.ValidationMessageFor(model => model.Name, "", new { @class = "text-danger", @color = "#b94a48" })
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <th>멘토링 분야</th>
+                        <td class="form">
+                            @Html.DropDownListFor(model => model.UsrTypeDetail, new SelectList(
+                            new List<Object>{
+                                new { value = "" , text = "멘토링 분야 선택"  },
+                                new { value = "F" , text = "자금"  },
+                                new { value = "D" , text = "기술개발" },
+                                new { value = "P" , text = "특허" },
+                                new { value = "M" , text = "마케팅" },
+                                new { value = "L" , text = "법무" },
+                                new { value = "T" , text = "세무회계" },
+                                new { value = "W" , text = "노무" },
+                                new { value = "Z" , text = "기타" }
+                            },
+                            "value",
+                            "text",
+                            2), new { @class = "w250" })
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <th>전화번호</th>
+                        <td class="form">
+                            @Html.DropDownListFor(model => model.TelNo1, new SelectList(
+                            new List<Object>{
+                                new { value = "02" , text = "02"  },
+                                new { value = "031" , text = "031" },
+                                new { value = "032" , text = "032" },
+                                new { value = "033" , text = "033" },
+                                new { value = "041" , text = "041" },
+                                new { value = "043" , text = "043" },
+                                new { value = "044" , text = "044" },
+                                new { value = "051" , text = "051" },
+                                new { value = "052" , text = "052" },
+                                new { value = "053" , text = "053" },
+                                new { value = "054" , text = "054" },
+                                new { value = "055" , text = "055" },
+                                new { value = "061" , text = "061" },
+                                new { value = "062" , text = "062" },
+                                new { value = "063" , text = "063" },
+                                new { value = "064" , text = "064" },
+                                new { value = "070" , text = "070" }
+                            },
+                            "value",
+                            "text",
+                            2))&nbsp;-&nbsp;@Html.TextBoxFor(model => model.TelNo2, new { @class = "w80", @title = "전화번호 중간자리", @maxlength = "4" })&nbsp;
+                            -&nbsp;@Html.TextBoxFor(model => model.TelNo3, new { @class = "w80", @title = "전화번호 마지막자리", @maxlength = "4" })
+                            @Html.ValidationMessageFor(model => model.TelNo2, "", new { @class = "text-danger", @color = "#b94a48" })
+                            @Html.ValidationMessageFor(model => model.TelNo3, "", new { @class = "text-danger", @color = "#b94a48" })
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <th>휴대폰</th>
+                        <td class="form">
+                            @Html.DropDownListFor(model => model.MbNo1, new SelectList(
+
+                        new List<Object>{
+                            new { value = "010" , text = "010"  },
+                            new { value = "011" , text = "011" },
+                            new { value = "016" , text = "016" },
+                            new { value = "017" , text = "017" },
+                            new { value = "019" , text = "019" }
+                            },
+                        "value",
+                        "text",
+                        2))&nbsp;-&nbsp;@Html.TextBoxFor(model => model.MbNo2, new { @class = "w80", @title = "휴대폰번호 중간자리", @maxlength = "4" })&nbsp;
+                        -&nbsp;@Html.TextBoxFor(model => model.MbNo3, new { @class = "w80", @title = "휴대폰 번호 마지막자리", @maxlength = "4" })
+                        @Html.ValidationMessageFor(model => model.MbNo2, "", new { @class = "text-danger", @color = "#b94a48" })
+                        @Html.ValidationMessageFor(model => model.MbNo3, "", new { @class = "text-danger", @color = "#b94a48" })
+
+                    </td>
+                </tr>
+
+                <tr>
+                    <th>FAX</th>
+                    <td class="form">
+                        @Html.DropDownListFor(model => model.FaxNo1, new SelectList(
+                        new List<Object>{
+                            new { value = "02" , text = "02"  },
+                            new { value = "031" , text = "031" },
+                            new { value = "032" , text = "032" },
+                            new { value = "033" , text = "033" },
+                            new { value = "041" , text = "041" },
+                            new { value = "043" , text = "043" },
+                            new { value = "044" , text = "044" },
+                            new { value = "051" , text = "051" },
+                            new { value = "052" , text = "052" },
+                            new { value = "053" , text = "053" },
+                            new { value = "054" , text = "054" },
+                            new { value = "055" , text = "055" },
+                            new { value = "061" , text = "061" },
+                            new { value = "062" , text = "062" },
+                            new { value = "063" , text = "063" },
+                            new { value = "064" , text = "064" },
+                            new { value = "070" , text = "070" }
+                        },
+                        "value",
+                        "text",
+                        2))&nbsp;-&nbsp;@Html.TextBoxFor(model => model.FaxNo2, new { @class = "w80", @title = "팩스 중간자리", @maxlength = "4" })&nbsp;
+                        -&nbsp;@Html.TextBoxFor(model => model.FaxNo3, new { @class = "w80", @title = "팩스 마지막자리", @maxlength = "4" })
+
+                        @Html.ValidationMessageFor(model => model.FaxNo2, "", new { @class = "text-danger", @color = "#b94a48" })
+                        @Html.ValidationMessageFor(model => model.FaxNo3, "", new { @class = "text-danger", @color = "#b94a48" })
+                    </td>
+                </tr>
+
+
+                <tr>
+                    <th>주소</th>
+                    <td class="form nopad">
+                        <ul>
+                            <li class="info"><input type="button" class="btn_mid gray rightmargin" value="우편번호" onClick="javascript: open_post();">@Html.TextBoxFor(model => model.PostNo, new { @class = "w146", @readOnly = "readOnly", @id = "POST_NO" })</li>
+                            <li class="info">@Html.TextBoxFor(model => model.Addr1, new { @class = "w240", @id = "ADDR_1", @readOnly = "readOnly" }) @Html.TextBoxFor(model => model.Addr2, new { @class = "w240", @placeholder = "나머지주소입력란" })</li>
+                        </ul>
+                    </td>
+                </tr>
+
+                <tr>
+                    <th>이메일</th>
+                    <td class="form">
+                        @Html.TextBoxFor(model => model.Email1, new { @class = "w115", @title = "이메일 아이디", @maxlength = "20" })&nbsp;@@&nbsp;
+                        @Html.TextBoxFor(model => model.Email2, new { @class = "w115", @title = "이메일 도메인", @maxlength = "19" })
+                        <select id="EMAIL_DOMAIN">
+                            <option value="">직접입력</option>
+                            <option value="naver.com">naver.com</option>
+                            <option value="daum.net">daum.net</option>
+                            <option value="chol.com">chol.com</option>
+                            <option value="dreamwiz.com">dreamwiz.com</option>
+                            <option value="empal.com">empal.com</option>
+                            <option value="freechal.com">freechal.com</option>
+                            <option value="gmail.com">gmail.com</option>
+                            <option value="hanafos.com">hanafos.com</option>
+                            <option value="hanmail.net">hanmail.net</option>
+                            <option value="hanmir.com">hanmir.com</option>
+                            <option value="hitel.net">hitel.net</option>
+                            <option value="hotmail.com">hotmail.com</option>
+                            <option value="korea.com">korea.com</option>
+                            <option value="lycos.co.kr">lycos.co.kr</option>
+                            <option value="nate.com">nate.com</option>
+                            <option value="netian.com">netian.com</option>
+                            <option value="paran.com">paran.com</option>
+                            <option value="yahoo.com">yahoo.com</option>
+                        </select>
+                        @Html.ValidationMessageFor(model => model.Email1, "", new { @class = "text-danger", @color = "#b94a48" })
+                        @Html.ValidationMessageFor(model => model.Email2, "", new { @class = "text-danger", @color = "#b94a48" })
+                    </td>
+                </tr>
+
+                <tr>
+                    <th>이력서</th>
+
+                    <td class="nopad">
+                        @*<a href="@Url.Action("DownloadResumeFile", new FileInfoViewModel { FileNm=Model.ResumeName, FilePath=Model.ResumePath })" class="file_open">@Model.ResumeName</a>*@
+                        <div id="file_upwrap" class="file_input">
+                            <ul>
+                                <li>
+                                    @*<input type="text"  readonly="readonly" id="file_resume" title="첨부파일" />
+                                    <label><input type="file" name="files"  onchange="javascript:document.getElementById('file_resume').value=this.value" /></label>*@
+
+                                    <input type="text" class="file" readonly="readonly" />
+                                    <button type="button" class="btn_mid lightgray" value="찾아보기" onclick="return file_add(this);">찾아보기</button>
+                                    <em><input type="file" name="files" onchange="return get_filename(this)" /></em>
+                                </li>
+                            </ul>
+                        </div>
+
+                        @if (Model.ResumeName != null)
+                        {
+                            <br />
+                            <div id="file_downwrap">
+                                <ul id="ulExitFiles">
+                                    <li><span class="btn_span">@Model.ResumeName</span><button type="button" class="btn_mid gray btn_left" onclick="delete_file(@Model.FileSn); return file_inpput_remove2(this);">삭제하기</button></li>
+                                </ul>
+                            </div>
+                        }
+
+                    </td>
+                </tr>
+            </table>
+
+                <div class="line_dot10"></div>
+                <table>
+                    <colgroup>
+                        <col width="160px" />
+                        <col width="590px" />
+                    </colgroup>
+                    <tr>
+                        <th>계좌정보</th>
+                        <td>@Html.TextBoxFor(model => model.BankNm)&nbsp;&nbsp;@Html.TextBoxFor(model => model.AccountNo)</td>
+                    </tr>
+                </table>
+
+
+            </div><!--tablewrap//-->
+
+
+            <div id="btnwrap_sub">
+                @*<button class="cancel2 right" onclick="confirm('지금까지 작성된 내용을 취소하시겠습니까?');return false;" value="reset" title="취소"></button>*@
+                @*<a href="@Url.Action("MyInfo", "Main")" class="cancel2 right"><em>취소</em></a>*@
+                <button type="button" class="btn_big gray right" value="취소" onclick="if (confirm('취소 하시겠습니까?')) location.href='@Url.Action("MyInfo", "Main")'">취소</button>
+                <button type="submit" id="submit_form" class="btn_big red right rightmargin" value="Upload File" title="저장">저장</button>
+                
+            </div>
+        }
+       
+
+
+        @section Scripts {
+            @Scripts.Render("~/bundles/jqueryval")
+        }
+</div><!--sub_rightwrap//-->

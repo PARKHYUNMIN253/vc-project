@@ -1,0 +1,121 @@
+﻿@Scripts.Render("~/bundles/common")
+
+<div id="Topwrap_common">
+    <div class="navi_top">
+        @if (Session[Global.UserType].Equals(Global.Company))
+        {
+            <a href="@Url.Action("Logoff", "Home", new { area = "" })">
+                <div class="navi_top_text">로그아웃</div>
+            </a>
+
+            <div class="linebar"></div>
+
+            @*<a href="@Url.Action("MyInfo", "MyInfo", new { area = "Company" })">
+        <div class="navi_top_text">내 정보 관리</div>
+    </a>
+
+    <div class="linebar"></div>*@
+
+            <a href="@Url.Action("Index", "Main", new { area = "Company" })">
+                <div class="navi_top_text">Home</div>
+        </a>
+
+        <div class="linebar"></div>
+
+        <a href="#">
+            <div class="navi_top_text">
+                <b class="blue_text">
+                    @Session[Global.UserNM].ToString()
+                    님
+                </b>
+            </div>
+        </a>
+
+        <a href="#">
+            <div class="vc_icon_comp"></div>
+        </a>
+
+        }
+        else if (Session[Global.UserType].Equals(Global.Mentor))
+        {
+            <a href="@Url.Action("Logoff", "Home", new { area = "" })">
+                <div class="navi_top_text">로그아웃</div>
+            </a>
+
+            <div class="linebar"></div>
+
+            <a href="@Url.Action("Index", "Main", new { area = "Mentor" })">
+                <div class="navi_top_text">Home</div>
+            </a>
+
+            <div class="linebar"></div>
+
+            <a href="#">
+                <div class="navi_top_text">
+                    <b class="blue_text">
+                        @Session[Global.UserNM].ToString()
+                        님
+                    </b>
+                </div>
+            </a>
+            <a href="#">
+                <div class="vc_icon_mentor"></div>
+            </a>
+        }
+
+        else if (Session[Global.UserType].Equals(Global.BizManager))
+        {
+            <a href="@Url.Action("Logoff", "Home", new { area = "" })">
+                <div class="navi_top_text">로그아웃</div>
+            </a>
+
+            <div class="linebar"></div>
+
+            <a href="@Url.Action("Index", "Main", new { area = "BizManager" })">
+                <div class="navi_top_text">Home</div>
+            </a>
+
+            <div class="linebar"></div>
+
+            <a href="#">
+                <div class="navi_top_text">
+                    <b class="blue_text">
+                        @Session[Global.UserNM].ToString()
+                        님
+                    </b>
+                </div>
+            </a>
+            <a href="#">
+                <div class="vc_icon_ba"></div>
+            </a>
+        }
+        else if (Session[Global.UserType].Equals(Global.SysManager))
+        {
+            <a href="@Url.Action("Logoff", "Home", new { area = "" })">
+                <div class="navi_top_text">로그아웃</div>
+            </a>
+
+            <div class="linebar"></div>
+
+            <a href="@Url.Action("Index", "Main", new { area = "SysManager" })">
+                <div class="navi_top_text">Home</div>
+            </a>
+
+            <div class="linebar"></div>
+
+            <a href="#">
+                <div class="navi_top_text">
+                    <b class="blue_text">
+                        @Session[Global.UserNM].ToString()
+                        님
+                    </b>
+                </div>
+            </a>
+
+            <a href="#">
+                <div class="vc_icon_admin"></div>
+            </a>
+        }
+    </div>
+</div>
+

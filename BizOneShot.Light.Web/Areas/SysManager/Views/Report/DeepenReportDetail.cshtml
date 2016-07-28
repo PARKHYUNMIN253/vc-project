@@ -1,0 +1,94 @@
+﻿@model BizOneShot.Light.Models.ViewModels.MentoringTotalReportViewModel
+
+@{
+    Layout = "~/Areas/SysManager/Views/Shared/_MainDetailLayout.cshtml";
+}
+
+
+<script>
+    $(document).ready(function () {
+        $('.vc_iconSB_10 ').addClass('on01');
+        $('.vc_title_10 ').addClass('on');
+        $('.a_label02').addClass('on');
+    });
+</script>
+<div class="tcms">
+    <div class="main_top short">
+        <div class="list_icon"></div><div class="sub_title">심화보고서</div>
+        @RenderPage("~/Areas/SysManager/Views/Shared/_MainTopMenuPartial.cshtml")
+    </div>
+    <div class="main_mid">
+        <form method="" action="" name="" id="">
+            <div class="tablewrap">
+                <!--목록-->
+                <table class="admin_list" id="CompListTable">
+                    <colgroup>
+                        <col width="100px" />
+                        <col width="260px" />
+                        <col width="100px" />
+                    </colgroup>
+                    <tr>
+                        <th>기업명</th>
+                        <td colspan="2" class="top_line">@ViewBag.CompNm</td>
+                    </tr>
+                    <tr>
+                        <th>제출일</th>
+                        <td colspan="2">@Model.SubmitDt.Value.ToString("yyyy-MM-dd")</td>
+                    </tr>
+                    <tr>
+                        <th>멘토링 내용</th>
+                        <td colspan="2">
+                            <p>@Html.RepladeHtmlText(Model.DeepenContents)</p>
+                        </td>
+                    </tr>
+                    @if (Model.FileContents.Count == 1)
+            {
+                        <tr>
+                            <!--첨부파일1개일때-->
+                            <th>첨부파일</th>
+                            <td class="nopad" colspan="2">
+                                <div id="file_downwrap">
+                                    <ul>
+                                        <li><span class="download-left79">@Model.FileContents[0].FileNm</span><button type="button" class="btn_mid lightgray float-right" onclick="location.href='@Url.Action("DownloadReportFile", Model.FileContents[0])';" value="다운로드">다운로드</button></li>
+                                    </ul>
+                                </div>
+                            </td>
+                            @*<li><button type="button" class="btn_mid lightgray" onclick="location.href='@Url.Action("FinalSubmitDeepenReport","Report", Model.TotalReportSn)';" value="최종 제출">최종 제출</button></li>*@
+                            @*<td rowspan="3">@Html.ActionLink("최종 제출", "FinalSubmitDeepenReport", "Report", new { area = "Mentor", totalReportSn = Model.TotalReportSn }, new { @class = "red-font" })</td>*@
+                        </tr><!--첨부파일1개일때 끝-->
+                    }
+                    else if (Model.FileContents.Count > 1)
+                    {
+                        <tr>
+                            <!--첨부파일2개이상일때-->
+                            <th>첨부파일</th>
+                            <td colspan="2" class="nopad">
+                                <div id="file_downwrap">
+                                    <ul>
+                                        @foreach (var item in Model.FileContents)
+                                        {
+                                            @*<li><span>@item.FileNm</span><button type="button" class="file_down" onclick="location.href='@Url.Action("DocumentDownload", new { fileSn = @item.FileSn })';" value="다운로드"></button></li>*@
+                                            <li><span class="download-left79">@item.FileNm</span><button type="button" class="btn_mid lightgray float-right" onclick="location.href='@Url.Action("DownloadReportFile", item)';" value="다운로드">다운로드</button></li>
+                                        }
+                                    </ul>
+                                </div>
+                            </td>
+                            @*<td rowspan="3">@Html.ActionLink("최종 제출", "FinalSubmitDeepenReport", "Report", new { area = "Mentor", totalReportSn = Model.TotalReportSn }, new { @class = "red-font" })</td>*@
+                        </tr><!--첨부파일2개이상일때 끝-->
+                    }
+
+                </table>
+
+                <div id="btnwrap_sub">
+                    <div class="rightwrap">
+                        <a href="@Url.Action("DeepenReport","Report", new {area = "SysManager" })" class="btn_a gray right">목록</a>
+
+                    </div>
+                </div><!--btnwrap_sub//-->
+
+            </div><!--tablewrap//-->
+
+        </form>
+
+    </div><!--sub_rightwrap//-->
+</div>

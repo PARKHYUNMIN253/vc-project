@@ -1,0 +1,101 @@
+﻿@model BizOneShot.Light.Models.ViewModels.BasicSurveyReportViewModel
+
+@{
+    Layout = "~/Views/Shared/_MainLayout.cshtml";
+}
+
+<script>
+    $(document).ready(function () {
+        //top menu
+        $('#naviwrap_biz > .navi_biz >  a > .top_menu > .header_report01 ').addClass('on');
+        $('#naviwrap_biz > .navi_biz >  a > .top_menu > .top_text_report ').addClass('on');
+        //Cs menu
+        $('#sub_leftwrap > .sub_gnbwrap > ul > li > a.gnb_basicReport').addClass('on');
+        $('#sub_leftwrap a.list_33').addClass('list_on');
+
+    });
+</script>
+
+@Styles.Render("~/css/print")
+
+<div id="sub_rightwrap_report">
+
+    <div class="sub_right_title right_text"><img src="~/images/list.png" class="icon_list" />기초경영역량 보고서</div>
+
+    <div class="sub_report_checkbox">
+        <div class="compname"></div>
+        <div class="pagenum">23/27</div>
+        <div class="report_main_top2"></div>
+        <div class="report_main_mid">
+            <div class="main_mid_cont">
+                <p class="title_mid">
+                    (별첨) 역량분석 방법 배경_ <span class="small_span float_right">
+                        일반형기업과 혁신형기업의 차이
+                    </span>
+                </p>
+            </div>
+
+            @* 이미지 부분 *@
+            <div class="main_mid_cont">
+                <div class=bg_diff_startup></div>
+            </div>
+
+            @* 텍스트 부분 *@
+            <div class="main_mid_cont">
+                <div class="main_mid_listBox nomargin2">
+                    <div class="listBox_tap longbg_on noline">
+                        <span>해설</span>
+                    </div>
+                </div>
+                <div class="explainBox nomargin2">
+                    <div class="label_ex">
+                        <p class="ex_p">
+                            <span>•</span>일반적으로 중소기업의 창업은 일반형과 혁신형으로 구분할 수 있습니다.
+                        </p>
+                        <p class="ex_p">
+                            <span>•</span>우리가 보편적으로 언급하는 중소기업은 일반형이므로,
+                            일반형을 중소기업, 혁신형을 혁신기업으로 구분할 수 있습니다.
+                        </p>
+                        <p class="ex_p">
+                            <span style="height: 82px">•</span>중소기업은 보통 단독으로 설립되 지역시장에서 재화 및 서비스를 공급하며 성장하며,
+                            대개는 가족기업처럼 소수에게 소유권이 집중되어 있습니다. 때문에 사업과 조직을 엄격히 통제하는 것이 성장에 중요하다.
+                            이 경우 창업자가 얻기를 희망하는 보상은 독립과 안정적인 현금흐름이 됩니다.
+                            중소기업 창업은 많은 자금이 필요치 않고, 수익과 일자리창출에 걸리는 시간이 짧습니다.
+                            비용절감을 위해 타 지역 위탁생산이 제한적이라는 측면에서 노동력이 비교역적이라는 특성이 있고,
+                            이 때문에 지역시장의 특성에 맞는 운영전략이 필요합니다.
+                        </p>
+                        <p class="ex_p">
+                            <span>•</span>우리가 보편적으로 언급하는 중소기업은 일반형이므로,
+                            일반형을 중소기업, 혁신형을 혁신기업으로 구분할 수 있습니다.
+                        </p>
+
+                        <p class="ex_p">
+                            <span style="height: 70px">•</span>혁신기업은 세계시장이나 특정권역에서 성공하는 모델을 꿈꾸며, 기술, 프로세스,
+                            사업모델 등에서 차별화된 특징을 토대로 창업을 모색합니다.
+                            기본적으로 혁신을 통한 경쟁우위를 노리기 때문에 협력하는 파트너가 모여 기업을 설립하는 특징이 있습니다.
+                            보편적으로 절대적인 지분보다는 성과창출 및 성장에 관심이 많아 지분을 넘기기도 합니다.
+                        </p>
+                        <p class="ex_p">
+                            <span style="height: 45px">•</span>혁신기업의 경우 사업의 혁신성을 전제로 하기 때문에 기업의 보편적 특성을 전제로 검토하는 본 역량검토서의 우선적인 대상이 되기에는 다소 부적합한 특징이 있습니다.
+                            그렇지만, 우리나라의 경우 성장단계에 따라 혁신기업 → 중소기업 → 혁신기업으로 전환하는 경우가 다수이기 때문에,
+                            해당 단계에서는 적용할 수 있습니다.
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+    </div>
+
+    <div id="btnwrap_sub" class="bottom_left2">
+        <div class="rightwrap left">
+            <a href="@Url.Action("CapacityCompGoal", "BasicSurveyReport", new { area = "", NumSn = ViewBag.paramModel.NumSn, CompSn = ViewBag.paramModel.CompSn, BizWorkYear = ViewBag.paramModel.BizWorkYear, Status = ViewBag.paramModel.Status, QuestionSn = ViewBag.paramModel.QuestionSn })" class="btn_a gray left" value="이전">이전</a>
+        </div>
+
+        <div class="rightwrap right">
+            <a href="@Url.Action("CapacityCompGrowth", "BasicSurveyReport", new { area = "", NumSn = ViewBag.paramModel.NumSn, CompSn = ViewBag.paramModel.CompSn, BizWorkYear = ViewBag.paramModel.BizWorkYear, Status = ViewBag.paramModel.Status, QuestionSn = ViewBag.paramModel.QuestionSn })" class="btn_a gray right" value="다음">다음</a>
+        </div>
+    </div>
+
+</div>

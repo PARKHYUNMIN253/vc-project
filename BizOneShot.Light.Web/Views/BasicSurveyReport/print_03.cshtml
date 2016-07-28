@@ -1,0 +1,285 @@
+﻿@model BizOneShot.Light.Models.ViewModels.BasicSurveyReportViewModel
+
+@{
+    Layout = "~/Views/Shared/_MainLayout.cshtml";
+}
+<!--@Styles.Render("~/css/print") -->
+<script>
+    $(document).ready(function () {
+        //top menu
+        $('#naviwrap_biz > .navi_biz >  a.navi_report').addClass('on');
+        //Cs menu
+        $('#sub_leftwrap > .sub_gnbwrap > ul > li > a.gnb_basicReport').addClass('on');
+
+
+        getAllPages();
+
+
+    });
+
+
+    var urlList = [];
+    @{
+
+        string[] pagename = { "Cover","CompanyInfo", "OverallSummaryCover", "OverallSummary", "OverallResultCover", "OrgHR01", "OrgHR02", "OrgProductivity", "OrgDivided", "RndCost",
+            "RndEmp", "ProductivityCommercialize", "ProductivityResult", "ProductivityMgmtFacility", "ProductivityProcessControl", "ProductivityQC", "ProductivityMgmtMarketing", "ProductivityMgmtCustomer", "ProductivityProfitability", "ProductivityTargetCustomer" ,
+            "ProductivityValueChain", "ProductivityRelation", "ProductivityRelation2" ,"RiskMgmtVisionStrategy", "RiskMgmtLeadership", "RiskMgmtRelCEO", "RiskMgmtWorkingEnv", "RiskMgmtOrgSatisfaction", "RiskMgmtITSystem", "RiskMgmtLiquidity",
+            "RiskMgmtEvalProfession", "GrowthRoadMapCover", "GrowthStrategyType", "GrowthStrategyStep", "GrowthCapabilityProposal", "GrowthTotalProposal"};
+    }
+
+    @foreach (var i in pagename)
+    {
+        //<iframe id="@i" src="/BasicSurveyReport/@i?BizWorkSn=@Model.BizWorkSn&CompSn=@Model.CompSn&BizWorkYear=@Model.BizWorkYear&Status=@Model.Status&QuestionSn=@Model.QuestionSn" ></iframe>
+        <text>
+    urlList.push("/BasicSurveyReport/@(i)?BizWorkSn=@(Model.BizWorkSn)&CompSn=@(Model.CompSn)&BizWorkYear=@(Model.BizWorkYear)&Status=@(Model.Status)&QuestionSn=@(Model.QuestionSn)");
+    </text>
+
+    }
+
+    var allPages = 36;
+    var loadedPages = 0;
+    //window.print();
+
+    var scriptString = "";
+    var chartString = "";
+    function getAllPages() {
+        var url = urlList[loadedPages];
+        console.log(url);
+        $.get(url, function (o) {
+            console.log("load " + loadedPages + " pages");
+            var o = $(o);
+            $("#Container").append(o.find("div.sub_report_checkbox"));
+
+            scriptString += o.find("script").text();
+            //console.log(scriptString);
+            loadedPages++;
+            if (loadedPages < allPages) getAllPages();
+            console.log(getAllPages());
+            if (loadedPages == allPages) {
+                //$("#lastScript").text(scriptString);
+                //window.print();
+                //eval(scriptString);
+
+                var drawChart = scriptString.match(/(makeBarChart\(.*\));/g);
+
+                for (i in drawChart) {
+                    if (!drawChart[i].match(/divName/))
+                        chartString += drawChart[i] + "\n";
+                }
+                //console.log(chartString);
+                chartString += "\nsetTimeout(function () {window.print()}, 1500);";
+                eval(chartString);
+            }
+        })
+        //$("#lastScript").html(scriptString);
+    }
+
+    function makeBarChart(divName, company, avgBizInCompany, avgTotal, avgSMCompany, unit, point) {
+
+
+        var param1 = company;
+        var param2 = avgBizInCompany;
+        var param3 = avgTotal;
+        var param4 = avgSMCompany;
+
+        Highcharts.setOptions({
+            lang: {
+                decimalPoint: '.',
+                thousandsSep: ','
+            }
+        });
+
+
+        chart = new Highcharts.Chart({
+            chart: {
+                type: 'column',
+                renderTo: divName,
+                margin: [10, 0, 25, 50],
+                spacingTop: 0,
+                //spacingBottom: 0,
+                //spacingLeft: 0,
+                spacingRight: 0
+            },
+            exporting: {                    // highcharts context menu 제거
+                buttons: {
+                    contextButtons: {
+                        enabled: false,
+                        menuItems: null
+                    }
+                },
+                enabled: false
+            },
+            credits: {
+                enabled: false
+            },
+            title: {
+                style: {
+                    display: 'none'
+                }
+            },
+            xAxis: {
+                type: 'category',
+                gridLineWidth: 1
+            },
+            yAxis: {
+                gridLineWidth: 0,
+                title: {
+                    style: {
+                        display: 'none'
+                    }
+                },
+                labels: {
+                    enabled: true
+                },
+            },
+            legend: {
+                enabled: false
+            },
+            tooltip: { enabled: false },
+
+            series: [{
+                upColor: Highcharts.getOptions().colors[2],
+                color: Highcharts.getOptions().colors[3],
+                pointWidth: 35,
+                enableMouseTracking: false,
+                data: [{
+                    name: "해당기업",
+                    y: param1
+                }, {
+                    name: "참여기업평균",
+                    y: param2
+                }, {
+                    name: "전체평균",
+                    y: param3
+                }, {
+                    name: "중소기업 평균",
+                    y: param4
+                }],
+                dataLabels: {
+                    enabled: true,
+                    formatter: function () {
+                        return Highcharts.numberFormat(this.y, point, '.') + unit;
+                    },
+                    style: {
+                        color: '#000000',
+                        fontWeight: 'bold'//,
+                        //textShadow: '0px 0px 3px black'
+                    }
+                },
+                pointPadding: 0
+            }]
+        });
+    }
+
+</script>
+@Styles.Render("~/css/print")
+
+<script src="/Scripts/highcharts.js"></script>
+<script src="/Scripts/highcharts-more.js"></script>
+
+
+<style>
+    iframe {
+        width: 27cm;
+        height: 37.7cm;
+    }
+
+    iframe {
+        visibility: visible;
+    }
+
+    div#wrapper {
+        margin: 0;
+    }
+
+    div#sub_wrapper {
+        margin: 0;
+    }
+
+    * {
+        visibility: hidden;
+    }
+
+    #headerwrap_biz {
+        display: none;
+    }
+
+    #sub_leftwrap {
+        display: none;
+    }
+
+    div.footerWrap {
+        display: none;
+    }
+
+    div.sub_right_title {
+        display: none;
+    }
+
+    div#report_wm_step {
+        display: none;
+    }
+
+    div#sub_inquiry_box {
+        display: none;
+    }
+
+    div#sub_term_box {
+        display: none;
+    }
+
+    div#tabswrap_three {
+        display: none;
+    }
+
+    div.sub_report_checkbox {
+        visibility: visible;
+        position: relative;
+        zoom: 1.26;
+        left: 0;
+        right: 0;
+        margin: auto auto;
+        float: none;
+    }
+
+        div.sub_report_checkbox + div.sub_report_checkbox {
+            page-break-before: always;
+        }
+
+        div.sub_report_checkbox * {
+            visibility: visible;
+        }
+
+    #btnwrap_sub .print {
+        display: none !important;
+    }
+
+    hr.pagebreak {
+        page-break-after: always;
+    }
+
+    #sub_rightwrap_report {
+        width: inherit;
+        float: none;
+    }
+
+    div#headerwrap_Mentor {
+        display: none;
+    }
+
+    @@media all and (-ms-high-contrast:none), (-ms-high-contrast:active) {
+        div.sub_report_checkbox {
+            margin: 0;
+            zoom: 1.32;
+        }
+    }
+</style>
+
+
+<div id="Container">
+
+</div>
+
+<script id="lastScript">
+
+</script>

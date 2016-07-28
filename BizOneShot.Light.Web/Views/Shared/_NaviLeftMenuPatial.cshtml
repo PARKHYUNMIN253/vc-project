@@ -1,0 +1,142 @@
+﻿
+<div id="sub_leftdetailtwrap">
+    <div class="sub_gnbwrap">
+       
+        @if (Session[Global.UserType].Equals(Global.Company))
+        {
+            <div class="navi_detail">
+                @if (ViewBag.naviLeftMenu == Global.Report)
+                {
+                    <div class="detail_title">보고서</div>
+                    <ul>
+                        <li><a href="@Url.Action("BasicSurvey", "Report", new { area = "Company" })" class="a_label01 fw_400">기초경영역량 문진표</a></li>
+                        <li><a href="@Url.Action("BasicSurveyReport", "Report", new { area = "Company" })" class="a_label02 fw_400">기초경영역량 보고서</a></li>
+                        <li><a href="@Url.Action("DeepenReportList", "Report", new { area = "Company" })" class="a_label03 fw_400">심화보고서</a></li>
+                    </ul>
+                }
+                @if (ViewBag.inReport == Global.inReport)
+                {
+                    <ul>
+                        <li><a href="#" class="list_gnb bold first_li list_1" onclick="javascript: TempSave('/BasicSurveyReport/CompanyInfo')">기업개요</a></li>
+                        <li><a href="#" class="list_gnb bold m_left10 list_2" onclick="javascript: TempSave('/BasicSurveyReport/OverallSummary')" pagenum="3">Ⅰ.역량검토 결과 요약</a></li>
+                        <li><a href="#" class="list_gnb bold m_left10 list_3" onclick="javascript: TempSave('/BasicSurveyReport/OverallResultCover')" pagenum="4">Ⅱ.기초 역량검토 종합결과</a></li>
+                        <li>
+                            <div id="left_icon1" class="list_plus"></div><a href="#" class="list_gnb bold list_4 m_left20 first_list" onclick="javascript: TempSave('/BasicSurveyReport/OrgHR01')">1. 조직역량</a>
+                            <ul class="hide">
+                                <li><a href="#" class="list_gnb m_left24 bold list_4" onclick="javascript: TempSave('/BasicSurveyReport/OrgHR01')">(1) 인적자원</a></li>
+                                <li><a href="#" class="list_gnb m_left30 list_4" onclick="javascript: TempSave('/BasicSurveyReport/OrgHR01')" pagenum="5">① 인적자원의 확보/개발관리</a></li>
+                                <li><a href="#" class="list_gnb m_left30 list_5" onclick="javascript: TempSave('/BasicSurveyReport/OrgHR02')" pagenum="6">② 인적자원의 보상/유지관리</a></li>
+
+                                <li><a href="#" class="list_gnb m_left24 bold list_6" onclick="javascript: TempSave('/BasicSurveyReport/OrgProductivity')" pagenum="7">(2) 생산성, 활동성</a></li>
+                                <li><a href="#" class="list_gnb m_left24 bold list_7" onclick="javascript: TempSave('/BasicSurveyReport/OrgDivided')" pagenum="8">(3) 조직분화도</a></li>
+                            </ul>
+                        </li>
+                        <li>
+                            <div id="left_icon2" class="list_plus"></div><a href="#" class="list_gnb bold m_left20 list_8 two_list" onclick="javascript: TempSave('/BasicSurveyReport/RndCost')">2. 상품화 역량</a>
+                            <ul class="hide">
+                                <li><a href="#" class="list_gnb m_left24 bold list_8" onclick="javascript: TempSave('/BasicSurveyReport/RndCost?')">(1) 기술경영</a></li>
+                                <li><a href="#" class="list_gnb m_left30 list_8" onclick="javascript: TempSave('/BasicSurveyReport/RndCost')" pagenum="9">① 연구개발 투자</a></li>
+                                <li><a href="#" class="list_gnb m_left30 list_9" onclick="javascript: TempSave('/BasicSurveyReport/RndEmp')" pagenum="10">② 연구개발 인력의 비율</a></li>
+                                <li><a href="#" class="list_gnb m_left30 list_10" onclick="javascript: TempSave('/BasicSurveyReport/ProductivityCommercialize')" pagenum="11">③ 사업화 역량</a></li>
+                                <li><a href="#" class="list_gnb m_left30 list_11" onclick="javascript: TempSave('/BasicSurveyReport/ProductivityResult')" pagenum="12">④ 사업화 실적</a></li>
+                                <li><a href="#" class="list_gnb m_left30 list_12" onclick="javascript:TempSave('/BasicSurveyReport/ProductivityMgmtFacility')" pagenum="13">⑤ 생산설비의 운영체계/관리</a></li>
+                                <li><a href="#" class="list_gnb m_left30 list_13" onclick="javascript: TempSave('/BasicSurveyReport/ProductivityProcessControl')" pagenum="14">⑥ 공정관리</a></li>
+                                <li><a href="#" class="list_gnb m_left30 list_14" onclick="javascript: TempSave('/BasicSurveyReport/ProductivityQC')" pagenum="15">⑦ 품질관리</a></li>
+                                <li><a href="#" class="list_gnb m_left24 bold list_15" onclick="javascript: TempSave('/BasicSurveyReport/ProductivityMgmtMarketing')">(2) 마케팅 관리</a></li>
+                                <li><a href="#" class="list_gnb m_left30 list_15" onclick="javascript: TempSave('/BasicSurveyReport/ProductivityMgmtMarketing')" pagenum="16">① 마케팅 전략의 수립/실행</a></li>
+                                <li><a href="#" class="list_gnb m_left30 list_16" onclick="javascript: TempSave('/BasicSurveyReport/ProductivityMgmtCustomer')" pagenum="17">② 고객관리</a></li>
+                                <li><a href="#" class="list_gnb m_left24 bold list_17" onclick="javascript: TempSave('/BasicSurveyReport/ProductivityProfitability')" pagenum="18">(3) 수익성, 성장성</a></li>
+                                <li><a href="#" class="list_gnb m_left24 bold list_18" onclick="javascript: TempSave('/BasicSurveyReport/ProductivityValueChain')">(4) 사업모델 도출과정</a></li>
+                                <li><a href="#" class="list_gnb m_left24 bold list_19" onclick="javascript: TempSave('/BasicSurveyReport/ProductivityRelation')">(5) 제품생산 판매관계망 검토</a></li>
+                                <li><a href="#" class="list_gnb m_left30 list_19" onclick="javascript: TempSave('/BasicSurveyReport/ProductivityRelation')" pagenum="20">① 제품생산 판매관계망 검토</a></li>
+                                <li><a href="#" class="list_gnb m_left30 list_20" onclick="javascript: TempSave('/BasicSurveyReport/ProductivityRelation2')">② 경쟁력 검토</a></li>
+                            </ul>
+                        </li>
+                        <li>
+                            <div id="left_icon3" class="list_plus"></div><a href="#" class="list_gnb bold m_left20 list_21 third_list" onclick="javascript: TempSave('/BasicSurveyReport/RiskMgmtVisionStrategy')">3. 위험관리 역량</a>
+                            <ul class="hide">
+                                <li><a href="#" class="list_gnb m_left24 bold list_21" onclick="javascript: TempSave('/BasicSurveyReport/RiskMgmtVisionStrategy')">(1) 기초역량</a></li>
+                                <li><a href="#" class="list_gnb m_left30 list_21" onclick="javascript: TempSave('/BasicSurveyReport/RiskMgmtVisionStrategy')" pagenum="22">① 경영목표 및 전략</a></li>
+                                <li><a href="#" class="list_gnb m_left30 list_22" onclick="javascript: TempSave('/BasicSurveyReport/RiskMgmtLeadership')" pagenum="23">② 경영자의 리더십</a></li>
+                                <li><a href="#" class="list_gnb m_left30 list_23" onclick="javascript: TempSave('/BasicSurveyReport/RiskMgmtRelCEO')" pagenum="24">③ 경영자의 신뢰성</a></li>
+                                <li><a href="#" class="list_gnb m_left30 list_24" onclick="javascript: TempSave('/BasicSurveyReport/RiskMgmtWorkingEnv')" pagenum="25">④ 근로환경</a></li>
+                                <li><a href="#" class="list_gnb m_left30 list_25" onclick="javascript: TempSave('/BasicSurveyReport/RiskMgmtOrgSatisfaction')" pagenum="26">⑤ 조직만족도</a></li>
+                                <li><a href="#" class="list_gnb m_left30 list_26" onclick="javascript: TempSave('/BasicSurveyReport/RiskMgmtITSystem')" pagenum="27">⑥ 정보시스템 활용</a></li>
+                                <li><a href="#" class="list_gnb m_left24 bold list_27" onclick="javascript: TempSave('/BasicSurveyReport/RiskMgmtLiquidity')" pagenum="28">(2) 유동성, 안정성</a></li>
+                                <li><a href="#" class="list_gnb m_left24 bold list_28" onclick="javascript: TempSave('/BasicSurveyReport/RiskMgmtEvalProfession')" pagenum="29">(3) 전반적 제도/규정관리 체계</a></li>
+                            </ul>
+                        </li>
+                        <li><a href="#" class="list_gnb bold m_left10 list_29" onclick="javascript: TempSave('/BasicSurveyReport/GrowthRoadMapCover')">Ⅲ.성장 로드맵 제안</a></li>
+                        <li><a href="#" class="list_gnb m_left24 bold list_30" onclick="javascript: TempSave('/BasicSurveyReport/GrowthStrategyType')">(1) 성장전략 유형검토</a></li>
+                        <li><a href="#" class="list_gnb m_left24 bold list_31" onclick="javascript: TempSave('/BasicSurveyReport/GrowthCapabilityProposal')">(2) 단계별 성장 로드맵 종합</a></li>
+                        <li><a href="#" class="list_gnb m_left24 bold list_32" onclick="javascript: TempSave('/BasicSurveyReport/GrowthTotalProposal')">(3) 회사의견 검토</a></li>
+                        <li><a href="#" class="list_gnb bold m_left10 list_33" onclick="javascript: TempSave('/BasicSurveyReport/CapacityCompGoal')">[참고] 역량분석 방법 배경</a></li>
+
+                    </ul>
+                }
+                @if (ViewBag.naviLeftMenu == Global.BAMng)
+                {
+                    <div class="detail_title">BA관리</div>
+                    <ul>
+                        <li><a href="@Url.Action("BASupervise", "BAMng", new { area = "Company" })" class="a_label01 fw_400">BA 목록 조회</a></li>
+                    </ul>
+                }
+                @if (ViewBag.naviLeftMenu == Global.MyInfo)
+                {
+                    <div class="detail_title">내 정보 관리</div>
+                    <ul>
+                        <li><a href="@Url.Action("MyInfo", "MyInfo", new { area = "Company" })" class="a_label01 fw_400">내 정보 관리</a></li>
+                        <li><a href="@Url.Action("ChangePassword", "../Account")" class="a_label01 fw_400">비밀번호 변경</a></li>
+                    </ul>
+                }
+            </div>
+        }
+        else if (Session[Global.UserType].Equals(Global.Mentor))                // 멘토일경우
+        {
+            <div class="navi_detail">
+                @if (ViewBag.naviLeftMenu == Global.Report)
+                {
+                    <div class="detail_title">보고서</div>
+                    <ul>
+                        @*<a href="@Url.Action("Logoff", "Home", new { area = "" })">*@
+                        <li><a href="@Url.Action("BasicSurveyReport", "Report", new { area = "Mentor" })" class="a_label01 fw_400">기초경영역량 보고서</a></li>    @*BasicSurvey*@
+                        <li><a href="@Url.Action("DeepenReportList", "Report", new { area=  "Mentor" })" class="a_label03 fw_400">심화보고서</a></li> @*DeepenReportList*@
+                    </ul>
+                }
+
+                @if (ViewBag.naviLeftMenu == Global.MentoringReport)
+                {
+                    <div class="detail_title">멘토링 관리</div>
+                    <ul>
+                        <li><a href="@Url.Action("CompList", "MentoringReport", new { area = "Mentor" })" class="a_label02 fw_400">담당기업조회</a></li>    @*+MentoringCompanyList*@
+                        <li><a href="@Url.Action("MentoringReportList", "MentoringReport", new { area = "Mentor" })" class="a_label02 fw_400">멘토링일지조회</a></li>  @*MentoringReportList*@
+                        <li><a href="@Url.Action("RegMentoringReport", "MentoringReport", new { area = "Mentor" })" class="a_label03 fw_400">멘토링일지등록</a></li>  @*RegMentoringReport*@
+                    </ul>
+                }
+            </div>
+        }
+        else if (Session[Global.UserType].Equals(Global.BizManager))                // BA이 일경우
+        {
+            <div class="navi_detail">
+
+                <div class="detail_title">보고서</div>
+                <ul>
+                    @*<li><a href="@Url.Action("BasicSurvey", "Report")" class="a_label01 fw_400">기초경영역량 문진표</a></li>*@
+                    <li><a href="@Url.Action("BasicSurveyReport", "Report", new { area = "BizManager" })" class="a_label01 fw_400">기초경영역량 보고서</a></li>
+                    <li><a href="@Url.Action("DeepenReportList", "Report", new { area = "BizManager" })" class="a_label02 fw_400">심화보고서</a></li>
+                </ul>
+            </div>
+        }
+        else if (Session[Global.UserType].Equals(Global.SysManager))
+        {
+            <div class="navi_detail">
+
+                <div class="detail_title">보고서</div>
+                <ul>
+                    <li><a href="@Url.Action("BasicSurveyReport", "Report", new { area = "SysManager" })" class="a_label10 fw_400">기초경영역량보고서</a></li>
+                    <li><a href="@Url.Action("DeepenReport", "Report", new { area = "SysManager" })" class="a_label02 fw_400">심화보고서</a></li>
+                </ul>
+            </div>
+        }
+    </div><!--sub_gnbwrap//-->
+</div><!--sub_leftwrap//-->

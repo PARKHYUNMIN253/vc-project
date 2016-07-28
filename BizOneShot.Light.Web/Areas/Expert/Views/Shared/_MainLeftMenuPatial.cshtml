@@ -1,0 +1,42 @@
+﻿
+<div id="sub_leftwrap">
+    <div class="sub_gnbwrap">
+        <ul>
+
+            @if (ViewBag.LeftMenu == Global.CompanyMng)//관리기업
+            {
+                <li class="title left_text">관리기업</li>
+                <li><a href="@Url.Action("CompanyList","CompanyMng", new { area= "Expert" })" class="gnb gnb_CompanyList">관리기업 현황</a></li>
+                <li><a href="@Url.Action("ReceiveList","CompanyMng", new { area= "Expert" })" class="gnb gnb_RcvData">자료요청 수신함</a></li>
+                <li><a href="@Url.Action("SendList","CompanyMng", new { area= "Expert" })" class="gnb gnb_SndData">자료요청 발신함</a></li>
+                <li><a href="@Url.Action("CompanyQAList","CompanyMng", new { area= "Expert" })" class="gnb gnb_QnA">관리기업 문의 답변</a></li>
+            }
+            else if (ViewBag.LeftMenu == Global.Cs)//고객센터
+            {
+                <li class="title left_text">고객센터</li>
+                <li><a href="@Url.Action("Notice","Cs",new { area= "" })" class="gnb gnb_notice">공지사항</a></li>
+                <li><a href="@Url.Action("Faq","Cs",new { area= "" })" class="gnb gnb_faq">FAQ</a></li>
+                <li><a href="@Url.Action("Manual","Cs",new { area= "" })" class="gnb gnb_menual">매뉴얼 및 서식</a></li>
+            }
+            else if (ViewBag.LeftMenu == Global.Report)//보고서관리
+            {
+                <li class="title left_text">보고서</li>
+                <li><a href="javascript:alert('차후 오픈예정입니다.');" class="gnb gnb_financeReport">재무관리 보고서</a></li>
+                <li><a href="@Url.Action("BasicSurveyReport","Report",new { area= "Expert" })" class="gnb gnb_basicReport">기초경영역량 보고서</a></li>
+            }
+            else if (ViewBag.LeftMenu == Global.MyInfo)//내정보 관리
+            {
+                <li class="title left_text">내정보 관리</li>
+                <li><a href="@Url.Action("MyInfo","Main",new { area= "Expert" })" class="gnb gnb_MyInfo">내정보 관리</a></li>
+                <li><a href="@Url.Action("ChangePassword","Account",new { area= "" })" class="gnb gnb_ChangePw">비밀번호 변경</a></li>
+            }
+            else
+            {
+
+            }
+
+
+
+        </ul>
+    </div><!--sub_gnbwrap//-->
+</div><!--sub_leftwrap//-->

@@ -1,0 +1,497 @@
+﻿@model List<object>
+
+@{
+    Layout = "~/Views/Shared/_MainDetailLayout.cshtml";
+    RndCostViewModel viewModel1 = Model[0] as RndCostViewModel;
+    RndEmpViewModel viewModel2 = Model[1] as RndEmpViewModel;
+    RiskMgmtViewModel viewModel3 = Model[2] as RiskMgmtViewModel;
+}
+
+<style>
+    .full_p {
+        margin-top: 35px;
+    }
+</style>
+
+<script type="text/javascript" src="~/Scripts/jquery.easyModal.js"></script>
+<script>
+    $(document).ready(function () {
+        $('.vc_iconSB_10 ').addClass('on01');
+        $('.vc_title_10 ').addClass('on');
+        $('.a_label10').addClass('on');
+
+        // 사이드 바를 위한 class 추가
+        $('.container').addClass('height_content_auto');
+        $('.sub_gnbwrap > .navi_left > .bg_col_g').addClass('height_rreport');
+
+        // 사이드 바를 위한 class 추가
+        $('.container').addClass('height_content_auto');
+        $('.sub_gnbwrap > .navi_left > .bg_col_g').addClass('height_rreport');
+
+        $('#mainForm').bind('submit', function () {
+
+            var valid = true;
+            if ($('#submitType').val() == "N") {
+
+                $('textarea[id^="comment"]').each(function () {
+                    if ($(this).val().length == 0 && valid == true) {
+                        alert("필수항목을 입력해 주세요");
+                        $(this).focus();
+                        valid = false;
+
+                        return false;
+                    }
+                });
+                return valid;
+            }
+
+        });
+
+        if ($('#Status').val() == "C") {
+            $('#mainForm input').attr('disabled', true);
+            $('#mainForm textarea').attr('disabled', true);
+            $('.mentorcomment').hide();
+        }
+        else {
+            $('#sub_leftwrap > .sub_gnbwrap > ul > li > a.list_33').hide();
+        }
+
+        var usrType = $("#usrType").val();
+
+        if (usrType == "C") {
+
+            $('.vc_iconSB_02').addClass('on01'); // 보고서 icon
+            $('.vc_title_01').addClass('on');    // 보고서 label
+            $('.a_label02').addClass('on');      // 보고서 내부 메뉴 label (기초경영역량 보고서)
+
+        } else if (usrType == "M") {
+
+            $('.vc_iconSB_02 ').addClass('on01');   // 보고서 icon
+            $('.vc_title_01 ').addClass('on');      // 보고서 label
+            $('.a_label01 ').addClass('on');        // 보고서 내부메뉴
+
+        } else if (usrType == "B") {
+            $('.vc_iconSB_02 ').addClass('on01');   // 보고서 icon
+            $('.vc_title_01 ').addClass('on');      // 보고서 label
+            $('.a_label01 ').addClass('on');        // 보고서 내부메뉴
+        }
+
+    });
+
+    function goSubmit(submitType) {
+        $('#submitType').val(submitType);
+        $('#mainForm').submit();
+    }
+    function RptCommentPopupOpen() {
+        //var year = $('#BizWorkYear').val();
+        //var month = $('#SelectMonth').val();
+        var questionSn = $('#QuestionSn').val();
+        var NumSn = $('#NumSn').val();
+        //var status = $('#Status').val();
+        var basicyear = $('#BizWorkYear').val();
+        var detailCode = $('#CommentList_0__DetailCd').val();
+        var compSn = $('#CompSn').val();
+
+        w = 700;    //팝업창의 너비
+        h = 520;    //팝업창의 높이
+        //중앙위치 구해오기
+        LeftPosition = (screen.width - w) / 2;
+        TopPosition = (screen.height - h) / 2;
+        var url = "/BasicSurveyReport/RptCommentPop?&NumSn=" + NumSn + "&QuestionSn=" + questionSn + "&BasicYear=" + basicyear + "&DetailCode=" + detailCode + "&CompSn=" + compSn;
+
+        console.log(url);
+
+        window.open(url, "popup", "resizable=yes, scrollbars=yes, left=" + LeftPosition + ", top=" + TopPosition + ", width=" + w + "px, height=" + h + "px");
+    }
+
+    $(function () {
+        $('.easy-modal').easyModal({
+            top: 200,
+            overlay: 0.2
+        });
+
+        $('.easy-modal-open').click(function (e) {
+            var target = $(this).attr('href');
+            $(target).trigger('openModal');
+            e.preventDefault();
+        });
+
+        $('.easy-modal-close').click(function (e) {
+            $('.easy-modal').trigger('closeModal');
+        });
+
+        $('.easy-modal-animated').easyModal({
+            top: 200,
+            overlay: 0.2,
+            transitionIn: 'animated bounceInLeft',
+            transitionOut: 'animated bounceOutRight',
+            closeButtonClass: '.animated-close'
+        });
+    });
+</script>
+@Styles.Render("~/css/print")
+
+<div class="tcms">
+    <div class="main_top short">
+        <div class="list_icon"></div><div class="sub_title">기초경영역량보고서</div>
+        @RenderPage("~/Views/Shared/_MainTopMenuPartial.cshtml")
+    </div>
+
+    <div id="sub_rightwrap_report">
+
+        @using (Html.BeginForm("RndCost", "BasicSurveyReport", FormMethod.Post, new { area = "", @class = "form-horizontal", role = "form", id = "mainForm" }))
+        {
+            @Html.HiddenFor(model => viewModel1.SubmitType, new { @id = "submitType" })
+            @Html.Hidden("NumSn", ViewBag.paramModel.NumSn as string)
+            @Html.Hidden("CompSn", ViewBag.paramModel.CompSn as string)
+            @Html.Hidden("BizWorkYear", ViewBag.paramModel.BizWorkYear as string)
+            @Html.Hidden("QuestionSn", ViewBag.paramModel.QuestionSn as string)
+            @Html.Hidden("Status", ViewBag.paramModel.Status as string)
+            @Html.Hidden("CompNm", ViewBag.paramModel.CompNm as string)
+            @Html.Hidden("PageNum", ViewBag.paramModel.PageNum as string)
+            @Html.Hidden("usrType", Session[Global.UserType] as string)
+
+            <div class="sub_report_checkbox">
+                <div class="compname">@ViewBag.paramModel.CompNm</div>
+                <div class="pagenum">8/27</div>
+                <div class="report_main_top2"></div>
+                <div class="report_main_mid">
+                    <div class="main_mid_cont">
+                        <p class="title_mid">
+                            Ⅱ. 기초역량검토 종합결과 _ <span class="small_span float_right">
+                                역량별
+                                검토결과
+                            </span>
+                        </p>
+                    </div>
+                    <div class="main_mid_cont">
+                        <div class="main_mid_listBox">
+
+                            <div class="listBox_tap longbg_on noline">
+                                <span>(2)상품화역량</span>
+                            </div>
+                            <table class="join_info">
+                                <colgroup>
+                                    <col width="20%">
+                                    <col width="20%">
+                                    <col width="60%">
+                                </colgroup>
+                                <tr>
+                                    <td class="left_memo">역량 검토 항목</td>
+                                    <td>
+                                        <span class="span_on">■ 기초역량 평가</span> <span class="span_weak">□ 재무지표 평가</span> <span class="span_weak">
+                                            □
+                                            전문가 평가
+                                        </span>
+                                    </td>
+                                    <td class="center_td">
+                                        <div class="label_td">기술경영</div> <span class="label_span">상품화역량 검토는 타켓 고객군의 설정 및 분석, 생산•판매비용 분석, 제품생산 판매관계망 검토, 상품화구조 점검 및 경쟁제품과의 경쟁력 비교에 따라 종합적으로 역량을 점검합니다.</span>
+                                    </td>
+                                </tr>
+
+
+                            </table>
+                        </div>
+
+                    </div>
+                    <div class="main_mid_cont">
+                        <p class="full_p">
+                            <span class="big_span">연구개발 투자 _</span><span class="small_span">
+                                연구개발
+                                투자의 수준
+                            </span>
+                            <a class="easy-modal-open" href="#modal1"><img src="~/images/modal_info.png" /></a>
+                        </p>
+                    </div>
+                    <div class="main_mid_cont">
+                        <div class="main_mid_listBox nomargin2">
+                            <table class="capacity_table">
+                                <colgroup>
+                                    <col width="12%">
+                                    <col width="13%">
+                                    <col width="15%">
+                                    <col width="15%">
+                                    <col width="15%">
+                                    <col width="15%">
+                                    <col width="15%">
+                                </colgroup>
+                                <tr>
+                                    <td class="left_memo ">구분</td>
+                                    <td class="left_memo">해당기업</td>
+                                    <td class="left_memo">
+                                        창업보육<br>단계 평균
+                                    </td>
+                                    <td class="left_memo">
+                                        보육성장<br> 단계 평균
+                                    </td>
+                                    <td class="left_memo">
+                                        자립성장<br> 단계 평균
+                                    </td>
+                                    <td class="left_memo">
+                                        참여<br>기업평균
+                                    </td>
+                                    <td class="left_memo">
+                                        전체<br>평균
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="center_td center">
+                                        연구개발비<br>(투자비율)
+                                    </td>
+                                    <td class="center_td center">
+                                        @string.Format("{0:N0}", int.Parse(viewModel1.value.Company))<br>(@viewModel1.percent.Company%)
+                                    </td>
+                                    <td class="center_td center">
+                                        @string.Format("{0:N0}", int.Parse(@viewModel1.value.StartUpAvg))<br>(@viewModel1.percent.StartUpAvg%)
+                                    </td>
+                                    <td class="center_td center">
+                                        @string.Format("{0:N0}", int.Parse(@viewModel1.value.GrowthAvg))<br>(@viewModel1.percent.GrowthAvg%)
+                                    </td>
+                                    <td class="center_td center">
+                                        @string.Format("{0:N0}", int.Parse(@viewModel1.value.IndependentAvg))<br>(@viewModel1.percent.IndependentAvg%)
+                                    </td>
+                                    <td class="center_td center">
+                                        @string.Format("{0:N0}", int.Parse(@viewModel1.value.BizInCompanyAvg))<br>(@viewModel1.percent.BizInCompanyAvg%)
+                                    </td>
+                                    <td class="center_td center">
+                                        @string.Format("{0:N0}", int.Parse(@viewModel1.value.TotalAvg))<br>(@viewModel1.percent.TotalAvg%)
+                                    </td>
+                                </tr>
+
+                            </table>
+                        </div>
+
+                    </div>
+                    <div class="main_mid_cont">
+                        <p class="full_p">
+                            <span class="big_span">연구개발 인력의 비율 _</span>
+                            <span class="small_span">연구개발 인력의 구성비율 및 석사급 이상 인력의 비율</span>
+                            <a class="easy-modal-open" href="#modal2"><img src="~/images/modal_info.png" /></a>
+                        </p>
+                    </div>
+                    <div class="main_mid_cont">
+                        <div class="main_mid_listBox nomargin2">
+                            <table class="capacity_table">
+                                <colgroup>
+                                    <col width="11%">
+                                    <col width="11%">
+                                    <col width="13%">
+                                    <col width="13%">
+                                    <col width="13%">
+                                    <col width="13%">
+                                    <col width="13%">
+                                    <col width="13%">
+                                </colgroup>
+                                <tr>
+                                    <td class="left_memo ">구분</td>
+                                    <td class="left_memo">해당기업</td>
+                                    <td class="left_memo">
+                                        창업보육<br>단계 평균
+                                    </td>
+                                    <td class="left_memo">
+                                        보육성장<br> 단계 평균
+                                    </td>
+                                    <td class="left_memo">
+                                        자립성장<br> 단계 평균
+                                    </td>
+                                    <td class="left_memo">
+                                        참여<br>기업평균
+                                    </td>
+                                    <td class="left_memo">전체평균</td>
+                                    <td class="left_memo">
+                                        중소기업<br>평균
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="center_td center">
+                                        연구개발<br>인력의 <br /> 비율
+                                    </td>
+                                    <td class="center_td center">@viewModel2.rndEmpRatio.Company%</td>
+                                    <td class="center_td center">@viewModel2.rndEmpRatio.StartUpAvg%</td>
+                                    <td class="center_td center">@viewModel2.rndEmpRatio.GrowthAvg%</td>
+                                    <td class="center_td center">@viewModel2.rndEmpRatio.IndependentAvg%</td>
+                                    <td class="center_td center">@viewModel2.rndEmpRatio.BizInCompanyAvg%</td>
+                                    <td class="center_td center">@viewModel2.rndEmpRatio.TotalAvg%</td>
+                                    <td class="center_td center">@viewModel2.rndEmpRatio.SMCompanyAvg%</td>
+                                </tr>
+                                <tr>
+                                    <td class="center_td center">
+                                        연구개발<br>인력 중<br>석사급<br>이상
+                                        비율
+                                    </td>
+                                    <td class="center_td center">@viewModel2.rndEmpLevelRatio.Company%</td>
+                                    <td class="center_td center">@viewModel2.rndEmpLevelRatio.StartUpAvg%</td>
+                                    <td class="center_td center">@viewModel2.rndEmpLevelRatio.GrowthAvg%</td>
+                                    <td class="center_td center">@viewModel2.rndEmpLevelRatio.IndependentAvg%</td>
+                                    <td class="center_td center">@viewModel2.rndEmpLevelRatio.BizInCompanyAvg%</td>
+                                    <td class="center_td center">@viewModel2.rndEmpLevelRatio.TotalAvg%</td>
+                                    <td class="center_td center">-</td>
+                                </tr>
+                            </table>
+                        </div>
+                    </div>
+                    @*RndEmp Ends..*@
+
+                    @*ProductivityCommercialize Start*@
+
+                    <div class="main_mid_cont">
+                        <p class="full_p">
+                            <span class="big_span">사업화역량 _</span><span class="small_span">
+                                기술개발의
+                                결과를 사업화로 연결시킬 수 있는 역량을 갖추고 있는지의 여부
+                            </span>
+                            <a class="easy-modal-open" href="#modal3"><img src="~/images/modal_info.png" /></a>
+                        </p>
+                    </div>
+                    <div class="main_mid_cont margin_b10">
+                        <div class="main_mid_listBox nomargin2">
+                            <table class="capacity_table" style="height:240px">
+                                <colgroup>
+                                    <col width="5%">
+                                    <col width="31.5%">
+                                    <col width="7%">
+                                    <col width="12%">
+                                    <col width="12%">
+                                    <col width="12%">
+                                    <col width="12%">
+                                    <col width="8.5%">
+                                </colgroup>
+                                <tr>
+                                    <td class="left_memo ">NO</td>
+                                    <td class="left_memo">체크리스트 항목</td>
+                                    <td class="left_memo">해당기업</td>
+                                    <td class="left_memo">
+                                        창업보육<br>단계 평균
+                                    </td>
+                                    <td class="left_memo">
+                                        보육성장<br> 단계 평균
+                                    </td>
+                                    <td class="left_memo">
+                                        자립성장<br> 단계 평균
+                                    </td>
+                                    <td class="left_memo">
+                                        참여<br>기업평균
+                                    </td>
+                                    <td class="left_memo">전체<br />평균</td>
+                                </tr>
+                                @if (viewModel3 == null || viewModel3.CheckList.Count == 0)
+                                {
+                                    <tr>
+                                        <td colspan="7" style="text-align:center;">검색 결과가 없습니다.</td>
+                                    </tr>
+                                }
+                                else
+                                {
+                                    foreach (var item in viewModel3.CheckList)
+                                    {
+                                        <tr>
+                                            <td class="center_td center">@item.Count</td>
+                                            <td class="center_td center">@item.Title</td>
+                                            @if (item.AnsVal == true)
+                                            {
+                                                <td class="center_td center">∎</td>
+                                            }
+                                            else
+                                            {
+                                                <td class="center_td center">□</td>
+                                            }
+                                            <td class="center_td center">@item.StartUpAvg %</td>
+                                            <td class="center_td center">@item.GrowthAvg %</td>
+                                            <td class="center_td center">@item.IndependentAvg %</td>
+                                            <td class="center_td center">@item.BizInCompanyAvg %</td>
+                                            <td class="center_td center">@item.TotalAvg %</td>
+                                        </tr>
+                                    }
+                                }
+                            </table>
+                        </div>
+
+                    </div>
+
+                    @*<div class="main_mid_cont fix_bot list_print">
+                            <div class="main_mid_listBox nomargin2">
+                                <div class="listBox_tap bg_on">
+                                    <span>검토결과</span><a href="##" onClick="javascript:RptCommentPopupOpen();" class="btn_small gray1 mentorcomment">다른 멘토 의견보기 </a>
+                                </div>
+                                @Html.TextAreaFor(model => viewModel1.CommentList[0].Comment, new { @id = "comment0", @class = "bot_textarea_365", @maxlength = "1300", @placeholder = "1000자 내로 작성하시기 바랍니다." })
+                                @Html.HiddenFor(model => viewModel1.CommentList[0].DetailCd)
+                            </div>
+
+                        </div>*@
+                </div>
+            </div>
+    <!--container//-->
+            <div id="btnwrap_sub" class="bottom_left2">
+
+                <div class="rightwrap left">
+                    <a href="@Url.Action("OrgDivided", "BasicSurveyReport", new { area = "", NumSn = ViewBag.paramModel.NumSn, CompSn = ViewBag.paramModel.CompSn, BizWorkYear = ViewBag.paramModel.BizWorkYear, Status = ViewBag.paramModel.Status, QuestionSn = ViewBag.paramModel.QuestionSn })" class="btn_a gray left" value="이전">이전</a>
+                </div>
+                <div class="rightwrap right">
+                    @if (ViewBag.paramModel.Status != "C")
+                    {
+                        @*<button type="button" class="btn_big gray" onclick="goSubmit('N');" value="다음">다음</button>*@
+                        <a href="@Url.Action("ProductivityResult", "BasicSurveyReport", new { area = "", NumSn = ViewBag.paramModel.NumSn, CompSn = ViewBag.paramModel.CompSn, BizWorkYear = ViewBag.paramModel.BizWorkYear, Status = ViewBag.paramModel.Status, QuestionSn = ViewBag.paramModel.QuestionSn })" class="btn_a gray right" value="다음">다음</a>
+                    }
+                    else
+                    {
+                        <a href="@Url.Action("ProductivityResult", "BasicSurveyReport", new { area = "", NumSn = ViewBag.paramModel.NumSn, CompSn = ViewBag.paramModel.CompSn, BizWorkYear = ViewBag.paramModel.BizWorkYear, Status = ViewBag.paramModel.Status, QuestionSn = ViewBag.paramModel.QuestionSn })" class="btn_a gray right" value="다음">다음</a>
+                    }
+                </div>
+                @*@if (ViewBag.paramModel.Status != "C")
+                {
+                    <div class="rightwrap centerwrap">
+                        <button type="button" class="btn_big red" onclick="goSubmit('T');" value="임시저장">임시저장</button>
+                    </div>
+                }*@
+            </div>
+        }
+    </div>
+</div>
+
+<div class="easy-modal" id="modal1">
+    <div class="easy-modal-inner">
+        <button class="easy-modal-close" title="Close">✕</button>
+        <h1>연구개발 투자</h1>
+        <br />
+        <p>
+            • 기업에서의 연구개발투자란 새로운 제품용역기술을 개발, 창조하기 위해 기업이 조사·연구 활동에 지출하는 비용을 말합니다.<br />
+            • 한 국가는 물론이고, 특정 산업이나 기업에 있어서 성장 기여도를 분석한 결과, 총요소생산성(Total Factor Productivity) 증가의 <br />
+            &nbsp;&nbsp;&nbsp;&nbsp;대부분이 연구개발투자에서 기인하는 것으로 나타나 기업에 있어 지속적인 성장을 위해서는 연구개발투자가 매우 중요함이 밝혀지고 있습니다.<br />
+            • 따라서 연구개발투자의 수준은 기업의 미래 성장잠재력을 평가하는 지표가 됩니다. 이러한 측면에서 이 지표는 의미가 있습니다.<br />
+            • 기업회계 기준에서는 연구개발비용(=연구개발투자)을 ‘연구 또는 개발활동과 관련, 비경상적으로 발생한 비용으로서 미래의 경제적 효익을 <br />
+            &nbsp;&nbsp;&nbsp;&nbsp;기대할 수 있는 것으로 한다’로 규정하고 있으며, 5년 이내에 균등 상각하여 영업외 비용으로 처리토록 하고 있습니다.<br />
+        </p>
+    </div>
+</div>
+<div class="easy-modal" id="modal2">
+    <div class="easy-modal-inner">
+        <button class="easy-modal-close" title="Close">✕</button>
+        <h1>연구개발 인력의 비율</h1>
+        <br />
+        <p>
+            • 연구개발투자가 기업의 미래 성장잠재력을 결정한다는 사실은 앞서의 지표인 ‘연구개발투자’에서 본 바와 같습니다.<br />
+            • 연구개발투자의 투입원천 성격이 ‘자본(K)’이라면 연구개발을 수행하는 인력의 투입원천 성격은 ‘노동(L)’입니다.<br />
+            • 기술 경영을 위한 연구개발 인프라는 위의 두 가지 요소라고 할 수 있으므로 ‘연구개발투자’와 함께 인력 자체에 대해서도 평가할 필요가 있습니다.<br />
+            • ‘노동(L)'요소 즉 인력 수준을 평가할 때 양(quantity)과 질(quality) 두 가지 면에서 평가할 수 있습니다.<br />
+            &nbsp;&nbsp;&nbsp;&nbsp;(참고로 ‘자본(K)’ 요소인 경우엔 금액으로 표시되는 양(quantity) 밖에 없습니다)<br />
+            • 이를 위한 양(quantity)을 측정하기 위한 지표인 연구개발인력 구성비율은 연구개발 인적자원에 대해 전체 임직원과 상대비교한 지표입니다.<br />
+            • 연구개발인력의 질(quality)을 측정하기 위해서 전체 연구개발 인력중 석사급
+        </p>
+    </div>
+</div>
+<div class="easy-modal" id="modal3">
+    <div class="easy-modal-inner">
+        <button class="easy-modal-close" title="Close">✕</button>
+        <h1>사업화역량</h1>
+        <p>
+            • 기술의 사업화 역량 제고는 중소기업 지속성장의 핵심 원동력입니다. 제품화 및 사업화와 관련하여 기술개발 및 <br />
+            &nbsp;&nbsp;&nbsp;&nbsp;제품생산과 같은 1차적인 차원 외에 기술 사업화 추진의 애로사항으로 ‘시장개척’, ‘유사제품’, ‘자금’ ‘마케팅’ 등도 중요한 사항입니다.<br />
+            • 이 중에서 ‘시장개척’이나 ‘마케팅’ 영역은 별도의 지표에서 다루고 여기에서는 그 외의 지표에 대하여 평가합니다.<br />
+            • 한편 기술을 제품에 반영하여 사업화하기 위해서는 영업의 최일선에서 고객의 니즈를 파악할 마케팅 부서와 이를 기술개발에 반영할<br />
+            &nbsp;&nbsp;&nbsp;&nbsp;연구개발 부서, 이를 재정적으로 지원할 자금부서, 이를 총괄 지휘할 경영자 등이 유기적으로 협업이 되어야 하고 이를 위한 시스템이<br />
+            &nbsp;&nbsp;&nbsp;&nbsp;마련되어 있어야 합니다. 물론 중소기업의 경우, 각 기능 단위가 부서가 아닌 한 개인 직원일 가능성이 높습니다.<br />
+            • 본 지표에서는 제품의 사업화에 필요한 조직 및 관리 체계 유지 여부, 개발 제품을 위한 적절한 기능분석 수행 여부,<br />
+            &nbsp;&nbsp;&nbsp;&nbsp;그리고 이러한 제 활동을 가능하게 하는 소요예산이 편성되어 있는지를 평가합니다.
+        </p>
+    </div>
+</div>

@@ -1,0 +1,113 @@
+﻿@model BizOneShot.Light.Models.ViewModels.BasicSurveyReportViewModel
+
+@{
+    Layout = "~/Views/Shared/_MainDetailLayout.cshtml";
+}
+
+<script>
+    $(document).ready(function () {
+        //top menu
+        $('.vc_iconSB_10 ').addClass('on01');
+        $('.vc_title_10 ').addClass('on');
+        $('.a_label10').addClass('on');
+
+
+        if ($('#Status').val() !== "C") {
+            $('#sub_leftwrap > .sub_gnbwrap > ul > li > a.list_33').hide();
+        }
+
+        var usrType = $("#usrType").val();
+
+        if (usrType == "C") {
+
+            $('.vc_iconSB_02').addClass('on01'); // 보고서 icon
+            $('.vc_title_01').addClass('on');    // 보고서 label
+            $('.a_label02').addClass('on');      // 보고서 내부 메뉴 label (기초경영역량 보고서)
+
+        } else if (usrType == "M") {
+
+            $('.vc_iconSB_02 ').addClass('on01');   // 보고서 icon
+            $('.vc_title_01 ').addClass('on');      // 보고서 label
+            $('.a_label01 ').addClass('on');        // 보고서 내부메뉴
+
+        } else if (usrType == "B") {
+            $('.vc_iconSB_02 ').addClass('on01');   // 보고서 icon
+            $('.vc_title_01 ').addClass('on');      // 보고서 label
+            $('.a_label01 ').addClass('on');        // 보고서 내부메뉴
+        }
+
+
+        // 사이드 바를 위한 class 추가
+        $('.container').addClass('height_content_auto');
+        $('.sub_gnbwrap > .navi_left > .bg_col_g').addClass('height_rreport');
+        
+    });
+
+</script>
+@Styles.Render("~/css/print")
+<div class="tcms">
+    <div class="main_top short">
+        <div class="list_icon"></div><div class="sub_title">기초경영역량보고서</div>
+        @RenderPage("~/Views/Shared/_MainTopMenuPartial.cshtml")
+    </div>
+
+    <div id="sub_rightwrap_report">
+        @Html.HiddenFor(model => model.QuestionSn, new { @id = "QuestionSn" })
+        @Html.Hidden("NumSn", ViewBag.paramModel.NumSn as string)
+        @Html.Hidden("CompSn", ViewBag.paramModel.CompSn as string)
+        @Html.Hidden("BizWorkYear", ViewBag.paramModel.BizWorkYear as string)
+        @Html.Hidden("QuestionSn", ViewBag.paramModel.QuestionSn as string)
+        @Html.Hidden("Status", ViewBag.paramModel.Status as string)
+        @Html.Hidden("CompNm", ViewBag.paramModel.CompNm as string)
+        @Html.Hidden("PageNum", ViewBag.paramModel.PageNum as string)
+        @Html.Hidden("usrType", Session[Global.UserType] as string)
+
+        <div class="sub_report_checkbox">
+            <div class="compname">@Model.CompNm</div>
+            <div class="pagenum">2/27</div>
+            <div class="report_main_top2">
+                <div class="title_medium">
+                    Ⅰ. 역량검토 결과 요약 _<span class="top2_right">
+                        전반적인 역량검토를 위한 내용을
+                        확인합니다.
+                    </span>
+                </div>
+            </div>
+            <div class="report_main_mid">
+                <table class="list_table top_w350">
+                    <colgroup>
+                        <col width="30%">
+                        <col width="70%">
+                    </colgroup>
+                    <tbody>
+                        <tr>
+                            <td rowspan="2" class="left_memo">1. 전체 결과요약</td>
+                            <td class="chapter">(1) 역량검토결과 발전단계</td>
+                        </tr>
+                        <tr>
+                            <td class="chapter last_memo">(2) 항목별 역량검토결과</td>
+                        </tr>
+
+                    </tbody>
+                </table>
+
+            </div>
+        </div>
+        <!--container//-->
+        <div id="btnwrap_sub" class="bottom_left2">
+
+            <div class="rightwrap left">
+                <a href="@Url.Action("CompanyInfo", "BasicSurveyReport", new { area = "" , NumSn = Model.NumSn, CompSn = Model.CompSn, BizWorkYear = Model.BizWorkYear, Status = Model.Status, QuestionSn = Model.QuestionSn})" class="btn_a gray left" value="이전">이전</a>
+
+            </div>
+            <div class="rightwrap right">
+                <a href="@Url.Action("OverallSummary", "BasicSurveyReport", new { area = "" , NumSn = Model.NumSn, CompSn = Model.CompSn, BizWorkYear = Model.BizWorkYear, Status = Model.Status, QuestionSn =Model.QuestionSn})" class="btn_a gray right" value="다음">다음</a>
+
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+    

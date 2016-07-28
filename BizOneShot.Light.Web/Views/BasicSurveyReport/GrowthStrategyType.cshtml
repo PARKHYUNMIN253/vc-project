@@ -1,0 +1,294 @@
+﻿@model BizOneShot.Light.Models.ViewModels.GrowthStrategyViewModel
+
+@{
+    Layout = "~/Views/Shared/_MainDetailLayout.cshtml";
+}
+
+<script>
+    $(document).ready(function () {
+        $('.vc_iconSB_10 ').addClass('on01');
+        $('.vc_title_10 ').addClass('on');
+        $('.a_label10').addClass('on');
+
+        // 사이드 바를 위한 class 추가
+        $('.container').addClass('height_content_auto');
+        $('.sub_gnbwrap > .navi_left > .bg_col_g').addClass('height_rreport');
+
+        if ($('#Status').val() == "C") {
+            $('#mainForm input').attr('disabled', true);
+            $('#mainForm textarea').attr('disabled', true);
+            $('.mentorcomment').hide();
+            $('p').removeClass('righthalf_p').addClass('right_p');
+        }
+        else {
+            $('#sub_leftwrap > .sub_gnbwrap > ul > li > a.list_33').hide();
+        }
+
+        var usrType = $("#usrType").val();
+
+        if (usrType == "C") {
+
+            $('.vc_iconSB_02').addClass('on01'); // 보고서 icon
+            $('.vc_title_01').addClass('on');    // 보고서 label
+            $('.a_label02').addClass('on');      // 보고서 내부 메뉴 label (기초경영역량 보고서)
+
+        } else if (usrType == "M" || usrType == "B") {
+
+            $('.vc_iconSB_02 ').addClass('on01');   // 보고서 icon
+            $('.vc_title_01 ').addClass('on');      // 보고서 label
+            $('.a_label01 ').addClass('on');        // 보고서 내부메뉴
+
+        }
+
+    });
+
+    function goSubmit(submitType) {
+        $('#submitType').val(submitType);
+        $('#mainForm').submit();
+    }
+    function RptCommentPopupOpen() {
+        //var year = $('#BizWorkYear').val();
+        //var month = $('#SelectMonth').val();
+        var questionSn = $('#QuestionSn').val();
+        var NumSn = $('#NumSn').val();
+        //var status = $('#Status').val();
+        var basicyear = $('#BizWorkYear').val();
+        var detailCode = $('#CommentList_8__DetailCd').val();
+        var compSn = $('#CompSn').val();
+
+        w = 700;    //팝업창의 너비
+        h = 520;    //팝업창의 높이
+        //중앙위치 구해오기
+        LeftPosition = (screen.width - w) / 2;
+        TopPosition = (screen.height - h) / 2;
+        var url = "/BasicSurveyReport/RptCommentPop?&NumSn=" + NumSn + "&QuestionSn=" + questionSn + "&BasicYear=" + basicyear + "&DetailCode=" + detailCode + "&CompSn=" + compSn;
+
+        console.log(url);
+
+        window.open(url, "popup", "resizable=yes, scrollbars=yes, left=" + LeftPosition + ", top=" + TopPosition + ", width=" + w + "px, height=" + h + "px");
+    }
+</script>
+@Styles.Render("~/css/print")
+<div class="tcms">
+    <div class="main_top short">
+        <div class="list_icon"></div><div class="sub_title">기초경영역량보고서</div>
+        @RenderPage("~/Views/Shared/_MainTopMenuPartial.cshtml")
+    </div>
+
+    <div id="sub_rightwrap_report">
+
+        @using (Html.BeginForm("GrowthStrategyType", "BasicSurveyReport", FormMethod.Post, new { area = "", @class = "form-horizontal", role = "form", id = "mainForm" }))
+        {
+            @Html.HiddenFor(model => model.SubmitType, new { @id = "submitType" })
+            @Html.Hidden("NumSn", ViewBag.paramModel.NumSn as string)
+            @Html.Hidden("CompSn", ViewBag.paramModel.CompSn as string)
+            @Html.Hidden("BizWorkYear", ViewBag.paramModel.BizWorkYear as string)
+            @Html.Hidden("QuestionSn", ViewBag.paramModel.QuestionSn as string)
+            @Html.Hidden("Status", ViewBag.paramModel.Status as string)
+            @Html.Hidden("CompNm", ViewBag.paramModel.CompNm as string)
+            @Html.Hidden("PageNum", ViewBag.paramModel.PageNum as string)
+            @Html.Hidden("usrType", Session[Global.UserType] as string)
+
+            <div class="sub_report_checkbox">
+                <div class="compname">@ViewBag.paramModel.CompNm</div>
+                <div class="pagenum">20/27</div>
+                <div class="report_main_top2"></div>
+                <div class="report_main_mid">
+                    <div class="main_mid_cont">
+                        <p class="title_mid">Ⅲ. 성장 로드맵 제안</p>
+                    </div>
+                    <div class="main_mid_cont">
+                        <div class="main_mid_listBox">
+                            <div class="listBox_tap longbg_on full_line noline">
+                                <span>성장전략 유형검토 1 </span>
+                                <p class="right_p">SWOT 분석에 따른 전략 제안</p>
+                            </div>
+                            <table class="capacity_table02">
+                                <colgroup>
+                                    <col width="10%">
+                                    <col width="30%">
+                                    <col width="30%">
+                                    <col width="30%">
+                                </colgroup>
+                                <tr>
+                                    <td class="left_memo dashline02" colspan="2" rowspan="2">
+                                        <span>
+                                            외부
+                                            환경
+                                        </span><span class="right">내부 역량</span>
+                                    </td>
+                                    <td class="left_memo">강점(S) → 강화</td>
+                                    <td class="left_memo">약점(W) → 보완</td>
+                                </tr>
+                                <tr>
+                                    <td class="center_td big_td">
+                                        @Html.TextAreaFor(model => model.CommentList[0].Comment, new { @id = "comment1", @class = "swot_text", @maxlength = "90" })
+                                        @Html.HiddenFor(model => model.CommentList[0].DetailCd)
+                                    </td>
+                                    <td class="center_td big_td">
+                                        @Html.TextAreaFor(model => model.CommentList[1].Comment, new { @id = "comment2", @class = "swot_text", @maxlength = "90" })
+                                        @Html.HiddenFor(model => model.CommentList[1].DetailCd)
+                                    </td>
+                                </tr>
+
+                                <tr>
+                                    <td class="center_td left_memo" rowspan="2">
+                                        기<br>회<br>(O)<br>↓<br>포<br>착
+                                    </td>
+                                    <td class="center_td" rowspan="2">
+                                        @Html.TextAreaFor(model => model.CommentList[2].Comment, new { @id = "comment3", @class = "swot_text", @maxlength = "90" })
+                                        @Html.HiddenFor(model => model.CommentList[2].DetailCd)
+                                    </td>
+                                    <td class="center_td center">강점강화 + 기회포착</td>
+                                    <td class="center_td center">약점보완 + 기회포착</td>
+                                </tr>
+                                <tr>
+                                    <td class="center_td big_td">
+                                        @Html.TextAreaFor(model => model.CommentList[3].Comment, new { @id = "comment4", @class = "swot_text", @maxlength = "90" })
+                                        @Html.HiddenFor(model => model.CommentList[3].DetailCd)
+                                    </td>
+                                    <td class="center_td big_td">
+                                        @Html.TextAreaFor(model => model.CommentList[4].Comment, new { @id = "comment5", @class = "swot_text", @maxlength = "90" })
+                                        @Html.HiddenFor(model => model.CommentList[4].DetailCd)
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="center_td left_memo" rowspan="2">
+                                        위<br>협<br>(T)<br>↓<br>포<br>착
+                                    </td>
+                                    <td class="center_td" rowspan="2">
+                                        @Html.TextAreaFor(model => model.CommentList[5].Comment, new { @id = "comment6", @class = "swot_text", @maxlength = "90" })
+                                        @Html.HiddenFor(model => model.CommentList[5].DetailCd)
+                                    </td>
+                                    <td class="center_td center">강점강화 + 위협포착</td>
+                                    <td class="center_td center">약점보완 + 위협포착</td>
+                                </tr>
+                                <tr>
+                                    <td class="center_td big_td">
+                                        @Html.TextAreaFor(model => model.CommentList[6].Comment, new { @id = "comment7", @class = "swot_text", @maxlength = "90" })
+                                        @Html.HiddenFor(model => model.CommentList[6].DetailCd)
+                                    </td>
+                                    <td class="center_td big_td">
+                                        @Html.TextAreaFor(model => model.CommentList[7].Comment, new { @id = "comment8", @class = "swot_text", @maxlength = "90" })
+                                        @Html.HiddenFor(model => model.CommentList[7].DetailCd)
+                                    </td>
+                                </tr>
+                            </table>
+                        </div>
+                    </div>
+                    <div class="main_mid_cont">
+                        <div class="main_mid_listBox nomargin2">
+                            <div class="listBox_tap longbg_on2 full_line noline nomargin3">
+                                <span>단계별 성장전략</span>
+                            </div>
+                            <table class="capacity_table03">
+                                <colgroup>
+                                    <col width="20%">
+                                    <col width="26.7%">
+                                    <col width="26.7%">
+                                    <col width="26.7%">
+                                </colgroup>
+                                <tr>
+                                    <td class="left_memo">역량 부문<br>본원적 경쟁전략</td>
+                                    <td class="left_memo">조직역량</td>
+                                    <td class="left_memo">상품화역량</td>
+                                    <td class="left_memo">위험관리역량</td>
+                                </tr>
+                                <tr>
+                                    <td class="left_memo">현 단계</td>
+                                    <td class="center_td">
+                                        @Html.TextBoxFor(model => model.CommentList[8].Comment, new { @id = "comment8", @class = "long_text2", @maxlength = "50" })
+                                        @Html.HiddenFor(model => model.CommentList[8].DetailCd)
+                                    </td>
+                                    <td class="center_td">
+                                        @Html.TextBoxFor(model => model.CommentList[9].Comment, new { @id = "comment9", @class = "long_text2", @maxlength = "50" })
+                                        @Html.HiddenFor(model => model.CommentList[9].DetailCd)
+                                    </td>
+                                    <td class="center_td">
+                                        @Html.TextBoxFor(model => model.CommentList[10].Comment, new { @id = "comment10", @class = "long_text2", @maxlength = "50" })
+                                        @Html.HiddenFor(model => model.CommentList[10].DetailCd)
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="left_memo">성장전략</td>
+                                    <td class="center_td">
+                                        @Html.TextBoxFor(model => model.CommentList[11].Comment, new { @id = "comment11", @class = "long_text2", @maxlength = "50" })
+                                        @Html.HiddenFor(model => model.CommentList[11].DetailCd)
+                                    </td>
+                                    <td class="center_td">
+                                        @Html.TextBoxFor(model => model.CommentList[12].Comment, new { @id = "comment12", @class = "long_text2", @maxlength = "50" })
+                                        @Html.HiddenFor(model => model.CommentList[12].DetailCd)
+                                    </td>
+                                    <td class="center_td">
+                                        @Html.TextBoxFor(model => model.CommentList[13].Comment, new { @id = "comment13", @class = "long_text2", @maxlength = "50" })
+                                        @Html.HiddenFor(model => model.CommentList[13].DetailCd)
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="left_memo">실행프로그램 제안</td>
+                                    <td class="center_td">
+                                        @Html.TextBoxFor(model => model.CommentList[14].Comment, new { @id = "comment14", @class = "long_text2", @maxlength = "50" })
+                                        @Html.HiddenFor(model => model.CommentList[14].DetailCd)
+                                    </td>
+                                    <td class="center_td">
+                                        @Html.TextBoxFor(model => model.CommentList[15].Comment, new { @id = "comment15", @class = "long_text2", @maxlength = "50" })
+                                        @Html.HiddenFor(model => model.CommentList[15].DetailCd)
+                                    </td>
+                                    <td class="center_td">
+                                        @Html.TextBoxFor(model => model.CommentList[16].Comment, new { @id = "comment16", @class = "long_text2", @maxlength = "50" })
+                                        @Html.HiddenFor(model => model.CommentList[16].DetailCd)
+                                    </td>
+                                </tr>
+                            </table>
+                        </div>
+                    </div>
+
+
+
+                    @*<div class="main_mid_cont fix_bot list_print">
+                        <div class="main_mid_listBox nomargin2">
+                            <div class="listBox_tap longbg_on full_line noline">
+                                <span>현단계 회사의 핵심추진전략</span><a href="##" onClick="javascript:RptCommentPopupOpen();" class="btn_small gray1 mentorcomment">다른 멘토 의견보기 </a>
+
+                                <p class="righthalf_p2">가치창출, 비용최소화, 고객맞춤 중 현단계에 맞는 것을 제안</p>
+                            </div>
+                            @Html.TextAreaFor(model => model.CommentList[8].Comment, new { @id = "totcomment9", @class = "bot_textarea_275", @placeholder = "1000자 내로 작성하시기 바랍니다.", @maxlength = "1000" })
+                            @Html.HiddenFor(model => model.CommentList[8].DetailCd)
+                        </div>
+                    </div>*@
+                </div>
+            </div>
+
+    <!--container//-->
+            <div id="btnwrap_sub" class="bottom_left2">
+
+                <div class="rightwrap left">
+                    <a href="@Url.Action("GrowthRoadMapCover", "BasicSurveyReport", new { area = "", NumSn = ViewBag.paramModel.NumSn, CompSn = ViewBag.paramModel.CompSn, BizWorkYear = ViewBag.paramModel.BizWorkYear, Status = ViewBag.paramModel.Status, QuestionSn = ViewBag.paramModel.QuestionSn })" class="btn_a gray left" value="이전">이전</a>
+
+                </div>
+                <div class="rightwrap right">
+                    @if (ViewBag.paramModel.Status != "C")
+                {
+                        <button type="button" class="btn_big gray" onclick="goSubmit('N');" value="다음">다음</button>
+                    }
+                    else
+                    {
+                        <a href="@Url.Action("GrowthCapabilityProposal", "BasicSurveyReport", new { area = "" , NumSn = ViewBag.paramModel.NumSn, CompSn = ViewBag.paramModel.CompSn, BizWorkYear = ViewBag.paramModel.BizWorkYear, Status = ViewBag.paramModel.Status, QuestionSn = ViewBag.paramModel.QuestionSn})" class="btn_a gray right" value="다음">다음</a>
+                    }
+                </div>
+                @if (ViewBag.paramModel.Status != "C")
+                    {
+                        <div class="rightwrap centerwrap">
+                            <button type="button" class="btn_big red" onclick="goSubmit('T');" value="임시저장">임시저장</button>
+                        </div>
+                    }
+
+            </div>
+        }
+    </div>
+
+</div>
+
+
+
+

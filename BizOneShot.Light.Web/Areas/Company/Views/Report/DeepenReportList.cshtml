@@ -1,0 +1,94 @@
+﻿@model IList<BizOneShot.Light.Models.ViewModels.VcLastReportViewModel>
+
+@{
+    Layout = "~/Areas/Company/Views/Shared/_MainDetailLayout.cshtml";
+}
+<script>
+
+    $(document).ready(function () {
+        // side Menu
+        $('.vc_iconSB_02').addClass('on01'); // 보고서 icon
+        $('.vc_title_01').addClass('on');    // 보고서 label
+        $('.a_label03').addClass('on');      // 보고서 내부 메뉴 label (기초경영역량 문진표)
+
+    })
+
+
+</script>
+
+<div class="tcms">
+    <d8iv class="main_top short">
+        <div class="list_icon"></div><div class="sub_title">심화보고서</div>
+        @RenderPage("~/Areas/Company/Views/Shared/_MainTopMenuPartial.cshtml")
+    </d8iv>
+    <div class="main_mid">
+
+        @*<div id="custom_search_box">
+            @Html.DropDownList("NumSnList", ViewBag.SelectNumSnList as SelectList, new { @class = "w150", id = "SelectNumSnList" })
+            @Html.DropDownList("SubNumSnList", ViewBag.SelectSubNumSnList as SelectList, new { @class = "w150", id = "SelectSubNumSnList" })
+            <button type="submit" class="btn_small gray1" value="심화보고서조회" style="margin:0">조회</button>
+        </div>*@
+        @Html.Hidden("curPage", "1")
+
+        <div class="tablewrap">
+
+            <table class="admin_list">
+                <colgroup>
+                    <col width="30%">
+                    <col width="14%">
+                    <col width="14%">
+                    <col width="14%">
+                    <col width="14%">
+                    <col width="14%">
+                </colgroup>
+                <tr>
+                    <th class="topcen">전문기관(BA)명</th>
+                    <th class="topcen">멘토</th>
+                    <th class="topcen">제출일</th>
+                    <th class="topcen">보고서보기</th>
+                    <th class="topcen">만족도조사</th>
+                    <th class="topcen">컨설팅현황</th>
+                </tr>
+                @if (Model == null || Model.Count == 0)
+                {
+                    <tr>
+                        <td colspan="6" style="text-align:center;">매핑 결과가 없습니다.</td>
+                    </tr>
+                }
+                else
+                {
+                    foreach (var item in Model)
+                    {
+                        <tr>
+                            <td>@item.BA_NM</td>
+                            <td>@item.mentor_name</td>
+                            <td>@item.SUBMIT_DT.Value.ToString("yyyy-MM-dd")</td>
+                            <td>
+                                @*@item.TOTAL_REPORT_SN*@
+                                <a href="@Url.Action("DeepenReportDetail", "Report", new { totalReportSn = item.TOTAL_REPORT_SN })" class="btn_mid_a lightblue">조회</a>
+                            </td>
+                            @if (item.SATISFACTION_GRADE == 0)
+                            {
+                                <td>
+                                    <u><a href="@Url.Action("SatisFaction", "Report", new { area = "Company", SatSn = item.SAT_SN , CompSn = item.COMP_SN , SubNumSn = item.SUB_NUM_SN, MentorSn = item.MENTOR_SN, TotalReportSn = item.TOTAL_REPORT_SN } )" class="btn_mid_a red-font">미참여</a></u>
+                                </td>
+                            }
+                            else
+                            {
+                                <td>참여</td>
+                            }
+                            @if (item.CON_STATUS == "P")
+                            {
+                                <td>진행중</td>
+                            }
+                            else
+                            {
+                                <td>심사중</td>
+                            }
+                        </tr>
+                    }
+                }
+            </table>
+        </div>
+    </div>
+</div>

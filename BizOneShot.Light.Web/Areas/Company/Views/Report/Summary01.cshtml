@@ -1,0 +1,242 @@
+﻿@model BizOneShot.Light.Models.ViewModels.QuesMasterViewModel
+
+@{
+    Layout = "~/Areas/Company/Views/Shared/_MainDetailLayout.cshtml";
+}
+<script src="~/Scripts/jquery.formatter.min.js"></script>
+<script>
+    $(document).ready(function () {
+
+        $('.vc_iconSB_02').addClass('on01'); // 보고서 icon
+        $('.vc_title_01').addClass('on');    // 보고서 label
+        $('.a_label01').addClass('on');      // 보고서 내부 메뉴 label (기초경영역량 문진표)
+
+        // 사이드 바를 위한 class 추가
+        $('.container').addClass('height_content_auto');
+        $('.sub_gnbwrap > .navi_left > .bg_col_g').addClass('height_bsurvey');
+
+
+        //top menu
+        $('#naviwrap_biz > .navi_biz >  a > .top_menu > .header_report01 ').addClass('on');
+        $('#naviwrap_biz > .navi_biz >  a > .top_menu > .top_text_report ').addClass('on');
+        //Accounting menu
+        $('#sub_leftwrap > .sub_gnbwrap > ul > li > a.gnb_basicsurvey').addClass('on');
+
+        if ($('#status').val() == "C") {
+            $('#mainForm input').attr('disabled', true);
+        }
+    });
+
+    function goSubmit(submitType) {
+        if (submitType == "N")
+        {
+            if (!userValidate()) {
+                return false;
+            }
+        }
+        $('#submitType').val(submitType);
+        $('#mainForm').submit();
+
+    }
+
+    /* 작성자정보 파라미터 검증 함수 */
+    function userValidate() {
+        var comName = $("#ComName");
+        if ($.trim(comName.val()).length == 0) {
+            alert("회사명을 입력해주세요.");
+            comName.focus();
+            return false;
+        }
+        var name = $("#Name");
+        if ($.trim(name.val()).length == 0) {
+            alert(" 성명을 입력해주세요.");
+            name.focus();
+            return false;
+        }
+        var position = $("#Position");
+        if ($.trim(position.val()).length == 0) {
+            alert("직위를 입력해주세요.");
+            position.focus();
+            return false;
+        }
+        var telNo = $("#TelNo");
+        if ($.trim(telNo.val()).length == 0) {
+            alert(" 연락처를 입력해주세요.");
+            telNo.focus();
+            return false;
+        }
+        var email = $("#Email");
+        if ($.trim(email.val()).length == 0) {
+            alert(" 이메일을 입력해주세요.");
+            email.focus();
+            return false;
+        }
+        return true;
+    }
+
+</script>
+
+<div class="tcms">
+    <div class="main_top short">
+        <div class="sub_right_title right_text">
+            <div class="list_icon"></div><div class="sub_title">기초경영역량 문진표</div>
+        </div>
+        @RenderPage("~/Areas/Company/Views/Shared/_MainTopMenuPartial.cshtml")
+    </div>
+
+    <div id="sub_rightwrap_report">
+
+        <div id="report_wm_step">
+            <!--STEP 아이콘-->
+            <ul>
+                <li class="basic_step01 on"><a href="@Url.Action("Summary01","Report",new { area= "Company", @questionSn = @Model.QuestionSn, @status = Model.Status })" class="ablock"><em>STEP01.진단개요</em></a></li>
+                <li class="basic_step02">
+                    @if (Model.Status == "C")
+                    {
+                        <a href="@Url.Action("CompanyInfo01","Report",new { area= "Company", @questionSn = @Model.QuestionSn, @status = Model.Status })" class="ablock"><em>STEP02.기업정보</em></a>
+                    }
+                    else
+                    {
+                        <em>STEP02.기업정보</em>
+                    }
+                </li>
+                <li class="basic_step03">
+                    @if (Model.Status == "C")
+                    {
+                        <a href="@Url.Action("BizCheck01", "Report", new { area = "Company", @questionSn = @Model.QuestionSn, @status = Model.Status })" class="ablock"><em>STEP03.경영진단</em></a>
+                    }
+                    else
+                    {
+                        <em>STEP03.경영진단</em>
+                    }
+                </li>
+                <li class="basic_step04">
+                    @if (Model.Status == "C")
+                    {
+                        <a href="@Url.Action("FinanceCheck01", "Report", new { area = "Company", @questionSn = @Model.QuestionSn, @status = Model.Status })" class="ablock"><em>STEP04.재무진단</em></a>
+                    }
+                    else
+                    {
+                        <em>STEP04.재무진단</em>
+                    }
+                </li>
+                <li class="basic_step05">
+                    @if (Model.Status == "C")
+                    {
+                        <a href="@Url.Action("OrgCheck01","Report",new { area= "Company", @questionSn = @Model.QuestionSn, @status = Model.Status })" class="ablock"><em>STEP05.조직진단</em></a>
+                    }
+                    else
+                    {
+                        <em>STEP05.조직진단</em>
+                    }
+                </li>
+                <li class="basic_step06">
+                    @if (Model.Status == "C")
+                    {
+                        <a href="@Url.Action("BasicSurveyComplete","Report",new { area= "Company", @questionSn = @Model.QuestionSn, @status = Model.Status })" class="ablock"><em>STEP06.작성완료</em></a>
+                    }
+                    else
+                    {
+                        <em>STEP06.작성완료</em>
+                    }
+                </li>
+            </ul>
+        </div>
+
+        @using (Html.BeginForm("Summary01", "Report", FormMethod.Post, new { area = "Company", @class = "form-horizontal", role = "form", id = "mainForm" }))
+        {
+            @Html.HiddenFor(model => model.SubmitType, new { @id = "submitType" })
+            @Html.HiddenFor(model => model.Status, new { @id = "status" })
+
+            <div class="sub_report_checkbox">
+                <div class="report_main_top">
+                    <div class="title big">기초경영역량 진단 문진표</div>
+                </div>
+                <div class="report_main_mid">
+                    <p>
+                        본 문진표에 응답한 내용은 기업의 기초 역량 점검, 점검 결과를 토대로 한 성장 로드맵 및 성장전략 제안을 위한<br>
+                        <br> 목적으로만 사용되며 다른 목적으로는 사용되지 않습니다. 회사의 경영역량을 정확히 파악할 수
+                        있도록 설문 별<br> <br> 안내 사항을 참고하여 가감없이 응답해주시면 감사하겠습니다.
+                    </p>
+                    <table class="list_table">
+                        <colgroup>
+                            <col width="30%">
+                            <col width="70%">
+                        </colgroup>
+                        <tbody>
+                            <tr>
+                                <td rowspan="5" class="left_memo">Contents</td>
+                                <td class="chapter">Ⅰ. 진단개요 _02</td>
+                            </tr>
+                            <tr>
+                                <td class="chapter">Ⅱ. 기업정보 _03</td>
+                            </tr>
+                            <tr>
+                                <td class="chapter">Ⅲ. 경영진단 _05</td>
+                            </tr>
+                            <tr>
+                                <td class="chapter">Ⅳ. 재무진단 _18</td>
+                            </tr>
+                            <tr>
+                                <td class="last_memo chapter">Ⅴ. 조직진단 _19</td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                </div>
+                <div class="report_main_bottom">
+                    <div class="bottom_left">[작성자]</div>
+                    <div class="bottom_mid">
+                        <div class="bottom_mid_box mid">
+                            <div class="label ">회사명_</div>
+                            @Html.TextBoxFor(model => model.QuesWriter.CompNm, new { @class = "long_text", required = "required", id = "ComName" })
+                        </div>
+                        <div class="bottom_mid_box short">
+                            <div class="label">성 명_</div>
+                            @Html.TextBoxFor(model => model.QuesWriter.Name, new { @class="long_text", required = "required", id = "Name" })
+                        </div>
+                        <div class="bottom_mid_box short">
+                            <div class="label">직 위_</div>
+                            @Html.TextBoxFor(model => model.QuesWriter.Position, new { @class = "long_text", required = "required", id = "Position", maxlength = "10" })
+                        </div>
+                    </div>
+                    <div class="bottom_mid">
+                        <div class="bottom_mid_box mid">
+                            <div class="label">연락처_</div>
+                            @Html.TextBoxFor(model => model.QuesWriter.TelNo, new { @class = "long_text", required = "required", id = "TelNo" })
+                        </div>
+                        <div class="bottom_mid_box long">
+                            <div class="label">이메일_</div>
+                            @Html.TextBoxFor(model => model.QuesWriter.Email, new { @class = "long_text", required = "required", id = "Email", maxlength = "40" })
+                        </div>
+                    </div>
+                </div>
+            </div>
+            @Html.HiddenFor(model => model.QuestionSn, new { @id = "QuestionSn" })
+            <div id="btnwrap_sub">
+
+                <div class="rightwrap left">
+                    <a href="@Url.Action("BasicSurvey", "Report", new { area = "Company" })" class="btn_a gray" value="이전">이전</a>
+                </div>
+                <div class="rightwrap right">
+                    @if (Model.Status != "C")
+                    {
+                        <button type="button" class="btn_big gray" onclick="goSubmit('N');" value="다음">다음</button>
+                    }
+                    else
+                    {
+                        <a href="@Url.Action("Summary02", "Report", new { area = "Company", @questionSn = @Model.QuestionSn, @status = Model.Status })" class="btn_a gray" value="다음">다음</a>
+                    }
+                </div>
+
+                @if (Model.Status != "C")
+                {
+                    <div class="rightwrap centerwrap">
+                        <button type="button" class="btn_big red" onclick="goSubmit('T');" value="임시저장">임시저장</button>
+                    </div>
+                }
+
+            </div>
+        }
+    </div>
+</div>

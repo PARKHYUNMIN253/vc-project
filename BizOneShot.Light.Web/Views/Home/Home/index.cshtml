@@ -1,0 +1,78 @@
+﻿@model LoginViewModel
+
+@{
+    Layout = "~/Views/Shared/_LoginLayout.cshtml";
+}
+<script>
+    $(document).ready(function () {
+        /* local storage에서 로그인 정보 저장 여부 가져와서 설정 */
+        var rememberYn = doGetStorage("rememberYn");
+        var rememberId = doGetStorage("rememberId");
+        if (rememberYn == "Y") {
+            if (rememberId != null && rememberId != "" && rememberId != "undefined") {
+                $("#ID").val(rememberId);
+            }
+		    $("#remYn").attr("checked", true);
+        }
+
+
+        $('#mainForm').bind('submit', function () {
+            if ($("input[id='remYn']").is(":checked")) {
+                doSetStorage("rememberYn", "Y");
+                doSetStorage("rememberId", $("#ID").val());
+            } else {
+                doSetStorage("rememberYn", "N");
+                doSetStorage("rememberId", "");
+            }
+        });
+    });
+</script>
+<div id="main_cont1wrap">
+    <div class="container">
+        @using (Html.BeginForm("index", "Home", FormMethod.Post, new { @class = "form-horizontal", role = "form", @id="mainForm" }))
+        {
+            @Html.AntiForgeryToken()
+            <div id="main_loginwrap">
+                @Html.ValidationSummary(true, "", new { @class = "text-danger-white" })
+                <p class="login_input">
+                    @Html.TextBoxFor(m => m.ID, new { @placeholder = "아이디" })
+                </p>
+                @Html.ValidationMessageFor(m => m.ID, "", new { @class = "text-danger-white" })
+                <p class="login_input">
+                    @Html.PasswordFor(m => m.Password, new { @placeholder = "비밀번호" })
+                </p>
+                @Html.ValidationMessageFor(m => m.Password, "", new { @class = "text-danger-white" })
+                <p>
+                    @*<input type="checkbox"> <img src="../images/login_text_idsave.png"><em>아이디 저장</em>*@
+                    <div class="checkbox">
+                        @Html.CheckBoxFor(m => m.RememberMe, new { @id = "remYn" })
+                        <img src="../images/login_text_idsave.png"><em>아이디 저장</em>
+                    </div>
+                </p><br>
+                <p>
+                    <input type="submit" class="login" ><em>로그인</em>
+                </p>
+                <p class="login_left">
+                    <a href="@Url.Action("SearchId","Home")"><input type="button" class="id_search" value="아이디 찾기"></a>
+                    <img src="../images/login_text_bar.png">
+                    <a href="@Url.Action("SearchPassword","Home")"><input type="button" class="pw_search" value="비밀번호 찾기"></a>
+                </p>
+                <p class="login_right"><a href="@Url.Action("CompanyAgreement","Account")"><input type="button" class="join" value="회원가입"></a></p>
+            </div>
+        }
+    </div>
+</div><!--main_cont1wrap//-->
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+}
+<div class="container">
+    <div id="main_cont4wrap">
+        <a href="@Url.Action("CompanyGuide","Cs")" class="m8"><img src="../images/companymember_logo.png"></a><a href="@Url.Action("MentorGuide","Cs")" class="m8"><img src="../images/mentomember_logo.png"></a><a href="@Url.Action("ExpertGuide","Cs")" class="m8"><img src="../images/expertmember_logo.png"></a><a href="@Url.Action("Faq","Cs")"><img src="../images/customercenter_logo.png"></a>
+    </div><!--main_cont2wrap//-->
+    <div class="line_dot"></div>
+    <div id="main_cont3wrap">
+				<a href="http://tservice.kr" target=_blank class="partnerlogo"><img src="../images/main_partner01.jpg"></a><a href="http://www.jianlabor.com" target=_blank class="partnerlogo"><img src="../images/main_partner02.jpg"></a><a href="http://www.dareinc.co.kr" target=_blank class="partnerlogo"><img src="../images/main_partner03.jpg"></a><a href="http://www.urilaw.com" target=_blank class="partnerlogo"><img src="../images/main_partner04.jpg"></a><a href="javascript:void(0)" target="" class="partnerlogo" title="홈페이지 준비중입니다." ><img src="../images/main_partner05.jpg" ></a><a href="http://www.bigdetail.co.kr" target=_blank class="partnerlogo"><img src="../images/main_partner06.jpg"></a><a href="http://www.smartbizon.co.kr" target=_blank class="partnerlogo"><img src="../images/main_partner07.jpg"></a><a href="http://blog.scpartners.kr" target=_blank class="partnerlogo"><img src="../images/main_partner08.jpg"></a>
+			</div><!--main_cont3wrap//-->
+</div>
+
+

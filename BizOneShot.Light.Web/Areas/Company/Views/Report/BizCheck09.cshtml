@@ -1,0 +1,173 @@
+﻿@model BizOneShot.Light.Models.ViewModels.BizCheck09ViewModel
+
+@{
+    Layout = "~/Areas/Company/Views/Shared/_MainDetailLayout.cshtml";
+}
+<style>
+    .sub_report_checkbox .report_main_mid .main_mid_cont .main_mid_listBox {
+        margin-top: 60px;
+    }
+</style>
+<script>
+    $(document).ready(function () {
+
+        $('.vc_iconSB_02').addClass('on01'); // 보고서 icon
+        $('.vc_title_01').addClass('on');    // 보고서 label
+        $('.a_label01').addClass('on');      // 보고서 내부 메뉴 label (기초경영역량 문진표)
+
+        // 사이드 바를 위한 class 추가
+        $('.container').addClass('height_content_auto');
+        $('.sub_gnbwrap > .navi_left > .bg_col_g').addClass('height_bsurvey');
+
+        //top menu
+        $('#naviwrap_biz > .navi_biz >  a > .top_menu > .header_report01 ').addClass('on');
+        $('#naviwrap_biz > .navi_biz >  a > .top_menu > .top_text_report ').addClass('on');
+        //Accounting menu
+        $('#sub_leftwrap > .sub_gnbwrap > ul > li > a.gnb_basicsurvey').addClass('on');
+
+        if ($('#status').val() == "C") {
+            $('#mainForm input').attr('disabled', true);
+        }
+    });
+
+    function goSubmit(submitType) {
+        $('#submitType').val(submitType);
+        $('#mainForm').submit();
+    }
+
+</script>
+
+<div class="tcms">
+    <div class="main_top short">
+        <div class="sub_right_title right_text">
+            <div class="list_icon"></div><div class="sub_title">기초경영역량 문진표</div>
+        </div>
+        @RenderPage("~/Areas/Company/Views/Shared/_MainTopMenuPartial.cshtml")
+    </div>
+
+    <div id="sub_rightwrap_report">
+
+        <div class="sub_right_title right_text"></div>
+
+
+        <div id="report_wm_step">
+            <!--STEP 아이콘-->
+            <ul>
+                <li class="basic_step01"><a href="@Url.Action("Summary01","Report",new { area= "Company", @questionSn = @Model.QuestionSn, @status = Model.Status })" class="ablock"><em>STEP01.진단개요</em></a></li>
+                <li class="basic_step02"><a href="@Url.Action("CompanyInfo01","Report",new { area= "Company", @questionSn = @Model.QuestionSn, @status = Model.Status })" class="ablock"><em>STEP02.기업정보</em></a></li>
+                <li class="basic_step03 on"><a href="@Url.Action("BizCheck01","Report",new { area= "Company", @questionSn = @Model.QuestionSn, @status = Model.Status })" class="ablock"><em>STEP03.경영진단</em></a></li>
+                <li class="basic_step04">
+                    @if (Model.Status == "C")
+                    {
+                        <a href="@Url.Action("FinanceCheck01", "Report", new { area = "Company", @questionSn = @Model.QuestionSn, @status = Model.Status })" class="ablock"><em>STEP04.재무진단</em></a>
+                    }
+                    else
+                    {
+                        <em>STEP04.재무진단</em>
+                    }
+                </li>
+                <li class="basic_step05">
+                    @if (Model.Status == "C")
+                    {
+                        <a href="@Url.Action("OrgCheck01","Report",new { area= "Company", @questionSn = @Model.QuestionSn, @status = Model.Status })" class="ablock"><em>STEP05.조직진단</em></a>
+                    }
+                    else
+                    {
+                        <em>STEP05.조직진단</em>
+                    }
+                </li>
+                <li class="basic_step06">
+                    @if (Model.Status == "C")
+                    {
+                        <a href="@Url.Action("BasicSurveyComplete","Report",new { area= "Company", @questionSn = @Model.QuestionSn, @status = Model.Status })" class="ablock"><em>STEP06.작성완료</em></a>
+                    }
+                    else
+                    {
+                        <em>STEP06.작성완료</em>
+                    }
+                </li>
+            </ul>
+        </div>
+        @using (Html.BeginForm("BizCheck09", "Report", FormMethod.Post, new { area = "Company", @class = "form-horizontal", role = "form", id = "mainForm" }))
+        {
+            @Html.HiddenFor(model => model.SubmitType, new { @id = "submitType" })
+            @Html.HiddenFor(model => model.QuestionSn, new { @id = "QuestionSn" })
+            @Html.HiddenFor(model => model.Status, new { @id = "status" })
+            <div class="sub_report_checkbox">
+                <div class="report_main_top2 noline">
+                    <div class="title_medium">Ⅲ. 경영진단</div>
+                </div>
+                <div class="report_main_mid">
+                    <div class="main_mid_cont">
+                        <div class="main_mid_listBox">
+                            <div class="listBox_title">
+                                <span class="big_span">품질관리 _</span><span class="small_span">
+                                    품질검사․측정
+                                    및 시험장비의 관리의 체계성 여부, 검사 및 품질보증 활동의 적절성 여부
+                                </span>
+                            </div>
+                            <div class="listBox_tap bg_on">
+                                <span>체크리스트</span>
+                            </div>
+                            <table class="join_info">
+                                <colgroup>
+                                    <col width="90%">
+                                    <col width="10%">
+                                </colgroup>
+                                @if (Model == null || Model.QualityControl == null)
+                                {
+                                    <tr>
+                                        <td colspan="2" style="text-align:center;">검색 결과가 없습니다.</td>
+                                    </tr>
+                                }
+                                else
+                                {
+                                    for (int i = 0; i < Model.QualityControl.Count; i++)
+                                    {
+                                        <tr>
+                                            <td>
+                                                <span class="full_span">@Model.QualityControl[i].Title</span>
+                                                <span class="min_span">@Model.QualityControl[i].Content1</span>
+                                                @if (@Model.QualityControl[i].Content2 != null)
+                                                {
+                                                    <span class="min_span">@Model.QualityControl[i].Content2</span>
+                                                }
+                                            </td>
+                                            <td>@Html.CheckBoxFor(m => @Model.QualityControl[i].AnsVal) @Html.HiddenFor(m => @Model.QualityControl[i].CheckListSn)</td>
+                                        </tr>
+                                    }
+                                }
+                            </table>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+    <!--container//-->
+            <div id="btnwrap_sub">
+                <div class="rightwrap left">
+                    <a href="@Url.Action("BizCheck08", "Report", new { area = "Company", @questionSn = @Model.QuestionSn, @status = Model.Status })" class="btn_a gray" value="이전">이전</a>
+                </div>
+                <div class="rightwrap right">
+                    @if (Model.Status != "C")
+                    {
+                        <button type="button" class="btn_big gray" onclick="goSubmit('N');" value="다음">다음</button>
+                    }
+                    else
+                    {
+                        <a href="@Url.Action("BizCheck10", "Report", new { area = "Company", @questionSn = @Model.QuestionSn, @status = Model.Status })" class="btn_a gray" value="다음">다음</a>
+                    }
+                </div>
+                @if (Model.Status != "C")
+                {
+                    <div class="rightwrap centerwrap">
+                        <button type="button" class="btn_big red" onclick="goSubmit('T');" value="임시저장">임시저장</button>
+                    </div>
+                }
+            </div>
+        }
+    </div>
+
+</div>
+
+

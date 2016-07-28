@@ -1,0 +1,151 @@
+﻿
+@{
+    Layout = "~/Areas/BizManager/Views/Shared/_MainLayout.cshtml";
+}
+
+
+@if (TempData["alert"] != null)
+{
+    <script type="text/javascript">
+        var message = @Html.Raw(Json.Encode(TempData["alert"]));
+        alert(message);
+    </script>
+}
+
+<script type="text/javascript">
+    $(document).ready(function () {
+        //top menu 기능 막기
+        $('#naviwrap_biz > .navi_biz >  a.navi_mentor01').removeAttr('href');
+        $('#naviwrap_biz > .navi_biz >  a.navi_mentor02').removeAttr('href');
+        $('#naviwrap_biz > .navi_biz >  a.navi_CS').removeAttr('href');
+        $('#naviwrap_biz > .navi_biz >  a.navi_mentor04').removeAttr('href');
+
+        $('#agreeForm').bind('submit', function () {
+            if ($('input[name=article02]:checked').val() * 1 != 1) {
+                alert('개인정보 수집 및 이용을 동의하셔야 로그인이 가능합니다');
+                return false;
+            }
+            return true;
+        });
+    });
+</script>
+
+
+<div class="user_main">
+    <div class="main_top">
+        <div class="agreeImage"></div>
+        <div class="agreeText">약관 동의</div>
+        @RenderPage("~/Areas/BizManager/Views/Shared/_MainTopMenuPartial.cshtml")
+    </div>
+    <div class="main_mid">
+
+        <form name="agreeForm" id="agreeForm" action="@Url.Action("AgreeBaAgreement", "Main")" method="get">
+
+            <div class="desc">
+                <p class="title person_agree "><em>개인정보 수집 및 이용에 관한 동의</em></p>
+                <p class="caption margin_10">회원가입을 원하시면 아래의 서비스 이용약관 및 개인정보 취급방침을 반드시 읽으시고 "동의"버튼을 선택해 주세요.</p>
+            </div><!--desc//-->
+
+            <div class="join_useinfo_box">
+                <p class="title">개인정보 수집 및 이용에 관한 안내</p>
+                <div class="textbox_custom">
+                    <p class="strong">제1조 (목적)</p>
+                    <p class="space_p"> 1. 본 이용약관(이하 '약관')은 TCMS 홈페이지 (이하 '협회')가 제공하는 모든 서비스(이하 '서비스')의 이용조건 및 절차, 이용자와 협회의 권리,</p>
+                    <p class="space_p"> 의무 및 책임사항과 기타 필요한 사항을 규정함을 목적으로 합니다.</p>
+
+                    <p class="space_p"> 2. 사단법인 한국기술지주회사협회(이하 "협회"라 한다)에서 제공하는 TCMS 홈페이지는 모든 사람이 자유롭게 무료로 이용함을 원칙으로 합니다. </p>
+                    <p class="space_p"> 단 기술사업화 바우처 지원 사업은 회원가입 기관만 서비스 이용 가능합니다.</p><br>
+
+                    <p class="strong">제2조 (약관의 효력 및 변경)</p>
+                    <p class="space_p"> 1. 본 약관은 협회가 제공하는 인터넷 서비스 화면에 게시하거나 기타의 방법으로 이용고객 회원에게 공지함으로써 효력이 발생합니다.</p>
+                    <p class="space_p"> 2. 협회는 향후 가입자의 편의, 서비스의 질적 향상, 관계법령의 개정 및 서비스 운영상의 필요 등을 위하여 약관을 변경할 수 있습니다.</p>
+                    <p class="space_p"> 3. 변경된 약관은 홈페이지에 게시 및 공지함으로써 효력을 발생시킵니다.</p><br />
+
+                    <p class="strong">제3조 (용어의 정의) </p>
+                    <p class="space_p">
+                        1. 이 약관에서 사용하는 용어의 정의는 다음과 같습니다.
+                    </p>
+                    <p class="space_p">&nbsp&nbsp&nbsp1) 회 원 : 협회와 서비스 이용계약을 체결한 자로 다음의 2가지 유형이 있습니다.</p>
+                    <p class="space_p">&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp① 기업회원 : 기술사업화 컨설팅 신청 기업회원</p>
+                    <p class="space_p">&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp② 전문기관(BA)회원: 기술사업화 서비스 컨설팅 수행 기관</p>
+
+                    <p class="space_p">&nbsp&nbsp&nbsp2) 아이디(ID): 회원 식별과 회원의 서비스 이용을 위하여, 회원이 선정하고 협회가 승인 하는 문자와 숫자의 조합</p>
+                    <p class="space_p">&nbsp&nbsp&nbsp3) 비밀번호(PW): 회원의 비밀 보호를 위해 회원 자신이 설정한 문자와 숫자의 조합</p>
+                    <p class="space_p">&nbsp&nbsp&nbsp4) 관리자: 서비스의 전반적인 관리와 원활한 운영을 위하여 협회에서 선정한 사람</p>
+                    <p class="space_p">&nbsp&nbsp&nbsp5) 해지: 협회 또는 회원이 서비스 개통 후 이용계약을 해약하는 것 </p><br />
+
+
+                    <p class="strong">제4조 (가입 신청)</p>
+                    <p class="space_p">1. 지원기업, 전문기관(BA)는 협회 홈페이지의 회원가입 양식을 통해 회원가입 신청할 수 있습니다.</p><br>
+
+                    <p class="strong">제5조 (컨텐츠 이용의 제한)</p>
+                    <p class="space_p">1. TCMS 홈페이지 메뉴나 정보마당 등의 협회에서 업로드하는 콘텐츠 다운로드, 통계관리 이용, 상담센터(Q&A)의 게시글 작성 및 등록 등은  </p>
+                    <p class="space_p">TCMS에 가입된 회원만이 이용할 수 있습니다.</p><br>
+
+                    <p class="strong">제6조 (회원 인증)</p>
+                    <p class="space_p">1. TCMS 홈페이지 등록가입을 위한 신청서를 작성할 때 가입이 인증됨과 동시에 회원은 홈페이지의 각종 콘텐츠와 서비스를 이용할 수 있습니다. </p><br>
+
+                    <p class="strong">제7조(신청사항의 변경 및 철회) </p>
+                    <p class="space_p">1. 협회는 접수된 신청서에 변경 또는 보완을 요하는 사항이 있을 경우에는 신청사항을 변경 또는 보완하도록 가입신청자에게 요청할 수 있습니다.</p>
+                    <p class="space_p">2. 가입신청자중 회원 등록을 철회하고자 하는 때에는 그 사실을 협회 관리자에게 알려야 합니다. </p><br>
+
+                    <p class="strong">제8조(승인의 제한)</p>
+                    <p class="space_p">1. 타인 명의를 사용한 신청에 대하여는 이를 승인하지 아니 합니다.</p>
+                    <p class="space_p">2. 협회는 신청에 대하여 서비스의 정상적인 제공을 방해하거나 타 가입자의 서비스 이용에 상당한 지장을 줄 것으로 예상되는 신청에 대하여는 승인을 거절할 수 있습니다. </p><br />
+
+                    <p class="strong">제9조 (회원의 의무)</p>
+                    <p class="space_p">1. 회원은 이 서비스를 사용함에 있어 공공질서에 위배되거나, 타인에 대한 비방 행위, 또는 허위사실을 유포하거나 타 가입자의 서비스 이용에  </p>
+                    <p class="space_p">장애 등을 일으킬 수 있는 사용은 금지하여야 합니다.</p><br />
+
+                    <p class="strong">제10조(서비스이용의 제한 및 중지)</p>
+                    <p class="space_p">1. 협회는 다음 각 호의 사유에 해당되는 경우에는 서비스의 제공을 제한 또는 중지할 수 있습니다. </p>
+                    <p class="space_p">&nbsp&nbsp&nbsp1) 전시, 사변, 천재지변 또는 이에 준하는 국가 비상사태가 발생하거나 발생할 우려가 있는 경우</p>
+                    <p class="space_p">&nbsp&nbsp&nbsp2) 정기점검이나 전용선의 장애 등 부득이한 사유가 발생하여 협회가 서비스의 제공을 제한 또는 중지할 필요가 있다고 판단하는 경우</p>
+                    <p class="space_p">2. 서비스의 이용을 제한 또는 중지하고자 하는 경우에 협회는 그 사유, 기간 등을 명시하여 지체 없이 가입자가 알 수 있도록 공지합니다. </p><br>
+
+                    <p class="strong">제11조 (서비스이용의 금지)</p>
+                    <p class="space_p">1. 협회는 회원이 다음 각 호의 사유에 해당되는 경우에는 언제든지 회원의 서비스 이용을 금지할 수 있으며 또한 그에 따른 데이터 등을 복구를 전제로 하지 아니하고 삭제할 수 있습니다. </p>
+                    <p class="space_p">&nbsp&nbsp&nbsp1) 타인명의를 사용하여 신청한 때</p>
+                    <p class="space_p">&nbsp&nbsp&nbsp2) 신청서의 내용을 허위로 기재한 때</p>
+                    <p class="space_p">&nbsp&nbsp&nbsp3) 회원이 서비스 이용에 있어 부적격한 사용자로 판명된 때</p>
+                    <p class="space_p">&nbsp&nbsp&nbsp4) 법령 및 이 약관을 위반하여 협회가 동일한 위반사유에 대하여 시정요구를 하였음에도 불구하고 시정하지 아니한 때 </p>
+                    <p class="space_p">2. 협회는 회원이 게시하거나 등록하는 서비스내의 내용물이 다음 각 호의 사유에 해당한다고 판단되는 경우 사전통지 없이 삭제할 수 있습니다.</p>
+                    <p class="space_p">&nbsp&nbsp&nbsp1) 회원이 이 서비스를 범죄행위 및 상업적으로 사용한 때</p>
+                    <p class="space_p">&nbsp&nbsp&nbsp2) 회원이 이 서비스를 미풍양속 및 공공질서에 반하여 사용한 때</p>
+                    <p class="space_p">&nbsp&nbsp&nbsp3) 타 사용자의 서비스 이용에 심각한 장애를 일으켰을 때</p>
+                    <p class="space_p">&nbsp&nbsp&nbsp4) 다른 회원 또는 제 3자를 비방하거나 중상모략으로 명예를 손상시키는 내용인 경우</p>
+                    <p class="space_p">&nbsp&nbsp&nbsp5) 회의 저작권, 제 3자의 저작권 등 기타 권리를 침해하는 내용인 경우</p>
+                    <p class="space_p">&nbsp&nbsp&nbsp6) 기타 이 서비스의 이용과 관련하여 협회가 요구하는 사항을 위반 하는 경우</p>
+                    <p class="space_p">3. 전항의 규정에 의하여 서비스의 이용을 금지 당한 가입자는 그 이용금지에 대하여 이의가 있을 때에는 그 사유를 명시하여 서면으로 협회에 이의신청을 할 수 있다.</p>
+                    <p class="space_p">이 경우 협회는 이의 신청의 타당성 등을 확인 및 검토한 후 결과를 해당가입자에게 통지한다. </p><br>
+
+                    <p class="strong">제12조 (손해배상)</p>
+                    <p class="space_p">1. 협회는 사업자의 고의나 중과실이 없는 경우 서비스 이용과 관련하여 이용자에게 발생한 어떠한 손해에 관하여도 책임을 지지 않습니다. </p><br />
+
+                    <p class="strong">제13조 (면책조항)</p>
+                    <p class="space_p">1. 협회는 천재지변 또는 이에 준하는 불가항력으로 인하여 서비스를 제공할 수 없는 경우에는 서비스 제공에 관한 책임이 면제됩니다.</p>
+                    <p class="space_p">2. 협회는 이용자의 귀책사유로 인한 서비스 이용의 장애에 대하여 책임을 지지 않습니다.</p>
+                    <p class="space_p">3. 협회는 이용자가 서비스를 이용하여 기대하는 손익이나 서비스를 통하여 얻은 자료로 인한 손해에 관하여 책임을 지지 않습니다.</p>
+                    <p class="space_p">4. 저작권이 있는 지식 또는 정보의 경우 사업자의 고의나 중과실이 없는 경우 이로 인한 손해나 배상에 대하여 회원 당사자 부담이며 협회는 이에 대하여 책임을 지지 않습니다. </p><br>
+
+                    <p class="strong">제14조 (승인의 제한)</p>
+                    <p class="space_p">1. 타인 명의를 사용한 신청에 대하여는 이를 승인하지 아니 합니다.</p>
+                    <p class="space_p">2. 협회는 신청에 대하여 서비스의 정상적인 제공을 방해하거나 타 가입자의 서비스 이용에 상당한 지장을 줄 것으로 예상되는 신청에 대하여는 승인을 거절할 수 있습니다. </p><br />
+
+                    <p class="strong">부칙</p>
+                    <p class="space_p">1.(시행일)</p>
+                    <p class="space_p">이 약관은 2016년 6월 1일부터 시행한다.</p><br>
+                </div>
+                <p class="agree"><input type="radio" name="article02" value="1" />동의합니다<span class="blank"></span><input type="radio" name="article02" checked value="0">동의하지 않습니다</p>
+            </div><!--join_useinfo_box//-->
+
+            <div class="btnwrap center">
+                <input type="submit" class="btn_big red right rightmargin" value="동의" />
+                @*<input type="button" class="btn_big gray right margin_top10" value="동의 안함" onclick="javascript: alert('개인정보 수집 및 이용을 동의하셔야 사용이 가능합니다.');" />*@
+                @*<input type="button" class="disagree" value="동의 안함" onclick="location.href='/';" />*@
+            </div>
+        </form>
+
+    </div>
+</div>
+

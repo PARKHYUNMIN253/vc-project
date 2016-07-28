@@ -1,0 +1,315 @@
+﻿@model BizOneShot.Light.Models.ViewModels.MentoringMentorStatsViewModel
+
+@{
+    Layout = "~/Areas/BizManager/Views/Shared/_MainLayout.cshtml";
+}
+
+<script>
+    $(document).ready(function () {
+        //top menu
+        $('#naviwrap_biz > .navi_biz >  a > .top_menu > .header_report01').addClass('on');
+        $('#naviwrap_biz > .navi_biz >  a > .top_menu > .top_text_report').addClass('on');
+        //left menu
+        $('#sub_leftwrap > .sub_gnbwrap > ul > li > a.gng_MentoringStats').addClass('on');
+
+        $('#BizWorkSn').change(function () {
+            ChangeBizWork();
+        });
+        $('#StartYear').change(function () {
+            ChangeStartYear();
+        });
+        $('#EndYear').change(function () {
+            ChangeEndYear();
+        });
+
+        $('#submit_form').bind('submit', function () {
+            if ($('#BizWorkSn').val() == "0") {
+                alert("사업을 하지 않았습니다.");
+                return false;
+            }
+
+            if ($('#StartYear').val() == "0") {
+                alert("시작 년을 선택을 하지 않았습니다.");
+                return false;
+            }
+
+            if ($('#StartMonth').val() == "0") {
+                alert("시작 월을 선택을 하지 않았습니다.");
+                return false;
+            }
+
+            if ($('#EndYear').val() == "0") {
+                alert("종료 년을 선택을 하지 않았습니다.");
+                return false;
+            }
+
+            if ($('#EndMonth').val() == "0") {
+                alert("종료 월을 선택을 하지 않았습니다.");
+                return false;
+            }
+
+            var startMonth = $('#StartMonth').val();
+            if (startMonth.length == 1)
+                startMonth = "0" + startMonth;
+
+            var endMonth = $('#EndMonth').val();
+            if (endMonth.length == 1)
+                endMonth = "0" + endMonth;
+
+            var startDate = $('#StartYear').val() + startMonth;
+            var endDate = $('#EndYear').val() + endMonth;
+
+            if (startDate > endDate)
+            {
+                alert("종료 년월이 시작 년월보다 빠를 수는 없습니다.");
+                return false;
+            }
+        });
+    });
+
+    function ChangeBizWork() {
+
+        var bizWorkSn = $('#BizWorkSn').val();
+        if (bizWorkSn == 0) {
+            $('#StartYear').html("<option value='0'>년도선택</option>");
+            $('#StartMonth').html("<option value='0'>월선택</option>");
+            $('#EndYear').html("<option value='0'>년도선택</option>");
+            $('#EndMonth').html("<option value='0'>월선택</option>");
+        } else {
+            $('#StartYear').html("");
+            $('#EndYear').html("");
+            $.ajax({
+                url: '@Url.Action("GetYear", "Report", new { area = "BizManager" })',
+                type: "post",
+                dataType: "json",
+                data: { BizWorkSn: bizWorkSn },
+                async: false,
+                success: function (result) {
+                    for (var i = 0; i < result.length; i++) {
+                        $('#StartYear').append("<option value='" + result[i].Value + "'>" + result[i].Text + "</option>");
+                        $('#EndYear').append("<option value='" + result[i].Value + "'>" + result[i].Text + "</option>");
+                    }
+                }
+            });
+        }
+    }
+
+    function ChangeStartYear() {
+        var bizWorkSn = $('#BizWorkSn').val();
+        var year = $('#StartYear').val();
+        if (year == 0) {
+            $('#StartMonth').html("<option value='0'>월선택</option>");
+        } else {
+            $('#StartMonth').html("");
+            $.ajax({
+                url: '@Url.Action("GetMonth", "Report", new { area = "BizManager" })',
+                type: "post",
+                dataType: "json",
+                data: {
+                    BizWorkSn: bizWorkSn,
+                    Year: year
+                },
+                async: false,
+                success: function (result) {
+                    for (var i = 0; i < result.length; i++) {
+                        $('#StartMonth').append("<option value='" + result[i].Value + "'>" + result[i].Text + "</option>");
+                    }
+                }
+            });
+        }
+    }
+
+    function ChangeEndYear() {
+        var bizWorkSn = $('#BizWorkSn').val();
+        var year = $('#EndYear').val();
+        if (year == 0) {
+            $('#EndMonth').html("<option value='0'>월선택</option>");
+        } else {
+            $('#EndMonth').html("");
+            $.ajax({
+                url: '@Url.Action("GetMonth", "Report", new { area = "BizManager" })',
+                type: "post",
+                dataType: "json",
+                data: {
+                    BizWorkSn: bizWorkSn,
+                    Year: year
+                },
+                async: false,
+                success: function (result) {
+                    for (var i = 0; i < result.length; i++) {
+                        $('#EndMonth').append("<option value='" + result[i].Value + "'>" + result[i].Text + "</option>");
+                    }
+                }
+            });
+        }
+    }
+
+</script>
+
+@Styles.Render("~/css/print")
+
+<div id="sub_rightwrap_report">
+
+    <div class="sub_right_title right_text">
+        <img src="~/images/list.png" class="icon_list" />기업지원 통계
+    </div>
+    <div id="tabswrap_three" class="tab02">
+        <!--기업별 조회 목록 탭-->
+        <ul>
+            <li><a href="@Url.Action("MentoringCompanyStats", "Report",new { area= "BizManager"})">기업별</a></li>
+            <li><a href="@Url.Action("MentoringMentorStats", "Report",new { area= "BizManager"})" class="on">멘토별</a></li>
+            <li><a href="@Url.Action("MentoringAreaStats", "Report",new { area= "BizManager"})">분야별</a></li>
+        </ul>
+    </div>
+
+@using (Html.BeginForm("MentoringMentorStats", "Report", FormMethod.Post, new { area = "BizManager", @class = "form-horizontal", role = "form", id = "submit_form" }))
+{
+    <div id="sub_inquiry_box">
+        @Html.DropDownList("BizWorkSn", ViewBag.SelectBizWorkList as SelectList, new { @class = "w150", @id = "BizWorkSn" })
+        <span class="noti_fo left_m">조회기간</span>
+        @Html.DropDownList("StartYear", ViewBag.SelectStartYearList as SelectList, new { @class = "w80", @id = "StartYear" })
+        @Html.DropDownList("StartMonth", ViewBag.SelectStartMonthList as SelectList, new { @class = "w80", @id = "StartMonth" })
+        <span class="noti_fo">~ </span>
+        @Html.DropDownList("EndYear", ViewBag.SelectEndYearList as SelectList, new { @class = "w80", @id = "EndYear" })
+        @Html.DropDownList("EndMonth", ViewBag.SelectEndMonthList as SelectList, new { @class = "w80", @id = "EndMonth" })
+        <button type="submit" class="btn_small gray1" value="검색">조회</button>
+    </div>
+}
+<!--sub_inquiry_box//-->
+@if (Model != null && Model.Display == "Y")
+{
+    <div class="sub_report_checkbox">
+        <div class="report_main_top2 noline">
+            <div class="title_medium center top_padding bot_padding">기업지원통계(멘토별)</div>
+        </div>
+        <div class="report_main_mid margin_t50">
+            <div class="main_mid_cont">
+                <div class="main_mid_listBox nomargin2">
+                    <div class="listBox_tap longbg_on noline_a intend_10">
+                        <span>사업명</span>
+                        <text class="left_memo bold line_h22">@Model.BizWorkNm</text>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="report_main_mid">
+            <div class="main_mid_cont">
+                <div class="main_mid_listBox nomargin2">
+                    <div class="listBox_tap longbg_on noline_a intend_10">
+                        <span>사업기간</span>
+                        <text class="left_memo bold line_h22">
+                            @Model.BizWorkStDt.GetValueOrDefault().ToShortDateString() ~ @Model.BizWorkEdDt.GetValueOrDefault().ToShortDateString()
+                        </text>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="report_main_mid">
+            <div class="main_mid_cont">
+                <div class="main_mid_listBox nomargin2">
+                    <div class="listBox_tap longbg_on noline_a intend_10">
+                        <span>통계산출기간</span>
+                        <text class="left_memo bold line_h22">@Model.StartYear . @Model.StartMonth ~ @Model.EndYear . @Model.EndMonth</text>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="report_main_mid">
+            <div class="main_mid_cont">
+                <div class="main_mid_listBox nomargin2">
+                    <div class="listBox_tap longbg_on noline_a intend_10">
+                        <span>멘토 인당 평균 멘토링 일수</span>
+                        <text class="left_memo bold line_h22">@Model.AvgMentoringDays 일</text>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="report_main_mid">
+            <div class="main_mid_cont">
+                <div class="main_mid_listBox nomargin2">
+                    <div class="listBox_tap longbg_on noline_a intend_10">
+                        <span>멘토 인당 평균 멘토링 횟수</span>
+                        <text class="left_memo bold line_h22">@Model.AvgMentoringCount 회</text>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+        <div class="report_main_mid">
+            <div class="main_mid_cont">
+                <div class="main_mid_listBox nomargin2">
+                    <div class="listBox_tap longbg_on noline_a intend_10">
+                        <span>멘토 인당 평균 멘토링 시간</span>
+                        <text class="left_memo bold line_h22">@Model.AvgMentoringHours 시간</text>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+
+        <div class="report_main_mid">
+            <div class="main_mid_cont">
+                <div class="main_mid_listBox nomargin2">
+                    <div class="listBox_tap longbg_on noline_a">
+                        <span>멘토별 멘토링 현황</span>
+                    </div>
+                    <table class="join_info">
+                        <colgroup>
+                            <col width="20%">
+                            <col width="20%">
+                            <col width="15%">
+                            <col width="15%">
+                            <col width="15%">
+                            <col width="15%">
+                        </colgroup>
+                        <tbody>
+                            <tr>
+                                <td class="left_memo">멘토명</td>
+                                <td class="left_memo">분야</td>
+                                <td class="left_memo">멘토링 기업수</td>
+                                <td class="left_memo">멘토링 일수</td>
+                                <td class="left_memo">멘토링 횟수</td>
+                                <td class="left_memo">멘토링 시간</td>
+                            </tr>
+                            
+                            @if (Model == null || Model.ListMentoringStatByMentorViewModel.Count == 0)
+                            {
+                                <tr>
+                                    <td colspan="6" style="text-align:center;">사업에 매핑된 멘토가 없습니다.</td>
+                                </tr>
+                            }
+                            else
+                            {
+                                foreach (var item in Model.ListMentoringStatByMentorViewModel)
+                                {
+                                    <tr>
+                                        <td class="center_td">@item.Name</td>
+                                        <td class="left_memo">@item.UsrTypeDetailName</td>
+                                        <td class="left_memo">@item.CountMentoringComp</td>
+                                        <td class="left_memo">@item.SumMentoringDays</td>
+                                        <td class="left_memo">@item.SumMentoringCount</td>
+                                        <td class="left_memo">@item.SumMentoringHours</td>
+                                    </tr>
+                                }
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div id="btnwrap_sub">
+        <div class="rightwrap right">
+            <button class="btn_big red" value="출력" onclick="window.print()">출력</button>
+            @*<button class="print" value="출력"  onclick="alert('차후 오픈 예정 입니다.')"/>*@
+        </div>
+
+    </div>
+}
+</div>

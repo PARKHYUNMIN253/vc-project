@@ -1,0 +1,524 @@
+﻿@model BizOneShot.Light.Models.ViewModels.JoinCompanyViewModel
+
+@{
+    Layout = "~/Views/Shared/_JoinLayout.cshtml";
+}
+<script>
+    $(document).ready(function () {
+
+        //top menu
+        $('#naviwrap > .navi > a.navi02').addClass('on');
+
+        //비밀번호 규칙
+        ////$("#LoginPw, #ConfirmLoginPw").bind('keyup', function (event) {
+        ////    $(this).val($(this).val().replace(/[^a-zA-Z0-9~!@@#$%^&*()]/gi, ""));
+        ////});
+        $('#LoginId').keyup(function () {
+            $('#LoginIdChk').val(0);
+            $('#BTN_LOGIN_ID_CHK').prop('disabled', false);
+        });
+
+        //아이디 중복 확인
+        $('#BTN_LOGIN_ID_CHK').bind('click', function () {
+            if ($('#LoginId').val() == "") {
+                alert('아이디를 입력해주세요.');
+                return false;
+            }
+            if ($('#LoginId').val().length > 20) {
+                alert('아이디는 20자리를초과할 수 없습니다.');
+                return false;
+            }
+
+            $.ajax({
+                type: "post",
+                url: '@Url.Action("DoLoginIdSelect", "Account")',
+                dataType: "json",
+                data: { LoginId: $('#LoginId').val() },
+                success: function (data) {
+                    if (data.result == true) {
+                        $('#LoginIdChk').val(1);
+                        alert('사용 가능한 아이디입니다.');
+                        //$('#BTN_LOGIN_ID_CHK').attr("disabled", "disabled");
+                        $('#BTN_LOGIN_ID_CHK').prop('disabled', true);
+                        //$('#LoginId').attr("readonly", "readonly");
+                    }
+                    else {
+                        $('#LoginId').focus();
+                        alert("이미 사용중입니다. 다른 아이디를 입력해주세요.");
+                    }
+                },
+                fail: function (error) {
+                    alert('error :' + error.responseText);
+                }
+            });
+            return false;
+        });
+
+        //사업자번호 중복 확인
+        $('#BTN_USR_NO_CHK').bind('click', function () {
+            if ($('#USR_NO').val() == "") {
+                alert('사업자번호를 입력해주세요.');
+                return false;
+            }
+
+            // 추가수정사항 ##############################################################################################################################################
+            $.ajax({
+                type: "post",
+                url: '@Url.Action("DoCompanyUsrNoSelect", "Account")',
+                dataType: "json",
+                data: { USR_NO: $('#USR_NO').val() },
+                success: function (data) {
+                    console.log(data);
+                    if (data.result == true) {
+                        //false값을 true로 바꾸고 운영반영해야함. false는 테스트용
+                        /*
+                        if (checkCertificate($('#USR_NO').val()) == true) {
+                            $('#ComRegistrationNoChk').val(1);
+                            alert('사용 가능한 사업자번호입니다.');
+                            $('#BTN_USR_NO_CHK').attr("disabled", "disabled");
+                        }
+                        */
+                        $('#ComRegistrationNoChk').val(1);
+                        alert('사용 가능한 사업자번호입니다.');
+                    }
+                    else {
+                        $('#BTN_USR_NO_CHK').focus();
+                        alert("이미 사용중입니다. 다른 사업자번호를 입력해주세요.");
+                    }
+                },
+                fail: function (error) {
+                    alert('error :' + error.responseText);
+                }
+            });
+            return false;
+
+        });
+
+        //이메일 도베인
+
+        $('#EMAIL_DOMAIN').bind('change', function () {
+            if ($(this).val() == "") {
+                $('#EMAIL2').show("slow");
+                $('#EMAIL2').val('');
+            } else {
+                $('#EMAIL2').hide("slow");
+                $('#EMAIL2').val($(this).val());
+            }
+            return false;
+        });
+
+        $('#BizManager').ready(function () {
+            SelectBizManager();
+        });
+
+        $('#BizManager').change(function () {
+            SelectBizManager();
+        });
+
+
+    });
+
+    function SelectBizManager()
+    {
+        var comSn = $('#BizManager').val();
+
+        if (comSn == 0) {
+            $('#BizList').html("<option value='0'>사업명</option>");
+            $('#BizList').attr("disabled", true);
+        } else {
+            $('#BizList').attr("disabled", false);
+            //$('#BizList').html("<option value='0'>사업명</option>");
+            $('#BizList').html("");
+            $.ajax({
+                url: '@Url.Action("GetBizList", "Account")',
+                type: "post",
+                dataType: "json",
+                data: { CompSn: comSn },
+                async: false,
+                success: function (result) {
+                    for (var i = 0; i < result.length; i++) {
+                        $('#BizList').append("<option value='" + result[i].BizWorkSn + "'>" + result[i].BizWorkNm + "</option>");
+                    }
+                }
+            });
+        }
+    }
+
+    function open_post() {
+        w = 550;    //팝업창의 너비
+        h = 485;    //팝업창의 높이
+        //중앙위치 구해오기
+        LeftPosition = (screen.width - w) / 2;
+        TopPosition = (screen.height - h) / 2;
+        var popUp = window.open('/Home/zipSearchPopup', 'zipSearchPopup', "width=" + w + ",height=" + h + ",top=" + TopPosition + ",left=" + LeftPosition + ", scrollbars=no, resizable=no");
+        popUp.focus();
+    }
+
+    function resultPostReceive(zip, address) {
+        $('#POST_NO').val(zip);
+        $('#ADDR_1').val(address);
+    }
+
+
+    function goSubmit() {
+
+        if ($('#LoginIdChk').val() != 1)
+        {
+            alert("아이디 중복확인을 하지 않았습니다.");
+            return false;
+        }
+
+        // *** 2016. 01. 28 / 17:37 - 이 부분은 추후에 풀어줄 필요가 있다
+        //if ($('#ComRegistrationNoChk').val() != 1) {
+        //    alert("사업자등록번호 확인을 하지 않았습니다.");
+        //    return false;
+        //}
+
+        var regExp = /[0-9a-zA-Z][_0-9a-zA-Z-]*@@[_0-9a-zA-Z-]+(\.[_0-9a-zA-Z-]+){1,2}$/;
+        var email = $("#EMAIL1").val() + "@@" + $("#EMAIL2").val();
+        if (!email.match(regExp)) {
+            alert("이메일이 유효하지 않습니다");
+            return false;
+        }
+
+        if (!$('#ComRegistrationNoChk').val())
+        {
+            alert("이미 사용중입니다. 다른 사업자번호를 입력해주세요.");
+            return false;
+        }
+
+
+        //업종Validation
+        var bizTypeValid = true;
+        var count = 0;
+        var bizTypes = new Array();
+        $('input[id^="bizTypeCd"]').each(function () {
+            if ($(this).val() == '') {
+
+                bizTypeValid = false;
+                return false;
+            }
+            else {
+                bizTypes.push($(this).val());
+                count = count + 1;
+            }
+            return bizTypeValid;
+        });
+
+        if (!bizTypeValid) {
+            if (count == 0) {
+                alert("업태/종목은 1개이상 선택해야 합니다.");
+            }
+            else {
+                alert("사용하지 않는 업태/종목 칸은 삭제하세요");
+            }
+            return false;
+        }
+
+        var hasDups = !bizTypes.every(function (v, i) {
+            return bizTypes.indexOf(v) == i;
+        });
+        if (hasDups) {
+            // having duplicate values
+            alert("업태/종목 코드는 중복할 수 없습니다.");
+            return false;
+        }
+
+        if (confirm("회원가입 하시겠습니까?")) {
+            $('#mainForm').submit();
+        }
+    }
+
+    //업종칸 추가시
+    function bizType_inpput_add(e) {
+        var temp = $(e).parent().parent().find('li');
+
+        if (temp.length > 4) {
+            alert('업태/종목은 최대 5개까지 가능합니다');
+            return false;
+        }
+        var $cloneEL = $(e).parent().clone();
+
+        $($cloneEL).insertAfter(temp[temp.length - 1]);
+
+        $cloneEL.find('input[id^="bizTypeCd"]').val('');
+        $cloneEL.find('input[id^="bizTypeNm"]').val('');
+
+        var count = 0;
+        $('input[id^="bizTypeCd"]').each(function () {
+            $(this).attr('id', "bizTypeCd" + count);
+            $(this).attr('name', "BizTypes[" + count + "].BizTypeCd");
+
+            count = count + 1;
+        });
+
+        count = 0;
+        $('input[id^="bizTypeNm"]').each(function () {
+            $(this).attr('id', "bizTypeNm" + count);
+            $(this).attr('name', "BizTypes[" + count + "].BizTypeNm");
+
+            count = count + 1;
+        });
+
+        return false;
+    }
+    //업종칸 삭제
+    function bizType_inpput_remove(e) {
+        var temp = $(e).parent().parent().find('li');
+
+        if (temp.length < 2) {
+            $(e).parent().find('input[id^="bizTypeCd"]').val('');
+            $(e).parent().find('input[id^="bizTypeNm"]').val('');
+            return false;
+        }
+
+        var $cloneEL = $(e).parent().remove();
+
+        return false;
+    }
+    //업종 검색
+    function searchBizTypeOpen(e) {
+        var temp = $(e).parent().find('input[id^="bizTypeCd"]').attr('id') + '';
+        var id = temp.substr(9, 1);
+
+        w = 700;    //팝업창의 너비
+        h = 680;    //팝업창의 높이
+
+        //중앙위치 구해오기
+        LeftPosition = (screen.width - w) / 2;
+        TopPosition = (screen.height - h) / 2;
+        var popUp = window.open("/Company/MyInfo/SearchBizTypePopup?Id=" + id, "SearchBizType", "width=" + w + ",height=" + h + ",top=" + TopPosition + ",left=" + LeftPosition + ", resizable=no, scrollbars=yes");
+        popUp.focus();
+    }
+
+    function resultReceive(id, bizTypeCd, bizTypeNm) {
+        $('#bizTypeCd' + id).val(bizTypeCd);
+        $('#bizTypeNm' + id).val(bizTypeNm);
+    }
+
+</script>
+
+@Scripts.Render("~/bundles/cert")
+
+<div class="container">
+
+    <div class="desc">
+        <p class="title right_text">기업회원 정보입력</p>
+    </div><!--desc//-->
+    <div class="joinstep">
+        <p class="accountant02"><em>정보입력</em></p>
+    </div>
+    @using (Html.BeginForm("CompanyJoin", "Account", FormMethod.Post, new { @class = "form-horizontal", role = "form", @id = "mainForm" }))
+    {
+        @Html.AntiForgeryToken()
+        @Html.Hidden("LoginIdChk")
+        @Html.Hidden("ComRegistrationNoChk")
+
+        <div class="join_infoinput_wrap">
+            <ul>
+                <li class="mark">아이디</li>
+                <li class="info">@Html.TextBoxFor(model => model.LoginId, new { @class = "w240", @maxlength = "20" })<input type="button" class="btn_mid lightgray leftmargin" id="BTN_LOGIN_ID_CHK" value="중복확인">  @Html.ValidationMessageFor(model => model.LoginId, "", new { @class = "text-danger", @color = "#b94a48" })</li>
+            </ul>
+
+            <ul>
+                <li class="mark">비밀번호</li>
+                <li class="info">@Html.PasswordFor(model => model.LoginPw, new { @class = "w240" })@*<span class="blue">영문+숫자 8~12자 가능</span>*@  @Html.ValidationMessageFor(model => model.LoginPw, "", new { @class = "text-danger", @color = "#b94a48" })</li>
+            </ul>
+            <ul>
+                <li class="mark">비밀번호 확인</li>
+                <li class="info">@Html.PasswordFor(model => model.ConfirmLoginPw, new { @class = "w240" })@*<span class="blue">비밀번호를 한 번 더 입력하세요</span>*@  @Html.ValidationMessageFor(model => model.ConfirmLoginPw, "", new { @class = "text-danger", @color = "#b94a48" })</li>
+            </ul>
+        </div><!--join_infoinput_wrap//-->
+        <div class="line_dot10"></div>
+        <div class="join_infoinput_wrap2">
+            <table>
+                <colgroup>
+                    <col width="120px" />
+                    <col width="590px" />
+                </colgroup>
+                <tr>
+                    <th>사업관리기관</th>
+                    <td class="form">
+                        @{
+                            if (ViewBag.SelectBizMngList != null)
+                            {
+                                @Html.DropDownListFor(model => model.MngCompSn, ViewBag.SelectBizMngList as SelectList, new { @class = "w250", @id = "BizManager" });
+                            }
+                        }
+                    </td>
+                </tr>
+                <tr>
+                    <th>사업명</th>
+                    <td class="form">
+                        <select id="BizList" name="BizList" class="w250" disabled="disabled"><option value="0">사업명</option></select>
+                    </td>
+                </tr>
+                <tr>
+                    <th>회사명</th>
+                    <td class="form">@Html.TextBoxFor(model => model.CompNm, new { @class = "w240" })  @Html.ValidationMessageFor(model => model.CompNm, "", new { @class = "text-danger", @color = "#b94a48" })</td>
+                </tr>
+                <tr>
+                    <th>대표자명</th>
+                    <td class="form">@Html.TextBoxFor(model => model.ComOwnNm, new { @class = "w240" })  @Html.ValidationMessageFor(model => model.ComOwnNm, "", new { @class = "text-danger", @color = "#b94a48" })</td>
+                </tr>
+                <tr>
+                    <th>사업자등록번호</th>
+                    <td class="form">@Html.TextBoxFor(model => model.ComRegistrationNo, new { @maxlength = "10", @class = "w240", @placeholder = "-표시없이 기입해 주세요", @id = "USR_NO" })<input type="button" class="btn_mid lightgray leftmargin" value="확인" id="BTN_USR_NO_CHK">  @Html.ValidationMessageFor(model => model.ComRegistrationNo, "", new { @class = "text-danger", @color = "#b94a48" })</td>
+                </tr>
+                <tr>
+                    <th>업태 / 종목</th>
+                    <td colspan="5" class="nopad">
+                        <div id="list_writewrap">
+                            <ul>
+                                <li>
+                                    @Html.TextBoxFor(model => model.BizTypes[0].BizTypeCd, new { @class = "w55", @id = "bizTypeCd0", @readonly = "true", style = "height: 20px" })
+                                    @Html.TextBoxFor(model => model.BizTypes[0].BizTypeNm, new { @class = "w165", @id = "bizTypeNm0", @readonly = "true", style = "height: 20px" })
+                                    <button type="button" class="btn_mid gray" value="업종검색" onclick="searchBizTypeOpen(this)">검색</button>
+                                    <button type="button" class="file_add" value="업종추가" onclick="bizType_inpput_add(this)"></button>
+                                    <button type="button" class="file_del" value="업종삭제" onclick="bizType_inpput_remove(this)"></button>
+                                </li>
+
+                            </ul>
+                        </div>
+                    </td>
+                </tr>
+                <tr>
+                    <th>전화번호</th>
+                    <td class="form">
+                        @Html.DropDownListFor(model => model.ComTelNo1, new SelectList(
+                                      new List<Object>{
+                                           new { value = "02" , text = "02"  },
+                                           new { value = "031" , text = "031" },
+                                           new { value = "032" , text = "032" },
+                                           new { value = "033" , text = "033" },
+                                           new { value = "041" , text = "041" },
+                                           new { value = "043" , text = "043" },
+                                           new { value = "044" , text = "044" },
+                                           new { value = "051" , text = "051" },
+                                           new { value = "052" , text = "052" },
+                                           new { value = "053" , text = "053" },
+                                           new { value = "054" , text = "054" },
+                                           new { value = "055" , text = "055" },
+                                           new { value = "061" , text = "061" },
+                                           new { value = "062" , text = "062" },
+                                           new { value = "063" , text = "063" },
+                                           new { value = "064" , text = "064" },
+                                           new { value = "070" , text = "070" }
+                                        },
+                                      "value",
+                                      "text",
+                                       2))&nbsp;-&nbsp;@Html.TextBoxFor(model => model.ComTelNo2, new { @class = "w80", @title = "전화번호 중간자리", @maxlength = "4" })&nbsp;
+                                    -&nbsp;@Html.TextBoxFor(model => model.ComTelNo3, new { @class = "w80", @title = "전화번호 마지막자리", @maxlength = "4" })
+                                </td>
+                            </tr>
+                            <tr>
+                                <th>주소</th>
+                                <td class="form nopad">
+                                    <ul>
+                                        <li class="line_bot">
+                                            <button type="button" class="btn_mid gray" value="우편번호" onClick="javascript: open_post();">우편번호</button>&nbsp;&nbsp;@Html.TextBoxFor(model => model.ComPostNo, new { @class = "w146", @readOnly = "readOnly", @id = "POST_NO" })
+                                        </li>
+                                        <li class="nobd">
+                                            @Html.TextBoxFor(model => model.ComAddr1, new { @class = "w240", @id = "ADDR_1", @readOnly = "readOnly" }) @Html.TextBoxFor(model => model.ComAddr2, new { @class = "w240", @placeholder = "나머지주소입력란" })
+                                        </li>
+                                    </ul>
+                                </td>
+                            </tr>
+                        </table>
+                    </div><!--join_infoinput_wrap//-->
+                            <div class="line_dot10"></div>
+                            <div class="join_infoinput_wrap">
+
+                                <ul><li class="mark">담당자명</li><li class="info">@Html.TextBoxFor(model => model.Name, new { @class = "w240" })  @Html.ValidationMessageFor(model => model.Name, "", new { @class = "text-danger", @color = "#b94a48" })</li></ul>
+                                <ul>
+                                    <li class="mark">전화번호</li>
+                                    <li class="info">
+                                        @Html.DropDownListFor(model => model.TelNo1, new SelectList(
+                                      new List<Object>{
+                                           new { value = "02" , text = "02"  },
+                                           new { value = "031" , text = "031" },
+                                           new { value = "032" , text = "032" },
+                                           new { value = "033" , text = "033" },
+                                           new { value = "041" , text = "041" },
+                                           new { value = "043" , text = "043" },
+                                           new { value = "044" , text = "044" },
+                                           new { value = "051" , text = "051" },
+                                           new { value = "052" , text = "052" },
+                                           new { value = "053" , text = "053" },
+                                           new { value = "054" , text = "054" },
+                                           new { value = "055" , text = "055" },
+                                           new { value = "061" , text = "061" },
+                                           new { value = "062" , text = "062" },
+                                           new { value = "063" , text = "063" },
+                                           new { value = "064" , text = "064" },
+                                           new { value = "070" , text = "070" }
+                                        },
+                                      "value",
+                                      "text",
+                                       2))&nbsp;-&nbsp;@Html.TextBoxFor(model => model.TelNo2, new { @class = "w80", @title = "전화번호 중간자리", @maxlength = "4" })&nbsp;
+                                    -&nbsp;@Html.TextBoxFor(model => model.TelNo3, new { @class = "w80", @title = "전화번호 마지막자리", @maxlength = "4" })
+                                </li>
+                            </ul>
+                            <ul>
+                                <li class="mark">휴대폰</li>
+                                <li class="info">
+                                    @Html.DropDownListFor(model => model.MbNo1, new SelectList(
+                                      new List<Object>{
+                                           new { value = "010" , text = "010"  },
+                                           new { value = "011" , text = "011" },
+                                           new { value = "016" , text = "016" },
+                                           new { value = "017" , text = "017" },
+                                           new { value = "019" , text = "019" }
+                                        },
+                                      "value",
+                                      "text",
+                                       2))&nbsp;-&nbsp;@Html.TextBoxFor(model => model.MbNo2, new { @class = "w80", @title = "휴대폰번호 중간자리", @maxlength = "4" })&nbsp;
+                                    -&nbsp;@Html.TextBoxFor(model => model.MbNo3, new { @class = "w80", @title = "휴대폰 번호 마지막자리", @maxlength = "4" })
+                                </li>
+                            </ul>
+                            <ul>
+                                <li class="mark">이메일주소</li>
+                                <li class="info">
+                                    @Html.TextBoxFor(model => model.Email1, new { @class = "w115", @title = "이메일 아이디", @maxlength = "20", @id = "EMAIL1" })&nbsp;@@&nbsp;
+                                    @Html.TextBoxFor(model => model.Email2, new { @class = "w115", @title = "이메일 도메인", @maxlength = "19", @id = "EMAIL2" })
+                                    <select id="EMAIL_DOMAIN">
+                                        <option value="">직접입력</option>
+                                        <option value="naver.com">naver.com</option>
+                                        <option value="daum.net">daum.net</option>
+                                        <option value="chol.com">chol.com</option>
+                                        <option value="dreamwiz.com">dreamwiz.com</option>
+                                        <option value="empal.com">empal.com</option>
+                                        <option value="freechal.com">freechal.com</option>
+                                        <option value="gmail.com">gmail.com</option>
+                                        <option value="hanafos.com">hanafos.com</option>
+                                        <option value="hanmail.net">hanmail.net</option>
+                                        <option value="hanmir.com">hanmir.com</option>
+                                        <option value="hitel.net">hitel.net</option>
+                                        <option value="hotmail.com">hotmail.com</option>
+                                        <option value="korea.com">korea.com</option>
+                                        <option value="lycos.co.kr">lycos.co.kr</option>
+                                        <option value="nate.com">nate.com</option>
+                                        <option value="netian.com">netian.com</option>
+                                        <option value="paran.com">paran.com</option>
+                                        <option value="yahoo.com">yahoo.com</option>
+                                    </select>
+                                    @Html.ValidationMessageFor(model => model.Email1, "", new { @class = "text-danger", @color = "#b94a48" })
+                                </li>
+                            </ul>
+                            @*<ul>
+                                <li class="mark">ERP 사용유무확인</li>
+                                <li class="info">
+                                    <font color="red">재무정보 입력을 위한 다래 ERP를 사용하시겠습니까? (Y/N) </font>@Html.CheckBoxFor(model => model.UseErp)
+                                </li>
+                            </ul>*@
+                        </div><!--join_infoinput_wrap//-->
+                            @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+                            <div class="btnwrap center">
+                                <input type="button" class="btn_big red" value="확인" onclick="goSubmit();">
+                                <input type="button" class="btn_big gray" value="취소" onclick="if (confirm('회원가입을 취소하시겠습니까?')) location.href='@Url.Action("Index", "Home")'" />
+                            </div><!--btnwrap//-->
+                            }
+    @section Scripts {
+        @Scripts.Render("~/bundles/jqueryval")
+    }
+</div>

@@ -1,0 +1,580 @@
+﻿@model BizOneShot.Light.Models.ViewModels.FinanceMngViewModel
+
+@{
+    Layout = "~/Views/Shared/_MainLayout.cshtml";
+}
+
+<script>
+    $(document).ready(function () {
+        //top menu
+        $('#naviwrap_biz > .navi_biz >  a > .top_menu > .header_report01 ').addClass('on');
+        $('#naviwrap_biz > .navi_biz >  a > .top_menu > .top_text_report ').addClass('on');
+        //Accounting menu
+        $('#sub_leftwrap > .sub_gnbwrap > ul > li > a.gnb_financeMng').addClass('on');
+
+        $('#SelectYear').ready(function () {
+            //ChangeYear();
+        });
+
+        $('#SelectYear').change(function () {
+            ChangeYear();
+        });
+
+        if("@Model.Display" == "Y")
+        {
+            makeCashWaterfallChart();
+        }
+
+        $('#submit_form').bind('submit', function () {
+            if ($('#SelectYear').val() == "0") {
+                alert("년 선택을 하지 않았습니다.");
+                return false;
+            }
+
+            if ($('#SelectMonth').val() == "0") {
+                alert("월 선택을 하지 않았습니다.");
+                return false;
+            }
+        });
+    });
+
+    function makeCashWaterfallChart() {
+        var param1 = @Model.curMenthTotalCostViewModel.MaterialAmt.Replace(",", "");
+        var param2 = @Model.curMenthTotalCostViewModel.ManufacturingAmt.Replace(",", "");
+        var param3 = @Model.curMenthTotalCostViewModel.OperatingAmt.Replace(",", "");
+        var param4 = @Model.curMenthTotalCostViewModel.AllOtherAmt.Replace(",", "");
+        var param5 = @Model.curMenthTotalCostViewModel.ProfitAmt.Replace(",", "");
+        var param6 = @Model.curMenthTotalCostViewModel.SalesAmt.Replace(",", "");
+        var param7 = param1 + param2 + param3 + param4 + param5;
+
+        if(param6 == 0 && param7 == 0)
+        {
+            
+            param1 = 0;
+            param2 = 0;
+            param3 = 0;
+            param4 = 0;
+            param5 = 0;
+        }
+        else if (param6 == 0)
+        {
+            param1 = (param1 / param7) * 100;
+            param2 = (param2 / param7) * 100;
+            param3 = (param3 / param7) * 100;
+            param4 = (param4 / param7) * 100;
+            param5 = (param5 / param7) * 100;
+        }
+        else
+        {
+            param1 = (param1 / param6) * 100;
+            param2 = (param2 / param6) * 100;
+            param3 = (param3 / param6) * 100;
+            param4 = (param4 / param6) * 100;
+            param5 = (param5 / param6) * 100;
+        }
+        
+
+        chart = new Highcharts.Chart({
+            chart: {
+                type: 'waterfall',
+                renderTo: 'profit_loss',
+                marginTop: 50
+            },
+            exporting: {                    // highcharts context menu 제거
+                buttons: {
+                        contextButtons: {
+                            enabled: false,
+                            menuItems: null
+                        }
+                },
+                enabled: false
+            },
+            credits: {
+                enabled: false
+            },
+            title: {
+                style: {
+                        display: 'none'
+                }
+            },
+            xAxis: {
+                type: 'category',
+                gridLineWidth: 1
+            },
+            yAxis: {
+                gridLineWidth: 0,
+                title: {
+                    style: {
+                            display: 'none'
+                    }
+                },
+                labels: {
+                    enabled: false
+                },
+                },
+            legend: { enabled: false },
+            tooltip: { enabled: false },
+
+            series: [{
+                upColor: Highcharts.getOptions().colors[2],
+                color: Highcharts.getOptions().colors[3],
+                pointWidth: 35,
+                enableMouseTracking: false,
+                data: [{
+                    name: "",
+                    y: param1
+                }, {
+                    name: "",
+                    y: param2
+                }, {
+                    name: "",
+                    y: param3
+                }, {
+                    name: "",
+                    y: param4
+                }, {
+                    name: "",
+                    y: param5
+                }, {
+                    name: "",
+                    isSum: true,
+                    color: Highcharts.getOptions().colors[1]
+                }],
+            dataLabels: {
+                enabled: true,
+                formatter: function () {
+                    return Highcharts.numberFormat(this.y, 0, ',') + '%';
+                },
+                style: {
+                    color: '#FFFFFF',
+                    fontWeight: 'bold',
+                    textShadow: '0px 0px 3px black'
+                }
+            },
+            pointPadding: 0
+            }]
+        });
+    }
+
+
+    function ChangeYear() {
+
+        var year = $('#SelectYear').val();
+        var compSn = $('#CompSn').val();
+        var bizWorkSn = $('#BizWorkSn').val();
+        if (year == '') {
+            $('#SelectMonth').html("<option value='0'>월선택</option>");
+            $('#SelectMonth').attr("disabled", true);
+        } else {
+            $('#SelectMonth').attr("disabled", false);
+            $('#SelectMonth').html("");
+            $.ajax({
+                url: '@Url.Action("GetMonth", "FinanceReport")',
+                type: "post",
+                dataType: "json",
+                data: { 
+                    Year: year,
+                    CompSn : compSn,
+                    BizWorkSn : bizWorkSn
+                },
+                async: false,
+                success: function (result) {
+                    for (var i = 0; i < result.length; i++) {
+                        $('#SelectMonth').append("<option value='" + result[i].Value + "'>" + result[i].Text + "</option>");
+                    }
+                }
+            });
+        }
+    }
+
+
+    function RegCommentPopupOpen()
+    {
+        var year = $('#SelectYear').val();
+        var month = $('#SelectMonth').val();
+        var compSn = $('#CompSn').val();
+        var bizWorkSn = $('#BizWorkSn').val();
+        
+
+        w = 575;    //팝업창의 너비
+        h = 500;    //팝업창의 높이
+        //중앙위치 구해오기
+        LeftPosition = (screen.width - w) / 2;
+        TopPosition = (screen.height - h) / 2;
+        var popUp = window.open('/FinanceReport/RegCommentPopup?BasicYear=' + year +'&BasicMonth=' + month + '&BizWorkSn=' + bizWorkSn + '&CompSn=' + compSn, 'RegComment', "width=" + w + ",height=" + h + ",top=" + TopPosition + ",left=" + LeftPosition + ",scrollbars=no,resizable=no");
+        popUp.focus();
+    }
+
+    function SearchCommentPopupOpen()
+    {
+        var year = $('#SelectYear').val();
+        var month = $('#SelectMonth').val();
+        var compSn = $('#CompSn').val();
+        var bizWorkSn = $('#BizWorkSn').val();
+        
+
+        w = 700;    //팝업창의 너비
+        h = 500;    //팝업창의 높이
+        //중앙위치 구해오기
+        LeftPosition = (screen.width - w) / 2;
+        TopPosition = (screen.height - h) / 2;
+ 
+        window.open("/FinanceReport/SearchCommentPopup?BasicYear=" + year +"&BasicMonth=" + month + "&BizWorkSn=" + bizWorkSn + "&CompSn=" + compSn, "popup", "resizable=yes, scrollbars=yes, left=" + LeftPosition +", top=" + TopPosition + ", width=" + w + "px, height=" + h + "px" );
+    }
+
+</script>
+
+@Styles.Render("~/css/print")
+@Scripts.Render("~/bundles/highcharts")
+
+<div id="sub_rightwrap_report">
+    <div class="sub_right_title right_text">
+        <img src="~/images/list.png" class="icon_list" />재무관리 보고서
+    </div>
+    @using (Html.BeginForm("FinanceMng", "FinanceReport", FormMethod.Post, new { area = "", @class = "form-horizontal", role = "form", id = "submit_form" }))
+    {
+        <div id="sub_term_box">
+            @Html.DropDownListFor(model => model.Year, ViewBag.SelectYearList as SelectList, new { @id = "SelectYear", @class = "year" })
+            @Html.DropDownListFor(model => model.Month, ViewBag.SelectMonthList as SelectList, new { @id = "SelectMonth", @class = "month" })
+            <button type="submit" class="btn_small gray1 right" value="보고서 보기">보고서 보기</button>
+
+            @Html.HiddenFor(model => model.CompSn)
+            @Html.HiddenFor(model => model.BizWorkSn)
+        </div>
+    }
+
+    @if (Model.Display == "Y")
+    {
+
+        <div class="sub_report_checkbox">
+            <div class="report_main_top2 noline nomargin2">
+                <div class="title_medium center top_padding bot_padding">재무관리보고서</div>
+                <div class="right">@Model.Year . @Model.Month 월</div>
+                <div class="right bold">@Model.CompNm</div>
+            </div>
+            <div class="report_main_mid">
+                <div class="main_mid_cont">
+                    <div class="main_mid_listBox nomargin2 bot_padding">
+                        <div class="listBox_tap longbg_on noline_a">
+                            <span>현금시제</span>
+                        </div>
+                        <table class="join_info">
+                            <colgroup>
+                                <col width="16%">
+                                <col width="16%">
+                                <col width="16%">
+                                <col width="16%">
+                                <col width="16%">
+                                <col width="20%">
+                            </colgroup>
+                            <tbody>
+                                <tr>
+                                    <td class="left_memo">이월액</td>
+                                    <td class="left_memo">입금액</td>
+                                    <td class="left_memo">출금액</td>
+                                    <td class="left_memo">현재잔고</td>
+                                    <td class="left_memo">전&nbsp;&nbsp;&nbsp;월</td>
+                                    <td class="left_memo">전 분기 월평균</td>
+                                </tr>
+                                <tr>
+                                    <td class="center_td small_padding">
+                                        @Model.cashViewModel.ForwardAmt <text style="font-size:9px">천원</text>
+                                    </td>
+                                    <td class="center_td small_padding">
+                                        @Model.cashViewModel.ReceivedAmt <text style="font-size:9px">천원</text>
+                                    </td>
+                                    <td class="center_td small_padding">
+                                        @Model.cashViewModel.ContributionAmt <text style="font-size:9px">천원</text>
+                                    </td>
+                                    <td class="center_td small_padding">
+                                        @Model.cashViewModel.CashBalance<text style="font-size:9px">천원</text>
+                                    </td>
+                                    <td class="center_td small_padding">
+                                        @Model.cashViewModel.LastMonthCashBalance <text style="font-size:9px">천원</text>
+                                    </td>
+                                    <td class="center_td small_padding">
+                                        @Model.cashViewModel.BeforeQuarterlyCashBalance <text style="font-size:9px">천원</text>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <div class="main_mid_listBox nomargin2 bot_padding">
+                        <div class="listBox_tap longbg_on noline_a">
+                            <span>매&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;출</span>
+                        </div>
+                        <table class="join_info">
+                            <colgroup>
+                                <col width="25%">
+                                <col width="25%">
+                                <col width="25%">
+                                <col width="25%">
+                            </colgroup>
+                            <tbody>
+                                <tr>
+                                    <td class="left_memo">당&nbsp;&nbsp;&nbsp;월</td>
+                                    <td class="left_memo">금년누적</td>
+                                    <td class="left_memo">전&nbsp;&nbsp;&nbsp;월</td>
+                                </tr>
+                                <tr>
+                                    <td class="center_td small_padding">
+                                        @Model.salesViewModel.CurMonth<text style="font-size:9px">천원</text>
+                                    </td>
+                                    <td class="center_td small_padding">
+                                        @Model.salesViewModel.CurYear<text style="font-size:9px">천원</text>
+                                    </td>
+                                    <td class="center_td small_padding">
+                                        @Model.salesViewModel.LastMonth<text style="font-size:9px">천원</text>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <div class="main_mid_listBox nomargin2 bot_padding">
+                        <div class="listBox_tap longbg_on noline_a">
+                            <span>이익분석</span>
+                        </div>
+                        <div class="flow_chart03"></div>
+                        <div id="profit_loss" style="width: 100%; height: 210px; float: left;"></div>
+                        <table class="join_info">
+                            <colgroup>
+                                <col width="14%">
+                                <col width="14%">
+                                <col width="14%">
+                                <col width="14%">
+                                <col width="14%">
+                                <col width="16%">
+                                <col width="14%">
+                            </colgroup>
+                            <tbody>
+                                <tr>
+                                    <td class="center_td">&nbsp;&nbsp;&nbsp;</td>
+                                    <td class="center_td">매출액</td>
+                                    <td class="center_td">자재비</td>
+                                    <td class="center_td">제조비</td>
+                                    <td class="center_td">판관비</td>
+                                    <td class="center_td">영업외비용</td>
+                                    <td class="center_td">이익</td>
+                                </tr>
+                                <tr>
+                                    <td class="center_td small_padding">당&nbsp;&nbsp;&nbsp;월</td>
+                                    <td class="center_td small_padding">
+                                        @Model.curMenthTotalCostViewModel.SalesAmt<text style="font-size:9px">천원</text>
+                                    </td>
+                                    <td class="center_td small_padding">
+                                        @Model.curMenthTotalCostViewModel.MaterialAmt<text style="font-size:9px">천원</text>
+                                    </td>
+                                    <td class="center_td small_padding">
+                                        @Model.curMenthTotalCostViewModel.ManufacturingAmt<text style="font-size:9px">천원</text>
+                                    </td>
+                                    <td class="center_td small_padding">
+                                        @Model.curMenthTotalCostViewModel.OperatingAmt<text style="font-size:9px">천원</text>
+                                    </td>
+                                    <td class="center_td small_padding">
+                                        @Model.curMenthTotalCostViewModel.AllOtherAmt<text style="font-size:9px">천원</text>
+                                    </td>
+                                    <td class="center_td small_padding">
+                                        @Model.curMenthTotalCostViewModel.ProfitAmt<text style="font-size:9px">천원</text>
+                                    </td>
+                                </tr>
+                                @*<tr>
+                                    <td class="center_td small_padding">전&nbsp;&nbsp;&nbsp;월</td>
+                                    <td class="center_td small_padding">
+                                        @Model.lastMenthTotalCostViewModel.SalesAmt<text style="font-size:9px">천원</text>
+                                    </td>
+                                    <td class="center_td small_padding">
+                                        @Model.lastMenthTotalCostViewModel.MaterialAmt<text style="font-size:9px">천원</text>
+                                    </td>
+                                    <td class="center_td small_padding">
+                                        @Model.lastMenthTotalCostViewModel.ManufacturingAmt<text style="font-size:9px">천원</text>
+                                    </td>
+                                    <td class="center_td small_padding">
+                                        @Model.lastMenthTotalCostViewModel.OperatingAmt<text style="font-size:9px">천원</text>
+                                    </td>
+                                    <td class="center_td small_padding">
+                                        @Model.lastMenthTotalCostViewModel.AllOtherAmt<text style="font-size:9px">천원</text>
+                                    </td>
+                                    <td class="center_td small_padding">
+                                        @Model.lastMenthTotalCostViewModel.ProfitAmt<text style="font-size:9px">천원</text>
+                                    </td>
+                                </tr>*@
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <div class="main_mid_listBox nomargin2 bot_padding noline_a">
+                        <div class="listBox_tap longbg_on noline_a">
+                            <span>비용분석</span>
+                        </div>
+                        <table class="join_info ">
+                            <colgroup>
+                                <col width="10%">
+                                <col width="12%">
+                                <col width="12%">
+                                <col width="12%">
+                                <col width="12%">
+                                <col width="12%">
+                            </colgroup>
+                            <tbody>
+                                <tr>
+                                    <td class="left_memo" rowspan="2">고정경비</td>
+                                    <td class="left_memo">총&nbsp;&nbsp;&nbsp;액</td>
+                                    <td class="left_memo">인건비</td>
+                                    <td class="left_memo">지급인차료</td>
+                                    <td class="left_memo">이자비용</td>
+                                </tr>
+                                <tr>
+                                    <td class="center_td small_padding">
+                                        @Model.expenseCostViewModel.FixTotalAmt<text style="font-size:9px">천원</text>
+                                    </td>
+                                    <td class="center_td small_padding">
+                                        @Model.expenseCostViewModel.ManAmt<text style="font-size:9px">천원</text>
+                                    </td>
+                                    <td class="center_td small_padding">
+                                        @Model.expenseCostViewModel.SalesAmt<text style="font-size:9px">천원</text>
+                                    </td>
+                                    <td class="center_td noline_r">
+                                        @Model.expenseCostViewModel.StaticEtcAmt<text style="font-size:9px">천원</text>
+                                    </td>
+                                    <td >                                 
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="left_memo" rowspan="2">유동경비</td>
+                                    <td class="left_memo">총&nbsp;&nbsp;&nbsp;액</td>
+                                    <td class="left_memo">복리후생비</td>
+                                    <td class="left_memo">세금공과</td>
+                                    <td class="left_memo">소모품비</td>
+                                    <td class="left_memo">기&nbsp;&nbsp;&nbsp;타</td>
+                                </tr>
+                                <tr>
+                                    <td class="center_td small_padding">
+                                        @Model.expenseCostViewModel.MoveTotalAmt<text style="font-size:9px">천원</text>
+                                    </td>
+                                    <td class="center_td small_padding">
+                                        @Model.expenseCostViewModel.WelfareAmt<text style="font-size:9px">천원</text>
+                                    </td>
+                                    <td class="center_td small_padding">
+                                        @Model.expenseCostViewModel.TaxAmt<text style="font-size:9px">천원</text>
+                                    </td>
+                                    <td class="center_td small_padding">
+                                        @Model.expenseCostViewModel.WasteAmt<text style="font-size:9px">천원</text>
+                                    </td>
+                                    <td class="center_td small_padding">
+                                        @Model.expenseCostViewModel.FloatEtcAmt<text style="font-size:9px">천원</text>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+
+                    </div>
+
+                    <div class="main_mid_listBox nomargin2 bot_padding">
+                        <div class="listBox_tap longbg_on noline_a">
+                            <span>주요매출</span>
+                        </div>
+                        <table class="join_info">
+                            <colgroup>
+                                <col width="17.75%">
+                                <col width="24%">
+                                <col width="17.75%">
+                                <col width="17.75%">
+                                <col width="17.75%">
+                            </colgroup>
+                            <tbody>
+                                <tr>
+                                    <td class="left_memo">거래처</td>
+                                    <td class="left_memo">전자세금계산서 작성일</td>
+                                    <td class="left_memo">금&nbsp;&nbsp;&nbsp;액</td>
+                                    <td class="left_memo">품&nbsp;&nbsp;&nbsp;목</td>
+                                    <td class="left_memo">월매출중 점유율</td>
+                                </tr>
+                                @if (Model.taxSalesListViewModel == null || Model.taxSalesListViewModel.Count == 0)
+                                {
+                                    <tr>
+                                        <td colspan="5" style="text-align:center;">매출 세금계산서가 없습니다.</td>
+                                    </tr>
+                                }
+                                else
+                                {
+                                    foreach (var item in Model.taxSalesListViewModel)
+                                    {
+                                        <tr>
+                                            <td class="center_td small_padding">@item.CustName</td>
+                                            <td class="center_td small_padding">@item.WriteDate</td>
+                                            <td class="center_td small_padding">
+                                                @item.TotalAmt<text style="font-size:9px">천원</text>
+                                            </td>
+                                            <td class="center_td small_padding">@item.ItemName</td>
+                                            <td class="center_td small_padding">@item.Share</td>
+                                        </tr>
+                                    }
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="main_mid_listBox nomargin2">
+                        <div class="listBox_tap longbg_on  noline_a">
+                            <span>주요지출</span>
+                        </div>
+                        <table class="join_info">
+                            <colgroup>
+                                <col width="20%">
+                                <col width="20%">
+                                <col width="20%">
+                                <col width="20%">
+                                <col width="20%">
+                            </colgroup>
+                            <tbody>
+                                <tr>
+                                    <td class="left_memo">은&nbsp;&nbsp;&nbsp;행</td>
+                                    <td class="left_memo">출금일</td>
+                                    <td class="left_memo">금&nbsp;&nbsp;&nbsp;액</td>
+                                    <td class="left_memo">적&nbsp;&nbsp;&nbsp;요</td>
+                                    <td class="left_memo">월지출중 점유율</td>
+                                </tr>
+                                @if (Model.bankOutListViewModel == null || Model.bankOutListViewModel.Count == 0)
+                                {
+                                    <tr>
+                                        <td colspan="5" style="text-align:center;">출금 내역이 없습니다.</td>
+                                    </tr>
+                                }
+                                else
+                                {
+                                    foreach (var item in Model.bankOutListViewModel)
+                                    {
+                                        <tr>
+                                            <td class="center_td small_padding">@item.BankName</td>
+                                            <td class="center_td small_padding">@item.OutDate</td>
+                                            <td class="center_td small_padding">
+                                                @item.TotalAmt<text style="font-size:9px">천원</text>
+                                            </td>
+                                            <td class="center_td small_padding">@item.ItemName</td>
+                                            <td class="center_td small_padding">@item.Share</td>
+                                        </tr>
+                                    }
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div id="btnwrap_sub">
+            <div class="rightwrap">
+                @if (Session[Global.UserType].Equals(Global.Expert) && Session[Global.UserDetailType].Equals("T"))
+                {//전문가
+                    <button type="button" class="btn_big red float_left" onClick="javascript: RegCommentPopupOpen();" value="세무회계사코멘트등록">세무회계사코멘트등록</button>
+                }
+                else
+                { 
+                    <button type="submit" class="btn_big gray float_left"  onClick="javascript: SearchCommentPopupOpen();" value="세무회계사코멘트확인">세무회계사코멘트확인</button>
+                }
+                <button class="btn_big red" value="출력" onclick="window.print()">출력</button>
+                @*<button class="print" value="출력"  onclick="alert('차후 오픈 예정 입니다.')"/>*@
+            </div>
+        </div>
+    }
+</div>

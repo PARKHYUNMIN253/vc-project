@@ -1,0 +1,39 @@
+﻿
+<div id="sub_leftwrap">
+    <div class="sub_gnbwrap">
+        <ul>
+
+            @if (ViewBag.LeftMenu == Global.MyInfo)//내정보
+            {
+                <li class="title left_text">내정보 관리</li>
+                <li><a href="@Url.Action("MyInfo","Main",new { area= "Mentor" })" class="gnb gnb1">내정보 관리</a></li>
+                <li><a href="@Url.Action("ChangePassword","Account",new { area= "" })" class="gnb gnb_ChangePw">비밀번호 변경</a></li>
+            }
+            else if (ViewBag.LeftMenu == Global.Cs)//고객센터
+            {
+                <li class="title left_text">고객센터</li>
+                <li><a href="@Url.Action("Notice","Cs")" class="gnb gnb_notice">공지사항</a></li>
+                <li><a href="@Url.Action("Faq","Cs")" class="gnb gnb_faq">FAQ</a></li>
+                <li><a href="@Url.Action("Manual","Cs")" class="gnb gnb_menual">매뉴얼 및 서식</a></li>
+            }
+            else if (ViewBag.LeftMenu == Global.MentoringReport)//맨토링 일지
+            {
+                <li class="title left_text">멘토링 일지</li>
+                <li><a href="@Url.Action("MentoringReportList","MentoringReport",new { area= "Mentor" })" class="gnb gnb_mentoringReportList">멘토링 일지 조회</a></li>
+                <li><a href="@Url.Action("RegMentoringReport","MentoringReport",new { area= "Mentor" })" class="gnb gnb_regMentoringReport">멘토링 일지 등록</a></li>
+                <li><a href="@Url.Action("MentoringTotalReportList","MentoringReport",new { area= "Mentor" })" class="gnb gnb_mentoringTrList">멘토링 종합보고서 조회</a></li>
+                <li><a href="@Url.Action("RegMentoringTotalReport","MentoringReport",new { area= "Mentor" })" class="gnb gnb_regMentoringTr">멘토링 종합보고서 등록</a></li>
+                
+            }
+            else if (ViewBag.LeftMenu == Global.Report) //기초역량 보고서
+            {
+                <li class="title left_text">보고서</li>
+                <li><a href="@Url.Action("BasicSurveyReport","Report",new { area= "Mentor" })" class="gnb gnb_basicReport">기초경영역량 보고서</a></li>
+            }
+            
+
+        </ul>
+    </div><!--sub_gnbwrap//-->
+</div><!--sub_leftwrap//-->
+
+

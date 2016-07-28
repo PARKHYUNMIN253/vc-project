@@ -1,0 +1,628 @@
+﻿@model BizOneShot.Light.Models.ViewModels.BasicSurveyReportViewModel
+
+@{
+    Layout = "~/Views/Shared/_MainLayout.cshtml";
+}
+<!--@Styles.Render("~/css/print") -->
+<script>
+    var NumSn = "@(Model.NumSn)";
+    var compSn = "@(Model.CompSn)";
+    var bizWorkYear = "@(Model.BizWorkYear)";
+    var status = "@(Model.Status)";
+    var questionSn = "@(Model.QuestionSn)";
+
+    var pageNameAr = ["ReportCover", "CompanyInfo", "OverallSummaryCover", "OverallSummary", "OverallResultCover", "OrgHR01",
+        //"OrgHR02",
+        "OrgProductivity", "OrgDivided", "RndCost",
+        //"RndEmp", "ProductivityCommercialize",
+        "ProductivityResult",
+        //"ProductivityMgmtFacility", "ProductivityProcessControl",
+        "ProductivityQC",
+        //"ProductivityMgmtMarketing",
+        "ProductivityMgmtCustomer", "ProductivityProfitability", "ProductivityValueChain",
+        //"ProductivityRelation",
+        "ProductivityRelation2", "RiskMgmtVisionStrategy",
+        //"RiskMgmtLeadership", "RiskMgmtRelCEO",
+        "RiskMgmtWorkingEnv",
+        //"RiskMgmtOrgSatisfaction", "RiskMgmtITSystem",
+        "RiskMgmtLiquidity",
+        "RiskMgmtEvalProfession", "GrowthRoadMapCover", "GrowthStrategyType", "GrowthCapabilityProposal",
+        //"GrowthTotalProposal",
+        "CapacityCompGoal", "CapacityDiffStartUp", "CapacityCompGrowth", // 이미지들 나오는 별점 3장
+        "FinanceStatements", "FinanceIncomeStatements", "ManufacturingCostStatements" // 재무제표
+    ];
+
+    var urlList = [];
+    var allPages = pageNameAr.length;
+    var loadedPages = 0;
+    //window.print();
+
+    var scriptString = "";
+    var chartString = "";
+    var startTime = new Date().getTime();
+    var endTime = 0;
+
+    $(document).ready(function () {
+        //top menu
+        $('#naviwrap_biz > .navi_biz >  a.navi_report').addClass('on');
+        //Cs menu
+        $('#sub_leftwrap > .sub_gnbwrap > ul > li > a.gnb_basicReport').addClass('on');
+
+        //getAllPages();
+        generateUrlList();
+        startTransaction();
+        
+    });
+
+    function generateUrlList() {
+        for (i in pageNameAr) {
+            var str = "/BasicSurveyReport/";
+            str += pageNameAr[i];
+            str += "?";
+            str += "&NumSn=" + NumSn;
+            str += "&CompSn=" + compSn;
+            str += "&BizWorkYear=" + bizWorkYear;
+            str += "&Status=" + status;
+            str += "&QuestionSn=" + questionSn;
+            urlList.push(str);
+
+            var div = $("<div>");
+            div.addClass("pages");
+            div.addClass(pageNameAr[i]);
+            $("#Container").append(div);
+
+        }
+    }
+
+    function startTransaction() {
+
+        for (i in urlList) {
+            var url = urlList[i];
+            var pageName = pageNameAr[i];
+            $.ajax({
+                method: "GET",
+                url: url,
+                pageName: pageName,
+                success: function (o) {
+                    o = $(o);
+                    scriptString += o.find("script").text();
+                    o.find("script").html("");
+                    $("#Container div.pages." + this.pageName).append(o.find("div.sub_report_checkbox"));
+                    
+
+                    $("input").prop("readonly", true);
+                    $("input[type=radio]").attr("disabled", true);
+                    $("input[type=checkbox]").attr("disabled", true);
+                    $("textarea").prop("readonly", true);
+
+                    loadedPages++;
+
+                    if (loadedPages == allPages) {
+                        loadChart();
+                        doneWaiting();
+                    }
+                    
+                }
+            })
+        }
+    }
+
+    function loadChart() {
+        var drawChart = scriptString.match(/(makeBarChart\(.*\));/g);
+
+        for (i in drawChart) {
+            if (!drawChart[i].match(/divName/))
+                chartString += drawChart[i] + "\n";
+        }
+        chartString += "\n";
+        chartString += "setTimeout(function () {\n";
+        chartString += "makeOrgDivided();\n";
+        chartString += "makePvc();\n";
+        chartString += "makeRisk();\n";
+        chartString += "makeGrowthCapability();\n";
+        chartString += "$('textarea').css({overflow:'hidden'});\n";
+        chartString += "window.print();\n";
+        chartString += "endTime=new Date().getTime();\n";
+        chartString += "}, 1500);";
+
+        eval(chartString);
+        
+    }
+  
+    function makeOrgDivided() {
+        var hid = $('#orgDhid').val();
+        $("div.pages.OrgDivided input[type=radio]").attr("name", "OrgDividedRadio");
+        $("div.pages.OrgDivided input[type=radio][value=" + hid + "]").prop("checked", true);
+        
+    }
+    function makePvc() {
+        var hid = $('#provalhid').val();
+        $("div.pages.ProductivityValueChain input[type=radio]").attr("name", "ProductivityValueChainRadio");
+        $("div.pages.ProductivityValueChain input[type=radio][value=" + hid + "]").prop("checked", true);
+    }
+    function makeRisk() {
+        var hid = $('#riskhid').val();
+        $("div.pages.RiskMgmtEvalProfession input[type=radio]").attr("name", "RiskMgmtEvalProfessionRadio");
+        $("div.pages.RiskMgmtEvalProfession input[type=radio][value=" + hid + "]").prop("checked", true);
+    }
+    @*var urlList = [];
+@{
+        string[] pagename = { "ReportCover","CompanyInfo", "OverallSummaryCover", "OverallSummary", "OverallResultCover", "OrgHR01", "OrgHR02", "OrgProductivity", "OrgDivided", "RndCost",
+            "RndEmp", "ProductivityCommercialize", "ProductivityResult", "ProductivityMgmtFacility", "ProductivityProcessControl", "ProductivityQC", "ProductivityMgmtMarketing", "ProductivityMgmtCustomer", "ProductivityProfitability",
+            "ProductivityValueChain", "ProductivityRelation", "ProductivityRelation2" ,"RiskMgmtVisionStrategy", "RiskMgmtLeadership", "RiskMgmtRelCEO", "RiskMgmtWorkingEnv", "RiskMgmtOrgSatisfaction", "RiskMgmtITSystem", "RiskMgmtLiquidity",
+            "RiskMgmtEvalProfession", "GrowthRoadMapCover", "GrowthStrategyType", "GrowthStrategyStep", "GrowthCapabilityProposal", "GrowthTotalProposal", "CapacityCompGoal", "CapacityDiffStartUp", "CapacityCompGrowth"};
+    }
+
+    @foreach (var i in pagename)
+    {
+        //<iframe id="@i" src="/BasicSurveyReport/@i?BizWorkSn=@Model.BizWorkSn&CompSn=@Model.CompSn&BizWorkYear=@Model.BizWorkYear&Status=@Model.Status&QuestionSn=@Model.QuestionSn" ></iframe>
+        <text>
+            urlList.push("/BasicSurveyReport/@(i)?BizWorkSn=@(Model.BizWorkSn)&CompSn=@(Model.CompSn)&BizWorkYear=@(Model.BizWorkYear)&Status=@(Model.Status)&QuestionSn=@(Model.QuestionSn)");
+        </text>
+
+    }
+
+    var allPages = 38;
+    var loadedPages = 0;
+    //window.print();
+
+    var scriptString = "";
+    var chartString = "";
+
+    function getAllPages() {
+        var url = urlList[loadedPages];
+        console.log(url);
+        $.get(url, function (o) {
+            console.log("load " + loadedPages + " pages");
+            var o = $(o);
+            $("#Container").append(o.find("div.sub_report_checkbox"));
+
+            scriptString += o.find("script").text();
+            $("input").prop("disabled", true)
+            $("textarea").prop("disabled", true)
+            //console.log(scriptString);
+            loadedPages++;
+            if (loadedPages < allPages) getAllPages();
+            if (loadedPages == allPages) {
+                //$("#lastScript").text(scriptString);
+                //window.print();
+                //eval(scriptString);
+
+                var drawChart = scriptString.match(/(makeBarChart\(.*\));/g);
+
+                for (i in drawChart) {
+                    if (!drawChart[i].match(/divName/))
+                        chartString += drawChart[i] + "\n";
+                }
+                //console.log(chartString);
+                chartString += "\nsetTimeout(function () {makeGrowthCapability(); $('textarea').css({overflow:'hidden'}); window.print()}, 1500);";
+                eval(chartString);
+            }
+        })
+        //$("#lastScript").html(scriptString);
+    }*@
+
+    function makeGrowthCapability() {
+        var arrA = ["비전과 성장전략 제시", "규정화된 채용과정 준비", "신입직원 교육훈련체계", "공부하는 분위기 조성", "개인별 전문가와</br>지원체계 구축", "교육훈련 인센티브 제도",
+                    "회사전체 목표설정", "부서별 성과관리</br>(개선목표 달성 중심)", "개인별 목표 및</br>성과관리(MBO)", "고객분석 및 회사의</br>가치사슬구성", "핵심가치부여단계 설정</br>(시제품 제작 등)", "핵심가치 활용 사업실행",
+                    "산학협력(공공R&D)", "우수인력 영입(개별)", "우수인력 영입(팀 구성)", "산산협력(아웃소싱)", "생산 프로세스 최적화", "양산설비 구축", "마케팅 제휴", "마케팅 제휴</br>(마케팅 도구제작)", "마케팅 제휴</br>(독립 영업팀 구성)",
+                    "정기적 현금시재 관리", "시스템화 도구 도입", "시나리오 플래닝</br>(재무관리 중심)", "회사단위 관련정보</br>취득체계 마련", "부서단위 관련정보</br>취득체계 마련", "정보관리 규정 및</br> 공유체계 마련(그룹웨어 검토)",
+                    "기초 회사관리 규정", "범용관리 규정</br>(부문별 심화규정 마련)", "ERP 도입검토</br>(자재관리 중심)"];
+
+        var arrB = ["비전과 성장전략 제시", "규정화된 채용과정 준비</br>(스톡옵션 등 도입 검토)", "채용인센티브 프로그램운영", "아이디어 제안</br>분위기 조성", "외부교육훈련</br>지원제도 운영", "아이디어의 상품화</br>지원체계 수립",
+                        "회사전체 목표설정", "부서별 성과관리</br>(창의성 중심 성과관리)", "개인별 성과관리</br>(상품화 인센티브 제도)", "타깃고객분석 및 아이디어의</br>상품화 프로세스 정립", "시제품 기획", "시장 출시전략",
+                        "산학협력(공공R&D)", "우수인력 영입(개별)", "우수인력 영입</br>(팀 구성 목표)", "산산협력(아웃소싱)", "부문별 산산제휴 추진", "상품별 산산제휴 관리</br>(아웃소싱,자체 등 고려)", "마케팅 제휴</br>(대표관리)", "마케팅 제휴</br>(영업 담당 관리)", "마케팅 제휴</br>(전문 마케터 관리)",
+                        "정기적 현금시재 관리", "시스템화 도구 도입", "시나리오 플래닝</br>(투자관리 중심)", "회사단위 관련정보</br>취득체계 마련", "부서단위 관련정보</br>취득체계 마련", "개인 단위 관련 정보</br>취득체계(그룹웨어 도입)",
+                        "기초 회사관리 규정", "범용관리 규정</br>(부분별 심화규정 마련)", "단계적 시스템화 검토"];
+
+        var arrC = ["비전과 성장전략 제시", "커뮤니케이션 프로세스운영</br>(전담자, 도구 등 활용)", "파트너별 채용체계 구축</br>(영업본부 체계)", "개인별 과제 부여", "교육훈련 인센티브제도", "자체 교육훈련체계 구축",
+                            "회사전체 목표설정", "부서별 성과관리", "파트너 운영관리체계</br>(Spin-off 프로그램 등)", "고객분석 및 회사의</br>핵심역량 설정", "핵심역량제고 프로젝트 실행", "상품단순화 역량 확립</br>(표준화 및 관리체계)",
+                            "산학협력(개발인턴 운영)", "우수인력 영입(개별)", "외부상품 소싱역량 구축", "산산협력(아웃소싱)", "산산협력(아웃소싱)", "시제품 개발프로그램</br>(아웃소싱)", "영업매뉴얼 개발,</br>영업지원 도구 개발", "마케팅 제휴, SNS운영", "브랜드 역량 구축",
+                            "정기적 현금시재 관리", "(기초적 재무관리용)</br>시스템화도구 구입", "시나리오 플래닝</br>(영업관리 중심)", "회사단위 관련정보</br>취득체계 마련", "부서단위 관련정보</br>취득체계 마련", "전사적 정보관리 운영</br>(그룹웨어 도입)",
+                            "기초 회사관리 규정", "범용관리 규정</br>(부문별 심화규정 마련)", "ERP 도입</br>(영업관리/물류 부문)"];
+
+        var hidType = $('#hidType').val();
+
+        if (hidType == 'B') {
+            fillTds(arrB);
+            $('#selectType').val('B');
+            $('#hidType').val('B');
+        }
+        else if (hidType == 'C') {
+            fillTds(arrC);
+            $('#selectType').val('C');
+
+            $('#hidType').val('C');
+        }
+        else {
+            fillTds(arrA);
+            $('#selectType').val('A');
+            $('#hidType').val('A');
+        }
+
+        $('#selectType').attr('disabled', true);
+        
+    }
+
+    // 해당하는 배열(Type)의 내용 값을 뷰에 채워넣는 method
+    function fillTds(arr) {
+        var tds = document.getElementsByName('roadMapType');
+        for (var i = 0; i < tds.length; i++) {
+            tds[i].innerHTML = arr[i];
+        }
+    }
+
+    function makeBarChart(divName, company, avgBizInCompany, avgTotal, avgSMCompany, unit, point) {
+
+        var param1 = company;
+        var param2 = avgBizInCompany;
+        var param3 = avgTotal;
+        var param4 = avgSMCompany;
+
+        Highcharts.setOptions({
+            lang: {
+                decimalPoint: '.',
+                thousandsSep: ','
+            }
+        });
+
+        chart = new Highcharts.Chart({
+            chart: {
+                type: 'column',
+                renderTo: divName,
+                margin: [10, 0, 25, 50],
+                spacingTop: 0,
+                //spacingBottom: 0,
+                //spacingLeft: 0,
+                spacingRight: 0
+            },
+            exporting: {                    // highcharts context menu 제거
+                buttons: {
+                    contextButtons: {
+                        enabled: false,
+                        menuItems: null
+                    }
+                },
+                enabled: false
+            },
+            credits: {
+                enabled: false
+            },
+            title: {
+                style: {
+                    display: 'none'
+                }
+            },
+            xAxis: {
+                type: 'category',
+                gridLineWidth: 1
+            },
+            yAxis: {
+                gridLineWidth: 0,
+                title: {
+                    style: {
+                        display: 'none'
+                    }
+                },
+                labels: {
+                    enabled: true
+                },
+            },
+            legend: {
+                enabled: false
+            },
+            tooltip: { enabled: false },
+
+            series: [{
+                upColor: Highcharts.getOptions().colors[2],
+                color: Highcharts.getOptions().colors[3],
+                pointWidth: 35,
+                enableMouseTracking: false,
+                data: [{
+                    name: "해당기업",
+                    y: param1
+                }, {
+                    name: "참여기업평균",
+                    y: param2
+                }, {
+                    name: "전체평균",
+                    y: param3
+                }, {
+                    name: "중소기업 평균",
+                    y: param4
+                }],
+                dataLabels: {
+                    enabled: true,
+                    formatter: function () {
+                        return Highcharts.numberFormat(this.y, point, '.') + unit;
+                    },
+                    style: {
+                        color: '#000000',
+                        fontWeight: 'bold'//,
+                        //textShadow: '0px 0px 3px black'
+                    }
+                },
+                pointPadding: 0
+            }]
+        });
+
+    }
+
+    // loading 
+    function doneWaiting() {
+        console.log("theEnd!");
+        //$(".loading").hide().remove();
+        $('#loading').hide();
+    }
+
+</script>
+@Styles.Render("~/css/print")
+
+<script src="/Scripts/highcharts.js"></script>
+<script src="/Scripts/highcharts-more.js"></script>
+
+
+<style>
+    iframe {
+        width: 27cm;
+        height: 37.7cm;
+        
+    }
+
+    iframe {
+        visibility: visible;
+    }
+
+    div#wrapper {
+        margin: 0;
+    }
+
+    div#sub_wrapper {
+        margin: 0;
+    }
+
+    * {
+        visibility: hidden;
+    }
+
+    #headerwrap_biz {
+        display: none;
+    }
+
+    #sub_leftwrap {
+        display: none;
+    }
+
+    div.footerWrap {
+        display: none;
+    }
+
+    div.sub_right_title {
+        display: none;
+    }
+
+    div#report_wm_step {
+        display: none;
+    }
+
+    div#sub_inquiry_box {
+        display: none;
+    }
+
+    div#sub_term_box {
+        display: none;
+    }
+
+    div#tabswrap_three {
+        display: none;
+    }
+    
+    div.sub_report_checkbox {
+        visibility: visible;
+        position: relative;
+        zoom: 1.43; /*1.26;*/
+        left: 0;
+        right: 0;
+        margin: auto auto;
+        float: none;
+    }
+
+        div.sub_report_checkbox + div.sub_report_checkbox {
+            page-break-before: always;
+            page-break-inside: avoid;
+        }
+
+    div.pages + div.pages {
+        page-break-before: always;
+        page-break-inside: avoid;
+    }
+
+    div.sub_report_checkbox * {
+        visibility: visible;
+    }
+    .sub_report_checkbox .compname {
+        display:none;
+    }
+    .sub_report_checkbox .pagenum {
+        width:100%;
+    }
+    #btnwrap_sub .print {
+        display: none !important;
+    }
+
+    hr.pagebreak {
+        page-break-after: always;
+    }
+
+    #sub_rightwrap_report {
+        width: inherit;
+        float: none;
+    }
+
+    div#headerwrap_Mentor {
+        display: none;
+    }
+
+    .mentorcomment {
+        display: none;
+    }
+
+    .main_mid_listBox TEXTAREA.w_405 {
+        width: 100% !important;
+    }
+
+    @@media all and (-ms-high-contrast:none), (-ms-high-contrast:active) {
+        div.sub_report_checkbox {
+            margin: 0;
+            zoom: 1.43;/*1.32;*/
+        }
+    }
+
+    p.righthalf_p {
+        float: left;
+        text-align: right;
+        width: 66%;
+        margin: 5px 0 0 5px;
+        padding: 0;
+        font-size: 9pt;
+        padding: 0 !important;
+    }
+
+    div.pages {
+        visibility: visible;
+        position: relative;
+        left: 0;
+        right: 0;
+        margin: auto auto;
+        float: none;
+    }
+
+    #loading {
+     visibility: visible;
+     width: 100%;   
+     height: 100%;   
+     top: 0px;
+     left: 0px;
+     position: fixed;   
+     display: block;   
+     opacity: 0.7;   
+     background-color: #fff;   
+     z-index: 99;   
+     text-align: center; }  
+ 
+    #loading-image {   
+        visibility: visible;
+        position: absolute;   
+        top: 350px; 
+        left: 45%;
+        z-index: 100; 
+    } 
+
+    .easy-modal-open {
+        display: none;
+    }
+
+    /* 기업개요 부분의 문제 해결 */
+    .CompanyInfo .sub_report_checkbox .report_main_mid .main_mid_cont TABLE.join_info TR TD:last-child {
+        text-align: left !important;
+    }
+    
+    .FinanceStatements .sub_report_checkbox .report_main_mid .main_mid_cont TABLE.join_info TR TD:last-child {
+        text-align: left !important;
+    }
+    .FinanceStatements .sub_report_checkbox .report_main_mid .main_mid_cont TABLE.join_info TR TD {
+        padding: 5px 5px !important;
+    }
+
+
+
+    .FinanceIncomeStatements .sub_report_checkbox .report_main_mid .main_mid_cont TABLE.join_info TR TD:last-child {
+        text-align: left !important;
+    }
+    .FinanceIncomeStatements .sub_report_checkbox .report_main_mid .main_mid_cont TABLE.join_info TR TD {
+        padding: 5px 5px !important;
+    }
+
+
+    .ManufacturingCostStatements .sub_report_checkbox .report_main_mid .main_mid_cont TABLE.join_info TR TD:last-child {
+        text-align: left !important;
+    }
+
+    .ManufacturingCostStatements .sub_report_checkbox .report_main_mid .main_mid_cont TABLE.join_info TR TD {
+        padding: 5px 5px !important;
+    }
+    /*.sub_report_checkbox .report_main_mid .main_mid_cont TABLE.join_info TR TD:last-child {
+        text-align: left !important;
+    }*/
+
+    .OrgProductivity .sub_report_checkbox .report_main_mid .main_mid_cont .main_mid_listBox .index_left {
+        height: 124px !important;
+    }
+
+    .ProductivityValueChain .capacity_comment {margin-top:0px !important}
+    
+    .ProductivityValueChain .sub_report_checkbox .report_main_mid .main_mid_cont .main_mid_listBox .capacity_comment .capacity_comment_right {
+    float: left;
+    width: 72%;
+    border: 1px solid #ddd;
+    margin-left: 6px;
+    }
+
+    .ProductivityValueChain .sub_report_checkbox .report_main_mid .main_mid_cont .main_mid_listBox .capacity_comment .capacity_comment_left {
+    float: left;
+    width: 25%;
+    border: 1px solid #ddd;
+    text-align: center;
+    padding: 5px 0;
+    margin-left: 0px;
+    margin-right: 10px;
+    }
+
+    .ProductivityValueChain .sub_report_checkbox .report_main_mid .main_mid_cont .main_mid_listBox {
+        margin-bottom:5px
+    }
+    .ProductivityValueChain .sub_report_checkbox .report_main_mid .main_mid_cont .main_mid_listBox .full_line {
+        margin-top:5px
+    }
+
+    .RiskMgmtLiquidity .listBox_tap {
+        margin-top:30px
+    }
+    .RiskMgmtLiquidity .sub_report_checkbox .report_main_mid .main_mid_cont .main_mid_listBox .index_left {
+        height:124px;
+    }
+
+    .RiskMgmtEvalProfession .sub_report_checkbox .report_main_mid .main_mid_cont .main_mid_listBox .capacity_comment .capacity_comment_right {
+        float: left;
+        width: 72%;
+        border: 1px solid #ddd;
+        margin-left: 6px;
+    }
+
+    .RiskMgmtEvalProfession .sub_report_checkbox .report_main_mid .main_mid_cont .main_mid_listBox .capacity_comment .capacity_comment_left {
+        float: left;
+        width: 25%;
+        border: 1px solid #ddd;
+        text-align: center;
+        padding: 5px 0;
+        margin-left: 0px;
+        margin-right: 10px;
+    }
+    .GrowthCapabilityProposal .sub_report_checkbox .report_main_mid .main_mid_cont TABLE TR TD {    
+        padding: 5px 10px;
+    }
+    .ProductivityRelation2 .sub_report_checkbox .report_main_mid .main_mid_cont .main_mid_listBox TABLE.reval_table TR TD {
+        padding: 5px 10px !important;
+    }
+
+    
+</style>
+
+<div id="loading"><img id="loading-image" src="~/images/looploading.gif" alt="Loading..." /></div>
+<div id="Container">
+
+</div>
+
+<script id="lastScript">
+
+</script>

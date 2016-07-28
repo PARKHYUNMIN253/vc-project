@@ -1,0 +1,50 @@
+﻿
+
+@if (Session[Global.UserType].Equals(Global.SysManager))//TCMS관리자 일 경우
+{
+    <div id="Topwrap_common">
+        <div class="navi_top">
+            
+            <a href="@Url.Action("Logoff","Home", new { area = "" })">
+                <div class="navi_top_text">로그아웃</div>
+            </a>
+            <div class="linebar"></div>
+            <a href="@Url.Action("Main","Home", new { area = "" })">
+                <div class="navi_top_text">Home</div>
+            </a>
+        </div>
+    </div>
+}
+else if(Session[Global.UserType].Equals(Global.Mentor)) // Mentor일 경우
+{
+    <div id="Topwrap_common">
+        <div class="navi_top">
+            
+            <a href="@Url.Action("Logoff","Home", new { area = "" })">
+                <div class="navi_top_text">로그아웃</div>
+            </a>
+            <div class="linebar"></div>
+            <a href="@Url.Action("Index","Main", new { area = "Mentor" })">
+                <div class="navi_top_text">Home</div>
+            </a>
+        </div>
+    </div>
+   
+
+}
+else if (Session[Global.UserType].Equals(Global.SysManager))//TCMS관리자 일 경우
+{
+    <div id="Topwrap_common">
+        <div class="navi_top">
+
+            <a href="@Url.Action("Logoff","Home", new { area = "" })">
+                <div class="navi_top_text">로그아웃</div>
+            </a>
+            <div class="linebar"></div>
+            <a href="@Url.Action("Main","Home", new { area = "SysManager" })">
+                <div class="navi_top_text">Home</div>
+            </a>
+        </div>
+    </div>
+}
+

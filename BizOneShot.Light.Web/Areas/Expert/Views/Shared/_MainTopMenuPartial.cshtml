@@ -1,0 +1,42 @@
+﻿@Scripts.Render("~/bundles/common")
+
+<div id="headerwrap_biz">
+    <div class="container">
+        <a href="@Url.Action("Index","Main",new { area= "Expert" })"><img src="/images/@HttpContext.Current.Session[Global.UserLogo].ToString()" class="float_left" /></a>
+
+        <div id="naviwrap_biz">
+            <div class="navi_biz">
+
+                <a href="@Url.Action("BasicSurveyReport","Report",new { area= "Expert" })">
+                    <div class="top_menu">
+                        <div class="header_report01"></div>
+                        <div class="top_text_report">보고서</div>
+                    </div>
+                </a><img src="~/images/header_bar.png" class="navi_bizbar" />
+                <a href="@Url.Action("CompanyList","CompanyMng", new { area= "Expert" })">
+                    <div class="top_menu">
+                        <div class="header_company_manage"></div>
+                        <div class="top_text_company">관리기업</div>
+                    </div>
+                </a><img src="~/images/header_bar.png" class="navi_bizbar" />
+                <a href="@Url.Action("Notice","Cs",new { area= "" })">
+                    <div class="top_menu">
+                        <div class="header_customer"></div>
+                        <div class="top_text_customer">고객센터</div>
+                    </div>
+                </a>
+                <a href="#" class="name">
+                    @if (Session[BizOneShot.Light.Web.ComLib.Global.UserNM] != null)
+                    { @Session[BizOneShot.Light.Web.ComLib.Global.UserNM].ToString() }님
+                </a><a href="#" class="down"></a>
+                <div id="header_logoutwrap">
+                    <!--로그아웃 레이어(클릭시 보임)-->
+                    <div class="header_logout2">
+                        <a href="@Url.Action("Logoff","Home",new { area= "" })" class="padding_bottom">로그아웃</a><br />
+                        <a href="@Url.Action("MyInfo","Main", new { area= "Expert" })" class="border padding_top">내정보관리</a>
+                    </div>
+                </div><!--로그아웃 레이어 끝-->
+            </div>
+        </div><!--naviwrap_biz//-->
+    </div><!--container//-->
+</div><!--headerwrap_biz//-->

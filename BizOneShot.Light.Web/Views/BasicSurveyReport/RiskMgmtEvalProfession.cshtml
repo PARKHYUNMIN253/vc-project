@@ -1,0 +1,401 @@
+﻿@model BizOneShot.Light.Models.ViewModels.RiskMgmtViewModel
+
+@{
+    Layout = "~/Views/Shared/_MainDetailLayout.cshtml";
+}
+<style>
+    .sub_report_checkbox .report_main_mid .main_mid_cont .main_mid_listBox .capacity_comment .capacity_comment_right {
+    float: left;
+    width: 72%;
+    border: 1px solid #ddd;
+    margin-left: 6px;
+    }
+
+    .sub_report_checkbox .report_main_mid .main_mid_cont .main_mid_listBox .capacity_comment .capacity_comment_left {
+    float: left;
+    width: 25%;
+    border: 1px solid #ddd;
+    text-align: center;
+    padding: 5px 0;
+    margin-left: 0px;
+    margin-right: 10px;
+    }
+
+</style>
+<script>
+    $(document).ready(function () {
+        $('.vc_iconSB_10 ').addClass('on01');
+        $('.vc_title_10 ').addClass('on');
+        $('.a_label10').addClass('on');
+
+        // 사이드 바를 위한 class 추가
+        $('.container').addClass('height_content_auto');
+        $('.sub_gnbwrap > .navi_left > .bg_col_g').addClass('height_rreport');
+
+        var usrType = $("#usrType").val();
+
+        if (usrType == "C") {
+
+            $('.vc_iconSB_02').addClass('on01'); // 보고서 icon
+            $('.vc_title_01').addClass('on');    // 보고서 label
+            $('.a_label02').addClass('on');      // 보고서 내부 메뉴 label (기초경영역량 보고서)
+
+        } else if (usrType == "M" || usrType == "B") {
+
+            $('.vc_iconSB_02 ').addClass('on01');   // 보고서 icon
+            $('.vc_title_01 ').addClass('on');      // 보고서 label
+            $('.a_label01 ').addClass('on');        // 보고서 내부메뉴
+
+        }
+
+        $('#mainForm').bind('submit', function () {
+
+            var valid = true;
+            if ($('#submitType').val() == "N") {
+
+                $('textarea[id^="comment"]').each(function () {
+                    if ($(this).val().length == 0 && valid == true) {
+                        alert("필수항목을 입력해 주세요");
+                        $(this).focus();
+                        valid = false;
+
+                        return false;
+                    }
+                });
+
+                return valid;
+            }
+
+        });
+
+        if ($('#Status').val() == "C") {
+            $('#mainForm input').attr('disabled', true);
+            $('#mainForm textarea').attr('disabled', true);
+            $('.mentorcomment').hide();
+        }
+        else {
+            $('#sub_leftwrap > .sub_gnbwrap > ul > li > a.list_33').hide();
+        }
+        
+    });
+
+    function goSubmit(submitType) {
+        $('#submitType').val(submitType);
+        $('#mainForm').submit();
+    }
+    function RptCommentPopupOpen() {
+        var questionSn = $('#QuestionSn').val();
+        var NumSn = $('#NumSn').val();
+        var basicyear = $('#BizWorkYear').val();
+        var detailCode = $('#CommentList_1__DetailCd').val();
+        var compSn = $('#CompSn').val();
+
+        w = 700;    //팝업창의 너비
+        h = 520;    //팝업창의 높이
+        //중앙위치 구해오기
+        LeftPosition = (screen.width - w) / 2;
+        TopPosition = (screen.height - h) / 2;
+        var url = "/BasicSurveyReport/RptCommentPop?&NumSn=" + NumSn + "&QuestionSn=" + questionSn + "&BasicYear=" + basicyear + "&DetailCode=" + detailCode + "&CompSn=" + compSn;
+
+        console.log(url);
+
+        window.open(url, "popup", "resizable=yes, scrollbars=yes, left=" + LeftPosition + ", top=" + TopPosition + ", width=" + w + "px, height=" + h + "px");
+    }
+</script>
+@Styles.Render("~/css/print")
+<div class="tcms">
+    <div class="main_top short">
+        <div class="list_icon"></div><div class="sub_title">기초경영역량보고서</div>
+        @RenderPage("~/Views/Shared/_MainTopMenuPartial.cshtml")
+    </div>
+
+    <div id="sub_rightwrap_report">
+
+        @using (Html.BeginForm("RiskMgmtEvalProfession", "BasicSurveyReport", FormMethod.Post, new { area = "", @class = "form-horizontal", role = "form", id = "mainForm" }))
+        {
+            @Html.HiddenFor(model => model.SubmitType, new { @id = "submitType" })
+            @Html.Hidden("NumSn", ViewBag.paramModel.NumSn as string)
+            @Html.Hidden("CompSn", ViewBag.paramModel.CompSn as string)
+            @Html.Hidden("BizWorkYear", ViewBag.paramModel.BizWorkYear as string)
+            @Html.Hidden("QuestionSn", ViewBag.paramModel.QuestionSn as string)
+            @Html.Hidden("Status", ViewBag.paramModel.Status as string)
+            @Html.Hidden("CompNm", ViewBag.paramModel.CompNm as string)
+            @Html.Hidden("PageNum", ViewBag.paramModel.PageNum as string)
+            @Html.Hidden("usrType", Session[Global.UserType] as string)
+
+            <div class="sub_report_checkbox">
+                <div class="compname">@ViewBag.paramModel.CompNm</div>
+                <div class="pagenum">18/27</div>
+                <div class="report_main_top2"></div>
+                <div class="report_main_mid">
+                    <div class="main_mid_cont">
+                        <p class="title_mid">
+                            Ⅱ. 기초역량검토 종합결과 _ <span class="small_span float_right">
+                                역량별
+                                검토결과
+                            </span>
+                        </p>
+                    </div>
+                    <div class="main_mid_cont">
+                        <div class="main_mid_listBox">
+
+                            <div class="listBox_tap longbg_on noline">
+                                <span>(3)위험관리 역량</span>
+                            </div>
+                            <table class="join_info">
+                                <colgroup>
+                                    <col width="20%">
+                                    <col width="20%">
+                                    <col width="60%">
+                                </colgroup>
+                                <tr>
+                                    <td class="left_memo">역량 검토 항목</td>
+                                    <td>
+                                        <span class="span_weak">□ 기초역량 평가</span> <span class="span_weak">□ 재무지표 평가</span> <span class="span_on">
+                                            ■ 전문가 평가
+                                        </span>
+                                    </td>
+                                    <td class="center_td">
+                                        <div class="label_td" style="width: 77%">
+                                            전반적 관리역량((노무,
+                                            재무,자산, IP, 법무(계약) 등))
+                                        </div> <span class="label_span"
+                                                     style="width: 10%"></span>
+                                    </td>
+                                </tr>
+
+
+                            </table>
+                        </div>
+
+                    </div>
+                    <div class="main_mid_cont">
+                        <div class="main_mid_listBox nomargin2">
+                            <div class="listBox_tap longbg_on full_line noline">
+                                <span>위험관리 역량</span>
+                            </div>
+                            <table class="capacity_table02">
+                                <colgroup>
+                                    <col width="12%">
+                                    <col width="12%">
+                                    <col width="10%">
+                                    <col width="10%">
+                                    <col width="10%">
+                                    <col width="10%">
+                                    <col width="12%">
+                                    <col width="10%">
+                                    <col width="10%">
+                                </colgroup>
+                                <tr>
+                                    <td class="left_memo" rowspan="2">발전단계</td>
+                                    <td class="left_memo" rowspan="2">구분</td>
+                                    <td class="left_memo" colspan="2">재무</td>
+                                    <td class="left_memo" colspan="2">노무</td>
+                                    <td class="left_memo" rowspan="2">법무</td>
+                                    <td class="left_memo" colspan="2">지재권</td>
+
+                                </tr>
+                                <tr>
+                                    <td class="center_td center bold">의사결정</td>
+                                    <td class="center_td center bold">일반관리</td>
+                                    <td class="center_td center bold">의사결정</td>
+                                    <td class="center_td center bold">일반관리</td>
+                                    <td class="center_td center bold">의사결정</td>
+                                    <td class="center_td center bold">일반관리</td>
+                                </tr>
+                                <tr>
+                                    <td rowspan="4" class="capacity_bg02"></td>
+                                    <td class="center_td center bold">대표</td>
+                                    <td class="center_td center">
+                                        @Html.CheckBoxFor(model => model.CheckBoxList[0].CheckVal, new { @id = "check0" })
+                                        @Html.HiddenFor(model => model.CheckBoxList[0].DetailCd)
+                                    </td>
+                                    <td class="center_td center">
+                                        @Html.CheckBoxFor(model => model.CheckBoxList[1].CheckVal, new { @id = "check1" })
+                                        @Html.HiddenFor(model => model.CheckBoxList[1].DetailCd)
+                                    </td>
+                                    <td class="center_td center">
+                                        @Html.CheckBoxFor(model => model.CheckBoxList[2].CheckVal, new { @id = "check2" })
+                                        @Html.HiddenFor(model => model.CheckBoxList[2].DetailCd)
+                                    </td>
+                                    <td class="center_td center">
+                                        @Html.CheckBoxFor(model => model.CheckBoxList[3].CheckVal, new { @id = "check3" })
+                                        @Html.HiddenFor(model => model.CheckBoxList[3].DetailCd)
+                                    </td>
+                                    <td class="center_td center">
+                                        @Html.CheckBoxFor(model => model.CheckBoxList[4].CheckVal, new { @id = "check4" })
+                                        @Html.HiddenFor(model => model.CheckBoxList[4].DetailCd)
+                                    </td>
+                                    <td class="center_td center">
+                                        @Html.CheckBoxFor(model => model.CheckBoxList[5].CheckVal, new { @id = "check5" })
+                                        @Html.HiddenFor(model => model.CheckBoxList[5].DetailCd)
+                                    </td>
+                                    <td class="center_td center">
+                                        @Html.CheckBoxFor(model => model.CheckBoxList[6].CheckVal, new { @id = "check6" })
+                                        @Html.HiddenFor(model => model.CheckBoxList[6].DetailCd)
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="center_td center bold">위임</td>
+                                    <td class="center_td center">
+                                        @Html.CheckBoxFor(model => model.CheckBoxList[7].CheckVal, new { @id = "check7" })
+                                        @Html.HiddenFor(model => model.CheckBoxList[7].DetailCd)
+                                    </td>
+                                    <td class="center_td center">
+                                        @Html.CheckBoxFor(model => model.CheckBoxList[8].CheckVal, new { @id = "check8" })
+                                        @Html.HiddenFor(model => model.CheckBoxList[8].DetailCd)
+                                    </td>
+                                    <td class="center_td center">
+                                        @Html.CheckBoxFor(model => model.CheckBoxList[9].CheckVal, new { @id = "check9" })
+                                        @Html.HiddenFor(model => model.CheckBoxList[9].DetailCd)
+                                    </td>
+                                    <td class="center_td center">
+                                        @Html.CheckBoxFor(model => model.CheckBoxList[10].CheckVal, new { @id = "check10" })
+                                        @Html.HiddenFor(model => model.CheckBoxList[10].DetailCd)
+                                    </td>
+                                    <td class="center_td center">
+                                        @Html.CheckBoxFor(model => model.CheckBoxList[11].CheckVal, new { @id = "check11" })
+                                        @Html.HiddenFor(model => model.CheckBoxList[11].DetailCd)
+                                    </td>
+                                    <td class="center_td center">
+                                        @Html.CheckBoxFor(model => model.CheckBoxList[12].CheckVal, new { @id = "check12" })
+                                        @Html.HiddenFor(model => model.CheckBoxList[12].DetailCd)
+                                    </td>
+                                    <td class="center_td center">
+                                        @Html.CheckBoxFor(model => model.CheckBoxList[13].CheckVal, new { @id = "check13" })
+                                        @Html.HiddenFor(model => model.CheckBoxList[13].DetailCd)
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="center_td center bold">규정보유</td>
+                                    <td class="center_td center">
+                                        @Html.CheckBoxFor(model => model.CheckBoxList[14].CheckVal, new { @id = "check14" })
+                                        @Html.HiddenFor(model => model.CheckBoxList[14].DetailCd)
+                                    </td>
+                                    <td class="center_td center">
+                                        @Html.CheckBoxFor(model => model.CheckBoxList[15].CheckVal, new { @id = "check15" })
+                                        @Html.HiddenFor(model => model.CheckBoxList[15].DetailCd)
+                                    </td>
+                                    <td class="center_td center">
+                                        @Html.CheckBoxFor(model => model.CheckBoxList[16].CheckVal, new { @id = "check16" })
+                                        @Html.HiddenFor(model => model.CheckBoxList[16].DetailCd)
+                                    </td>
+                                    <td class="center_td center">
+                                        @Html.CheckBoxFor(model => model.CheckBoxList[17].CheckVal, new { @id = "check17" })
+                                        @Html.HiddenFor(model => model.CheckBoxList[17].DetailCd)
+                                    </td>
+                                    <td class="center_td center">
+                                        @Html.CheckBoxFor(model => model.CheckBoxList[18].CheckVal, new { @id = "check18" })
+                                        @Html.HiddenFor(model => model.CheckBoxList[18].DetailCd)
+                                    </td>
+                                    <td class="center_td center">
+                                        @Html.CheckBoxFor(model => model.CheckBoxList[19].CheckVal, new { @id = "check19" })
+                                        @Html.HiddenFor(model => model.CheckBoxList[19].DetailCd)
+                                    </td>
+                                    <td class="center_td center">
+                                        @Html.CheckBoxFor(model => model.CheckBoxList[20].CheckVal, new { @id = "check20" })
+                                        @Html.HiddenFor(model => model.CheckBoxList[20].DetailCd)
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="center_td center bold">
+                                        시스템화<br>(전산관리)
+                                    </td>
+                                    <td class="center_td center">
+                                        @Html.CheckBoxFor(model => model.CheckBoxList[21].CheckVal, new { @id = "check21" })
+                                        @Html.HiddenFor(model => model.CheckBoxList[21].DetailCd)
+                                    </td>
+                                    <td class="center_td center">
+                                        @Html.CheckBoxFor(model => model.CheckBoxList[22].CheckVal, new { @id = "check22" })
+                                        @Html.HiddenFor(model => model.CheckBoxList[22].DetailCd)
+                                    </td>
+                                    <td class="center_td center">
+                                        @Html.CheckBoxFor(model => model.CheckBoxList[23].CheckVal, new { @id = "check23" })
+                                        @Html.HiddenFor(model => model.CheckBoxList[23].DetailCd)
+                                    </td>
+                                    <td class="center_td center">
+                                        @Html.CheckBoxFor(model => model.CheckBoxList[24].CheckVal, new { @id = "check24" })
+                                        @Html.HiddenFor(model => model.CheckBoxList[24].DetailCd)
+                                    </td>
+                                    <td class="center_td center">
+                                        @Html.CheckBoxFor(model => model.CheckBoxList[25].CheckVal, new { @id = "check25" })
+                                        @Html.HiddenFor(model => model.CheckBoxList[25].DetailCd)
+                                    </td>
+                                    <td class="center_td center">
+                                        @Html.CheckBoxFor(model => model.CheckBoxList[26].CheckVal, new { @id = "check26" })
+                                        @Html.HiddenFor(model => model.CheckBoxList[26].DetailCd)
+                                    </td>
+                                    <td class="center_td center">
+                                        @Html.CheckBoxFor(model => model.CheckBoxList[27].CheckVal, new { @id = "check27" })
+                                        @Html.HiddenFor(model => model.CheckBoxList[27].DetailCd)
+                                    </td>
+                                </tr>
+                            </table>
+                            <div class="capacity_comment">
+                                <div class="capacity_comment_left bold">위험관리 역량 단계</div>
+                                <div class="capacity_comment_right">
+                                    <div class="label bold">
+                                        창업보육단계
+                                        @Html.RadioButtonFor(model => model.CommentList[0].Comment, "1", new { @id = "comment00" })
+                                    </div>
+                                    <div class="label bold">
+                                        보육성장단계
+                                        @Html.RadioButtonFor(model => model.CommentList[0].Comment, "2", new { @id = "comment00" })
+                                    </div>
+                                    <div class="label bold">
+                                        자립성장단계
+                                        @Html.RadioButtonFor(model => model.CommentList[0].Comment, "3", new { @id = "comment00" })
+                                        @Html.HiddenFor(model => model.CommentList[0].DetailCd)
+                                        @Html.HiddenFor(model => model.CommentList[0].Comment, new { @id = "riskhid" })
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+
+                    </div>
+                    <div class="main_mid_cont fix_bot list_print">
+                        <div class="main_mid_listBox nomargin2">
+                            <div class="listBox_tap bg_on">
+                                <span>검토결과</span>
+                            </div>
+                            @Html.TextAreaFor(model => model.CommentList[1].Comment, new { @id = "comment29", @class = "bot_textarea_365", @maxlength = "1000", @placeholder = "1000자 내로 작성하시기 바랍니다." })
+                            @Html.HiddenFor(model => model.CommentList[1].DetailCd)
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+
+    <!--container//-->
+            <div id="btnwrap_sub" class="bottom_left2">
+
+                <div class="rightwrap left">
+                    <a href="@Url.Action("RiskMgmtLiquidity", "BasicSurveyReport", new { area = "", NumSn = ViewBag.paramModel.NumSn, CompSn = ViewBag.paramModel.CompSn, BizWorkYear = ViewBag.paramModel.BizWorkYear, Status = ViewBag.paramModel.Status, QuestionSn = ViewBag.paramModel.QuestionSn })" class="btn_a gray left" value="이전">이전</a>
+
+                </div>
+                <div class="rightwrap right">
+                    @if (ViewBag.paramModel.Status != "C")
+                {
+                        <button type="button" class="btn_big gray" onclick="goSubmit('N');" value="다음">다음</button>
+                    }
+                    else
+                    {
+                        <a href="@Url.Action("GrowthRoadMapCover", "BasicSurveyReport", new { area = "" , NumSn = ViewBag.paramModel.NumSn, CompSn = ViewBag.paramModel.CompSn, BizWorkYear = ViewBag.paramModel.BizWorkYear, Status = ViewBag.paramModel.Status, QuestionSn = ViewBag.paramModel.QuestionSn})" class="btn_a gray right" value="다음">다음</a>
+                    }
+                </div>
+                @if (ViewBag.paramModel.Status != "C")
+                {
+                    <div class="rightwrap centerwrap">
+                        <button type="button" class="btn_big red" onclick="goSubmit('T');" value="임시저장">임시저장</button>
+                    </div>
+                }
+            </div>
+        }
+    </div>
+
+</div>
+
+
+
+

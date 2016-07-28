@@ -1,0 +1,628 @@
+﻿@model BizOneShot.Light.Models.ViewModels.MentoringTotalReportViewModel
+
+@{
+    Layout = "~/Areas/Mentor/Views/Shared/_MainDetailLayout.cshtml";
+}
+
+@* 캘린더 처리를위해 추가한 JS 및 SCC *@
+@Styles.Render("~/css/jquery-ui")
+@Scripts.Render("~/bundles/jquery-ui")
+@Scripts.Render("~/Js/files.js")
+
+
+<script>
+    $(document).ready(function () {
+        //top menu
+        $('#naviwrap_biz > .navi_biz >  a > .top_menu > .header_mentor ').addClass('on');
+        $('#naviwrap_biz > .navi_biz >  a > .top_menu > .top_text_mentor ').addClass('on');
+        //left menu
+        $('#sub_leftwrap > .sub_gnbwrap > ul > li > a.gnb_regMentoringTr').addClass('on');
+
+        $('.vc_iconSB_02 ').addClass('on01');
+        $('.vc_title_01 ').addClass('on');
+        $('.a_label03 ').addClass('on');
+
+        $("#SUBMIT_DATE").datepicker({
+            showMonthAfterYear: true,
+            yearSuffix: '년',
+            monthNames: ['1월', '2월', '3월', '4월', '5월', '6월', '7월', '8월', '9월', '10월', '11월', '12월'],
+            monthNamesShort: ['1월', '2월', '3월', '4월', '5월', '6월', '7월', '8월', '9월', '10월', '11월', '12월'],
+            dayNamesMin: ['일', '월', '화', '수', '목', '금', '토'],
+            dateFormat: 'yy-mm-dd'
+        });
+
+
+        $('.bt_calendar').on('click', function () {
+            $(this).prev().focus();
+            return false;
+        });
+
+        $('#CompSn').attr("disabled", true);
+        $('#BizWorkSn').change(function () {
+            var bizWorkSn = $('#BizWorkSn').val();
+
+            if (bizWorkSn == 0) {
+                $('#CompSn').attr("disabled", false);
+                $('#CompSn').html("");
+                $('#CompSn').attr("disabled", true);
+            } else {
+                $('#CompSn').attr("disabled", false);
+                $('#CompSn').html("");
+
+                $.ajax({
+                    url: '@Url.Action("getBizComp", "MentoringReport")',
+                    type: "post",
+                    dataType: "json",
+                    data: { bizWorkSn: bizWorkSn, bizWorkYear: 0 },
+                    async: false,
+                    success: function (result) {
+                        for (var i = 0; i < result.length; i++) {
+                            $('#CompSn').append("<option value='" + result[i].CompSn + "'>" + result[i].CompNm + "</option>");
+                        }
+                    }
+                });
+            }
+        });
+
+        $('#submit_form').bind('submit', function () {
+            //필수값체크
+            //if($('#BizWorkSn').val() == 0) {
+            //    alert("사업명을 선택하세요");
+            //    $('#BizWorkSn').focus();
+            //    return false;
+            //}
+
+            //if($('#CompSn').val() == 0) {
+            //    alert("기업명을 선택하세요");
+            //    $('#CompSn').focus();
+            //    return false;
+            //}
+
+            //if($('#SUBMIT_DATE').val() == "") {
+            //    alert("제출일을 선택하세요");
+            //    $('#SUBMIT_DATE').focus();
+            //    return false;
+            //}
+
+            //파일체크
+            var inputFileCount = 0;
+            var totalSize = 0;
+            var fileNames = new Array();
+            $('input[type="file"]').each(function () {
+                if ($(this).val() != '') {
+                    //input에서 파일이름만 추출해서 담음
+                    fileNames.push($(this).val().replace(/^.*[\\\/]/, ''));
+
+                    fileSize = $('input[type="file"]').get(inputFileCount).files[0].size;
+                    totalSize = totalSize + fileSize;
+
+                    //inputFileCount += 1;
+                    inputFileCount += 1;
+                    console.log("----------");
+                    console.log(inputFileCount);
+                }
+
+              
+
+            });
+
+            $('span[type="file"]').each(function () {
+
+                if ($(this).val() != '') {
+                    //input에서 파일이름만 추출해서 담음
+                    fileNames.push($(this).val().replace(/^.*[\\\/]/, ''));
+
+                    fileSize = $('span[type="file"]').get(inputFileCount).files[0].size;
+                    totalSize = totalSize + fileSize;
+
+                    //inputFileCount += 1;
+
+                    
+                }
+                inputFileCount += 1;
+                console.log("!!!!!!!");
+                console.log(inputFileCount + "\n test");
+            });
+            
+
+            if (inputFileCount == 0) {
+                alert("첨부파일은 1개이상 등록해야 합니다.");
+                return false;
+            }
+
+            if (inputFileCount > 5) {
+                alert("파일갯수는 5개를 초과할 수 없습니다.");
+                return false;
+            }
+
+            if (totalSize > 100000000) {
+                alert("전체 파일 사이즈는 100MB 를 초과할 수 없습니다.");
+                return false;
+            }
+
+            var hasDups = !fileNames.every(function (v, i) {
+                return fileNames.indexOf(v) == i;
+            });
+            if (hasDups) {
+                // having duplicate values
+                alert("업로드할 파일에 같은 파일이 있습니다.");
+                return false;
+            }
+
+            //빈란 삭제
+            $('input[type="file"]').each(function () {
+                if ($(this).val() == '') {
+                    $(this).remove();
+                }
+            });
+
+            if ($('#submitType').val() == "S") {
+
+                if (!confirm('작성한 내용을 저장 하시겠습니까?')) {
+                    return false;
+                }
+
+            }
+            
+        });
+    });
+
+    var array = [];
+    function delete_file(value) {
+        array.push(value);
+        $("#deleteFileSns").val(array);
+    };
+
+    function goSubmit(submitType) {
+        $('#submitType').val(submitType);
+        console.log("1 :" + $('#submitType').val());
+        $('#submit_form').submit();
+        console.log("2 :" + $('#submitType').val());
+    }
+
+</script>
+
+<div class="reg">
+    <div class="tcms">
+        <div class="main_top">
+            <div class="list_icon"></div>
+            <div class="sub_title">심화보고서 등록</div>
+            @RenderPage("~/Areas/Mentor/Views/Shared/_MainTopMenuPartial.cshtml")
+        </div>
+
+        @using (Html.BeginForm("RegDeepenReport", "Report", FormMethod.Post, new { area = "Mentor", id = "submit_form", role = "form", enctype = "multipart/form-data" }))
+        {
+            @Html.AntiForgeryToken()
+            @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+
+            @Html.HiddenFor(model => model.ConCode, new { @id = "submit_form" })
+            @Html.HiddenFor(model => model.NumSn, new { @id = "submit_form" })
+            @Html.HiddenFor(model => model.SubNumSn, new { @id = "submit_form" })
+            @Html.HiddenFor(model => model.CompSn, new { @id = "submit_form" })
+            @Html.HiddenFor(model => model.TotalReportSn, new { @id = "submit_form" })
+
+            @Html.HiddenFor(model => model.SubmitType, new { @id = "submitType" })
+
+
+            @Html.Hidden("deleteFileSns", "", new { @id = "deleteFileSns", @name = "deleteFileSns" })
+            <div calss="tablewrap">
+
+                @if (Model.FinalSubmitYn == "N" || Model.FinalSubmitYn == null)
+                {
+                    <table>
+
+                        <tr>
+                            <th>기업명</th>
+                            @*<td class="border1 padding_left10">@Model.CompNm</td>*@
+                            <td class="border1 padding_left10">@Model.CompNm</td>
+
+                        </tr>
+                        <tr>
+                            <th>컨설팅 코드</th>
+                            @*<td class="border1">@Html.DropDownList("NumSn", ViewBag.SelectConCodeList as SelectList, new { @class = "w101p border1", @id = "BizManager" })</td>*@
+                            @*<td class="border1 padding_left10">@Model.ConCode</td>*@
+                            <td class="border1 padding_left10">@Model.ConCode</td>
+
+
+                        </tr>
+                        <tr>
+                            <th>심화보고서 내용</th>
+                            <td class="form">
+                                @Html.TextAreaFor(model => model.DeepenContents, new { @class = "border1" })
+                                @Html.ValidationMessageFor(model => model.DeepenContents, "")
+                            </td>
+                        </tr>
+
+                        @*<tr>
+                                <th>월 기수 선택</th>
+                                <td>@Html.DropDownList("SubNumSn", ViewBag.SelectSubNumList as SelectList, new { @class = "w100p", @id = "BizManager" })</td>
+                            </tr>*@
+                        <tr>
+                            <th>제출일</th>
+                            <td class="form">
+                                @Html.TextBoxFor(model => model.SubmitDt, new { @class = "w18 border1 margin_left5", @id = "SUBMIT_DATE", @name = "SUBMIT_DATE", @readonly = "readonly" })
+                                <a href="" class="bt_calendar"><em>날짜선택</em></a>
+                                @Html.ValidationMessageFor(model => model.SubmitDt, "", new { @class = "text-danger", @color = "#b94a48" })
+                            </td>
+                        </tr>
+                        <tr>
+                            <th>첨부파일1</th>
+                            <td class="nopad border1">
+                                <div id="file_upwrap">
+                                    <ul>
+                                        <li>
+                                            <!--파일1-->
+                                            <input type="text" class="file search02 border1 " readonly="readonly" />
+                                            <button type="button" class="btn_mid gray leftmargin margin_left5" value="찾아보기" onclick="return file_add(this);">찾아보기</button>
+                                            @*<button type="button" class="file_add" value="파일추가" onclick="return file_inpput_add(this);"></button>
+                                                <button type="button" class="file_del" value="파일삭제" onclick="return file_inpput_remove(this);"></button>*@
+                                            <em><input type="file" name="files" id="files" onchange="return get_filename(this);" /></em>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <th>첨부파일2</th>
+                            <td class="nopad border1">
+                                <div id="file_upwrap">
+                                    <ul>
+                                        <li>
+                                            <!--파일1-->
+                                            <input type="text" class="file search02 border1" readonly="readonly" />
+                                            <button type="button" class="btn_mid gray leftmargin margin_left5" value="찾아보기" onclick="return file_add(this);">찾아보기</button>
+                                            <em><input type="file" name="files" id="files" onchange="return get_filename(this);" /></em>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <th>첨부파일3</th>
+                            <td class="nopad border1">
+                                <div id="file_upwrap">
+                                    <ul>
+                                        <li>
+                                            <!--파일1-->
+                                            <input type="text" class="file search02 border1" readonly="readonly" />
+                                            <button type="button" class="btn_mid gray leftmargin margin_left5" value="찾아보기" onclick="return file_add(this);">찾아보기</button>
+                                            <em><input type="file" name="files" id="files" onchange="return get_filename(this);" /></em>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <th>첨부파일4</th>
+                            <td class="nopad border1">
+                                <div id="file_upwrap">
+                                    <ul>
+                                        <li>
+                                            <!--파일1-->
+                                            <input type="text" class="file search02 border1" readonly="readonly" />
+                                            <button type="button" class="btn_mid gray leftmargin margin_left5" value="찾아보기" onclick="return file_add(this);">찾아보기</button>
+                                            <em><input type="file" name="files" id="files" onchange="return get_filename(this);" /></em>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <th>첨부파일5</th>
+                            <td class="nopad border1">
+                                <div id="file_upwrap">
+                                    <ul>
+                                        <li>
+                                            <!--파일1-->
+                                            <input type="text" class="file search02 border1" readonly="readonly" />
+                                            <button type="button" class="btn_mid gray leftmargin margin_left5" value="찾아보기" onclick="return file_add(this);">찾아보기</button>
+                                            <em><input type="file" name="files" id="files" onchange="return get_filename(this);" /></em>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <th>첨부파일양식</th>
+                            <td class="blue_text text-center border1">
+                                'doc', 'docs', 'docx', 'txt', 'xlsx', 'xls', 'pdf', 'ppt', 'pptx', 'hwp'의 형식만 첨부 가능 (최대 100MB)
+                            </td>
+                        </tr>
+                    </table>
+
+                    <div id="btnwrap_sub">
+                        <a href="@Url.Action("DeepenReportList", "Report", new { area = "Mentor"})" class="btn_a gray left list_btn" value="목록">목록</a>
+                        <button type="button" class="btn_big gray right margin_top10" value="취소" onclick="if (confirm('지금까지 작성된 내용을 취소하시겠습니까?')) location.href='@Url.Action("DeepenReportList", "Report")'">취소</button>
+                        <button type="submit" class="btn_big red right rightmargin" onclick="goSubmit('S')">저장</button>
+                    </div><!--btnwrap//-->
+
+                }
+                else if (Model.FinalSubmitYn == "D")
+                {
+                    <table>
+
+                        <tr>
+                            <th>기업명 D</th>
+                            @*<td class="border1 padding_left10">@Model.CompNm</td>*@
+                            <td class="border1 padding_left10">@Model.CompNm</td>
+                        </tr>
+                        <tr>
+                            <th>컨설팅 코드</th>
+                            @*<td class="border1">@Html.DropDownList("NumSn", ViewBag.SelectConCodeList as SelectList, new { @class = "w101p border1", @id = "BizManager" })</td>*@
+                            @*<td class="border1 padding_left10">@Model.ConCode</td>*@
+                            <td class="border1 padding_left10">@Model.ConCode</td>
+                        </tr>
+                        <tr>
+                            <th>심화보고서 내용</th>
+                            <td class="form">
+                                @Html.TextAreaFor(model => model.DeepenContents, new { @class = "border1" })
+                                @Html.ValidationMessageFor(model => model.DeepenContents, "")
+                            </td>
+                        </tr>
+
+                        @*<tr>
+                                <th>월 기수 선택</th>
+                                <td>@Html.DropDownList("SubNumSn", ViewBag.SelectSubNumList as SelectList, new { @class = "w100p", @id = "BizManager" })</td>
+                            </tr>*@
+                        <tr>
+                            <th>제출일</th>
+                            <td class="form">
+                                @Html.TextBoxFor(model => model.SubmitDt, new { @class = "w18 border1 margin_left5", @id = "SUBMIT_DATE", @name = "SUBMIT_DATE", @readonly = "readonly" })
+                                <a href="" class="bt_calendar"><em>날짜선택</em></a>
+                                @Html.ValidationMessageFor(model => model.SubmitDt, "", new { @class = "text-danger", @color = "#b94a48" })
+                            </td>
+                        </tr>
+                        <tr>
+                            <th>첨부파일1</th>
+                            <td class="nopad border1">
+                                <div id="file_upwrap">
+                                    <ul>
+                                        <li>
+                                            <!--파일1-->
+                                            <input type="text" class="file search02 border1 " readonly="readonly" />
+
+                                            <button type="button" class="btn_mid gray leftmargin margin_left5" value="찾아보기" onclick="return file_add(this);">찾아보기</button>
+                                            @*<button type="button" class="file_add" value="파일추가" onclick="return file_inpput_add(this);"></button>
+                                                <button type="button" class="file_del" value="파일삭제" onclick="return file_inpput_remove(this);"></button>*@
+                                            <em><input type="file" name="files" id="files" onchange="return get_filename(this);" /></em>
+                                            @*@Html.ValidationMessageFor(model => model.FileNm, "")*@
+                                        </li>
+                                    </ul>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <th>첨부파일2</th>
+                            <td class="nopad border1">
+                                <div id="file_upwrap">
+                                    <ul>
+                                        <li>
+                                            <!--파일1-->
+                                            <input type="text" class="file search02 border1" readonly="readonly" />
+                                            <button type="button" class="btn_mid gray leftmargin margin_left5" value="찾아보기" onclick="return file_add(this);">찾아보기</button>
+                                            <em><input type="file" name="files" id="files" onchange="return get_filename(this);" /></em>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <th>첨부파일3</th>
+                            <td class="nopad border1">
+                                <div id="file_upwrap">
+                                    <ul>
+                                        <li>
+                                            <!--파일1-->
+                                            <input type="text" class="file search02 border1" readonly="readonly" />
+                                            <button type="button" class="btn_mid gray leftmargin margin_left5" value="찾아보기" onclick="return file_add(this);">찾아보기</button>
+                                            <em><input type="file" name="files" id="files" onchange="return get_filename(this);" /></em>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <th>첨부파일4</th>
+                            <td class="nopad border1">
+                                <div id="file_upwrap">
+                                    <ul>
+                                        <li>
+                                            <!--파일1-->
+                                            <input type="text" class="file search02 border1" readonly="readonly" />
+                                            <button type="button" class="btn_mid gray leftmargin margin_left5" value="찾아보기" onclick="return file_add(this);">찾아보기</button>
+                                            <em><input type="file" name="files" id="files" onchange="return get_filename(this);" /></em>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <th>첨부파일5</th>
+                            <td class="nopad border1">
+                                <div id="file_upwrap">
+                                    <ul>
+                                        <li>
+                                            <!--파일1-->
+                                            <input type="text" class="file search02 border1" readonly="readonly" />
+                                            <button type="button" class="btn_mid gray leftmargin margin_left5" value="찾아보기" onclick="return file_add(this);">찾아보기</button>
+                                            <em><input type="file" name="files" id="files" onchange="return get_filename(this);" /></em>
+                                        </li>
+                                    </ul>
+                                </div>
+
+                            </td>
+                        </tr>
+                        <tr>
+                            <th>첨부파일양식</th>
+                            <td class="blue_text text-center border1">
+                                'doc', 'docs', 'docx', 'txt', 'xlsx', 'xls', 'pdf', 'ppt', 'pptx', 'hwp'의 형식만 첨부 가능 (최대 100MB)
+                            </td>
+                        </tr>
+
+                        @if (Model.FileContents.Count > 0)
+                        {
+
+                            foreach (var item in Model.FileContents)
+                            {
+                                <tr>
+                                    <th> 첨부파일 삭제 </th>
+                                    <td class="border1">
+                                        <div id="file_downwrap">
+                                            <ul id="ulExitFiles">
+                                                <li>
+                                                    <span type="text" class="padding_left10">@item.FileNm</span>
+                                                    <button type="button" class="btn_mid gray file_delete" value="@item.FileSn" onclick="delete_file(@item.FileSn); return file_inpput_remove2(this); ">삭제하기</button>
+                                                    <em><span type="file" name="files" id="files" onchange="return get_filename(this);" /></em>
+                                                </li>
+                                            </ul>
+                                        </div>
+                                    </td>
+                                </tr>
+                            }
+
+                        }
+
+                    </table>
+
+                    <div id="btnwrap_sub">
+                        <a href="@Url.Action("DeepenReportList", "Report", new { area = "Mentor"})" class="btn_a gray left list_btn" value="목록">목록</a>
+                        <button type="button" class="btn_big gray right margin_top10" value="취소" onclick="if (confirm('최종제출을하면 수정이 불가능합니다. 그래도 제출 하시겠습니까?')) goSubmit('C');">최종제출</button>
+                        <button type="submit" class="btn_big red right rightmargin" onclick="goSubmit('S')">저장</button>
+                    </div><!--btnwrap//-->
+
+                }
+                else if (Model.FinalSubmitYn == "Y")
+                {
+                    <table>
+
+                        <tr>
+                            <th>기업명 C</th>
+                            @*<td class="border1 padding_left10">@Model.CompNm</td>*@
+                            <td class="border1 padding_left10">@Model.CompNm</td>
+                        </tr>
+                        <tr>
+                            <th>컨설팅 코드</th>
+                            @*<td class="border1">@Html.DropDownList("NumSn", ViewBag.SelectConCodeList as SelectList, new { @class = "w101p border1", @id = "BizManager" })</td>*@
+                            @*<td class="border1 padding_left10">@Model.ConCode</td>*@
+                            <td class="border1 padding_left10">@Model.ConCode</td>
+                        </tr>
+                        <tr>
+                            <th>심화보고서 내용</th>
+                            <td class="form">
+                                @Html.TextAreaFor(model => model.DeepenContents, new { @class = "border1" })
+                                @Html.ValidationMessageFor(model => model.DeepenContents, "")
+                            </td>
+                        </tr>
+
+                        @*<tr>
+                                <th>월 기수 선택</th>
+                                <td>@Html.DropDownList("SubNumSn", ViewBag.SelectSubNumList as SelectList, new { @class = "w100p", @id = "BizManager" })</td>
+                            </tr>*@
+                        <tr>
+                            <th>제출일</th>
+                            <td class="form">
+                                @Html.TextBoxFor(model => model.SubmitDt, new { @class = "w18 border1 margin_left5", @id = "SUBMIT_DATE", @name = "SUBMIT_DATE", @readonly = "readonly" })
+                                <a href="" class="bt_calendar"><em>날짜선택</em></a>
+                                @Html.ValidationMessageFor(model => model.SubmitDt, "", new { @class = "text-danger", @color = "#b94a48" })
+                            </td>
+                        </tr>
+                        <tr>
+                            <th>첨부파일1</th>
+                            <td class="nopad border1">
+                                <div id="file_upwrap">
+                                    <ul>
+                                        <li>
+                                            <!--파일1-->
+                                            <input type="text" class="file search02 border1 " readonly="readonly" />
+                                            <button type="button" class="btn_mid gray leftmargin margin_left5" value="찾아보기" onclick="return file_add(this);">찾아보기</button>
+                                            @*<button type="button" class="file_add" value="파일추가" onclick="return file_inpput_add(this);"></button>
+                                                <button type="button" class="file_del" value="파일삭제" onclick="return file_inpput_remove(this);"></button>*@
+                                            <em><input type="file" name="files" id="files" onchange="return get_filename(this);" /></em>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <th>첨부파일2</th>
+                            <td class="nopad border1">
+                                <div id="file_upwrap">
+                                    <ul>
+                                        <li>
+                                            <!--파일1-->
+                                            <input type="text" class="file search02 border1" readonly="readonly" />
+                                            <button type="button" class="btn_mid gray leftmargin margin_left5" value="찾아보기" onclick="return file_add(this);">찾아보기</button>
+                                            <em><input type="file" name="files" id="files" onchange="return get_filename(this);" /></em>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <th>첨부파일3</th>
+                            <td class="nopad border1">
+                                <div id="file_upwrap">
+                                    <ul>
+                                        <li>
+                                            <!--파일1-->
+                                            <input type="text" class="file search02 border1" readonly="readonly" />
+                                            <button type="button" class="btn_mid gray leftmargin margin_left5" value="찾아보기" onclick="return file_add(this);">찾아보기</button>
+                                            <em><input type="file" name="files" id="files" onchange="return get_filename(this);" /></em>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <th>첨부파일4</th>
+                            <td class="nopad border1">
+                                <div id="file_upwrap">
+                                    <ul>
+                                        <li>
+                                            <!--파일1-->
+                                            <input type="text" class="file search02 border1" readonly="readonly" />
+                                            <button type="button" class="btn_mid gray leftmargin margin_left5" value="찾아보기" onclick="return file_add(this);">찾아보기</button>
+                                            <em><input type="file" name="files" id="files" onchange="return get_filename(this);" /></em>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <th>첨부파일5</th>
+                            <td class="nopad border1">
+                                <div id="file_upwrap">
+                                    <ul>
+                                        <li>
+                                            <!--파일1-->
+                                            <input type="text" class="file search02 border1" readonly="readonly" />
+                                            <button type="button" class="btn_mid gray leftmargin margin_left5" value="찾아보기" onclick="return file_add(this);">찾아보기</button>
+                                            <em><input type="file" name="files" id="files" onchange="return get_filename(this);" /></em>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <th>첨부파일양식</th>
+                            <td class="blue_text text-center border1">
+                                'doc', 'docs', 'docx', 'txt', 'xlsx', 'xls', 'pdf', 'ppt', 'pptx', 'hwp'의 형식만 첨부 가능 (최대 100MB)
+                            </td>
+                        </tr>
+                    </table>
+
+                }
+
+               
+
+            </div><!--tablewrap//-->
+
+
+            @section Scripts {
+                @Scripts.Render("~/bundles/jqueryval")
+            }
+        }
+
+    </div><!--sub_rightwrap//-->
+
+</div>

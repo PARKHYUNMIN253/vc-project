@@ -1,0 +1,196 @@
+﻿@model IPagedList<BizOneShot.Light.Models.ViewModels.TcmsCompStatusSelectViewModel>
+
+@{
+    Layout = "~/Areas/SysManager/Views/Shared/_MainDetailLayout.cshtml";
+}
+
+<div class="tcms">
+    <div class="main_top short">
+        <div class="list_icon"></div><div class="sub_title">컨설턴트 현황</div>
+        @RenderPage("~/Areas/SysManager/Views/Shared/_MainTopMenuPartial.cshtml")
+    </div>
+
+    @Html.Hidden("searchType", ViewBag.SelectList as string)
+    <div id="custom_search_box">
+        @using (Html.BeginForm("BaStateManage", "ConditionManagement", FormMethod.Post, new { id = "searchForm" }))
+        {
+            <span class="bold">SEARCH&nbsp;</span>
+
+            @Html.DropDownList("SelectList", null, new { @class = "select", @id = "searchType" })
+
+            <img src="~/Images/icon_lenz.png" class="lenz">@Html.TextBox("QUERY", null, new { @class = "search", @placeholder = "검색어를 입력하세요", @id = "QUERY" })
+            <input type="submit" id="search" class="btn_small gray1" value="검색" onclick="goPage('1')" ;>
+
+            @Html.Hidden("curPage", "1")
+        }
+    </div>
+    <!--sub_inquiry_box//-->
+    <div class="main_mid">
+        <form method="" action="" name="" id="">
+            <div class="tablewrap">
+                <!--목록-->
+                <table class="admin_list" id="CompListTable">
+                    <colgroup>
+                        @*<col width="5%">*@
+                        <col width="30%" />
+                        <col width="30%" />
+                        <col width="20%" />
+                        <col width="20%" />
+                    </colgroup>
+                    <tr>
+                        @*<th class="topcen"><input type="checkbox" id="checkAll" /></th>*@
+                        <th class="topcen">전문기관(BA)명</th>
+                        <th class="topcen">담당기업</th>
+                        <th class="topcen">컨설팅코드</th>
+                        <th class="topcen">담당멘토</th>
+
+                    </tr>
+                    @if (Model == null || Model.TotalItemCount == 0)
+                    {
+                        <tr>
+                            <td colspan="6" style="text-align:center;">작성 완료된 보고서가 없습니다.</td>
+                        </tr>
+                    }
+                    else
+                    {
+                        foreach (var item in Model)
+                        {
+                            //for (int a = 0; a < ViewBag.SameCompCount + 1; a++)
+                            //{
+                            <tr>
+                                <td class="center CompName" rowspan="">@item.BaNm</td>
+                                @if (item.CompNm == null)
+                                {
+                                    <td class="" rowspan="">-</td>
+                                }
+                                else
+                                {
+                                    <td class="Qstatus" rowspan="">@item.CompNm</td>
+                                }
+                                <td class="">@item.ConCode</td>
+                                @if (item.Name == null)
+                                {
+                                    <td class="unset">미정</td>
+                                }
+                                else
+                                {
+                                    <td>@item.Name</td>
+                                }
+                            </tr>
+                            //}
+                        }
+                    }
+                </table>
+            </div><!--tablewrap//-->
+            @if (Model != null && Model.TotalItemCount != 0)
+            {
+                @Html.Pagination("goPage", Model.PageNumber, Model.PageCount, Model.HasPreviousPage, Model.HasNextPage)
+            }
+        </form>
+
+    </div><!--sub_rightwrap//-->
+</div>
+
+<script>
+    $(document).ready(function () {
+        //main left menu
+        $('.vc_iconSB_01 ').addClass('on01');
+        $('.vc_title_01 ').addClass('on');
+        $('.a_label02 ').addClass('on');
+
+        mergeCell("CompListTable");
+
+    });
+    function goPage(page) {
+        $('#curPage').val(page);
+        $('#searchForm').submit();
+    }
+    function mergeCell(tableId) {
+        // variable 정의
+        var first = true;
+        var prevRowspan1 = 1;
+        var prevCell1 = null;
+        var prevRowspan2 = 1;
+        var prevCell2 = null;
+        var prevRowspan3 = 1;
+        var prevCell3 = null;
+        var prevRowspan4 = 1;
+        var prevCell4 = null;
+        // tr 모두 추출
+        var rows = $("#" + tableId + " > tbody").children();
+
+        for (var i = 0; i < rows.length; i++) {
+            // first row
+            if (first) {
+                prevRow = rows[i];
+                prevCell1 = $(prevRow).find("td").eq(0); // 기업명
+                prevCell2 = $(prevRow).find("td").eq(1); // 사업자등록번호
+                prevCell3 = $(prevRow).find("td").eq(2); // 대표자명
+                prevCell4 = $(prevRow).find("td").eq(3); // 보고서 보기
+
+                first = false;
+                continue;
+            }
+            var row = rows[i]; // row
+            var tdList = $(row).find("td"); // row > td 리스트
+            var firstCell = $(tdList).eq(0); // 첫 번째 행
+            var secondCell = $(tdList).eq(1); // 두 번째 행
+            var thirdCell = $(tdList).eq(2);
+            var fourthCell = $(tdList).eq(3);
+
+            var firstCellText = $(firstCell).text(); // 첫 번째 행 text 추출 기업명
+            var secondCellText = $(secondCell).text() // 두 번째 행 text 추출 문진표
+            var thirdCellText = $(thirdCell).text() // 세 번째 행 text 추출 보고서
+            var fourthCellText = $(fourthCell).text()
+            //console.log(fourchCellText)
+            // 두 번째 row 부터 텍스트 비교
+            if (prevCell1.text() == firstCellText) //기업명 값 비교
+            {
+                if (prevCell2.text() == secondCellText) // 문진표 값 비교
+                {
+                    if (prevCell3.text() == thirdCellText) // 보고서 값 비교
+                    {
+                        if (prevCell4.text() == fourthCellText) {
+
+                            prevRowspan4++; // 중복되는 값이 있으므로 rowspan +1
+                            $(prevCell4).attr("rowspan", prevRowspan4); // 첫 번째 row의 두 번째 cell에 rowspan 추가 (문진표)
+                            $(fourthCell).remove(); // 중복 cell element 삭제
+                        }
+                        else {
+                            prevRowspan4 = 1;
+                            prevCell4 = fourthCell;
+                        }
+                        prevRowspan3++; // 중복되는 값이 있으므로 rowspan +1
+                        $(prevCell3).attr("rowspan", prevRowspan3); // 첫 번째 row의 두 번째 cell에 rowspan 추가 (문진표)
+                        $(thirdCell).remove(); // 중복 cell element 삭제
+                    }
+                    else {
+                        prevRowspan3 = 1;
+                        prevCell3 = thirdCell;
+                    }
+                    prevRowspan2++; // 중복되는 값이 있으므로 rowspan +1
+                    $(prevCell2).attr("rowspan", prevRowspan2); // 첫 번째 row의 두 번째 cell에 rowspan 추가 (문진표)
+                    $(secondCell).remove(); // 중복 cell element 삭제
+                }
+                else {
+                    prevRowspan2 = 1;
+                    prevCell2 = secondCell;
+                }
+                prevRowspan1++;
+                $(prevCell1).attr("rowspan", prevRowspan1);
+                $(firstCell).remove();
+            }
+            else {
+                prevRowspan1 = 1;
+                prevRowspan2 = 1;
+                prevRowspan3 = 1;
+                prevRowspan4 = 1;
+                prevCell1 = firstCell;
+                prevCell2 = secondCell;
+                prevCell3 = thirdCell;
+                prevCell4 = fourthCell;
+            }
+        }
+    }
+
+</script>

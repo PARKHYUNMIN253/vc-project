@@ -1,0 +1,141 @@
+﻿@*@model BizOneShot.Light.Models.ViewModels.RegCompanyAverageViewModel*@
+@model IPagedList<BizOneShot.Light.Models.ViewModels.RegCompanyAverageViewModel>
+@using BizOneShot.Light.Models.ViewModels
+
+@{
+    Layout = "~/Areas/SysManager/Views/Shared/_MainLayout.cshtml";
+}
+
+
+<script>
+    console.log("jsInit");
+    $(document).ready(function () {
+        //top menu
+        $('#naviwrap_biz > .navi_biz >  a > .top_menu > .header_report01 ').addClass('on');
+        $('#naviwrap_biz > .navi_biz >  a > .top_menu > .top_text_report ').addClass('on');
+        //Cs menu
+        $('#sub_leftwrap > .sub_gnbwrap > ul > li > a.gnb_companyaverage').addClass('on');
+
+        $("#cavTable td.form2").each(function (i, o) {
+            $(o).attr("val", $(o).html());
+            $(o).html("");
+        })
+
+        $('#cavYear').on("change", function () {
+            //console.log("change");
+            $('#curPage').val(1);
+
+            var cavYear = $('#cavYear').val();
+
+            $.ajax({
+                url: '@Url.Action("CompanyAverageJson", "Report")',
+                type: "post",
+                dataType: "json",
+                data: { year : cavYear},
+                //async: false,
+                success: function (result) {
+                    //console.log(result);
+                    if (result.length < 1) return alert("해당 년도의 중소기업 평균값이 없습니다");
+                    $("#cavTable").find("td.form2").each(function (i, o) {
+                        var id = $(o).attr("val");
+                        var val = result[0][id];
+                        $(o).html(val);
+                    })
+                }
+            });
+
+        });
+    });
+</script>
+
+<div id="sub_rightwrap">
+    <div class="sub_right_title right_text">
+        <img src="~/images/list.png" class="icon_list" />
+        중소기업 평균
+    </div>
+    @*@Html.AntiForgeryToken()
+        @Html.Hidden("LoginIdChk")
+        @Html.Hidden("ComRegistrationNoChk")*@
+    <div class="tablewrap" id="cavTable">
+        <!--목록-->
+        <table>
+            <colgroup>
+                <col width="9%">
+                <col width="13%">
+                <col width="13%">
+                <col width="13%">
+                <col width="13%">
+                <col width="13%">
+                <col width="13%">
+                <col width="13%">
+            </colgroup>
+
+            <tr>
+                <th class="topcen" rowspan="2">
+                    <select id="cavYear">
+                        <option value="2010">2010</option>
+                        <option value="2011">2011</option>
+                        <option value="2012">2012</option>
+                        <option value="2013">2013</option>
+                        <option value="2014">2014</option>
+                        <option value="2015">2015</option>
+                        <option value="2016">2016</option>
+                        <option value="2017">2017</option>
+                        <option value="2018">2018</option>
+                        <option value="2019">2019</option>
+                        <option value="2020">2020</option>
+                    </select>
+                </th>
+                <th class="topcen">매출영업<br />이익률(%)</th>
+                <th class="topcen">자기자본순이익률(%)</th>
+                <th class="topcen">매출액<br />증가율(%)</th>
+                <th class="topcen">순이익<br />증가율(%)</th>
+                <th class="topcen">당좌비율(%)</th>
+                <th class="topcen">유동비율(%)</th>
+                <th class="topcen">부채비율(%)</th>
+            </tr>
+            <tr>
+                <td class="form2 center">CavOp</td>
+                <td class="form2 center">CavRe</td>
+                <td class="form2 center">CavSg</td>
+                <td class="form2 center">CavNg</td>
+                <td class="form2 center">CavQr</td>
+                <td class="form2 center">CavCr</td>
+                <td class="form2 center">CavDebt</td>
+            </tr>
+            <tr>
+                <th class="topcen">이자보상<br />비율(%)</th>
+                <th class="topcen">총자산<br />회전율(%)</th>
+                <th class="topcen">매출채권<br />회전율(%)</th>
+                <th class="topcen">재고자산<br />회전율(%)</th>
+                <th class="topcen">부가가치율(%)</th>
+                <th class="topcen">노동생산성(천원)</th>
+                <th class="topcen">자본생산성(%)</th>
+                <th class="topcen">연구개발<br />인력비율(%)</th>
+
+            </tr>
+            <tr>
+                <td class="form2 center">CavIcr</td>
+                <td class="form2 center">CavTat</td>
+                <td class="form2 center">CavTrt</td>
+                <td class="form2 center">CavIt</td>
+                <td class="form2 center">CavVr</td>
+                <td class="form2 center">CavLp</td>
+                <td class="form2 center">CavCp</td>
+                <td class="form2 center">CavSmc</td>
+            </tr>
+
+        </table>
+    </div>
+    <!--tablewrap//-->
+    <div id="btnwrap_sub">
+        <a href="@Url.Action("RegCompanyAverage","Report",new { area= "SysManager" })" class="btn_a red right">등록</a>
+        <a href="@Url.Action("ModifyCompanyAverage","Report",new { area= "SysManager" })" class="btn_a mint right rightmargin">수정</a>
+    </div>
+
+
+    @section Scripts {
+        @Scripts.Render("~/bundles/jqueryval")
+    }
+
+</div><!--sub_rightwrap//-->

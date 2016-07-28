@@ -1,0 +1,216 @@
+﻿@model BizOneShot.Light.Models.ViewModels.MentoringTotalReportViewModel
+
+@{
+    Layout = "~/Areas/Mentor/Views/Shared/_MainDetailLayout.cshtml";
+}
+
+@* 캘린더 처리를위해 추가한 JS 및 SCC *@
+@Styles.Render("~/css/jquery-ui")
+@Scripts.Render("~/bundles/jquery-ui")
+@Scripts.Render("~/Js/files.js")
+
+
+<script>
+    $(document).ready(function () {
+        //top menu
+        $('#naviwrap_biz > .navi_biz >  a > .top_menu > .header_mentor ').addClass('on');
+        $('#naviwrap_biz > .navi_biz >  a > .top_menu > .top_text_mentor ').addClass('on');
+        //left menu
+        $('#sub_leftwrap > .sub_gnbwrap > ul > li > a.gnb_regMentoringTr').addClass('on');
+
+
+        $("#SUBMIT_DATE").datepicker({
+            showMonthAfterYear: true,
+            yearSuffix: '년',
+            monthNames: ['1월', '2월', '3월', '4월', '5월', '6월', '7월', '8월', '9월', '10월', '11월', '12월'],
+            monthNamesShort: ['1월', '2월', '3월', '4월', '5월', '6월', '7월', '8월', '9월', '10월', '11월', '12월'],
+            dayNamesMin: ['일', '월', '화', '수', '목', '금', '토'],
+            dateFormat: 'yy-mm-dd'
+        });
+
+
+        $('.bt_calendar').on('click', function () {
+            $(this).prev().focus();
+            return false;
+        });
+
+        $('#CompSn').attr("disabled", true);
+        $('#BizWorkSn').change(function () {
+            var bizWorkSn = $('#BizWorkSn').val();
+
+            if (bizWorkSn == 0) {
+                $('#CompSn').attr("disabled", false);
+                $('#CompSn').html("");
+                $('#CompSn').attr("disabled", true);
+            } else {
+                $('#CompSn').attr("disabled", false);
+                $('#CompSn').html("");
+
+                $.ajax({
+                    url: '@Url.Action("getBizComp", "MentoringReport")',
+                    type: "post",
+                    dataType: "json",
+                    data: { bizWorkSn: bizWorkSn, bizWorkYear: 0 },
+                    async: false,
+                    success: function (result) {
+                        for (var i = 0; i < result.length; i++) {
+                            $('#CompSn').append("<option value='" + result[i].CompSn + "'>" + result[i].CompNm + "</option>");
+                        }
+                    }
+                });
+            }
+        });
+
+        $('#submit_form').bind('submit', function () {
+            //필수값체크
+            //if($('#BizWorkSn').val() == 0) {
+            //    alert("사업명을 선택하세요");
+            //    $('#BizWorkSn').focus();
+            //    return false;
+            //}
+
+            //if($('#CompSn').val() == 0) {
+            //    alert("기업명을 선택하세요");
+            //    $('#CompSn').focus();
+            //    return false;
+            //}
+
+            //if($('#SUBMIT_DATE').val() == "") {
+            //    alert("제출일을 선택하세요");
+            //    $('#SUBMIT_DATE').focus();
+            //    return false;
+            //}
+
+            //파일체크
+            var inputFileCount = 0;
+            var totalSize = 0;
+            var fileNames = new Array();
+            $('input[type="file"]').each(function () {
+                if ($(this).val() != '') {
+                    //input에서 파일이름만 추출해서 담음
+                    fileNames.push($(this).val().replace(/^.*[\\\/]/, ''));
+
+                    fileSize = $('input[type="file"]').get(inputFileCount).files[0].size;
+                    totalSize = totalSize + fileSize;
+
+                    //inputFileCount += 1;
+                }
+
+                inputFileCount += 1;
+
+            });
+
+            if (totalSize == 0) {
+                alert("첨부파일은 1개이상 등록해야 합니다.");
+                return false;
+            }
+
+            if (inputFileCount > 5) {
+                alert("파일갯수는 5개를 초과할 수 없습니다.");
+                return false;
+            }
+
+            if (totalSize > 100000000) {
+                alert("전체 파일 사이즈는 100MB 를 초과할 수 없습니다.");
+                return false;
+            }
+
+            var hasDups = !fileNames.every(function (v, i) {
+                return fileNames.indexOf(v) == i;
+            });
+            if (hasDups) {
+                // having duplicate values
+                alert("업로드할 파일에 같은 파일이 있습니다.");
+                return false;
+            }
+
+            //빈란 삭제
+            $('input[type="file"]').each(function () {
+                if ($(this).val() == '') {
+                    $(this).remove();
+                }
+            });
+
+            if (!confirm('작성한 내용을 저장 하시겠습니까?')) {
+                return false;
+            }
+
+
+        });
+
+
+    });
+
+
+</script>
+
+<div id="sub_rightwrap">
+    <div class="sub_right_title right_text"><img src="~/images/list.png" class="icon_list" />멘토링 종합보고서 등록</div>
+
+    @using (Html.BeginForm("RegMentoringTotalReport", "MentoringReport", FormMethod.Post, new { area = "MentoringReport", id = "submit_form", role = "form", enctype = "multipart/form-data" }))
+    {
+        @Html.AntiForgeryToken()
+        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+
+        <div calss="tablewrap">
+            <table>
+                <colgroup>
+                    <col width="160px" />
+                    <col width="590px" />
+                </colgroup>
+                @*<tr>
+                        <th>사업명</th>
+                        <td class="form">
+                            @Html.DropDownListFor(model => model.BizWorkSn, ViewBag.SelectBizWorkList as SelectList, new { @id = "BizWorkSn", @class = "w250" })
+                            @Html.ValidationMessageFor(model => model.BizWorkSn, "", new { @class = "text-danger", @color = "#b94a48" })
+                        </td>
+                    </tr>*@
+                <tr>
+                    <th>기업명</th>
+                    <td class="form">
+                        @*@Html.DropDownList("CompSn", ViewBag.SelectCompInfoList as SelectList, new { @id = "CompSn", @class = "w250" })*@
+                        @Html.DropDownListFor(model => model.CompSn, ViewBag.SelectCompInfoList as SelectList, new { @id = "CompSn", @class = "w250" })
+                        @Html.ValidationMessageFor(model => model.CompSn, "", new { @class = "text-danger", @color = "#b94a48" })
+                    </td>
+                </tr>
+                <tr>
+                    <th>제출일</th>
+                    <td class="form">
+                        @Html.TextBoxFor(model => model.SubmitDt, new { @class = "w120", @id = "SUBMIT_DATE", @name = "SUBMIT_DATE", @readonly = "readonly" })
+                        <a href="" class="bt_calendar"><em>날짜선택</em></a>
+                        @Html.ValidationMessageFor(model => model.SubmitDt, "", new { @class = "text-danger", @color = "#b94a48" })
+                    </td>
+                </tr>
+                <tr>
+                    <th>첨부파일</th>
+                    <td class="nopad">
+                        <div id="file_upwrap">
+                            <ul>
+                                <li>
+                                    <!--파일1-->
+                                    <input type="text" class="file" readonly="readonly" />
+                                    <button type="button" class="btn_mid lightgray leftmargin" value="찾아보기" onclick="return file_add(this);">찾아보기</button>
+                                    <button type="button" class="file_add" value="파일추가" onclick="return file_inpput_add(this);"></button>
+                                    <button type="button" class="file_del" value="파일삭제" onclick="return file_inpput_remove(this);"></button>
+                                    <em><input type="file" name="files" id="files" onchange="return get_filename(this);" /></em>
+                                </li>
+                            </ul>
+                        </div>
+                    </td>
+                </tr>
+
+            </table>
+        </div><!--tablewrap//-->
+
+
+        <div id="btnwrap_sub">
+            <button type="button" class="btn_big gray right" value="취소" onclick="if (confirm('지금까지 작성된 내용을 취소하시겠습니까?')) location.href='@Url.Action("MentoringTotalReportList", "MentoringReport")'">취소</button>
+            <button type="submit" class="btn_big red right rightmargin">저장</button>
+        </div><!--btnwrap//-->
+
+        @section Scripts {
+            @Scripts.Render("~/bundles/jqueryval")
+        }
+    }
+
+</div><!--sub_rightwrap//-->

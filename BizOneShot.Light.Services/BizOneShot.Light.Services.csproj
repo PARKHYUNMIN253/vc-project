@@ -1,0 +1,131 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="14.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{64939A65-C959-4DD8-BDD5-334634519B26}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>BizOneShot.Light.Services</RootNamespace>
+    <AssemblyName>BizOneShot.Light.Services</AssemblyName>
+    <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="EntityFramework, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
+      <HintPath>..\packages\EntityFramework.6.1.3\lib\net45\EntityFramework.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="EntityFramework.SqlServer, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
+      <HintPath>..\packages\EntityFramework.6.1.3\lib\net45\EntityFramework.SqlServer.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Newtonsoft.Json, Version=7.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>..\packages\Newtonsoft.Json.7.0.1\lib\net45\Newtonsoft.Json.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="PagedList, Version=1.17.0.0, Culture=neutral, PublicKeyToken=abbb863e9397c5e1, processorArchitecture=MSIL">
+      <HintPath>..\packages\PagedList.1.17.0.0\lib\net40\PagedList.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.ComponentModel.DataAnnotations" />
+    <Reference Include="System.Core" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="CompBaMngService.cs" />
+    <Compile Include="CompMentorBizSurveyCompleteService.cs" />
+    <Compile Include="CtWebLogService.cs" />
+    <Compile Include="FinenceReportService.cs" />
+    <Compile Include="Helper\ReportHelper.cs" />
+    <Compile Include="MServiceDomainService.cs" />
+    <Compile Include="OverallSummaryService.cs" />
+    <Compile Include="PostService.cs" />
+    <Compile Include="ProcMngService.cs" />
+    <Compile Include="QuesCheckListService.cs" />
+    <Compile Include="QuesCompInfoService.cs" />
+    <Compile Include="QuesMasterService.cs" />
+    <Compile Include="QuesResult1Service.cs" />
+    <Compile Include="QuesResult2Service.cs" />
+    <Compile Include="QuesWriterServcie.cs" />
+    <Compile Include="RptFinanceCommentService.cs" />
+    <Compile Include="ScBizTypeService.cs" />
+    <Compile Include="RptMngCommentService.cs" />
+    <Compile Include="RptMngCodeService.cs" />
+    <Compile Include="RptCheckListService.cs" />
+    <Compile Include="RptMasterService.cs" />
+    <Compile Include="RptMentorCommentService.cs" />
+    <Compile Include="SboFinancialIndexTService.cs" />
+    <Compile Include="TcmsCompStatusSelectViewService.cs" />
+    <Compile Include="VcBaInfoService.cs" />
+    <Compile Include="VcBizWorkService.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="ScCavService.cs" />
+    <Compile Include="ScCompanyFinanceService.cs" />
+    <Compile Include="VcCompInfoService.cs" />
+    <Compile Include="ScFileInfoService.cs" />
+    <Compile Include="ScFinancialIndexTService.cs" />
+    <Compile Include="ScFormFileService.cs" />
+    <Compile Include="ScFormService.cs" />
+    <Compile Include="ScCompMappingService.cs" />
+    <Compile Include="ScMakService.cs" />
+    <Compile Include="ScMentoringReportService.cs" />
+    <Compile Include="ScMentoringFileInfoService.cs" />
+    <Compile Include="ScMentoringTrFileInfoService.cs" />
+    <Compile Include="ScMentorMappingService.cs" />
+    <Compile Include="DareAcStdIncmrateBseIdstTService.cs" />
+    <Compile Include="ScNtcService.cs" />
+    <Compile Include="ScFaqService.cs" />
+    <Compile Include="IBaseService.cs" />
+    <Compile Include="ScQaService.cs" />
+    <Compile Include="ScQclService.cs" />
+    <Compile Include="ScReqDocFileService.cs" />
+    <Compile Include="ScReqDocService.cs" />
+    <Compile Include="ScMentoringTotalReportService.cs" />
+    <Compile Include="VcIfTableService.cs" />
+    <Compile Include="VcLastReportNSatService.cs" />
+    <Compile Include="VcMentorMappingService.cs" />
+    <Compile Include="VcSatCheckService.cs" />
+    <Compile Include="VcUsrService.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\BizOneShot.Light.Dao\BizOneShot.Light.Dao.csproj">
+      <Project>{ea21367d-7ba1-442e-8a57-7b95a80381d8}</Project>
+      <Name>BizOneShot.Light.Dao</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\BizOneShot.Light.Models\BizOneShot.Light.Models.csproj">
+      <Project>{4016e654-2288-49d2-8a5a-628d11f6cf63}</Project>
+      <Name>BizOneShot.Light.Models</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="App.config" />
+    <None Include="packages.config" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

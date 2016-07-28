@@ -1,0 +1,524 @@
+﻿@model BizOneShot.Light.Models.ViewModels.FinanceCheckViewModel
+
+@{
+    Layout = "~/Views/Shared/_MainDetailLayout.cshtml";
+}
+<script src="~/js/onlynumber.js"></script>
+<script src="/Scripts/jquery.formatter.min.js"></script>
+<style>
+    .sub_report_checkbox .report_main_top2 {
+        border-bottom: 0px;
+    }
+
+    .sub_report_checkbox .report_main_top2 .title_medium {
+        padding-bottom: 15px;
+    }
+
+    .sub_report_checkbox .report_main_mid .main_mid_cont TABLE.join_info TR TD {
+        padding: 5px 5px !important;
+    }
+</style>
+<script>
+    $(document).ready(function () {
+        //top menu
+        $('#naviwrap_biz > .navi_biz >  a > .top_menu > .header_report01 ').addClass('on');
+        $('#naviwrap_biz > .navi_biz >  a > .top_menu > .top_text_report ').addClass('on');
+        //Accounting menu
+        $('#sub_leftwrap > .sub_gnbwrap > ul > li > a.gnb_basicsurvey').addClass('on');
+        // 같은화면을 문진표 작성완료일 때 볼 경우
+        // 모든 innput들을 수정할 수 없게 한다
+        // 테스트중에는 잠시 확인설정 꺼두기 **********
+        if ($('#status').val() == "C") {
+            $('#mainForm input').attr('disabled', true);
+        }
+
+        // alert("2014년도 기준으로 재무제표를 입력해주세요");
+
+        // *****************************************
+        $('#BasicYear').attr('value', $('#BasicYear').val() - 2);
+
+        $('#years').on("change", function () {
+            console.log("change");
+            selectYear();
+            var years = $('#years').val();
+
+            $('#BasicYear').attr('value', $('#years').val());
+
+            $.ajax({
+                url: '@Url.Action("FinanceYearJson", "Report")',
+                type: "post",
+                dataType: "json",
+                data: { year: years },          // 보낼 데이터
+                success: function (result) {    // 전송 성공시
+                    if (result.length < 1) return alert('empty');
+                    for (var key in result) {
+                        $("#" + key).val(result[key]);
+                    }
+                },
+                error: function () {
+                    console.log("an Error Occured!");
+                }
+            });
+        });
+
+        var D = new Date();
+        var Y = D.getFullYear() - 1;
+        $("#years").html("");
+        for (var yi = (Y - 6) ; yi < Y; yi++) {
+            $("#years").append("<option value=\"" + yi + "\">" + yi + "</option>");
+        }
+        console.log(yi - 1);
+        $("#years").val(yi - 1);
+        selectYear();
+
+        $("input[type=text]").each(function (i, o) {
+            if (o.name.match(/(Current|Previous)\..*/)) {
+                o.value = Number(o.value).toLocaleString();
+                $(o).focus(function () {
+                    $(this).val($(this).val().replace(/\,/g, ""));
+                })
+                $(o).focusout(function () {
+                    var v = Number($(this).val().replace(/\,/g, ""));
+                    if (isNaN(v)) {
+                        alert("숫자만 입력하실 수 있습니다");
+                        return $(this).val(0);
+                    }
+                    $(this).val(v.toLocaleString());
+                })
+                $(o).focusin(function () {
+                    if (o.value == 0) {
+                        o.value = "";
+                    }
+                })
+            }
+        })
+        /*
+        $(".moneyinputbox").on("focusout", function () {
+            var val = $(this).val().replace(/,/g, "");
+            if (isNaN(val) == true) {
+                alert("숫자만 입력할 수 있습니다");
+                $(this).val("");
+                return false;
+            }
+            val = Number(val);
+            $(this).val(val.toLocaleString());
+        })
+        */
+    });
+
+    // 들어온 submitType인자로 submitType(hidden)을 바꿔주고
+    // submit을 실행하는 부분
+    function gosubmit(submitType) {
+        makeZero();
+        $('#SubmitType').val(submitType);
+
+        $("input[type=text]").each(function (i, o) {
+            if (o.name.match(/(Current|Previous)\..*/)) {
+                $(o).val($(o).val().replace(/\,/g, ''));
+            }
+        })
+
+        $('#mainForm').submit();
+    }
+
+    function makeZero() {
+        var theInputs = document.getElementsByTagName('input');
+        for (var i = 0; i < theInputs.length; i++) {
+            var node = theInputs[i];
+
+            if (node.getAttribute('type') == 'text') {
+                if (!node.value) {
+                    console.log("makeZero!");
+                    node.value = "0";
+                }
+            }
+        }
+    }
+
+    //function selectYear() {
+    //    var thisYear = Number($("#years").val());
+    //    var pastYear = thisYear - 1;
+
+    //    $(".label_thisYear").html("당기 : " + thisYear + " 년");
+    //    $(".label_pastYear").html("전기 : " + pastYear + " 년");
+    //}
+</script>
+
+<div class="tcms">
+    <div class="main_top short">
+        <div class="sub_right_title right_text">
+            <img src="~/images/list.png" class="icon_list" />기초경영역량 문진표
+        </div>
+    </div>
+
+    <div id="sub_rightwrap_report">
+        
+        @using (Html.BeginForm("FinanceCheck02", "Report", FormMethod.Post, new { area = "Company", @class = "form-horizontal", role = "form", id = "mainForm" }))
+        {
+            @Html.HiddenFor(model => model.SubmitType, new { @id = "SubmitType" })
+            @Html.HiddenFor(model => model.QuestionSn, new { @id = "QuestionSn" })
+            @Html.HiddenFor(model => model.Status, new { @id = "status" })
+            @Html.HiddenFor(model => model.BasicYear, new { @id = "BasicYear" })
+            <div class="sub_report_checkbox sub_report_checkbox2">
+                <div class="pagenum float_right">25/27</div>
+                <div class="report_main_top2">
+                    <div class="title_medium padding_finance">재무상태표</div>
+                    <p class="float_right bold">
+                        ( 단위 : 원 )
+                    </p>
+                </div>
+                <div class="report_main_mid">
+                    <div class="main_mid_cont">
+                        <table class="join_info">
+                            <colgroup>
+                                <col width="30%">
+                                <col width="35%">
+                                <col width="35%">
+                            </colgroup>
+                            <tr class="tr_back tr_border2">
+                                <td rowspan="2">재무상태표</td>
+                                <td class="label_thisYear">@Model.Current.FnYear 년</td>
+                                <td class="label_pastYear">@Model.Previous.FnYear 년</td>
+                            </tr>
+                            <tr class="tr_back tr_border">
+                                <td>금액</td>
+                                <td>금액</td>
+                            </tr>
+                            <tr>
+                                <td>1.유동자산</td>
+                                <td>@Html.TextBoxFor(model => model.Current.FpACa, new { @class = "long_text3", TabIndex = 1 })</td>
+                                <td>@Html.TextBoxFor(model => model.Previous.FpACa, new { @class = "long_text3", TabIndex = 2 })</td>
+                            </tr>
+                            <tr>
+                                <td>2.당좌자산</td>
+                                <td>@Html.TextBoxFor(model => model.Current.FpAQa, new { @class = "long_text3", TabIndex = 1 })</td>
+                                <td>@Html.TextBoxFor(model => model.Previous.FpAQa, new { @class = "long_text3", TabIndex = 2 })</td>
+                            </tr>
+                            <tr>
+                                <td>3.매출채권 (받을어음+외상매출금)</td>
+                                <td>@Html.TextBoxFor(model => model.Current.FpATraderecv, new { @class = "long_text3", TabIndex = 1 })</td>
+                                <td>@Html.TextBoxFor(model => model.Previous.FpATraderecv, new { @class = "long_text3", TabIndex = 2 })</td>
+                            </tr>
+                            <tr>
+                                <td>4.재고자산</td>
+                                <td>@Html.TextBoxFor(model => model.Current.FpAIntent, new { @class = "long_text3", TabIndex = 1 })</td>
+                                <td>@Html.TextBoxFor(model => model.Previous.FpAIntent, new { @class = "long_text3", TabIndex = 2 })</td>
+                            </tr>
+                            <tr>
+                                <td>5.비유동자산</td>
+                                <td>@Html.TextBoxFor(model => model.Current.FpAFixasset, new { @class = "long_text3", TabIndex = 1 })</td>
+                                <td>@Html.TextBoxFor(model => model.Previous.FpAFixasset, new { @class = "long_text3", TabIndex = 2 })</td>
+                            </tr>
+                            <tr>
+                                <td>6.투자자산</td>
+                                <td>@Html.TextBoxFor(model => model.Current.FpATangible, new { @class = "long_text3", TabIndex = 1 })</td>
+                                <td>@Html.TextBoxFor(model => model.Previous.FpATangible, new { @class = "long_text3", TabIndex = 2 })</td>
+                            </tr>
+                            <tr>
+                                <td>7.유형자산</td>
+                                <td>@Html.TextBoxFor(model => model.Current.FpAInvest, new { @class = "long_text3", TabIndex = 1 })</td>
+                                <td>@Html.TextBoxFor(model => model.Previous.FpAInvest, new { @class = "long_text3", TabIndex = 2 })</td>
+                            </tr>
+                            <tr>
+                                <td>8.무형자산</td>
+                                <td>@Html.TextBoxFor(model => model.Current.FpAIntangible, new { @class = "long_text3", TabIndex = 1 })</td>
+                                <td>@Html.TextBoxFor(model => model.Previous.FpAIntangible, new { @class = "long_text3", TabIndex = 2 })</td>
+                            </tr>
+                            <tr>
+                                <td>9.개발비</td>
+                                <td>@Html.TextBoxFor(model => model.Current.FpARndcost, new { @class = "long_text3", TabIndex = 1 })</td>
+                                <td>@Html.TextBoxFor(model => model.Previous.FpARndcost, new { @class = "long_text3", TabIndex = 2 })</td>
+                            </tr>
+                            <tr class="tr_border">
+                                <td>10.기타비유동자산</td>
+                                <td>@Html.TextBoxFor(model => model.Current.FpANoncurrentasset, new { @class = "long_text3", TabIndex = 1 })</td>
+                                <td>@Html.TextBoxFor(model => model.Previous.FpANoncurrentasset, new { @class = "long_text3", TabIndex = 2 })</td>
+                            </tr>
+                            <tr class="tr_border">
+                                <td>11.자산총계</td>
+                                <td>@Html.TextBoxFor(model => model.Current.FpASum, new { @class = "long_text3", TabIndex = 1 })</td>
+                                <td>@Html.TextBoxFor(model => model.Previous.FpASum, new { @class = "long_text3", TabIndex = 2 })</td>
+                            </tr>
+                            <tr>
+                                <td>12.유동부채</td>
+                                <td>@Html.TextBoxFor(model => model.Current.FpLCurrent, new { @class = "long_text3", TabIndex = 1 })</td>
+                                <td>@Html.TextBoxFor(model => model.Previous.FpLCurrent, new { @class = "long_text3", TabIndex = 2 })</td>
+                            </tr>
+                            <tr>
+                                <td>13.비유동부채</td>
+                                <td>@Html.TextBoxFor(model => model.Current.FpLLongterm, new { @class = "long_text3", TabIndex = 1 })</td>
+                                <td>@Html.TextBoxFor(model => model.Previous.FpLLongterm, new { @class = "long_text3", TabIndex = 2 })</td>
+                            </tr>
+                            <tr>
+                                <td>14.부채총계</td>
+                                <td>@Html.TextBoxFor(model => model.Current.FpLSum, new { @class = "long_text3", TabIndex = 1 })</td>
+                                <td>@Html.TextBoxFor(model => model.Previous.FpLSum, new { @class = "long_text3", TabIndex = 2 })</td>
+                            </tr>
+                            <tr>
+                                <td>15.자본금</td>
+                                <td>@Html.TextBoxFor(model => model.Current.FpCStock, new { @class = "long_text3", TabIndex = 1 })</td>
+                                <td>@Html.TextBoxFor(model => model.Previous.FpCStock, new { @class = "long_text3", TabIndex = 2 })</td>
+                            </tr>
+                            <tr>
+                                <td>16.자본잉여금</td>
+                                <td>@Html.TextBoxFor(model => model.Current.FpCSurplus, new { @class = "long_text3", TabIndex = 1 })</td>
+                                <td>@Html.TextBoxFor(model => model.Previous.FpCSurplus, new { @class = "long_text3", TabIndex = 2 })</td>
+                            </tr>
+                            <tr>
+                                <td>17.자본조정</td>
+                                <td>@Html.TextBoxFor(model => model.Current.FpCAdjust, new { @class = "long_text3", TabIndex = 1 })</td>
+                                <td>@Html.TextBoxFor(model => model.Previous.FpCAdjust, new { @class = "long_text3", TabIndex = 2 })</td>
+                            </tr>
+                            <tr>
+                                <td>18.기타포괄손익누계</td>
+                                <td>@Html.TextBoxFor(model => model.Current.FpCOthercomp, new { @class = "long_text3", TabIndex = 1 })</td>
+                                <td>@Html.TextBoxFor(model => model.Previous.FpCOthercomp, new { @class = "long_text3", TabIndex = 2 })</td>
+                            </tr>
+                            <tr class="tr_border">
+                                <td>19.이익잉여금</td>
+                                <td>@Html.TextBoxFor(model => model.Current.FpCRelatedearning, new { @class = "long_text3", TabIndex = 1 })</td>
+                                <td>@Html.TextBoxFor(model => model.Previous.FpCRelatedearning, new { @class = "long_text3", TabIndex = 2 })</td>
+                            </tr>
+                            <tr class="tr_border">
+                                <td>20.자본총계</td>
+                                <td>@Html.TextBoxFor(model => model.Current.FpCSum, new { @class = "long_text3", TabIndex = 1 })</td>
+                                <td>@Html.TextBoxFor(model => model.Previous.FpCSum, new { @class = "long_text3", TabIndex = 2 })</td>
+                            </tr>
+                            @*<tr>
+                        <td colspan="3"><br /></td>
+                    </tr>
+                    <tr class="tr_back tr_border2">
+                        <td rowspan="2">손익계산서</td>
+                        <td class="label_thisYear">당기</td>
+                        <td class="label_pastYear">전기</td>
+                    </tr>
+                    <tr class="tr_back tr_border">
+                        <td>금액</td>
+                        <td>금액</td>
+                    </tr>
+                    <tr>
+                        <td>1.매출액</td>
+                        <td>@Html.TextBoxFor(model => model.Current.CiSales, new { @class = "long_text3", TabIndex = 1 })</td>
+                        <td>@Html.TextBoxFor(model => model.Previous.CiSales, new { @class = "long_text3", TabIndex = 2 })</td>
+                    </tr>
+                    <tr>
+                        <td>2.매출원가</td>
+                        <td>@Html.TextBoxFor(model => model.Current.CiCostofsales, new { @class = "long_text3", TabIndex = 1 })</td>
+                        <td>@Html.TextBoxFor(model => model.Previous.CiCostofsales, new { @class = "long_text3", TabIndex = 2 })</td>
+                    </tr>
+                    <tr>
+                        <td>3.매출총이익</td>
+                        <td>@Html.TextBoxFor(model => model.Current.CiGrosspoint, new { @class = "long_text3", TabIndex = 1 })</td>
+                        <td>@Html.TextBoxFor(model => model.Previous.CiGrosspoint, new { @class = "long_text3", TabIndex = 2 })</td>
+                    </tr>
+                    <tr>
+                        <td>4.판매비와관리비</td>
+                        <td>@Html.TextBoxFor(model => model.Current.CiAdminexpanses, new { @class = "long_text3", TabIndex = 1 })</td>
+                        <td>@Html.TextBoxFor(model => model.Previous.CiAdminexpanses, new { @class = "long_text3", TabIndex = 2 })</td>
+                    </tr>*@
+                            @*<tr>
+                        <td>5.인건비</td> --> 자동계산되는 부분이므로 주석처리
+                        <td>@Html.TextBoxFor(model => model.Current.CiWages, new { @class = "long_text3", TabIndex = 1 })</td>
+                        <td>@Html.TextBoxFor(model => model.Previous.CiWages, new { @class = "long_text3", TabIndex = 2 })</td>
+                    </tr>*@
+                            @*<tr>
+                        <td>5.임원급여</td>
+                        <td>@Html.TextBoxFor(model => model.Current.CiWageBorder, new { TabIndex = 1 })</td>
+                        <td>@Html.TextBoxFor(model => model.Previous.CiWageBorder, new { TabIndex = 2 })</td>
+                    </tr>
+                    <tr>
+                        <td>6.급여</td>
+                        <td>@Html.TextBoxFor(model => model.Current.CiWageMain, new { TabIndex = 1 })</td>
+                        <td>@Html.TextBoxFor(model => model.Previous.CiWageMain, new { TabIndex = 2 })</td>
+                    </tr>
+                    <tr>
+                        <td>7.상여</td>
+                        <td>@Html.TextBoxFor(model => model.Current.CiWageBonus, new { TabIndex = 1 })</td>
+                        <td>@Html.TextBoxFor(model => model.Previous.CiWageBonus, new { TabIndex = 2 })</td>
+                    </tr>
+                    <tr>
+                        <td>8.제수당</td>
+                        <td>@Html.TextBoxFor(model => model.Current.CiWageAllowances, new { TabIndex = 1 })</td>
+                        <td>@Html.TextBoxFor(model => model.Previous.CiWageAllowances, new { TabIndex = 2 })</td>
+                    </tr>
+                    <tr>
+                        <td>9.잡급</td>
+                        <td>@Html.TextBoxFor(model => model.Current.CiWageOther, new { TabIndex = 1 })</td>
+                        <td>@Html.TextBoxFor(model => model.Previous.CiWageOther, new { TabIndex = 2 })</td>
+                    </tr>
+                    <tr>
+                        <td>10.퇴직급여</td>
+                        <td>@Html.TextBoxFor(model => model.Current.CiWageRetirepay, new { TabIndex = 1 })</td>
+                        <td>@Html.TextBoxFor(model => model.Previous.CiWageRetirepay, new { TabIndex = 2 })</td>
+                    </tr>
+                    <tr>
+                        <td>11.임차료</td>
+                        <td>@Html.TextBoxFor(model => model.Current.CiRental, new { @class = "long_text3", TabIndex = 1 })</td>
+                        <td>@Html.TextBoxFor(model => model.Previous.CiRental, new { @class = "long_text3", TabIndex = 2 })</td>
+                    </tr>
+                    <tr>
+                        <td>12.유형자산상각비 (감가상각비)</td>
+                        <td>@Html.TextBoxFor(model => model.Current.CiDepexp, new { @class = "long_text3", TabIndex = 1 })</td>
+                        <td>@Html.TextBoxFor(model => model.Previous.CiDepexp, new { @class = "long_text3", TabIndex = 2 })</td>
+                    </tr>
+                    <tr>
+                        <td>13.무형자산상각비</td>
+                        <td>@Html.TextBoxFor(model => model.Current.CiAmoexp, new { @class = "long_text3", TabIndex = 1 })</td>
+                        <td>@Html.TextBoxFor(model => model.Previous.CiAmoexp, new { @class = "long_text3", TabIndex = 2 })</td>
+                    </tr>
+                    <tr>
+                        <td>14.세금과공과</td>
+                        <td>@Html.TextBoxFor(model => model.Current.CiTax, new { @class = "long_text3", TabIndex = 1 })</td>
+                        <td>@Html.TextBoxFor(model => model.Previous.CiTax, new { @class = "long_text3", TabIndex = 2 })</td>
+                    </tr>
+                    <tr>
+                        <td>15.경상개발비</td>
+                        <td>@Html.TextBoxFor(model => model.Current.CiOrdevexp, new { @class = "long_text3", TabIndex = 1 })</td>
+                        <td>@Html.TextBoxFor(model => model.Previous.CiOrdevexp, new { @class = "long_text3", TabIndex = 2 })</td>
+                    </tr>
+                    <tr>
+                        <td>16.연구비</td>
+                        <td>@Html.TextBoxFor(model => model.Current.CiResearch, new { @class = "long_text3", TabIndex = 1 })</td>
+                        <td>@Html.TextBoxFor(model => model.Previous.CiResearch, new { @class = "long_text3", TabIndex = 2 })</td>
+                    </tr>
+                    <tr>
+                        <td>17.개발비상각액</td>
+                        <td>@Html.TextBoxFor(model => model.Current.CiDci, new { @class = "long_text3", TabIndex = 1 })</td>
+                        <td>@Html.TextBoxFor(model => model.Previous.CiDci, new { @class = "long_text3", TabIndex = 2 })</td>
+                    </tr>
+                    <tr>
+                        <td>18.영업이익</td>
+                        <td>@Html.TextBoxFor(model => model.Current.CiOpincome, new { @class = "long_text3", TabIndex = 1 })</td>
+                        <td>@Html.TextBoxFor(model => model.Previous.CiOpincome, new { @class = "long_text3", TabIndex = 2 })</td>
+                    </tr>
+                    <tr>
+                        <td>19.영업외수익</td>
+                        <td>@Html.TextBoxFor(model => model.Current.CiOthergains, new { @class = "long_text3", TabIndex = 1 })</td>
+                        <td>@Html.TextBoxFor(model => model.Previous.CiOthergains, new { @class = "long_text3", TabIndex = 2 })</td>
+                    </tr>
+                    <tr>
+                        <td>20.이자수익</td>
+                        <td>@Html.TextBoxFor(model => model.Current.CiIntincome, new { @class = "long_text3", TabIndex = 1 })</td>
+                        <td>@Html.TextBoxFor(model => model.Previous.CiIntincome, new { @class = "long_text3", TabIndex = 2 })</td>
+                    </tr>
+                    <tr>
+                        <td>21.영업외비용</td>
+                        <td>@Html.TextBoxFor(model => model.Current.CiOtherloses, new { @class = "long_text3", TabIndex = 1 })</td>
+                        <td>@Html.TextBoxFor(model => model.Previous.CiOtherloses, new { @class = "long_text3", TabIndex = 2 })</td>
+                    </tr>
+                    <tr>
+                        <td>22.이자비용</td>
+                        <td>@Html.TextBoxFor(model => model.Current.CiIntexpanses, new { @class = "long_text3", TabIndex = 1 })</td>
+                        <td>@Html.TextBoxFor(model => model.Previous.CiIntexpanses, new { @class = "long_text3", TabIndex = 2 })</td>
+                    </tr>
+                    <tr>
+                        <td>23.법인세비용차감전이익</td>
+                        <td>@Html.TextBoxFor(model => model.Current.CiPlt, new { @class = "long_text3", TabIndex = 1 })</td>
+                        <td>@Html.TextBoxFor(model => model.Previous.CiPlt, new { @class = "long_text3", TabIndex = 2 })</td>
+                    </tr>
+                    <tr class="tr_border">
+                        <td>24.법인세비용</td>
+                        <td>@Html.TextBoxFor(model => model.Current.CiInctaxexp, new { @class = "long_text3", TabIndex = 1 })</td>
+                        <td>@Html.TextBoxFor(model => model.Previous.CiInctaxexp, new { @class = "long_text3", TabIndex = 2 })</td>
+                    </tr>
+                    <tr class="tr_border">
+                        <td>25.당기순이익</td>
+                        <td>@Html.TextBoxFor(model => model.Current.CiProfit, new { @class = "long_text3", TabIndex = 1 })</td>
+                        <td>@Html.TextBoxFor(model => model.Previous.CiProfit, new { @class = "long_text3", TabIndex = 2 })</td>
+                    </tr>
+                    <tr>
+                        <td colspan="3"><br /></td>
+                    </tr>
+                    <tr class="tr_back tr_border2">
+                        <td rowspan="2">제조원가명세서</td>
+                        <td class="label_thisYear">당기</td>
+                        <td class="label_pastYear">전기</td>
+                    </tr>
+                    <tr class="tr_back tr_border">
+                        <td>금액</td>
+                        <td>금액</td>
+                    </tr>
+                    <tr>
+                        <td>1.원재료비</td>
+                        <td>@Html.TextBoxFor(model => model.Current.McRaw, new { @class = "long_text3", TabIndex = 1 })</td>
+                        <td>@Html.TextBoxFor(model => model.Previous.McRaw, new { @class = "long_text3", TabIndex = 2 })</td>
+                    </tr>
+                    <tr>
+                        <td>2.부재료비</td>
+                        <td>@Html.TextBoxFor(model => model.Current.McPart, new { @class = "long_text3", TabIndex = 1 })</td>
+                        <td>@Html.TextBoxFor(model => model.Previous.McPart, new { @class = "long_text3", TabIndex = 2 })</td>
+                    </tr>
+                    <tr>
+                        <td>3.노무비</td>
+                        <td>@Html.TextBoxFor(model => model.Current.McWages, new { @class = "long_text3", TabIndex = 1 })</td>
+                        <td>@Html.TextBoxFor(model => model.Previous.McWages, new { @class = "long_text3", TabIndex = 2 })</td>
+                    </tr>
+                    <tr>
+                        <td>4.경비</td>
+                        <td>@Html.TextBoxFor(model => model.Current.McOverhead, new { @class = "long_text3", TabIndex = 1 })</td>
+                        <td>@Html.TextBoxFor(model => model.Previous.McOverhead, new { @class = "long_text3", TabIndex = 2 })</td>
+                    </tr>
+                    <tr>
+                        <td>5.지급임차료</td>
+                        <td>@Html.TextBoxFor(model => model.Current.McRent, new { @class = "long_text3", TabIndex = 1 })</td>
+                        <td>@Html.TextBoxFor(model => model.Previous.McRent, new { @class = "long_text3", TabIndex = 2 })</td>
+                    </tr>
+                    <tr>
+                        <td>6.세금과공과</td>
+                        <td>@Html.TextBoxFor(model => model.Current.McTax, new { @class = "long_text3", TabIndex = 1 })</td>
+                        <td>@Html.TextBoxFor(model => model.Previous.McTax, new { @class = "long_text3", TabIndex = 2 })</td>
+                    </tr>
+                    <tr>
+                        <td>7.경상개발비</td>
+                        <td>@Html.TextBoxFor(model => model.Current.McRndexp, new { @class = "long_text3", TabIndex = 1 })</td>
+                        <td>@Html.TextBoxFor(model => model.Previous.McRndexp, new { @class = "long_text3", TabIndex = 2 })</td>
+                    </tr>
+                    <tr>
+                        <td>8.감가상각비</td>
+                        <td>@Html.TextBoxFor(model => model.Current.McDepexp, new { @class = "long_text3", TabIndex = 1 })</td>
+                        <td>@Html.TextBoxFor(model => model.Previous.McDepexp, new { @class = "long_text3", TabIndex = 2 })</td>
+                    </tr>
+                    <tr>
+                        <td>9.당기총제조비용</td>
+                        <td>@Html.TextBoxFor(model => model.Current.McYeartotal, new { @class = "long_text3", TabIndex = 1 })</td>
+                        <td>@Html.TextBoxFor(model => model.Previous.McYeartotal, new { @class = "long_text3", TabIndex = 2 })</td>
+                    </tr>
+                    <tr>
+                        <td>10.기초재공품재고액</td>
+                        <td>@Html.TextBoxFor(model => model.Current.McBegin, new { @class = "long_text3", TabIndex = 1 })</td>
+                        <td>@Html.TextBoxFor(model => model.Previous.McBegin, new { @class = "long_text3", TabIndex = 2 })</td>
+                    </tr>
+                    <tr>
+                        <td>11.타계정에서대체액</td>
+                        <td>@Html.TextBoxFor(model => model.Current.McFromother, new { @class = "long_text3", TabIndex = 1 })</td>
+                        <td>@Html.TextBoxFor(model => model.Previous.McFromother, new { @class = "long_text3", TabIndex = 2 })</td>
+                    </tr>
+                    <tr>
+                        <td>12.합계</td>
+                        <td>@Html.TextBoxFor(model => model.Current.McTotal, new { @class = "long_text3", TabIndex = 1 })</td>
+                        <td>@Html.TextBoxFor(model => model.Previous.McTotal, new { @class = "long_text3", TabIndex = 2 })</td>
+                    </tr>
+                    <tr>
+                        <td>13.기말재공품재고액</td>
+                        <td>@Html.TextBoxFor(model => model.Current.McEnd, new { @class = "long_text3", TabIndex = 1 })</td>
+                        <td>@Html.TextBoxFor(model => model.Previous.McEnd, new { @class = "long_text3", TabIndex = 2 })</td>
+                    </tr>
+                    <tr>
+                        <td>14.타계정으로대체액</td>
+                        <td>@Html.TextBoxFor(model => model.Current.McToother, new { @class = "long_text3", TabIndex = 1 })</td>
+                        <td>@Html.TextBoxFor(model => model.Previous.McToother, new { @class = "long_text3", TabIndex = 2 })</td>
+                    </tr>
+                    <tr class="tr_border">
+                        <td>15.당기제품제조원가</td>
+                        <td>@Html.TextBoxFor(model => model.Current.McFinishgoodscost, new { @class = "long_text3", TabIndex = 1 })</td>
+                        <td>@Html.TextBoxFor(model => model.Previous.McFinishgoodscost, new { @class = "long_text3", TabIndex = 2 })</td>
+                    </tr>*@
+                        </table>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+
+
+</div>

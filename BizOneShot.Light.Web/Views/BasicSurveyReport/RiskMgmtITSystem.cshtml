@@ -1,0 +1,241 @@
+﻿@model BizOneShot.Light.Models.ViewModels.RiskMgmtViewModel
+
+@{
+    Layout = "~/Views/Shared/_MainLayout.cshtml";
+}
+
+<script>
+    $(document).ready(function () {
+        //top menu
+        $('#naviwrap_biz > .navi_biz >  a > .top_menu > .header_report01 ').addClass('on');
+        $('#naviwrap_biz > .navi_biz >  a > .top_menu > .top_text_report ').addClass('on');
+        //Cs menu
+        $('#sub_leftwrap > .sub_gnbwrap > ul > li > a.gnb_basicReport').addClass('on');
+        $('#sub_leftwrap a.list_26').addClass('list_on');
+        $('#mainForm').bind('submit', function () {
+
+            var valid = true;
+            if ($('#submitType').val() == "N") {
+
+                $('textarea[id^="comment"]').each(function () {
+                    if ($(this).val().length == 0 && valid == true) {
+                        alert("필수항목을 입력해 주세요");
+                        $(this).focus();
+                        valid = false;
+
+                        return false;
+                    }
+                });
+                return valid;
+            }
+
+        });
+
+        if ($('#Status').val() == "C") {
+            $('#mainForm input').attr('disabled', true);
+            $('#mainForm textarea').attr('disabled', true);
+            $('.mentorcomment').hide();
+        }
+        else {
+            $('#sub_leftwrap > .sub_gnbwrap > ul > li > a.list_33').hide();
+        }
+        
+    });
+
+    function goSubmit(submitType) {
+        $('#submitType').val(submitType);
+        $('#mainForm').submit();
+    }
+    function RptCommentPopupOpen() {
+        //var year = $('#BizWorkYear').val();
+        //var month = $('#SelectMonth').val();
+        var questionSn = $('#QuestionSn').val();
+        var NumSn = $('#NumSn').val();
+        //var status = $('#Status').val();
+        var basicyear = $('#BizWorkYear').val();
+        var detailCode = $('#CommentList_0__DetailCd').val();
+        var compSn = $('#CompSn').val();
+
+        w = 700;    //팝업창의 너비
+        h = 520;    //팝업창의 높이
+        //중앙위치 구해오기
+        LeftPosition = (screen.width - w) / 2;
+        TopPosition = (screen.height - h) / 2;
+        var url = "/BasicSurveyReport/RptCommentPop?&NumSn=" + NumSn + "&QuestionSn=" + questionSn + "&BasicYear=" + basicyear + "&DetailCode=" + detailCode + "&CompSn=" + compSn;
+
+        console.log(url);
+
+        window.open(url, "popup", "resizable=yes, scrollbars=yes, left=" + LeftPosition + ", top=" + TopPosition + ", width=" + w + "px, height=" + h + "px");
+    }
+</script>
+
+@Styles.Render("~/css/print")
+<div id="sub_rightwrap_report">
+
+    <div class="sub_right_title right_text"><img src="~/images/list.png" class="icon_list" />기초경영역량 보고서</div>
+
+
+@using (Html.BeginForm("RiskMgmtITSystem", "BasicSurveyReport", FormMethod.Post, new { area = "", @class = "form-horizontal", role = "form", id = "mainForm" }))
+{ 
+    @Html.HiddenFor(model => model.SubmitType, new { @id = "submitType" })
+    @Html.Hidden("NumSn", ViewBag.paramModel.NumSn as string)
+    @Html.Hidden("CompSn", ViewBag.paramModel.CompSn as string)
+    @Html.Hidden("BizWorkYear", ViewBag.paramModel.BizWorkYear as string)
+    @Html.Hidden("QuestionSn", ViewBag.paramModel.QuestionSn as string)
+    @Html.Hidden("Status", ViewBag.paramModel.Status as string)
+    @Html.Hidden("CompNm", ViewBag.paramModel.CompNm as string)
+    @Html.Hidden("PageNum", ViewBag.paramModel.PageNum as string)
+
+    <div class="sub_report_checkbox">
+        <div class="compname">@ViewBag.paramModel.CompNm</div>
+        <div class="pagenum">27/36</div>
+        <div class="report_main_top2"></div>
+        <div class="report_main_mid">
+            <div class="main_mid_cont">
+                <p class="title_mid">
+                    Ⅱ. 기초역량검토 종합결과 _ <span class="small_span float_right">
+                        역량별
+                        검토결과
+                    </span>
+                </p>
+            </div>
+            <div class="main_mid_cont">
+                <div class="main_mid_listBox">
+
+                    <div class="listBox_tap longbg_on noline">
+                        <span>(3)위험관리 역량</span>
+                    </div>
+                    <table class="join_info">
+                        <colgroup>
+                            <col width="20%">
+                            <col width="20%">
+                            <col width="60%">
+                        </colgroup>
+                        <tr>
+                            <td class="left_memo">역량 검토 항목</td>
+                            <td>
+                                <span class="span_on">□ 기초역량 평가</span> <span class="span_weak">□ 재무지표 평가</span> <span class="span_weak">
+                                    □
+                                    전문가 평가
+                                </span>
+                            </td>
+                            <td class="center_td">
+                                <div class="label_td">기초역량</div> <span class="label_span"></span>
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+
+            <div class="main_mid_cont">
+                <p class="full_p">
+                    <span class="big_span" style="margin: 0">
+                        [조직역량] 정보시스템 활용
+                        _
+                    </span><span class="small_span" style="margin: 0">정보시스템 활용 정도</span>
+                </p>
+            </div>
+
+            <div class="main_mid_cont">
+                <div class="main_mid_listBox nomargin2">
+                    <table class="capacity_table">
+                        <colgroup>
+                            <col width="5%">
+                            <col width="24.5%">
+                            <col width="10%">
+                            <col width="12%">
+                            <col width="12%">
+                            <col width="12%">
+                            <col width="12%">
+                            <col width="12.5%">
+                        </colgroup>
+                        <tr>
+                            <td class="left_memo ">NO</td>
+                            <td class="left_memo">체크리스트 항목</td>
+                            <td class="left_memo">해당<br />기업</td>
+                            <td class="left_memo">
+                                창업보육<br>단계 평균
+                            </td>
+                            <td class="left_memo">
+                                보육성장<br> 단계 평균
+                            </td>
+                            <td class="left_memo">
+                                자립성장<br> 단계 평균
+                            </td>
+                            <td class="left_memo">
+                                참여<br>기업평균
+                            </td>
+                            <td class="left_memo">전체<br />평균</td>
+                        </tr>
+                        @if (Model == null || Model.CheckList.Count == 0)
+                        {
+                            <tr>
+                                <td colspan="7" style="text-align:center;">검색 결과가 없습니다.</td>
+                            </tr>
+                        }
+                        else
+                        {
+                            foreach (var item in Model.CheckList)
+                            {
+                                <tr>
+                                    <td class="center_td center">@item.Count</td>
+                                    <td class="center_td center">@item.Title</td>
+                                    @if (item.AnsVal == true)
+                                    {
+                                        <td class="center_td center">∎</td>
+                                    }
+                                    else
+                                    {
+                                        <td class="center_td center">□</td>
+                                    }
+                                    <td class="center_td center">@item.StartUpAvg %</td>
+                                    <td class="center_td center">@item.GrowthAvg %</td>
+                                    <td class="center_td center">@item.IndependentAvg %</td>
+                                    <td class="center_td center">@item.BizInCompanyAvg %</td>
+                                    <td class="center_td center">@item.TotalAvg %</td>
+                                </tr>
+                            }
+                        }
+                    </table>
+                </div>
+
+            </div>
+            <div class="main_mid_cont fix_bot list_print">
+                <div class="main_mid_listBox nomargin2">
+                    <div class="listBox_tap bg_on">
+                        <span>검토결과</span><a href="##" onClick="javascript:RptCommentPopupOpen();" class="btn_small gray1 mentorcomment">다른 멘토 의견보기 </a>
+                    </div>
+                    @Html.TextAreaFor(model => model.CommentList[0].Comment, new { @id = "comment0", @class = "bot_textarea_275", @maxlength = "1000", @placeholder = "1000자 내로 작성하시기 바랍니다." })
+                    @Html.HiddenFor(model => model.CommentList[0].DetailCd)
+                </div>
+
+            </div>
+        </div>
+    </div>
+    <!--container//-->
+    <div id="btnwrap_sub" class="bottom_left2">
+
+        <div class="rightwrap left">
+            <a href="@Url.Action("RiskMgmtOrgSatisfaction", "BasicSurveyReport", new { area = "", NumSn = ViewBag.paramModel.NumSn, CompSn = ViewBag.paramModel.CompSn, BizWorkYear = ViewBag.paramModel.BizWorkYear, Status = ViewBag.paramModel.Status, QuestionSn = ViewBag.paramModel.QuestionSn })" class="btn_a gray left" value="이전">이전</a>
+
+        </div>
+        <div class="rightwrap right">
+            @if (ViewBag.paramModel.Status != "C")
+            {
+                <button type="button" class="btn_big gray" onclick="goSubmit('N');" value="다음">다음</button>
+            }
+            else
+            {
+                <a href="@Url.Action("RiskMgmtLiquidity", "BasicSurveyReport", new { area = "", NumSn = ViewBag.paramModel.NumSn, CompSn = ViewBag.paramModel.CompSn, BizWorkYear = ViewBag.paramModel.BizWorkYear, Status = ViewBag.paramModel.Status, QuestionSn = ViewBag.paramModel.QuestionSn })" class="btn_a gray right" value="다음">다음</a>
+            }
+        </div>
+        @*@if (ViewBag.paramModel.Status != "C")
+        {
+            <div class="rightwrap centerwrap">
+                <button type="button" class="btn_big red" onclick="goSubmit('T');" value="임시저장">임시저장</button>
+            </div>
+        }*@
+
+    </div>
+}
+</div>

@@ -1,0 +1,412 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="14.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{EA21367D-7BA1-442E-8A57-7B95A80381D8}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>BizOneShot.Light.Dao</RootNamespace>
+    <AssemblyName>BizOneShot.Light.Dao</AssemblyName>
+    <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <TargetFrameworkProfile />
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="EntityFramework, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
+      <HintPath>..\packages\EntityFramework.6.1.3\lib\net45\EntityFramework.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="PagedList, Version=1.17.0.0, Culture=neutral, PublicKeyToken=abbb863e9397c5e1, processorArchitecture=MSIL">
+      <HintPath>..\packages\PagedList.1.17.0.0\lib\net40\PagedList.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="PagedList.EntityFramework, Version=1.0.1.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\PagedList.EntityFramework.1.0.1\lib\net45\PagedList.EntityFramework.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.ComponentModel.DataAnnotations" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Data" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="DareConfiguration\DareDbContext.cs">
+      <DependentUpon>Database.tt</DependentUpon>
+    </Compile>
+    <Compile Include="DareConfiguration\Database1.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Database.tt</DependentUpon>
+    </Compile>
+    <Compile Include="DareConfiguration\FakeDareDbContext.cs">
+      <DependentUpon>Database.tt</DependentUpon>
+    </Compile>
+    <Compile Include="DareConfiguration\FakeDbSet.cs">
+      <DependentUpon>Database.tt</DependentUpon>
+    </Compile>
+    <Compile Include="DareConfiguration\IDareDbContext.cs">
+      <DependentUpon>Database.tt</DependentUpon>
+    </Compile>
+    <Compile Include="DareConfiguration\SHUSER_AcStdIncmrateBseIdstTConfiguration.cs">
+      <DependentUpon>Database.tt</DependentUpon>
+    </Compile>
+    <Compile Include="DareConfiguration\SHUSER_SboFinancialIndexTConfiguration.cs">
+      <DependentUpon>Database.tt</DependentUpon>
+    </Compile>
+    <Compile Include="DareConfiguration\SHUSER_SyUserConfiguration.cs">
+      <DependentUpon>Database.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Repositories\CompBaMngRepository.cs" />
+    <Compile Include="Repositories\CompMentorBizSurveyCompleteRepository.cs" />
+    <Compile Include="Repositories\CtWebLogRepository.cs" />
+    <Compile Include="Repositories\FinanceReportRepository.cs" />
+    <Compile Include="Repositories\MentorMappedInfoRepository.cs" />
+    <Compile Include="Repositories\MServiceDomainRepository.cs" />
+    <Compile Include="Repositories\PostRepository.cs" />
+    <Compile Include="Repositories\ProcBaCompConCodeRepository.cs" />
+    <Compile Include="Repositories\ProcBaGetCompMentorMappingListRepository.cs" />
+    <Compile Include="Repositories\ProcBaGetCompSelectListRepository.cs" />
+    <Compile Include="Repositories\ProcBaGetDeepenReportRepository.cs" />
+    <Compile Include="Repositories\ProcBaGetMentoringReportRepository.cs" />
+    <Compile Include="Repositories\ProcBaGetMentorMappingRepository.cs" />
+    <Compile Include="Repositories\ProcBaGetReportCompInfoRepository.cs" />
+    <Compile Include="Repositories\ProcBaGetReportListRepository.cs" />
+    <Compile Include="Repositories\ProcBaMentorAddMappingRepository.cs" />
+    <Compile Include="Repositories\ProcCompGetDeepenReportListNumsRepository.cs" />
+    <Compile Include="Repositories\ProcCompGetDeepenReportListRepository.cs" />
+    <Compile Include="Repositories\ProcMentorGetCompMappingRepository.cs" />
+    <Compile Include="Repositories\ProcMentorGetCompNumSnRepository.cs" />
+    <Compile Include="Repositories\ProcMentorGetDeepenReportList2Repository.cs" />
+    <Compile Include="Repositories\ProcMentorGetDeepenReportListRepository.cs" />
+    <Compile Include="Repositories\ProcMentorGetDeepenReportRepository.cs" />
+    <Compile Include="Repositories\ProcMentorGetMentoringReportRepository.cs" />
+    <Compile Include="Repositories\ProcMentorGetReportList2Repository.cs" />
+    <Compile Include="Repositories\ProcMentorGetReportListRepository.cs" />
+    <Compile Include="Repositories\ProcMentorRegDeepenReportRepository.cs" />
+    <Compile Include="Repositories\ProcReportGetBizWorkInfoRepository.cs" />
+    <Compile Include="Repositories\QuesCheckListRepository.cs" />
+    <Compile Include="Repositories\QuesCompInfoRepository.cs" />
+    <Compile Include="Repositories\QuesMasterRepository.cs" />
+    <Compile Include="Repositories\QuesResult1Repository.cs" />
+    <Compile Include="Repositories\QuesResult2Repository.cs" />
+    <Compile Include="Repositories\QuesWriterRepository.cs" />
+    <Compile Include="Repositories\RptFinanceCommentRepository.cs" />
+    <Compile Include="Repositories\ScBizTypeRepository.cs" />
+    <Compile Include="Repositories\RptMngCodeRepository.cs" />
+    <Compile Include="Repositories\RptMasterRepository.cs" />
+    <Compile Include="Repositories\RptMngCommentRepository.cs" />
+    <Compile Include="Repositories\RptMentorCommentRepository.cs" />
+    <Compile Include="Repositories\SboFinancialIndexTRepository.cs" />
+    <Compile Include="Repositories\ScBizWorkRepository.cs" />
+    <Compile Include="Repositories\ScCavRepository.cs" />
+    <Compile Include="Repositories\ScCompanyFinanceRepository.cs" />
+    <Compile Include="Repositories\ScCompMappingRepository.cs" />
+    <Compile Include="Repositories\ScFileInfoRepository.cs" />
+    <Compile Include="Repositories\ScFinancialIndexTRepository.cs" />
+    <Compile Include="Repositories\ScFormFileRepository.cs" />
+    <Compile Include="Repositories\ScFormRepository.cs" />
+    <Compile Include="Repositories\RptCheckListRepository.cs" />
+    <Compile Include="Repositories\ScMakRepository.cs" />
+    <Compile Include="Repositories\ScMentoringReportRepository.cs" />
+    <Compile Include="Repositories\ScMentoringFileInfoRepository.cs" />
+    <Compile Include="Repositories\ScMentoringTrFileInfoRepository.cs" />
+    <Compile Include="Repositories\ScMentoringTotalReportRepository.cs" />
+    <Compile Include="Repositories\ScMentorMappingRepository.cs" />
+    <Compile Include="Repositories\ScQaRepository.cs" />
+    <Compile Include="Repositories\ScReqDocFileRepository.cs" />
+    <Compile Include="Repositories\ScReqDocRepository.cs" />
+    <Compile Include="Repositories\DareAcStdIncmrateBseIdstTRepository.cs" />
+    <Compile Include="Repositories\SyUserRepository.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Repositories\ScCompInfoRepository.cs" />
+    <Compile Include="Repositories\ScFaqRepository.cs" />
+    <Compile Include="Repositories\ScNtcRepository.cs" />
+    <Compile Include="Repositories\ScQclRepository.cs" />
+    <Compile Include="Repositories\ScUsrRepository.cs" />
+    <Compile Include="Infrastructure\Dbfactory.cs" />
+    <Compile Include="Infrastructure\Disposable.cs" />
+    <Compile Include="Infrastructure\IDbFactory.cs" />
+    <Compile Include="Infrastructure\IRepository.cs" />
+    <Compile Include="Infrastructure\IUnitOfWork.cs" />
+    <Compile Include="Infrastructure\RepositoryBase.cs" />
+    <Compile Include="Infrastructure\UnitOfWork.cs" />
+    <Compile Include="Repositories\TcmsCompStatusSelectViewRepository.cs" />
+    <Compile Include="Repositories\VcBaInfoRepository.cs" />
+    <Compile Include="Repositories\VcCompInfoRepository.cs" />
+    <Compile Include="Repositories\VcCompMappingRepository.cs" />
+    <Compile Include="Repositories\VcIfBaInfoRepository.cs" />
+    <Compile Include="Repositories\VcIfCompInfoRepository.cs" />
+    <Compile Include="Repositories\VcIfCompMappingRepository.cs" />
+    <Compile Include="Repositories\VcIfMentorInfoRepository.cs" />
+    <Compile Include="Repositories\VcIfNumInfoRepository.cs" />
+    <Compile Include="Repositories\VcIfQuesCompInfoRepository.cs" />
+    <Compile Include="Repositories\VcIfTcmsInfoRepository.cs" />
+    <Compile Include="Repositories\VcIfUsrInfoRepository.cs" />
+    <Compile Include="Repositories\VcLastReportNSatRepository.cs" />
+    <Compile Include="Repositories\VcMentorInfoRepository.cs" />
+    <Compile Include="Repositories\VcMentorMappingRepository.cs" />
+    <Compile Include="Repositories\VcNumMngInfoRepository.cs" />
+    <Compile Include="Repositories\VcSatCheckRepository.cs" />
+    <Compile Include="Repositories\VcTcmsInfoRepository.cs" />
+    <Compile Include="WebConfiguration\CtWebLogConfiguration.cs">
+      <DependentUpon>Database.tt</DependentUpon>
+    </Compile>
+    <Compile Include="WebConfiguration\Database.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Database.tt</DependentUpon>
+    </Compile>
+    <Compile Include="WebConfiguration\FakeDbSet.cs">
+      <DependentUpon>Database.tt</DependentUpon>
+    </Compile>
+    <Compile Include="WebConfiguration\FakeWebDbContext.cs">
+      <DependentUpon>Database.tt</DependentUpon>
+    </Compile>
+    <Compile Include="WebConfiguration\IWebDbContext.cs">
+      <DependentUpon>Database.tt</DependentUpon>
+    </Compile>
+    <Compile Include="WebConfiguration\MServiceDomainConfiguration.cs">
+      <DependentUpon>Database.tt</DependentUpon>
+    </Compile>
+    <Compile Include="WebConfiguration\NPsGunguConfiguration.cs">
+      <DependentUpon>Database.tt</DependentUpon>
+    </Compile>
+    <Compile Include="WebConfiguration\QuesCheckListConfiguration.cs">
+      <DependentUpon>Database.tt</DependentUpon>
+    </Compile>
+    <Compile Include="WebConfiguration\QuesCompExtentionConfiguration.cs">
+      <DependentUpon>Database.tt</DependentUpon>
+    </Compile>
+    <Compile Include="WebConfiguration\QuesCompHistoryConfiguration.cs">
+      <DependentUpon>Database.tt</DependentUpon>
+    </Compile>
+    <Compile Include="WebConfiguration\QuesCompInfoConfiguration.cs">
+      <DependentUpon>Database.tt</DependentUpon>
+    </Compile>
+    <Compile Include="WebConfiguration\QuesMasterConfiguration.cs">
+      <DependentUpon>Database.tt</DependentUpon>
+    </Compile>
+    <Compile Include="WebConfiguration\QuesOgranAnalysisConfiguration.cs">
+      <DependentUpon>Database.tt</DependentUpon>
+    </Compile>
+    <Compile Include="WebConfiguration\QuesResult1Configuration.cs">
+      <DependentUpon>Database.tt</DependentUpon>
+    </Compile>
+    <Compile Include="WebConfiguration\QuesResult2Configuration.cs">
+      <DependentUpon>Database.tt</DependentUpon>
+    </Compile>
+    <Compile Include="WebConfiguration\QuesWriterConfiguration.cs">
+      <DependentUpon>Database.tt</DependentUpon>
+    </Compile>
+    <Compile Include="WebConfiguration\RptCheckListConfiguration.cs">
+      <DependentUpon>Database.tt</DependentUpon>
+    </Compile>
+    <Compile Include="WebConfiguration\RptFinanceCommentConfiguration.cs">
+      <DependentUpon>Database.tt</DependentUpon>
+    </Compile>
+    <Compile Include="WebConfiguration\RptMasterConfiguration.cs">
+      <DependentUpon>Database.tt</DependentUpon>
+    </Compile>
+    <Compile Include="WebConfiguration\RptMentorCheckConfiguration.cs">
+      <DependentUpon>Database.tt</DependentUpon>
+    </Compile>
+    <Compile Include="WebConfiguration\RptMentorCommentConfiguration.cs">
+      <DependentUpon>Database.tt</DependentUpon>
+    </Compile>
+    <Compile Include="WebConfiguration\RptMentorRadioConfiguration.cs">
+      <DependentUpon>Database.tt</DependentUpon>
+    </Compile>
+    <Compile Include="WebConfiguration\RptMngCodeConfiguration.cs">
+      <DependentUpon>Database.tt</DependentUpon>
+    </Compile>
+    <Compile Include="WebConfiguration\RptMngCommentConfiguration.cs">
+      <DependentUpon>Database.tt</DependentUpon>
+    </Compile>
+    <Compile Include="WebConfiguration\ScBizTypeConfiguration.cs">
+      <DependentUpon>Database.tt</DependentUpon>
+    </Compile>
+    <Compile Include="WebConfiguration\ScCavConfiguration.cs">
+      <DependentUpon>Database.tt</DependentUpon>
+    </Compile>
+    <Compile Include="WebConfiguration\ScCompanyFinanceConfiguration.cs">
+      <DependentUpon>Database.tt</DependentUpon>
+    </Compile>
+    <Compile Include="WebConfiguration\ScFaqConfiguration.cs">
+      <DependentUpon>Database.tt</DependentUpon>
+    </Compile>
+    <Compile Include="WebConfiguration\ScFileInfoConfiguration.cs">
+      <DependentUpon>Database.tt</DependentUpon>
+    </Compile>
+    <Compile Include="WebConfiguration\ScFinancialIndexTConfiguration.cs">
+      <DependentUpon>Database.tt</DependentUpon>
+    </Compile>
+    <Compile Include="WebConfiguration\ScFormConfiguration.cs">
+      <DependentUpon>Database.tt</DependentUpon>
+    </Compile>
+    <Compile Include="WebConfiguration\ScFormFileConfiguration.cs">
+      <DependentUpon>Database.tt</DependentUpon>
+    </Compile>
+    <Compile Include="WebConfiguration\ScMakConfiguration.cs">
+      <DependentUpon>Database.tt</DependentUpon>
+    </Compile>
+    <Compile Include="WebConfiguration\ScMentoringFileInfoConfiguration.cs">
+      <DependentUpon>Database.tt</DependentUpon>
+    </Compile>
+    <Compile Include="WebConfiguration\ScMentoringReportConfiguration.cs">
+      <DependentUpon>Database.tt</DependentUpon>
+    </Compile>
+    <Compile Include="WebConfiguration\ScMentoringTotalReportConfiguration.cs">
+      <DependentUpon>Database.tt</DependentUpon>
+    </Compile>
+    <Compile Include="WebConfiguration\ScMentoringTrFileInfoConfiguration.cs">
+      <DependentUpon>Database.tt</DependentUpon>
+    </Compile>
+    <Compile Include="WebConfiguration\ScNtcConfiguration.cs">
+      <DependentUpon>Database.tt</DependentUpon>
+    </Compile>
+    <Compile Include="WebConfiguration\ScQaConfiguration.cs">
+      <DependentUpon>Database.tt</DependentUpon>
+    </Compile>
+    <Compile Include="WebConfiguration\ScQclConfiguration.cs">
+      <DependentUpon>Database.tt</DependentUpon>
+    </Compile>
+    <Compile Include="WebConfiguration\ScReqDocConfiguration.cs">
+      <DependentUpon>Database.tt</DependentUpon>
+    </Compile>
+    <Compile Include="WebConfiguration\ScReqDocFileConfiguration.cs">
+      <DependentUpon>Database.tt</DependentUpon>
+    </Compile>
+    <Compile Include="WebConfiguration\ScUsrResumeConfiguration.cs">
+      <DependentUpon>Database.tt</DependentUpon>
+    </Compile>
+    <Compile Include="WebConfiguration\SyDareDbInfoConfiguration.cs">
+      <DependentUpon>Database.tt</DependentUpon>
+    </Compile>
+    <Compile Include="WebConfiguration\sys_DatabaseFirewallRuleConfiguration.cs">
+      <DependentUpon>Database.tt</DependentUpon>
+    </Compile>
+    <Compile Include="WebConfiguration\TcmsCompStatusSelectViewConfiguration.cs">
+      <DependentUpon>Database.tt</DependentUpon>
+    </Compile>
+    <Compile Include="WebConfiguration\VcBaInfoConfiguration.cs">
+      <DependentUpon>Database.tt</DependentUpon>
+    </Compile>
+    <Compile Include="WebConfiguration\VcBaTypeInfoConfiguration.cs">
+      <DependentUpon>Database.tt</DependentUpon>
+    </Compile>
+    <Compile Include="WebConfiguration\VcBizWorkConfiguration.cs">
+      <DependentUpon>Database.tt</DependentUpon>
+    </Compile>
+    <Compile Include="WebConfiguration\VcCompInfoConfiguration.cs">
+      <DependentUpon>Database.tt</DependentUpon>
+    </Compile>
+    <Compile Include="WebConfiguration\VcCompMappingConfiguration.cs">
+      <DependentUpon>Database.tt</DependentUpon>
+    </Compile>
+    <Compile Include="WebConfiguration\VcIfBaInfoConfiguration.cs">
+      <DependentUpon>Database.tt</DependentUpon>
+    </Compile>
+    <Compile Include="WebConfiguration\VcIfCompInfoConfiguration.cs">
+      <DependentUpon>Database.tt</DependentUpon>
+    </Compile>
+    <Compile Include="WebConfiguration\VcIfCompMappingConfiguration.cs">
+      <DependentUpon>Database.tt</DependentUpon>
+    </Compile>
+    <Compile Include="WebConfiguration\VcIfMentorInfoConfiguration.cs">
+      <DependentUpon>Database.tt</DependentUpon>
+    </Compile>
+    <Compile Include="WebConfiguration\VcIfNumInfoConfiguration.cs">
+      <DependentUpon>Database.tt</DependentUpon>
+    </Compile>
+    <Compile Include="WebConfiguration\VcIfQuesCompInfoConfiguration.cs">
+      <DependentUpon>Database.tt</DependentUpon>
+    </Compile>
+    <Compile Include="WebConfiguration\VcIfTcmsInfoConfiguration.cs">
+      <DependentUpon>Database.tt</DependentUpon>
+    </Compile>
+    <Compile Include="WebConfiguration\VcIfUsrInfoConfiguration.cs">
+      <DependentUpon>Database.tt</DependentUpon>
+    </Compile>
+    <Compile Include="WebConfiguration\VcLastReportNSatConfiguration.cs">
+      <DependentUpon>Database.tt</DependentUpon>
+    </Compile>
+    <Compile Include="WebConfiguration\VcMentorInfoConfiguration.cs">
+      <DependentUpon>Database.tt</DependentUpon>
+    </Compile>
+    <Compile Include="WebConfiguration\VcMentorMappingConfiguration.cs">
+      <DependentUpon>Database.tt</DependentUpon>
+    </Compile>
+    <Compile Include="WebConfiguration\VcNumMngInfoConfiguration.cs">
+      <DependentUpon>Database.tt</DependentUpon>
+    </Compile>
+    <Compile Include="WebConfiguration\VcSatCheckConfiguration.cs">
+      <DependentUpon>Database.tt</DependentUpon>
+    </Compile>
+    <Compile Include="WebConfiguration\VcTcmsInfoConfiguration.cs">
+      <DependentUpon>Database.tt</DependentUpon>
+    </Compile>
+    <Compile Include="WebConfiguration\VcUsrInfoConfiguration.cs">
+      <DependentUpon>Database.tt</DependentUpon>
+    </Compile>
+    <Compile Include="WebConfiguration\WebDbContext.cs">
+      <DependentUpon>Database.tt</DependentUpon>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="App.config">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="DareConfiguration\EF.Reverse.POCO.Core.ttinclude" />
+    <None Include="DareConfiguration\EF.Reverse.POCO.ttinclude" />
+    <None Include="packages.config" />
+    <None Include="WebConfiguration\EF.Reverse.POCO.Core.ttinclude" />
+    <None Include="WebConfiguration\EF.Reverse.POCO.ttinclude" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="DareConfiguration\Database.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <LastGenOutput>Database1.cs</LastGenOutput>
+    </Content>
+    <Content Include="WebConfiguration\Database.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <LastGenOutput>Database.cs</LastGenOutput>
+    </Content>
+  </ItemGroup>
+  <ItemGroup>
+    <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\BizOneShot.Light.Models\BizOneShot.Light.Models.csproj">
+      <Project>{4016e654-2288-49d2-8a5a-628d11f6cf63}</Project>
+      <Name>BizOneShot.Light.Models</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup />
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

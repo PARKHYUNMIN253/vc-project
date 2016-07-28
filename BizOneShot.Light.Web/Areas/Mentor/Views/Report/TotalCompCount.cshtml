@@ -1,0 +1,115 @@
+﻿@model IPagedList<BizOneShot.Light.Models.ViewModels.JoinCompanyViewModel>
+
+@{
+    Layout = "~/Areas/Mentor/Views/Shared/_MainLayout.cshtml";
+}
+
+<script>
+    $(document).ready(function () {
+
+        //top menu
+        $('#naviwrap_biz > .navi_biz >  a.navi_report').addClass('on');
+        //Cs menu
+        $('#sub_leftwrap > .sub_gnbwrap > ul > li > a.gnb_basicReport').addClass('on');
+
+    });
+
+    function goPage(page) {
+        $('#curPage').val(page);
+        $('#searchForm').submit();
+    }
+
+</script>
+
+<div id="sub_rightwrap">
+    <div class="sub_right_title specialist_02_03">
+        <em>기초경영역량 보고서</em>
+    </div>
+
+    @using (Html.BeginForm("TotalCompCount", "Report", FormMethod.Post, new { area = "Mentor", id = "searchForm" }))
+    {
+        <div id="sub_inquiry_box">
+            <p>@ViewBag.BizWorkNm</p>
+        </div><!--sub_inquiry_box//-->
+        @Html.Hidden("curPage", "1")
+        @Html.Hidden("bizWorkSn", ViewBag.BizWorkSN as string)
+        @Html.Hidden("bizWorkYear", ViewBag.BizWorkSN as string)
+    }
+
+
+    <!--sub_inquiry_box//-->
+    <div class="line_dot20"></div>
+
+    @*보고서 테스트 사업에 속해있는 전체 기업수 : 15개를 count*@
+
+    <div class="margin_b10 float_right">전체 참여 기업 수 : @ViewBag.CompleteCount  /  @ViewBag.TotalCountForMember</div>
+
+    <br />
+    <form method="" action="" name="" id="">
+        <div class="tablewrap">
+            <!--목록-->
+            <table class="admin_list">
+                <colgroup>
+
+                    <col width="15%">
+                    <col width="15%">
+                    <col width="17%">
+                    <col width="15%">
+                    <col width="15%">
+                    <col width="17%">
+                </colgroup>
+                <tr>
+                    <th class="topcen">기업명</th>
+                    <th class="topcen">대표자명</th>
+                    <th class="topcen">담당자</th>
+                    <th class="topcen">전화번호</th>
+                    <th class="topcen">이메일</th>
+                    <th class="topcen">문진표 작성 상태</th>
+                </tr>
+                @if (Model == null || Model.TotalItemCount == 0)
+                {
+                    <tr>
+                        <td colspan="7" style="text-align:center;">검색 결과가 없습니다.</td>
+                    </tr>
+                }
+                else
+                {
+                    foreach (var item in Model)
+                    {
+                        <tr>
+                            <td>
+                                @*<span class="full_line">@Html.ActionLink(item.CompNm, "BizWorkComDetail", "BizWorkMng", new { bizWorkSn = ViewBag.BizWorkSN, compSn = item.CompSn }, new { @style = "text-decoration:underline;" })</span>*@
+                                @item.CompNm
+                            </td>
+                            <td>@item.ComOwnNm</td>
+                            <td>@item.Name</td>
+                            <td>@item.TelNo1-@item.TelNo2-@item.TelNo3</td>
+                            <td>@item.Email1@@@item.Email2</td>
+                            
+                            @if (item.Status == "P")
+                            {
+                                <td>작성중</td>
+                            }
+                            else if (item.Status == "C")
+                            {
+                                <td>작성 완료</td>
+                            }
+                        </tr>
+                    }
+                }
+
+            </table>
+        </div><!--tablewrap//-->
+
+        @if (Model != null && Model.TotalItemCount != 0)
+        {
+            @Html.Pagination("goPage", Model.PageNumber, Model.PageCount, Model.HasPreviousPage, Model.HasNextPage)
+
+            <div id="btnwrap_sub">
+                <a href="@Url.Action("BasicSurveyReport", "Report", new { bizWorkSn = @Model[0].BizWorkSn })" class="btn_a gray right">목록</a>
+            </div><!--btnwrap//-->
+
+        }
+
+    </form>
+</div>

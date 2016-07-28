@@ -1,0 +1,33 @@
+﻿@Scripts.Render("~/bundles/common")
+
+<div id="Topwrap_common">
+    <div class="navi_top">
+
+        <a href="@Url.Action("Logoff","Home", new { area = "" })">
+            <div class="navi_top_text">로그아웃</div>
+        </a>
+
+        <div class="linebar"></div>
+
+        <a href="@Url.Action("Index","Main", new { area = "Mentor" })">
+            <div class="navi_top_text">Home</div>
+        </a>
+
+        <div class="linebar"></div>
+
+     
+
+        <a href="#">
+            <div class="navi_top_text">
+                <b class="blue_text">
+                    @Session[Global.UserNM].ToString()
+                    님
+                </b>
+            </div>
+        </a>
+        <a href="#">
+            <div class="vc_icon_mentor"></div>
+        </a>
+    </div>
+</div>
+

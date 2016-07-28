@@ -1,0 +1,83 @@
+﻿@model BizOneShot.Light.Models.ViewModels.MentorDetailViewModel
+
+@{
+    Layout = "~/Areas/Company/Views/Shared/_MainDetailLayout.cshtml"; Layout = "~/Areas/Company/Views/Shared/_MainDetailLayout.cshtml";
+}
+<style>
+    .tablewrap table tr td {
+        border-top: 1px solid #ddd;
+    }
+</style>
+<script>
+    $(document).ready(function () {
+        $('.vc_iconSB_06').addClass('on01'); // 보고서 icon
+        $('.vc_title_02').addClass('on');    // 보고서 label
+        $('.a_label01').addClass('on');      // 보고서 내부 메뉴 label (기초경영역량 문진표)
+    });
+</script>
+<div class="tcms">
+    <div class="main_top short">
+        <div class="sub_right_title right_text">
+            <div class="list_icon"></div><div class="sub_title">보고서 담당멘토 정보</div>
+            @RenderPage("~/Areas/Company/Views/Shared/_MainTopMenuPartial.cshtml")
+        </div>
+    </div>
+
+    <div class="main_mid">
+
+        <div class="tablewrap">
+            <table>
+                <colgroup>
+                    <col width="20%" />
+                    <col width="80%" />
+                </colgroup>
+                <tr>
+                    <th>멘토명</th>
+                    <td>@Model.NAME</td>
+                </tr>
+            </table>
+            <div class="line_dot10"></div>
+            <table>
+                <colgroup>
+                    <col width="20%" />
+                    <col width="80%" />
+                </colgroup>
+                <tr>
+                    <th>전화번호</th>
+                    <td>@Model.TEL_NO</td>
+                </tr>
+                <tr>
+                    <th>핸드폰번호</th>
+                    <td>@Model.MB_NO</td>
+                </tr>
+                <tr>
+                    <th>이메일주소</th>
+                    <td>@Model.EMAIL</td>
+                </tr>
+                <tr>
+                    <th>팩스번호</th>
+                    <td>@Model.FAX_NO</td>
+                </tr>
+            </table>
+            <div class="line_dot10"></div>
+            <table>
+                <colgroup>
+                    <col width="20%" />
+                    <col width="80%" />
+                </colgroup>
+                <tr>
+                    <th>주소</th>
+                    <td>@Model.ADDR_1</td>
+                </tr>
+                <tr>
+                    <th>우편번호</th>
+                    <td>@Model.POST_NO</td>
+                </tr>
+            </table>
+            <div id="btnwrap_sub">
+                <a href="@Url.Action("BASupervise","BAMng")" class="btn_a gray right">목록</a>
+            </div>
+        </div>
+
+    </div>
+</div>

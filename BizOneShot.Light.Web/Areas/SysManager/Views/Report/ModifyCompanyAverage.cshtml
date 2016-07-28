@@ -1,0 +1,145 @@
+﻿@model IPagedList<BizOneShot.Light.Models.ViewModels.RegCompanyAverageViewModel>
+@using BizOneShot.Light.Models.ViewModels
+
+@{
+    Layout = "~/Areas/SysManager/Views/Shared/_MainLayout.cshtml";
+}
+
+
+<script>
+    //console.log("jsInit");
+    $(document).ready(function () {
+        //top menu
+        $('#naviwrap_biz > .navi_biz >  a > .top_menu > .header_report01 ').addClass('on');
+        $('#naviwrap_biz > .navi_biz >  a > .top_menu > .top_text_report ').addClass('on');
+        //Cs menu
+        $('#sub_leftwrap > .sub_gnbwrap > ul > li > a.gnb_companyaverage').addClass('on');
+
+        $("#cavTable input.w59").each(function (i, o) {
+            $(o).attr("val", $(o).html());
+            $(o).html("");
+        })
+
+        $('#cavYear').on("change", function () {
+            //console.log("change");
+            $('#curPage').val(1);
+
+            var cavYear = $('#cavYear').val();
+
+            //console.log(cavYear);
+            //$('#BizWorkSn').attr("disabled", false);
+            //$('#BizWorkSn').html("");
+
+            $.ajax({
+                url: '@Url.Action("CompanyAverageJson", "Report")',
+                type: "post",
+                dataType: "json",
+                data: { year : cavYear},
+                //async: false,
+                success: function (result) {
+                    //console.log(result);
+                    if (result.length < 1) return alert("해당 년도의 중소기업 평균값이 없습니다");
+                    $("#cavTable").find('input[type="text"]').each(function (i, o) {
+                        var id = $(o).attr("name");
+                        var val = result[0][id];
+                        //var val = result[0][CavOp];
+                        $(o).val(val);
+                    })
+                }
+            });
+
+        });
+    });
+</script>
+
+<div id="sub_rightwrap">
+    <div class="sub_right_title right_text"><img src="~/images/list.png" class="icon_list" />중소기업 평균</div>
+    @using (Html.BeginForm("ModifyCompanyAverage", "Report", FormMethod.Post, new { @class = "form-horizontal", role = "form", @id = "mainForm" }))
+    {
+        @Html.AntiForgeryToken()
+        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+
+        <div class="tablewrap" id="cavTable">
+            <!--목록-->
+            <table>
+                <colgroup>
+                    <col width="9%">
+                    <col width="13%">
+                    <col width="13%">
+                    <col width="13%">
+                    <col width="13%">
+                    <col width="13%">
+                    <col width="13%">
+                    <col width="13%">
+                </colgroup>
+
+                <tr>
+                    <th class="topcen" rowspan="2">
+                        <select id="cavYear" class="w67" name="CavDt">
+                            <option value="2010">2010</option>
+                            <option value="2011">2011</option>
+                            <option value="2012">2012</option>
+                            <option value="2013">2013</option>
+                            <option value="2014">2014</option>
+                            <option value="2015">2015</option>
+                        </select>
+                    </th>
+                    <th class="topcen">매출영업<br />이익률(%)</th>
+                    <th class="topcen">자기자본순이익률(%)</th>
+                    <th class="topcen">매출액<br />증가율(%)</th>
+                    <th class="topcen">순이익<br />증가율(%)</th>
+                    <th class="topcen">당좌비율(%)</th>
+                    <th class="topcen">유동비율(%)</th>
+                    <th class="topcen">부채비율(%)</th>
+                </tr>
+                <tr>
+                    <td class="form"><input type="text" class="w59" value="" name="CavOp" /></td>
+                    <td class="form"><input type="text" class="w59" value="" name="CavRe" /></td>
+                    <td class="form"><input type="text" class="w59" value="" name="CavSg" /></td>
+                    <td class="form"><input type="text" class="w59" value="" name="CavNg" /></td>
+                    <td class="form"><input type="text" class="w59" value="" name="CavQr" /></td>
+                    <td class="form"><input type="text" class="w59" value="" name="CavCr" /></td>
+                    <td class="form"><input type="text" class="w59" value="" name="CavDebt" /></td>
+                </tr>
+                <tr>
+                    <th class="topcen">이자보상<br />비율(%)</th>
+                    <th class="topcen">총자산<br />회전율(%)</th>
+                    <th class="topcen">매출채권<br />회전율(%)</th>
+                    <th class="topcen">재고자산<br />회전율(%)</th>
+                    <th class="topcen">부가가치율(%)</th>
+                    <th class="topcen">노동생산성(천원)</th>
+                    <th class="topcen">자본생산성(%)</th>
+                    <th class="topcen">연구개발<br />인력비율(%)</th>
+
+                </tr>
+                <tr>
+                    <td class="form"><input type="text" class="w59" value="" name="CavIcr" /></td>
+                    <td class="form"><input type="text" class="w59" value="" name="CavTat" /></td>
+                    <td class="form"><input type="text" class="w59" value="" name="CavTrt" /></td>
+                    <td class="form"><input type="text" class="w59" value="" name="CavIt" /></td>
+                    <td class="form"><input type="text" class="w59" value="" name="CavVr" /></td>
+                    <td class="form"><input type="text" class="w59" value="" name="CavLp" /></td>
+                    <td class="form"><input type="text" class="w59" value="" name="CavCp" /></td>
+                    <td class="form"><input type="text" class="w59" value="" name="CavSmc" /></td>
+                </tr>
+
+            </table>
+        </div>
+    <!--tablewrap//-->
+        <div id="btnwrap_sub">
+            <div class="rightwrap">
+                <button type="submit" class="btn_big red rightmargin" value="저장" onclick="if (confirm('해당 년도의 중소기업평균을 수정하시겠습니까?')) location.href='@Url.Action("CompanyAverage", "Report")'">저장</button>
+                <button type="button" class="btn_big gray right" value="취소" onclick="if (confirm('수정을 취소하고 목록으로 돌아가시겠습니까?')) location.href='@Url.Action("CompanyAverage", "Report")'">취소</button>
+
+                @*<a href="@Url.Action("ExpertManager","ExpertManager")" class="cancel2 right"><em>취소</em></a>*@
+            </div>
+        </div><!--btnwrap//-->
+
+    }
+
+
+    @section Scripts {
+        @Scripts.Render("~/bundles/jqueryval")
+    }
+
+</div><!--sub_rightwrap//-->

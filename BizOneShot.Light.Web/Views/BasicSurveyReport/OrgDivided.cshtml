@@ -1,0 +1,324 @@
+﻿@model BizOneShot.Light.Models.ViewModels.OrgDividedViewModel
+
+@{
+    Layout = "~/Views/Shared/_MainDetailLayout.cshtml";
+}
+
+<script>
+    $(document).ready(function () {
+        $('.vc_iconSB_10 ').addClass('on01');
+        $('.vc_title_10 ').addClass('on');
+        $('.a_label10').addClass('on');
+
+        // 사이드 바를 위한 class 추가
+        $('.container').addClass('height_content_auto');
+        $('.sub_gnbwrap > .navi_left > .bg_col_g').addClass('height_rreport');
+
+        if ($('#Status').val() == "C") {
+            $('#mainForm input').attr('disabled', true);
+            $('#mainForm textarea').attr('disabled', true);
+        }
+        else {
+            $('#sub_leftwrap > .sub_gnbwrap > ul > li > a.list_33').hide();
+        }
+
+        var usrType = $("#usrType").val();
+
+        if (usrType == "C") {
+
+            $('.vc_iconSB_02').addClass('on01'); // 보고서 icon
+            $('.vc_title_01').addClass('on');    // 보고서 label
+            $('.a_label02').addClass('on');      // 보고서 내부 메뉴 label (기초경영역량 보고서)
+
+        } else if (usrType == "M") {
+
+            $('.vc_iconSB_02 ').addClass('on01');   // 보고서 icon
+            $('.vc_title_01 ').addClass('on');      // 보고서 label
+            $('.a_label01 ').addClass('on');        // 보고서 내부메뉴
+
+        } else if (usrType == "B") {
+            $('.vc_iconSB_02 ').addClass('on01');   // 보고서 icon
+            $('.vc_title_01 ').addClass('on');      // 보고서 label
+            $('.a_label01 ').addClass('on');        // 보고서 내부메뉴
+        }
+
+        
+    });
+
+    function goSubmit(submitType) {
+        $('#submitType').val(submitType);
+        $('#mainForm').submit();
+    }
+    function RptCommentPopupOpen(detailCode) {
+
+        var questionSn = $('#QuestionSn').val();
+        var NumSn = $('#NumSn').val();
+        var basicyear = $('#BizWorkYear').val();
+        var compSn = $('#CompSn').val();
+
+        w = 700;    //팝업창의 너비
+        h = 520;    //팝업창의 높이
+        //중앙위치 구해오기
+        LeftPosition = (screen.width - w) / 2;
+        TopPosition = (screen.height - h) / 2;
+        var url = "/BasicSurveyReport/RptCommentPop?&NumSn=" + NumSn + "&QuestionSn=" + questionSn + "&BasicYear=" + basicyear + "&DetailCode=" + detailCode + "&CompSn=" + compSn;
+
+        console.log(url);
+
+        window.open(url, "popup", "resizable=yes, scrollbars=yes, left=" + LeftPosition + ", top=" + TopPosition + ", width=" + w + "px, height=" + h + "px");
+    }
+</script>
+@Styles.Render("~/css/print")
+
+<div class="tcms">
+    <div class="main_top short">
+        <div class="list_icon"></div><div class="sub_title">기초경영역량보고서</div>
+        @RenderPage("~/Views/Shared/_MainTopMenuPartial.cshtml")
+    </div>
+
+    <div id="sub_rightwrap_report">
+
+        @using (Html.BeginForm("OrgDivided", "BasicSurveyReport", FormMethod.Post, new { area = "", @class = "form-horizontal", role = "form", id = "mainForm" }))
+        {
+            @Html.HiddenFor(model => model.SubmitType, new { @id = "submitType" })
+            @Html.Hidden("NumSn", ViewBag.paramModel.NumSn as string)
+            @Html.Hidden("CompSn", ViewBag.paramModel.CompSn as string)
+            @Html.Hidden("BizWorkYear", ViewBag.paramModel.BizWorkYear as string)
+            @Html.Hidden("QuestionSn", ViewBag.paramModel.QuestionSn as string)
+            @Html.Hidden("Status", ViewBag.paramModel.Status as string)
+            @Html.Hidden("CompNm", ViewBag.paramModel.CompNm as string)
+            @Html.Hidden("PageNum", ViewBag.paramModel.PageNum as string)
+            @Html.Hidden("usrType", Session[Global.UserType] as string)
+
+            <div class="sub_report_checkbox">
+                <div class="compname">@ViewBag.paramModel.CompNm</div>
+                <div class="pagenum">7/27</div>
+                <div class="report_main_top2"></div>
+                <div class="report_main_mid">
+                    <div class="main_mid_cont">
+                        <p class="title_mid">
+                            Ⅱ. 기초역량검토 종합결과 _ <span class="small_span float_right">
+                                역량별
+                                검토결과
+                            </span>
+                        </p>
+                    </div>
+                    <div class="main_mid_cont">
+                        <div class="main_mid_listBox">
+
+                            <div class="listBox_tap longbg_on noline">
+                                <span>(1)조직역량</span>
+                            </div>
+                            <table class="join_info">
+                                <colgroup>
+                                    <col width="20%">
+                                    <col width="20%">
+                                    <col width="60%">
+                                </colgroup>
+                                <tr>
+                                    <td class="left_memo">역량 검토 항목</td>
+                                    <td>
+                                        <span class="span_weak">□ 기초역량 평가</span> <span class="span_weak">□ 재무지표 평가</span> <span class="span_on">
+                                            ■ 전문가 평가
+                                        </span>
+                                    </td>
+                                    <td class="center_td">
+                                        <div class="label_td">조직 분화도</div> <span class="label_span">
+                                            조직이 발전할수록 위임 등을 통해 조직이 분화하게 되며, 
+                                        <br/>이러한 분화도를 통해 조직역량의 점검이 가능합니다.
+                                        </span>
+                                    </td>
+                                </tr>
+
+
+                            </table>
+                        </div>
+
+                    </div>
+                    <div class="main_mid_cont">
+                        <table class="join_info">
+                            <colgroup>
+                                <col width="12%">
+                                <col width="10%">
+                                <col width="10%">
+                                <col width="8.5%">
+                                <col width="8.5%">
+                                <col width="8.5%">
+                                <col width="8.5%">
+                                <col width="8.5%">
+                                <col width="8.5%">
+                                <col width="8.5%">
+                                <col width="8.5%">
+                            </colgroup>
+                            <tr>
+                                <td class="left_memo diagonal_line" rowspan="2">
+                                    <div class="label_right">임직원수</div>
+                                    <div class="label_blank"></div>
+                                    <div class="label_bottom">부서</div>
+                                </td>
+                                <td class="left_memo" colspan="2">현재 부서명</td>
+                                <td class="left_memo" colspan="5">임직원수</td>
+                                <td class="left_memo" rowspan="2">
+                                    해당<br>기업
+                                </td>
+                                <td class="left_memo" rowspan="2">
+                                    참여<br>기업<br>평균
+                                </td>
+                                <td class="left_memo" rowspan="2">
+                                    전체<br>평균
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="center_td left_memo">대분류</td>
+                                <td class="center_td left_memo">소분류</td>
+                                <td class="center_td left_memo">임원</td>
+                                <td class="center_td left_memo">
+                                    실무<br>책임자
+                                </td>
+                                <td class="center_td left_memo">실무자</td>
+                                <td class="center_td left_memo">초급</td>
+                                <td class="center_td left_memo" style="border-right : 1px solid; border-color:#ddd">
+                                    부분별<br>합계
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="center_td">기획/관리</td>
+                                <td class="center_td">@Model.Management.Dept1</td>
+                                <td class="center_td">@Model.Management.Dept2</td>
+                                <td class="center_td">@Model.Management.OfficerCount</td>
+                                <td class="center_td">@Model.Management.ChiefCount</td>
+                                <td class="center_td">@Model.Management.StaffCount</td>
+                                <td class="center_td">@Model.Management.BeginnerCount</td>
+                                <td class="center_td">@Model.Management.PartialSum</td>
+                                <td class="center_td">@Model.Management.Company%</td>
+                                <td class="center_td">@Model.Management.AvgBizInCompany%</td>
+                                <td class="center_td">@Model.Management.AvgTotal%</td>
+                            </tr>
+                            <tr>
+                                <td class="center_td">
+                                    생산/<br>생산관리
+                                </td>
+                                <td class="center_td">@Model.Produce.Dept1</td>
+                                <td class="center_td">@Model.Produce.Dept2</td>
+                                <td class="center_td">@Model.Produce.OfficerCount</td>
+                                <td class="center_td">@Model.Produce.ChiefCount</td>
+                                <td class="center_td">@Model.Produce.StaffCount</td>
+                                <td class="center_td">@Model.Produce.BeginnerCount</td>
+                                <td class="center_td">@Model.Produce.PartialSum</td>
+                                <td class="center_td">@Model.Produce.Company%</td>
+                                <td class="center_td">@Model.Produce.AvgBizInCompany%</td>
+                                <td class="center_td">@Model.Produce.AvgTotal%</td>
+                            </tr>
+                            <tr>
+                                <td class="center_td">
+                                    연구개발/<br>연구지원
+                                </td>
+                                <td class="center_td">@Model.RND.Dept1</td>
+                                <td class="center_td">@Model.RND.Dept2</td>
+                                <td class="center_td">@Model.RND.OfficerCount</td>
+                                <td class="center_td">@Model.RND.ChiefCount</td>
+                                <td class="center_td">@Model.RND.StaffCount</td>
+                                <td class="center_td">@Model.RND.BeginnerCount</td>
+                                <td class="center_td">@Model.RND.PartialSum</td>
+                                <td class="center_td">@Model.RND.Company%</td>
+                                <td class="center_td">@Model.RND.AvgBizInCompany%</td>
+                                <td class="center_td">@Model.RND.AvgTotal%</td>
+                            </tr>
+                            <tr>
+                                <td class="center_td">
+                                    마케팅기획/<br>판매영업
+                                </td>
+                                <td class="center_td">@Model.Salse.Dept1</td>
+                                <td class="center_td">@Model.Salse.Dept2</td>
+                                <td class="center_td">@Model.Salse.OfficerCount</td>
+                                <td class="center_td">@Model.Salse.ChiefCount</td>
+                                <td class="center_td">@Model.Salse.StaffCount</td>
+                                <td class="center_td">@Model.Salse.BeginnerCount</td>
+                                <td class="center_td">@Model.Salse.PartialSum</td>
+                                <td class="center_td">@Model.Salse.Company%</td>
+                                <td class="center_td">@Model.Salse.AvgBizInCompany%</td>
+                                <td class="center_td">@Model.Salse.AvgTotal%</td>
+                            </tr>
+                            <tr>
+                                <td class="center_td left_memo" colspan="3">총계</td>
+                                <td class="center_td">@Model.OfficerSumCount</td>
+                                <td class="center_td">@Model.ChiefSumCount</td>
+                                <td class="center_td">@Model.StaffSumCount</td>
+                                <td class="center_td">@Model.BeginnerSumCount</td>
+                                <td class="center_td">@Model.TotalSumCount</td>
+                                <td class="center_td">@Model.CompanySum%</td>
+                                <td class="center_td">@Model.AvgBizInCompanySum%</td>
+                                <td class="center_td">@Model.AvgTotalSum%</td>
+                            </tr>
+                        </table>
+                        <div class="stageBox">
+                            <div class="stageBox_name">해당 기업</div>
+                            <div class="stageBox_bar">
+                                <div class="stageBox_bartop">
+                                    <span>창업단계</span> <span>보육단계</span> <span style="width: 80px; padding-left: 25px">성장단계</span> <span style="width: 60px; padding-left: 65px">자립단계</span> <span style="text-align: right; width: 115px">IPO단계</span>
+                                </div>
+                                <div class="stageBox_barbot">
+                                    <div class="label">
+                                        대표 @Html.RadioButtonFor(model => model.CommentList[0].Comment, "1", new { @id = "comment00" })
+                                    </div>
+                                    <div class="label">
+                                        담당자 @Html.RadioButtonFor(model => model.CommentList[0].Comment, "2", new { @id = "comment00" })
+                                    </div>
+                                    <div class="label">
+                                        조직 4개 분화 @Html.RadioButtonFor(model => model.CommentList[0].Comment, "3", new { @id = "comment00" })
+                                    </div>
+                                    <div class="label last">
+                                        조직 8개 분화 @Html.RadioButtonFor(model => model.CommentList[0].Comment, "4", new { @id = "comment00" })
+                                        @Html.HiddenFor(model => model.CommentList[0].DetailCd)
+                                        @Html.HiddenFor(model => model.CommentList[0].Comment, new { @id = "orgDhid" })
+                                    </div>
+                                </div>
+                                <div class="stageBox_comment">
+                                    <span class="comment01">위임</span> <span class="comment02">규정</span>
+                                    <span class="comment03">시스템</span>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                    <div class="main_mid_cont fix_bot list_print">
+                        <div class="main_mid_listBox nomargin2">
+                            <div class="listBox_tap bg_on">
+                                <span>검토결과</span>
+                            </div>
+                            @Html.TextAreaFor(model => model.CommentList[1].Comment, new { @id = "comment1", @class = "bot_textarea_340", @maxlength = "1300", @placeholder = "1000자 내로 작성하시기 바랍니다." })
+                            @Html.HiddenFor(model => model.CommentList[1].DetailCd)
+                        </div>
+
+                    </div>
+
+                </div>
+            </div>
+    <!--container//-->
+            <div id="btnwrap_sub" class="bottom_left2">
+
+                <div class="rightwrap left">
+                    <a href="@Url.Action("OrgProductivity", "BasicSurveyReport", new { area = "", NumSn = ViewBag.paramModel.NumSn, CompSn = ViewBag.paramModel.CompSn, BizWorkYear = ViewBag.paramModel.BizWorkYear, Status = ViewBag.paramModel.Status, QuestionSn = ViewBag.paramModel.QuestionSn })" class="btn_a gray left" value="이전">이전</a>
+
+                </div>
+                <div class="rightwrap right">
+                    @if (ViewBag.paramModel.Status != "C")
+                    {
+                        <button type="button" class="btn_big gray" onclick="goSubmit('N');" value="다음">다음</button>
+                    }
+                    else
+                    {
+                        <a href="@Url.Action("RndCost", "BasicSurveyReport", new { area = "", NumSn = ViewBag.paramModel.NumSn, CompSn = ViewBag.paramModel.CompSn, BizWorkYear = ViewBag.paramModel.BizWorkYear, Status = ViewBag.paramModel.Status, QuestionSn = ViewBag.paramModel.QuestionSn })" class="btn_a gray right" value="다음">다음</a>
+                    }
+                </div>
+                @if (ViewBag.paramModel.Status != "C")
+                {
+                    <div class="rightwrap centerwrap">
+                        <button type="button" class="btn_big red" onclick="goSubmit('T');" value="임시저장">임시저장</button>
+                    </div>
+                }
+            </div>
+        }
+    </div>
+    </div>
+    

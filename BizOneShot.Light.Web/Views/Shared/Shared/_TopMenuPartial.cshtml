@@ -1,0 +1,57 @@
+﻿
+
+@if (Session[Global.UserType] == null)//비회원
+{
+    <div id="headerwrap_biz">
+        <div class="container">
+            <a href="@Url.Action("Index","Home", new { area = "" })"><img src="/images/bi_main.png" /></a>
+                <div id="naviwrap_biz">
+                    <div class="navi navi_all navi_biz">
+                        <a href="@Url.Action("Login","Home", new { area = "" })">
+                            <div class="top_menu">
+                                <div class="header_person"></div>
+                                <div class="top_text_person">로그인</div>
+                            </div>
+                        </a><img src="~/Images/header_bar.png" class="navibar">
+                        <a href="@Url.Action("CompanyAgreement","Account", new { area = "" })">
+                            <div class="top_menu">
+                                <div class="header_report01"></div>
+                                <div class="top_text_report">회원가입</div>
+                            </div>
+                        </a><img src="~/Images/header_bar.png" class="navibar">
+                        <a href="@Url.Action("Faq","Cs", new { area = "" })">
+                            <div class="top_menu">
+                                <div class="header_customer"></div>
+                                <div class="top_text_customer">고객센터</div>
+                            </div>
+                        </a>
+                    </div>
+                </div><!--naviwrap//-->
+        </div>
+    </div><!--headerwrap//-->
+}
+else
+{
+    if (Session[Global.UserType].Equals(Global.Company))
+    {// 기업회원
+        @RenderPage("~/Areas/Company/Views/Shared/_MainTopMenuPartial.cshtml")
+    }
+    if (Session[Global.UserType].Equals(Global.Mentor))
+    {// 멘토
+        @RenderPage("~/Areas/Mentor/Views/Shared/_MainTopMenuPartial.cshtml")
+    }
+    if (Session[Global.UserType].Equals(Global.SysManager))
+    {//SCP 관리자
+        @RenderPage("~/Areas/SysManager/Views/Shared/_MainTopMenuPartial.cshtml")
+    }
+    if (Session[Global.UserType].Equals(Global.BizManager))
+    {//사업 관리자
+        @RenderPage("~/Areas/BizManager/Views/Shared/_MainTopMenuPartial.cshtml")
+    }
+    if (Session[Global.UserType].Equals(Global.Expert))
+    {//사업 관리자
+        @RenderPage("~/Areas/Expert/Views/Shared/_MainTopMenuPartial.cshtml")
+    }
+}
+
+

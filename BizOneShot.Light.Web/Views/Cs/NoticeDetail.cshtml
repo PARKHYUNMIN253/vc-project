@@ -1,0 +1,83 @@
+﻿@model BizOneShot.Light.Models.ViewModels.NoticeDetailViewModel
+
+<script>
+    $(document).ready(function () {
+
+        //top menu
+        $('#naviwrap_biz > .navi_biz >  a > .top_menu > .header_customer ').addClass('on');
+        $('#naviwrap_biz > .navi_biz >  a > .top_menu > .top_text_customer ').addClass('on');
+
+        //Cs menu
+        $('#sub_leftwrap > .sub_gnbwrap > ul > li > a.gnb_notice').addClass('on');
+    });
+
+  
+</script>
+
+
+<div id="custom_rightwrap">
+    <div class="custom_right_title02"><img src="~/images/list.png" class="icon_list" />공지사항</div>
+    <div class="tablewrap">
+        <table>
+            <colgroup>
+                <col width="12%">
+                <col width="58%">
+                <col width="10%">
+                <col width="20%">
+            </colgroup>
+            <tbody>
+                <tr>
+                    <th>제목</th>
+                    <td class="left">@Html.Raw(Model.Subject)</td>
+                    <th>등록일</th>
+                    <td>@Model.RegDt.Value.ToShortDateString()</td>
+                </tr>
+                <tr>
+                    <td colspan="4" class="read">
+                        @Html.RepladeHtmlText(Model.RmkTxt)
+                    </td>
+                </tr>
+                <tr>
+                    <th>이전글</th>
+                    <td colspan="3" class="left">
+                        @if (Model.PreNoticeSn == 0)
+                        {
+                            @:없음
+                                     }
+                        else
+                        {
+                            @Html.ActionLink(Model.PreSubject, "NoticeDetail", new { noticeSn = Model.PreNoticeSn })
+                        }
+                    </td>
+                </tr>
+                <tr>
+                    <th>다음글</th>
+                    <td colspan="3" class="left">
+                        @if (Model.NextNoticeSn == 0)
+                        {
+                            @:없음
+                                     }
+                        else
+                        {
+
+                            @Html.ActionLink(Model.NextSubject, "NoticeDetail", new { noticeSn = Model.NextNoticeSn })
+                        }
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div><!--tablewrap//-->
+    @*<div class="btnwrap center">
+        <a href="@Url.Action("Notice","Cs")"><input type="button" class="list"></a>
+    </div>*@
+    <div id="btnwrap_sub">
+        <div class="rightwrap">
+            @if (Session[Global.UserType] != null && (Session[Global.UserType].Equals(Global.SysManager) || Session[Global.UserType].Equals(Global.BizManager)))
+            {
+                <a href="@Url.Action("ModifyNotice", "Cs", new { @noticeSn = Model.NoticeSn })" class="btn_a mint left rightmargin">수정</a>
+                <a href="@Url.Action("DeleteNotice", "Cs", new { @noticeSn = Model.NoticeSn })" class="btn_a red left" id="btn_delete">삭제</a>
+            }
+            <a href="@Url.Action("Notice","Cs")" class="btn_a gray right">목록</a>
+        </div>
+    </div><!--btnwrap_sub//-->
+</div><!--custom_rightwrap//-->

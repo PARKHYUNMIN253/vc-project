@@ -1,0 +1,82 @@
+﻿@Scripts.Render("~/bundles/common")
+<div id="headerwrap_biz">
+    <div class="container">
+        <a href="@Url.Action("Index","Main",new { area= "BizManager" })"><img src="~/images/gangneung_logo_small.png" class="float_left" /></a>
+        
+        <div id="naviwrap_biz">
+            <div class="navi_biz">
+                @if (Session[Global.UserDetailType].Equals(Global.Admin))
+                {
+                    <a href="@Url.Action("BizWorkList","BizWorkMng", new { area= "BizManager" })">
+                        <div class="top_menu">
+                            <div class="header_business"></div>
+                            <div class="top_text_business">사업관리</div>
+                        </div>
+                    </a><img src="~/images/header_bar.png" class="navi_bizbar" />
+                }
+
+                <a href="@Url.Action("CompanyList","CompanyMng", new { area= "BizManager" })">
+                    <div class="top_menu">
+                        <div class="header_company_manage"></div>
+                        <div class="top_text_company">기업관리</div>
+                    </div>
+                </a><img src="~/images/header_bar.png" class="navi_bizbar" />
+
+                <a href="@Url.Action("MentorList","MentorMng", new { area= "BizManager" })">
+                    <div class="top_menu">
+                        <div class="header_person"></div>
+                        <div class="top_text_person">멘토관리</div>
+                    </div>
+                </a><img src="~/images/header_bar.png" class="navi_bizbar" />
+
+                <a href="@Url.Action("BizInCompanyStats","Report",new { area= "BizManager" })">
+                    <div class="top_menu">
+                        <div class="header_report01"></div>
+                        <div class="top_text_report">보고서</div>
+                    </div>
+                </a><img src="~/images/header_bar.png" class="navi_bizbar" />
+
+                @if (Session[Global.UserDetailType].Equals(Global.Admin))
+                {
+                    <a href="@Url.Action("Notice","Cs",new { area= "" })">
+                        <div class="top_menu">
+                            <div class="header_customer"></div>
+                            <div class="top_text_customer">고객센터</div>
+                        </div>
+                    </a>
+                }
+                
+                @if (Session[Global.UserDetailType].Equals(Global.Member))
+                {
+                    <a href="@Url.Action("Notice","Cs",new { area= "" })">
+                        <div class="top_menu">
+                            <div class="header_customer"></div>
+                            <div class="top_text_customer">고객센터</div>
+                        </div>
+                    </a>
+                }
+
+                <a href="#" class="name">
+                    @if (Session[BizOneShot.Light.Web.ComLib.Global.UserNM] != null)
+                { @Session[BizOneShot.Light.Web.ComLib.Global.UserNM].ToString() } 님
+                </a><a href="#" class="down"></a>
+                <div id="header_logoutwrap">
+                <!--로그아웃 레이어(클릭시 보임)-->
+                @if (Session[Global.UserDetailType].Equals(Global.Member))
+                {
+                    <div class="header_logout2">
+                        <a href="@Url.Action("Logoff","Home",new { area= "" })" class="padding_bottom">로그아웃</a><br />
+                        <a href="@Url.Action("MyInfo","Main", new { area= "BizManager" })" class="border padding_top">내정보 관리</a>
+                    </div>
+                }
+                else
+                {
+                    <div class="header_logout">
+                        <a href="@Url.Action("Logoff","Home",new { area= "" })" class="padding_bottom">로그아웃</a>
+                    </div>
+                }
+                </div><!--로그아웃 레이어 끝-->
+            </div>
+        </div><!--naviwrap_biz//-->
+    </div><!--container//-->
+</div><!--headerwrap_biz//-->

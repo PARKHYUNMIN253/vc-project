@@ -1,0 +1,139 @@
+﻿@model BizOneShot.Light.Models.ViewModels.RegCompanyAverageViewModel
+
+@{
+    Layout = "~/Areas/SysManager/Views/Shared/_MainLayout.cshtml";
+}
+
+<script>
+    $(document).ready(function () {
+        //top menu
+        $('#naviwrap_biz > .navi_biz >  a > .top_menu > .header_report01 ').addClass('on');
+        $('#naviwrap_biz > .navi_biz >  a > .top_menu > .top_text_report ').addClass('on');
+        //Cs menu
+        $('#sub_leftwrap > .sub_gnbwrap > ul > li > a.gnb_companyaverage').addClass('on');
+
+        $('#cavdt').on("change", function () {
+            //console.log("change");
+            $('#curPage').val(1);
+
+            var cavdt = $('#cavdt').val();
+
+            //console.log(cavYear);
+            //$('#BizWorkSn').attr("disabled", false);
+            //$('#BizWorkSn').html("");
+
+            $.ajax({
+                url: '@Url.Action("CompanyAverageJson", "Report")',
+                type: "post",
+                dataType: "json",
+                data: { year: cavdt },
+                //async: false,
+                success: function (result) {
+                    //console.log(result);
+                    if (result.length > 0) return alert("해당 년도의 중소기업 평균값이 등록되어있습니다.");
+                    
+                }
+            });
+
+        });
+    });
+</script>
+
+<div id="sub_rightwrap">
+    <div class="sub_right_title right_text"><img src="~/images/list.png" class="icon_list" />중소기업평균 등록</div>
+
+
+    @using (Html.BeginForm("RegCompanyAverage", "Report", FormMethod.Post, new { @class = "form-horizontal", role = "form", @id = "mainForm" }))
+    {
+        @Html.AntiForgeryToken()
+        @*@Html.Hidden("LoginIdChk")
+            @Html.Hidden("ComRegistrationNoChk")*@
+        <div class="tablewrap">
+            <!--목록-->
+            <table>
+                <colgroup>
+                    <col width="9%">
+                    <col width="13%">
+                    <col width="13%">
+                    <col width="13%">
+                    <col width="13%">
+                    <col width="13%">
+                    <col width="13%">
+                    <col width="13%">
+                </colgroup>
+                <tr>
+                    <th class="topcen" rowspan="2">
+                        @Html.DropDownListFor(model => model.CavDt, new SelectList(
+                 new List<Object>{
+                                new { value = "" , text = "년도"  },
+                                new { value = "2010" , text = "2010"  },
+                                new { value = "2011" , text = "2011" },
+                                new { value = "2012" , text = "2012" },
+                                new { value = "2013" , text = "2013" },
+                                new { value = "2014" , text = "2014" },
+                                new { value = "2015" , text = "2015" },
+                                new { value = "2016" , text = "2016" },
+                                new { value = "2017" , text = "2017" },
+                                new { value = "2018" , text = "2018" },
+                                new { value = "2019" , text = "2019" },
+                                new { value = "2020" , text = "2020" },
+                 }, "value", "text", 2), new { @class = "w67", @id = "cavdt" })
+                        @*<select class="w67">
+                                <option>2014</option>
+                            </select>*@
+                    </th>
+                    <th class="topcen">매출영업 이익률(%)</th>
+                    <th class="topcen">자기자본순이익률(%)</th>
+                    <th class="topcen">매출액<br />증가율(%)</th>
+                    <th class="topcen">순이익<br />증가율(%)</th>
+                    <th class="topcen">당좌비율(%)</th>
+                    <th class="topcen">유동비율(%)</th>
+                    <th class="topcen">부채비율(%)</th>
+                </tr>
+
+                <tr>
+                    <td class="form">@Html.TextBoxFor(model => model.CavOp, new { @class = "w59" })</td>
+                    <td class="form">@Html.TextBoxFor(model => model.CavRe, new { @class = "w59" })</td>
+                    <td class="form">@Html.TextBoxFor(model => model.CavSg, new { @class = "w59" })</td>
+                    <td class="form">@Html.TextBoxFor(model => model.CavNg, new { @class = "w59" })</td>
+                    <td class="form">@Html.TextBoxFor(model => model.CavQr, new { @class = "w59" })</td>
+                    <td class="form">@Html.TextBoxFor(model => model.CavCr, new { @class = "w59" })</td>
+                    <td class="form">@Html.TextBoxFor(model => model.CavDebt, new { @class = "w59" })</td>
+                </tr>
+                <tr>
+                    <th class="topcen">이자보상 비율(%)</th>
+                    <th class="topcen">총자산<br />회전율(%)</th>
+                    <th class="topcen">매출채권<br />회전율(%)</th>
+                    <th class="topcen">재고자산<br />회전율(%)</th>
+                    <th class="topcen">부가가치율(%)</th>
+                    <th class="topcen">노동생산성(천원)</th>
+                    <th class="topcen">자본생산성(%)</th>
+                    <th class="topcen">연구개발<br />인력비율(%)</th>
+                </tr>
+                <tr>
+                    <td class="form">@Html.TextBoxFor(model => model.CavIcr, new { @class = "w59" })</td>
+                    <td class="form">@Html.TextBoxFor(model => model.CavTat, new { @class = "w59" })</td>
+                    <td class="form">@Html.TextBoxFor(model => model.CavTrt, new { @class = "w59" })</td>
+                    <td class="form">@Html.TextBoxFor(model => model.CavIt, new { @class = "w59" })</td>
+                    <td class="form">@Html.TextBoxFor(model => model.CavVr, new { @class = "w59" })</td>
+                    <td class="form">@Html.TextBoxFor(model => model.CavLp, new { @class = "w59" })</td>
+                    <td class="form">@Html.TextBoxFor(model => model.CavCp, new { @class = "w59" })</td>
+                    <td class="form">@Html.TextBoxFor(model => model.CavSmc, new { @class = "w59" })</td>
+                </tr>
+
+            </table>
+        </div>
+        <!--tablewrap//-->
+
+        <div id="btnwrap_sub">
+            <div class="rightwrap">
+                <button type="submit" class="btn_big red rightmargin" value="저장" onclick="if (confirm('중소기업평균을 저장하시겠습니까?')) location.href='@Url.Action("CompanyAverage", "Report")'">저장</button>
+                <button type="button" class="btn_big gray right" value="취소" onclick="if (confirm('등록을 취소하고 목록으로 돌아가시겠습니까?')) location.href='@Url.Action("CompanyAverage", "Report")'">취소</button>
+            </div>
+        </div><!--btnwrap//-->
+
+    }
+    @section Scripts {
+        @Scripts.Render("~/bundles/jqueryval")
+    }
+</div><!--sub_rightwrap//-->

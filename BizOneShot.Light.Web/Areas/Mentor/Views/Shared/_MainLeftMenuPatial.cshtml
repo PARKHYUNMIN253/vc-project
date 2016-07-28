@@ -1,0 +1,324 @@
+﻿
+<div id="sub_leftwrap">
+    <div class="sub_gnbwrap">
+        @*<ul>
+                @if (ViewBag.LeftMenu == Global.BizMng)//사업관리기관 관리
+                {
+                    <li class="title left_text">사업기관 관리</li>
+                    <li><a href="@Url.Action("BizManager","BizManager",new { area= "SysManager" })" class="gnb gnb_bizMng">사업기관 관리</a></li>
+                    <li><a href="@Url.Action("RegBizManager","BizManager",new { area= "SysManager" })" class="gnb gnb_regBizMng">사업기관 등록</a></li>
+                }
+
+                else if (ViewBag.LeftMenu == Global.Report)//보고서관리
+                {
+                    <li class="title left_text">보고서</li>
+                    <li><a href="@Url.Action("BasicSurveyReport","Report",new { area= "SysManager" })" class="gnb gnb_basicReport">기초경영역량 보고서</a></li>
+                }
+                else
+                {
+
+                }
+            </ul>*@
+        <div class="navi_left">
+            <a href="@Url.Action("Index","Main")"><div class="kath_logo"></div></a>
+            <div class="bg_col_g">
+                <ul>
+                    @*href다음에 부르는 곳에서는 이렇게 쓰자*@
+                    @*@Url.Action("ReportTest", "Main")*@
+                    <li><div class="iconBox"><div class="vc_iconSB_02"></div><a href="@Url.Action("BasicSurveyReport","Report")" class="vc_title_01 fw_600">보고서</a></div></li>
+                    <li><div class="iconBox"><div class="vc_iconSB_03"></div><a href="@Url.Action("RegMentoringReport", "MentoringReport")" class="vc_title_02 fw_600">멘토링관리</a></div></li>
+                </ul>
+            </div>
+        </div>
+
+    </div><!--sub_gnbwrap//-->
+</div><!--sub_leftwrap//-->
+@*<div id="sub_leftwrap">
+        <div class="sub_gnbwrap">
+            <ul>
+
+
+                @if (ViewBag.LeftMenu == Global.MyInfo)//내정보
+                {
+                    <li class="title left_text">내정보 관리</li>
+                    <li><a href="@Url.Action("MyInfo", "Main", new { area = "Mentor" })" class="gnb gnb1">내정보 관리</a></li>
+                    <li><a href="@Url.Action("ChangePassword", "Account", new { area = "" })" class="gnb gnb_ChangePw">비밀번호 변경</a></li>
+                }
+                else if (ViewBag.LeftMenu == Global.Cs)//고객센터
+                {
+                    <li class="title left_text">고객센터</li>
+                    <li><a href="@Url.Action("Notice", "Cs")" class="gnb gnb_notice">공지사항</a></li>
+                    <li><a href="@Url.Action("Faq", "Cs")" class="gnb gnb_faq">FAQ</a></li>
+                    <li><a href="@Url.Action("Manual", "Cs")" class="gnb gnb_menual">매뉴얼 및 서식</a></li>
+                }
+                else if (ViewBag.LeftMenu == Global.MentoringReport)//맨토링 일지
+                {
+                    <li class="title left_text">멘토링 일지</li>
+                    <li><a href="@Url.Action("MentoringReportList", "MentoringReport", new { area = "Mentor" })" class="gnb gnb_mentoringReportList">멘토링 일지 조회</a></li>
+                    <li><a href="@Url.Action("RegMentoringReport", "MentoringReport", new { area = "Mentor" })" class="gnb gnb_regMentoringReport">멘토링 일지 등록</a></li>
+                    <li><a href="@Url.Action("MentoringTotalReportList", "MentoringReport", new { area = "Mentor" })" class="gnb gnb_mentoringTrList">멘토링 종합보고서 조회</a></li>
+                    <li><a href="@Url.Action("RegMentoringTotalReport", "MentoringReport", new { area = "Mentor" })" class="gnb gnb_regMentoringTr">멘토링 종합보고서 등록</a></li>
+                }
+                else if (ViewBag.LeftMenu == Global.Report) //기초역량 보고서
+                {
+                    <li class="title left_text">보고서</li>
+                    <li><a href="@Url.Action("BasicSurveyReport", "Report", new { area = "Mentor" })" class="gnb gnb_basicReport">기초경영역량 보고서</a></li>
+                    if (ViewBag.paramModel == null)
+                    {
+
+                    }
+                    else
+                    {
+                        <li><a href="#" class="list_gnb bold first_li list_1" onclick="javascript: TempSave('/BasicSurveyReport/CompanyInfo')">기업개요</a></li>
+                        <li><a href="#" class="list_gnb bold m_left10 list_2" onclick="javascript: TempSave('/BasicSurveyReport/OverallSummary')" pagenum="3">Ⅰ.역량검토 결과 요약</a></li>
+                        <li><a href="#" class="list_gnb bold m_left10 list_3" onclick="javascript: TempSave('/BasicSurveyReport/OverallResultCover')" pagenum="4">Ⅱ.기초 역량검토 종합결과</a></li>
+                        //첫 번째 접히는 부분
+                        <li>
+                            <div id="left_icon1" class="list_plus"></div><a href="#" class="list_gnb bold list_4 m_left20 first_list" onclick="javascript: TempSave('/BasicSurveyReport/OrgHR01')">1. 조직역량</a>
+                            <ul class="hide">
+                                <li><a href="#" class="list_gnb m_left24 bold list_4" onclick="javascript: TempSave('/BasicSurveyReport/OrgHR01')">(1) 인적자원</a></li>
+                                <li><a href="#" class="list_gnb m_left30 list_4" onclick="javascript: TempSave('/BasicSurveyReport/OrgHR01')" pagenum="5">① 인적자원의 확보/개발관리</a></li>
+                                <li><a href="#" class="list_gnb m_left30 list_5" onclick="javascript: TempSave('/BasicSurveyReport/OrgHR02')" pagenum="6">② 인적자원의 보상/유지관리</a></li>
+
+                                <li><a href="#" class="list_gnb m_left24 bold list_6" onclick="javascript: TempSave('/BasicSurveyReport/OrgProductivity')" pagenum="7">(2) 생산성, 활동성</a></li>
+                                <li><a href="#" class="list_gnb m_left24 bold list_7" onclick="javascript: TempSave('/BasicSurveyReport/OrgDivided')" pagenum="8">(3) 조직분화도</a></li>
+                            </ul>
+                        </li>
+                        //두번째 접히는 부분
+                        <li>
+                            <div id="left_icon2" class="list_plus"></div><a href="#" class="list_gnb bold m_left20 list_8 two_list" onclick="javascript: TempSave('/BasicSurveyReport/RndCost')">2. 상품화 역량</a>
+                            <ul class="hide">
+                                <li><a href="#" class="list_gnb m_left24 bold list_8" onclick="javascript: TempSave('/BasicSurveyReport/RndCost?')">(1) 기술경영</a></li>
+                                <li><a href="#" class="list_gnb m_left30 list_8" onclick="javascript: TempSave('/BasicSurveyReport/RndCost')" pagenum="9">① 연구개발 투자</a></li>
+                                <li><a href="#" class="list_gnb m_left30 list_9" onclick="javascript: TempSave('/BasicSurveyReport/RndEmp')" pagenum="10">② 연구개발 인력의 비율</a></li>
+                                <li><a href="#" class="list_gnb m_left30 list_10" onclick="javascript: TempSave('/BasicSurveyReport/ProductivityCommercialize')" pagenum="11">③ 사업화 역량</a></li>
+                                <li><a href="#" class="list_gnb m_left30 list_11" onclick="javascript: TempSave('/BasicSurveyReport/ProductivityResult')" pagenum="12">④ 사업화 실적</a></li>
+                                <li><a href="#" class="list_gnb m_left30 list_12" onclick="javascript:TempSave('/BasicSurveyReport/ProductivityMgmtFacility')" pagenum="13">⑤ 생산설비의 운영체계/관리</a></li>
+                                <li><a href="#" class="list_gnb m_left30 list_13" onclick="javascript: TempSave('/BasicSurveyReport/ProductivityProcessControl')" pagenum="14">⑥ 공정관리</a></li>
+                                <li><a href="#" class="list_gnb m_left30 list_14" onclick="javascript: TempSave('/BasicSurveyReport/ProductivityQC')" pagenum="15">⑦ 품질관리</a></li>
+                                <li><a href="#" class="list_gnb m_left24 bold list_15" onclick="javascript: TempSave('/BasicSurveyReport/ProductivityMgmtMarketing')">(2) 마케팅 관리</a></li>
+                                <li><a href="#" class="list_gnb m_left30 list_15" onclick="javascript: TempSave('/BasicSurveyReport/ProductivityMgmtMarketing')" pagenum="16">① 마케팅 전략의 수립/실행</a></li>
+                                <li><a href="#" class="list_gnb m_left30 list_16" onclick="javascript: TempSave('/BasicSurveyReport/ProductivityMgmtCustomer')" pagenum="17">② 고객관리</a></li>
+                                <li><a href="#" class="list_gnb m_left24 bold list_17" onclick="javascript: TempSave('/BasicSurveyReport/ProductivityProfitability')" pagenum="18">(3) 수익성, 성장성</a></li>
+                                <li><a href="#" class="list_gnb m_left24 bold list_18" onclick="javascript: TempSave('/BasicSurveyReport/ProductivityValueChain')">(4) 사업모델 도출과정</a></li>
+                                <li><a href="#" class="list_gnb m_left24 bold list_19" onclick="javascript: TempSave('/BasicSurveyReport/ProductivityRelation')">(5) 제품생산 판매관계망 검토</a></li>
+                                <li><a href="#" class="list_gnb m_left30 list_19" onclick="javascript: TempSave('/BasicSurveyReport/ProductivityRelation')" pagenum="20">① 제품생산 판매관계망 검토</a></li>
+                                <li><a href="#" class="list_gnb m_left30 list_20" onclick="javascript: TempSave('/BasicSurveyReport/ProductivityRelation2')">② 경쟁력 검토</a></li>
+                            </ul>
+                        </li>
+                        //세번째 접히는 부분
+                        <li>
+                            <div id="left_icon3" class="list_plus"></div><a href="#" class="list_gnb bold m_left20 list_21 third_list" onclick="javascript: TempSave('/BasicSurveyReport/RiskMgmtVisionStrategy')">3. 위험관리 역량</a>
+                            <ul class="hide">
+                                <li><a href="#" class="list_gnb m_left24 bold list_21" onclick="javascript: TempSave('/BasicSurveyReport/RiskMgmtVisionStrategy')">(1) 기초역량</a></li>
+                                <li><a href="#" class="list_gnb m_left30 list_21" onclick="javascript: TempSave('/BasicSurveyReport/RiskMgmtVisionStrategy')" pagenum="22">① 경영목표 및 전략</a></li>
+                                <li><a href="#" class="list_gnb m_left30 list_22" onclick="javascript: TempSave('/BasicSurveyReport/RiskMgmtLeadership')" pagenum="23">② 경영자의 리더십</a></li>
+                                <li><a href="#" class="list_gnb m_left30 list_23" onclick="javascript: TempSave('/BasicSurveyReport/RiskMgmtRelCEO')" pagenum="24">③ 경영자의 신뢰성</a></li>
+                                <li><a href="#" class="list_gnb m_left30 list_24" onclick="javascript: TempSave('/BasicSurveyReport/RiskMgmtWorkingEnv')" pagenum="25">④ 근로환경</a></li>
+                                <li><a href="#" class="list_gnb m_left30 list_25" onclick="javascript: TempSave('/BasicSurveyReport/RiskMgmtOrgSatisfaction')" pagenum="26">⑤ 조직만족도</a></li>
+                                <li><a href="#" class="list_gnb m_left30 list_26" onclick="javascript: TempSave('/BasicSurveyReport/RiskMgmtITSystem')" pagenum="27">⑥ 정보시스템 활용</a></li>
+                                <li><a href="#" class="list_gnb m_left24 bold list_27" onclick="javascript: TempSave('/BasicSurveyReport/RiskMgmtLiquidity')" pagenum="28">(2) 유동성, 안정성</a></li>
+                                <li><a href="#" class="list_gnb m_left24 bold list_28" onclick="javascript: TempSave('/BasicSurveyReport/RiskMgmtEvalProfession')" pagenum="29">(3) 전반적 제도/규정관리 체계</a></li>
+                            </ul>
+                        </li>
+                        <li><a href="#" class="list_gnb bold m_left10 list_29" onclick="javascript: TempSave('/BasicSurveyReport/GrowthRoadMapCover')">Ⅲ.성장 로드맵 제안</a></li>
+                        <li><a href="#" class="list_gnb m_left24 bold list_30" onclick="javascript: TempSave('/BasicSurveyReport/GrowthStrategyType')">(1) 성장전략 유형검토</a></li>
+                        <li><a href="#" class="list_gnb m_left24 bold list_31" onclick="javascript: TempSave('/BasicSurveyReport/GrowthCapabilityProposal')">(2) 단계별 성장 로드맵 종합</a></li>
+                        <li><a href="#" class="list_gnb m_left24 bold list_32" onclick="javascript: TempSave('/BasicSurveyReport/GrowthTotalProposal')">(3) 회사의견 검토</a></li>
+                        <li><a href="#" class="list_gnb bold m_left10 list_33" onclick="javascript: TempSave('/BasicSurveyReport/CapacityCompGoal')">[참고] 역량분석 방법 배경</a></li>
+                    }
+                }
+            </ul>
+        </div><!--sub_gnbwrap//-->
+    </div><!--sub_leftwrap//-->*@
+@*<script>
+    $(document).ready(function () {
+
+        //navibar 전체 null표시
+        //if (status == "T") {
+        //    $('#sub_leftwrap > .sub_gnbwrap > ul > li > a.list_gnb').addClass("null");
+        //    $('#sub_leftwrap a.m_left24').addClass("null");
+        //    $('#sub_leftwrap a.m_left30').addClass("null");
+        //}
+        var valA = readCookie('plusA');
+        var valB = readCookie('plusB');
+        var valC = readCookie('plusC');
+
+        // 처음 로드시 쿠키 값 확인해서 +, - 전환
+        if (valA == '1') {
+            var submenu = $('#sub_leftwrap > .sub_gnbwrap > ul > li > a.first_list').next("ul");
+            submenu.slideDown(0);
+            $('#left_icon1').attr('class', 'list_minus');
+        }
+        else {
+            var submenu = $('#sub_leftwrap > .sub_gnbwrap > ul > li > a.first_list').next("ul");
+            submenu.slideUp();
+            $('#left_icon1').attr('class', 'list_plus');
+        }
+
+        if (valB == '1') {
+            var submenu = $('#sub_leftwrap > .sub_gnbwrap > ul > li > a.two_list').next("ul");
+            submenu.slideDown(0);
+            $('#left_icon2').attr('class', 'list_minus');
+        }
+        else {
+            var submenu = $('#sub_leftwrap > .sub_gnbwrap > ul > li > a.two_list').next("ul");
+            submenu.slideUp();
+            $('#left_icon2').attr('class', 'list_plus');
+        }
+
+        if (valC == '1') {
+            var submenu = $('#sub_leftwrap > .sub_gnbwrap > ul > li > a.third_list').next("ul");
+            submenu.slideDown(0);
+            $('#left_icon3').attr('class', 'list_minus');
+        }
+        else {
+            var submenu = $('#sub_leftwrap > .sub_gnbwrap > ul > li > a.third_list').next("ul");
+            submenu.slideUp();
+            $('#left_icon3').attr('class', 'list_plus');
+        }
+        // 처음로드 종료 ...
+
+        $('#left_icon1').on("click", function () {
+            //$(this).attr("href", "#");
+            var submenu = $('#sub_leftwrap > .sub_gnbwrap > ul > li > a.first_list').next("ul");
+            if (submenu.is(":visible")) {
+                submenu.slideUp();
+                $('#left_icon1').attr('class', 'list_plus');
+                document.cookie = "plusA = 0; path" + "=/";
+            } else {
+                submenu.slideDown();
+                $('#left_icon1').attr('class', 'list_minus');
+                document.cookie = "plusA = 1; path" + "=/";
+            }
+        });
+        $('#left_icon2').on("click", function () {
+            //$(this).attr("href", "#");
+            var submenu = $('#sub_leftwrap > .sub_gnbwrap > ul > li > a.two_list').next("ul");
+            if (submenu.is(":visible")) {
+                submenu.slideUp();
+                $('#left_icon2').attr('class', 'list_plus');
+                document.cookie = "plusB = 0; path" + "=/";
+            } else {
+                submenu.slideDown();
+                $('#left_icon2').attr('class', 'list_minus');
+                document.cookie = "plusB = 1; path" + "=/";
+            }
+        });
+        $('#left_icon3').on("click", function () {
+            //$(this).attr("href", "#");
+            var submenu = $('#sub_leftwrap > .sub_gnbwrap > ul > li > a.third_list').next("ul");
+            if (submenu.is(":visible")) {
+                submenu.slideUp();
+                $('#left_icon3').attr('class', 'list_plus');
+                document.cookie = "plusC = 0; path" + "=/";
+            } else {
+                submenu.slideDown();
+                $('#left_icon3').attr('class', 'list_minus');
+                document.cookie = "plusC = 1; path" + "=/";
+            }
+        });
+
+        //$('a.btn_a').on('click', function (val) {
+        //    $('#Status').val(val);
+        //});
+
+        var jques = $('#QuestionSn').val();
+        var jbiz = $('#BizWorkSn').val();
+        var jyear = $('#BizWorkYear').val();
+        var status = $('#Status').val();
+
+        $.ajax({
+            url: '@Url.Action("RptNullCheckJson", "BasicSurveyReport")',
+            type: "post",
+            dataType: "json",
+            data: { ques: jques, biz: jbiz, year: jyear },
+            success: function (ret) {
+                //if (ret.length < 0) return;
+                $('div li a').each((function (i, o) {
+                    var number = $(o).attr('pagenum');
+
+                    for (var i = 0; i < ret.length ; i++) {
+                        if (ret[i] == null) {
+                            continue;
+                        }
+                        else if (ret[i] == "N") {
+                            $("a.list_gnb[pagenum=" + i + "]").addClass("null");
+                        }
+                    }
+
+                }));
+            }
+        });
+    });
+
+    function readCookie(name) {
+        var nameEQ = name + "=";
+        var ca = document.cookie.split(';');
+        for (var i = 0; i < ca.length; i++) {
+            var c = ca[i];
+            while (c.charAt(0) == ' ') c = c.substring(1, c.length);
+            if (c.indexOf(nameEQ) == 0) return c.substring(nameEQ.length, c.length);
+        }
+        return null;
+    };
+    var tempSaveCallbackUrl;
+
+    function TempSave(url) {
+        $('#submitType').val('T');
+        var bizWorkSn = $('#BizWorkSn').val();
+        var compSn = $('#CompSn').val();
+        var basicyear = $('#BizWorkYear').val();
+        var status = $('#Status').val();
+        var questionSn = $('#QuestionSn').val();
+
+        if (status == "T") {
+            status = "P"
+        }
+
+        console.log("status : " + status);
+
+        var CommonUrl = "?BizWorkSn=" + bizWorkSn + "&CompSn=" + compSn + "&BizWorkYear=" + basicyear + "&Status=" + status + "&QuestionSn=" + questionSn;
+
+        tempSaveCallbackUrl = url + CommonUrl;
+        var forma = $("#mainForm");
+
+        if (forma.length < 1) {
+            window.location = tempSaveCallbackUrl;
+            return;
+        }
+
+        var form = forma[0];
+        sendformdata(form, function (e) {
+            window.location = tempSaveCallbackUrl;
+        })
+    };
+    function switchXHRState() {
+        switch (this.readyState) {
+            case 4:
+                var ar = [];
+                ar.push(this.responseText);
+                for (var i in this.arguments) {
+                    ar.push(this.arguments[i]);
+                }
+                this.callback.apply(this, ar);
+                break;
+        }
+    };
+    function sendformdata(form, callback) {
+        try {
+            var formdata = new FormData(form);
+            var xhr = new XMLHttpRequest();
+            xhr.open(form.method, form.action, true);
+            if ((typeof callback) == "function") {
+                xhr.onreadystatechange = switchXHRState;
+                xhr.arguments = Array.prototype.slice.call(arguments, 2);
+                xhr.callback = callback;
+            }
+            xhr.send(formdata);
+        } catch (e) {
+
+            return false;
+        }
+    }
+</script>*@

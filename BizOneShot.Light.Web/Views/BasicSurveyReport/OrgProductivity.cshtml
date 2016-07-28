@@ -1,0 +1,398 @@
+﻿@model BizOneShot.Light.Models.ViewModels.OrgProductivityViewModel
+
+@{
+    Layout = "~/Views/Shared/_MainDetailLayout.cshtml";
+}
+
+<script>
+    $(document).ready(function () {
+        $('.vc_iconSB_10 ').addClass('on01');
+        $('.vc_title_10 ').addClass('on');
+        $('.a_label10').addClass('on');
+
+        // 사이드 바를 위한 class 추가
+        $('.container').addClass('height_content_auto');
+        $('.sub_gnbwrap > .navi_left > .bg_col_g').addClass('height_rreport');
+
+
+        $('#mainForm').bind('submit', function () {
+
+            var valid = true;
+            if ($('#submitType').val() == "N") {
+
+                $('textarea[id^="comment"]').each(function () {
+                    if ($(this).val().length == 0 && valid == true) {
+                        alert("필수항목을 입력해 주세요");
+                        $(this).focus();
+                        valid = false;
+
+                        return false;
+                    }
+                });
+                return valid;
+            }
+
+        });
+
+        makeBarChart("Productivity", @Model.Productivity.Company, @Model.Productivity.AvgBizInCompany, @Model.Productivity.AvgTotal, @Model.Productivity.AvgSMCompany, "천원", 0);
+        makeBarChart("Activity", @Model.Activity.Company, @Model.Activity.AvgBizInCompany, @Model.Activity.AvgTotal, @Model.Activity.AvgSMCompany, "%", 1);
+
+        if ($('#Status').val() == "C") {
+            $('#mainForm input').attr('disabled', true);
+            $('#mainForm textarea').attr('disabled', true);
+            $('.mentorcomment').hide();
+        }
+        else {
+            $('#sub_leftwrap > .sub_gnbwrap > ul > li > a.list_33').hide();
+        }
+
+        var usrType = $("#usrType").val();
+
+        if (usrType == "C") {
+
+            $('.vc_iconSB_02').addClass('on01'); // 보고서 icon
+            $('.vc_title_01').addClass('on');    // 보고서 label
+            $('.a_label02').addClass('on');      // 보고서 내부 메뉴 label (기초경영역량 보고서)
+
+        } else if (usrType == "M") {
+
+            $('.vc_iconSB_02 ').addClass('on01');   // 보고서 icon
+            $('.vc_title_01 ').addClass('on');      // 보고서 label
+            $('.a_label01 ').addClass('on');        // 보고서 내부메뉴
+
+        }else if (usrType == "B") {
+            $('.vc_iconSB_02 ').addClass('on01');   // 보고서 icon
+            $('.vc_title_01 ').addClass('on');      // 보고서 label
+            $('.a_label01 ').addClass('on');        // 보고서 내부메뉴
+        }
+
+        
+    });
+
+    function goSubmit(submitType) {
+        $('#submitType').val(submitType);
+        $('#mainForm').submit();
+
+    }
+
+    function makeBarChart(divName, company, avgBizInCompany, avgTotal, avgSMCompany, unit, point) {
+
+        var param1 = company;
+        var param2 = avgBizInCompany;
+        var param3 = avgTotal;
+        var param4 = avgSMCompany;
+
+        Highcharts.setOptions({
+            lang: {
+                decimalPoint: '.',
+                thousandsSep: ','
+            }
+        });
+
+
+        chart = new Highcharts.Chart({
+            chart: {
+                type: 'column',
+                renderTo: divName,
+                margin: [10, 0, 25, 50],
+                spacingTop: 0,
+                //spacingBottom: 0,
+                //spacingLeft: 0,
+                spacingRight: 0
+            },
+            exporting: {                    // highcharts context menu 제거
+                buttons: {
+                    contextButtons: {
+                        enabled: false,
+                        menuItems: null
+                    }
+                },
+                enabled: false
+            },
+            credits: {
+                enabled: false
+            },
+            title: {
+                style: {
+                    display: 'none'
+                }
+            },
+            xAxis: {
+                type: 'category',
+                gridLineWidth: 1
+            },
+            yAxis: {
+                gridLineWidth: 0,
+                title: {
+                    style: {
+                        display: 'none'
+                    }
+                },
+                labels: {
+                    enabled: true
+                },
+            },
+            legend: {
+                enabled:false
+            },
+            tooltip: { enabled: false },
+
+            series: [{
+                upColor: Highcharts.getOptions().colors[2],
+                color: Highcharts.getOptions().colors[3],
+                pointWidth: 35,
+                enableMouseTracking: false,
+                data: [{
+                    name: "해당기업",
+                    y: param1
+                }, {
+                    name: "참여기업평균",
+                    y: param2
+                }, {
+                    name: "전체평균",
+                    y: param3
+                }, {
+                    name: "중소기업 평균",
+                    y: param4
+                }],
+                dataLabels: {
+                    enabled: true,
+                    formatter: function () {
+                        return Highcharts.numberFormat(this.y, point, '.') + unit;
+                    },
+                    style: {
+                        color: '#000000',
+                        fontWeight: 'bold'//,
+                        //textShadow: '0px 0px 3px black'
+                    }
+                },
+                pointPadding: 0
+            }]
+        });
+    }
+    function RptCommentPopupOpen(detailCode) {
+        //var year = $('#BizWorkYear').val();
+        //var month = $('#SelectMonth').val();
+        var questionSn = $('#QuestionSn').val();
+        var NumSn = $('#NumSn').val();
+        //var status = $('#Status').val();
+        var basicyear = $('#BizWorkYear').val();
+        //var detailCode = $('#CommentList_0__DetailCd').val();
+        var compSn = $('#CompSn').val();
+
+        w = 700;    //팝업창의 너비
+        h = 520;    //팝업창의 높이
+        //중앙위치 구해오기
+        LeftPosition = (screen.width - w) / 2;
+        TopPosition = (screen.height - h) / 2;
+        var url = "/BasicSurveyReport/RptCommentPop?&NumSn=" + NumSn + "&QuestionSn=" + questionSn + "&BasicYear=" + basicyear + "&DetailCode=" + detailCode + "&CompSn=" + compSn;
+
+        console.log(url);
+
+        window.open(url, "popup", "resizable=yes, scrollbars=yes, left=" + LeftPosition + ", top=" + TopPosition + ", width=" + w + "px, height=" + h + "px");
+    }
+</script>
+@Styles.Render("~/css/print")
+@Scripts.Render("~/bundles/highcharts")
+
+<div class="tcms">
+    <div class="main_top short">
+        <div class="list_icon"></div><div class="sub_title">기초경영역량보고서</div>
+        @RenderPage("~/Views/Shared/_MainTopMenuPartial.cshtml")
+    </div>
+    <div id="sub_rightwrap_report">
+
+        @using (Html.BeginForm("OrgProductivity", "BasicSurveyReport", FormMethod.Post, new { area = "", @class = "form-horizontal", role = "form", id = "mainForm" }))
+        {
+            @Html.HiddenFor(model => model.SubmitType, new { @id = "submitType" })
+            @Html.Hidden("NumSn", ViewBag.paramModel.NumSn as string)
+            @Html.Hidden("CompSn", ViewBag.paramModel.CompSn as string)
+            @Html.Hidden("BizWorkYear", ViewBag.paramModel.BizWorkYear as string)
+            @Html.Hidden("QuestionSn", ViewBag.paramModel.QuestionSn as string)
+            @Html.Hidden("Status", ViewBag.paramModel.Status as string)
+            @Html.Hidden("CompNm", ViewBag.paramModel.CompNm as string)
+            @Html.Hidden("PageNum", ViewBag.paramModel.PageNum as string)
+            @Html.Hidden("CavYear", ViewBag.CavYear as string)
+            @Html.Hidden("usrType", Session[Global.UserType] as string)
+
+            <div class="sub_report_checkbox">
+                <div class="compname">@ViewBag.paramModel.CompNm</div>
+                <div class="pagenum">6/27</div>
+                <div class="report_main_top2"></div>
+                <div class="report_main_mid">
+                    <div class="main_mid_cont nomargin2">
+                        <p class="title_mid">
+                            Ⅱ. 기초역량검토 종합결과 _ <span class="small_span float_right">
+                                역량별
+                                검토결과
+                            </span>
+                        </p>
+                    </div>
+                    <div class="main_mid_cont nomargin2">
+                        <div class="main_mid_listBox">
+
+                            <div class="listBox_tap longbg_on noline">
+                                <span>(1)조직역량</span>
+                            </div>
+                            <table class="join_info">
+                                <colgroup>
+                                    <col width="20%">
+                                    <col width="20%">
+                                    <col width="60%">
+                                </colgroup>
+                                <tr>
+                                    <td class="left_memo">역량 검토 항목</td>
+                                    <td>
+                                        <span class="span_weak">□ 기초역량 평가</span> <span class="span_on">■ 재무지표 평가</span> <span class="span_weak">
+                                            □
+                                            전문가 평가
+                                        </span>
+                                    </td>
+                                    <td class="center_td">
+                                        <div class="label_td">생산성, 활동성</div> <span class="label_span">
+                                            재무지표 중 생산성은 조직원의 매출기여도를 표시하는 것으로 조직역량을 가장 직접적으로 나타냅니다 또한, 제품생산에서 매출채권회수까지의 자산의 효율성 및 활동역량을 검토하여 기업의 전체적인 조직역량을 측정할 수 있습니다.
+                                        </span>
+                                    </td>
+                                </tr>
+
+                            </table>
+                        </div>
+
+                    </div>
+                    <div class="main_mid_cont margin_b15">
+                        <div class="main_mid_listBox nomargin2">
+                            <div class="listBox_tap bg_on full_line">
+                                <span>생산성</span>
+                            </div>
+                            <div class="listBox_title top_padding">
+                                <span class="big_span">부가가치 노동생산성 _</span>
+                                <span class="small_span">
+                                    기업 구성원의 경력 및 업무이해도, 숙련도 등 활동력은
+                                    노동생산성으로 연결 됨으로서 기업의 전체적인 조직의 효율성(조직역량)을 판단함.
+                                </span>
+
+                            </div>
+                            <div class="index_left">
+                                <div class="index_left_title">
+                                    <span>측정지표</span>
+                                </div>
+                                <div class="index_left_mid">
+                                    <span>
+                                        부가가치<br> 노동생산성 = <br>(@Model.Productivity.Result)
+                                    </span>
+
+                                </div>
+                                <div class="index_right_mid">
+                                    <span class="right_mid_top">
+                                        <br />부가가치<br>(@Model.Productivity.Dividend
+                                        )
+                                    </span> <span class="right_mid_bot">
+                                        종업원수<br>(@Model.Productivity.Divisor )
+                                    </span>
+
+                                </div>
+                            </div>
+                            <div id="Productivity" class="index_chart">
+                                <!-- 차트가 표시되는 부분 -->
+                            </div>
+                            <div style="width:94.5%;float:left;height:5px;margin-top:5px;">
+                                <span style="float:right; font-size:8pt;">(@Html.Raw(ViewBag.CavYear))</span>
+                            </div>
+                        </div>
+
+                    </div>
+                    
+                    <div class="main_mid_cont margin_b15">
+                        <div class="main_mid_listBox nomargin2">
+                            <div class="listBox_tap bg_on full_line">
+                                <span>활동성</span>
+                            </div>
+                            <div class="listBox_title top_padding">
+                                <span class="big_span">총자산회전율 _</span><span class="small_span">
+                                    기업의
+                                    “사람”과 연결된 생산요소(자산)의 활동성을 측정 함으로서 전체적인 조직의 역량을 측정,<br>판단함.
+                                </span>
+                            </div>
+                            <div class="index_left">
+                                <div class="index_left_title">
+                                    <span>측정지표</span>
+                                </div>
+                                <div class="index_left_mid multi" style="padding-top: 14px">
+                                    <span>
+                                        <br>총자산<br> 회전율 = <br>(@Model.Activity.Result )
+                                    </span>
+                                </div>
+                                <div class="index_right_mid multi">
+                                    <span class="right_mid_top">
+                                        <br> 매출액<br>(@Model.Activity.Dividend)
+                                    </span> <span class="right_mid_bot">
+                                        총자산<br>(@Model.Activity.Divisor)
+                                    </span>
+                                </div>
+                                <div class="index_right_multi"><br>X 100</div>
+                            </div>
+                            <div id="Activity" class="index_chart">
+                                <!-- 차트가 표시되는 부분 -->
+                            </div>
+                            <div style="width:94.5%;float:left;height:5px;margin-top:5px;">
+                                <span style="float:right; font-size:8pt;">(@Html.Raw(ViewBag.CavYear))</span>
+                            </div>
+                        </div>
+
+                    </div>
+                    <div class="main_mid_cont">
+                        <div class="main_mid_listBox nomargin2">
+                            <div class="listBox_tap bg_on">
+                                <span>검토결과</span>
+                            </div>
+                            @Html.TextAreaFor(model => model.CommentList[0].Comment, new { @id = "comment0", @class = "bot_textarea_275", @maxlength = "540", @placeholder = "500자 내로 작성하시기 바랍니다." })
+                            @Html.HiddenFor(model => model.CommentList[0].DetailCd)
+                        </div>
+
+                    </div>
+
+
+
+                    @*<div class="main_mid_cont">
+                        <div class="main_mid_listBox nomargin2">
+                            <div class="listBox_tap bg_on">
+                                <span>검토결과</span><a href="##" onClick="javascript:RptCommentPopupOpen('02020802');" class="btn_small gray1 mentorcomment">다른 멘토 의견보기 </a>
+                            </div>
+                            @Html.TextAreaFor(model => model.CommentList[1].Comment, new { @id = "comment1", @class = "bot_textarea w_short", @placeholder = "500자 내로 작성하시기 바랍니다.", @maxlength = "540" })
+                            @Html.HiddenFor(model => model.CommentList[1].DetailCd)
+                        </div>
+
+                    </div>*@
+                </div>
+            </div>
+    <!--container//-->
+            <div id="btnwrap_sub" class="bottom_left2">
+
+                <div class="rightwrap left">
+                    <a href="@Url.Action("OrgHR01", "BasicSurveyReport", new { area = "", NumSn = ViewBag.paramModel.NumSn, CompSn = ViewBag.paramModel.CompSn, BizWorkYear = ViewBag.paramModel.BizWorkYear, Status = ViewBag.paramModel.Status, QuestionSn = ViewBag.paramModel.QuestionSn })" class="btn_a gray left" value="이전">이전</a>
+
+                </div>
+                <div class="rightwrap right">
+                    @if (ViewBag.paramModel.Status != "C")
+                    {
+                        <button type="button" class="btn_big gray" onclick="goSubmit('N');" value="다음">다음</button>
+                    }
+                    else
+                    {
+                        <a href="@Url.Action("OrgDivided", "BasicSurveyReport", new { area = "", NumSn = ViewBag.paramModel.NumSn, CompSn = ViewBag.paramModel.CompSn, BizWorkYear = ViewBag.paramModel.BizWorkYear, Status = ViewBag.paramModel.Status, QuestionSn = ViewBag.paramModel.QuestionSn })" class="btn_a gray right" value="다음">다음</a>
+                    }
+                </div>
+                @if (ViewBag.paramModel.Status != "C")
+                {
+                    <div class="rightwrap centerwrap">
+                        <button type="button" class="btn_big red" onclick="goSubmit('T');" value="임시저장">임시저장</button>
+                    </div>
+                }
+            </div>
+        }
+    </div>
+</div>
+
+
+
+    

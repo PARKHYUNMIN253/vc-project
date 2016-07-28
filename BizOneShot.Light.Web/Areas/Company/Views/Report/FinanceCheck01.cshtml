@@ -1,0 +1,169 @@
+﻿@model BizOneShot.Light.Models.ViewModels.QuesViewModel
+
+@{
+    Layout = "~/Areas/Company/Views/Shared/_MainDetailLayout.cshtml";
+}
+
+<script>
+    $(document).ready(function () {
+
+        $('.vc_iconSB_02').addClass('on01'); // 보고서 icon
+        $('.vc_title_01').addClass('on');    // 보고서 label
+        $('.a_label01').addClass('on');      // 보고서 내부 메뉴 label (기초경영역량 문진표)
+
+        // 사이드 바를 위한 class 추가
+        $('.container').addClass('height_content_auto');
+        $('.sub_gnbwrap > .navi_left > .bg_col_g').addClass('height_bsurvey');
+
+        //top menu
+        $('#naviwrap_biz > .navi_biz >  a > .top_menu > .header_report01 ').addClass('on');
+        $('#naviwrap_biz > .navi_biz >  a > .top_menu > .top_text_report ').addClass('on');
+        //Accounting menu
+        $('#sub_leftwrap > .sub_gnbwrap > ul > li > a.gnb_basicsurvey').addClass('on');
+
+    });
+
+    function alt() {
+        if ($('#status').val() == "P") {
+        }
+    }
+
+</script>
+
+<div class="tcms">
+    <div class="main_top short">
+        <div class="sub_right_title right_text">
+            <div class="list_icon"></div><div class="sub_title">기초경영역량 문진표</div>
+        </div>
+        @RenderPage("~/Areas/Company/Views/Shared/_MainTopMenuPartial.cshtml")
+    </div>
+
+    <div id="sub_rightwrap_report">
+
+        <div class="sub_right_title right_text"></div>
+
+
+        <div id="report_wm_step">
+            <!--STEP 아이콘-->
+            <ul>
+                <li class="basic_step01"><a href="@Url.Action("Summary01","Report",new { area= "Company", @questionSn = @Model.QuestionSn, @status = Model.Status })" class="ablock"><em>STEP01.진단개요</em></a></li>
+                <li class="basic_step02"><a href="@Url.Action("CompanyInfo01","Report",new { area= "Company", @questionSn = @Model.QuestionSn, @status = Model.Status })" class="ablock"><em>STEP02.기업정보</em></a></li>
+                <li class="basic_step03"><a href="@Url.Action("BizCheck01","Report",new { area= "Company", @questionSn = @Model.QuestionSn, @status = Model.Status })" class="ablock"><em>STEP03.경영진단</em></a></li>
+                <li class="basic_step04 on"><a href="@Url.Action("FinanceCheck01","Report",new { area= "Company", @questionSn = @Model.QuestionSn, @status = Model.Status })" class="ablock"><em>STEP04.재무진단</em></a></li>
+                <li class="basic_step05">
+                    @if (Model.Status == "C")
+                    {
+                        <a href="@Url.Action("OrgCheck01","Report",new { area= "Company", @questionSn = @Model.QuestionSn, @status = Model.Status })" class="ablock"><em>STEP05.조직진단</em></a>
+                    }
+                    else
+                    {
+                        <em>STEP05.조직진단</em>
+                    }
+                </li>
+                <li class="basic_step06">
+                    @if (Model.Status == "C")
+                    {
+                        <a href="@Url.Action("BasicSurveyComplete","Report",new { area= "Company", @questionSn = @Model.QuestionSn, @status = Model.Status })" class="ablock"><em>STEP06.작성완료</em></a>
+                    }
+                    else
+                    {
+                        <em>STEP06.작성완료</em>
+                    }
+                </li>
+            </ul>
+        </div>
+        @Html.HiddenFor(model => model.Status, new { @id = "status" })
+        <div class="sub_report_checkbox">
+            <div class="report_main_top2">
+                <div class="title_medium">Ⅳ. 재무 진단</div>
+            </div>
+            <div class="report_main_mid">
+                <div class="main_mid_cont">
+                    <p>
+                        기업경영의 성과는 최종적으로 재무적인 성과로 귀결됩니다. 재무적인 성과를 측정하는 전통적이고 가장 합리적인 <br>방법은
+                        재무비율에 의하여 평가하는 방법으로 내부 경영자, 종업원, 금융기관, 정책관련 기관 등을 포함한 모든 기업의
+                        이해관계자 들이 활용합니다.<br> <br> 기업의 재무 현황을 분석하기 위해서는 기업의
+                        재무제표를 기초로 수익성, 안정성, 유동성, 활동성, 성장성을 분석 합니다. 재무 현황은 최근 2년간의 재무제표를
+                        분석하여 수익성, 성장성, 유동성, 안정성, 활동성, 생산성 항목에 대하여
+                        동종업계와 비교하여 분석 합니다.
+                    </p>
+                </div>
+                <div class="main_mid_cont">
+                    <p>
+                        <span>※</span>재무적 성과 측정을 위한 재무비율 선정 근거
+                    </p>
+                    <table class="join_info">
+                        <colgroup>
+                            <col width="12%">
+                            <col width="44%">
+                            <col width="44%">
+                        </colgroup>
+                        <tr>
+                            <td class="left_memo">분 류</td>
+                            <td class="left_memo">경제적 의미</td>
+                            <td class="left_memo">관련비율</td>
+
+                        </tr>
+                        <tr>
+                            <td class="center_td">수익성비율</td>
+                            <td class="center_td">
+                                일정기간 기업활동의 최종성과 즉 매출 또는
+                                투자에 대한 손익을 나타내는 것으로 경영의 총괄적 효율성을 측정
+                            </td>
+                            <td class="center_td">매출액 영업이익률, 자기자본 순이익률 등</td>
+                        </tr>
+                        <tr>
+                            <td class="center_td">성장성비율</td>
+                            <td class="center_td">
+                                기업의 안정성을 선행 판단하는 외형 및 수익의 성장가능성을 측정
+                            </td>
+                            <td class="center_td">매출액증가율, 순이익증가율 등</td>
+                        </tr>
+                        <tr>
+                            <td class="center_td">유동성비율</td>
+                            <td class="center_td">기업의 단기채무지급(상환)능력을 측정, 단기적 현금흐름을 측정</td>
+                            <td class="center_td">유동비율, 당좌비율 등</td>
+                        </tr>
+                        <tr>
+                            <td class="center_td">안정성비율</td>
+                            <td class="center_td">
+                                기업의 부채의존도(타인자본)를 나타내는 것으로 기업의
+                                장기채무지급능력을 측정
+                            </td>
+                            <td class="center_td">부채비율, 이자보상비율 등</td>
+                        </tr>
+                        <tr>
+                            <td class="center_td">활동성비율</td>
+                            <td class="center_td">투자자본(자산)의 이용효율성을 회전율을 주로이용 측정</td>
+                            <td class="center_td">총자산회전율, 재고자산회전율, 매출채권회전율 등</td>
+                        </tr>
+                        <tr>
+                            <td class="center_td">생산성비율</td>
+                            <td class="center_td">
+                                기업활동에 투입되는 노동, 자본 등의 생산요소가 달성하는
+                                경영성과측정
+                            </td>
+                            <td class="center_td">부가가치율, 노동생산성, 자본생산성</td>
+                        </tr>
+                    </table>
+
+                </div>
+
+            </div>
+
+        </div>
+        <div id="btnwrap_sub">
+
+            <div class="rightwrap left">
+                <a href="@Url.Action("BizCheck13", "Report", new { area = "Company", @questionSn = Model.QuestionSn, @status = Model.Status })" class="btn_a gray" value="이전">이전</a>
+            </div>
+            <div class="rightwrap right">
+                <a href="@Url.Action("FinanceCheck02", "Report", new { area = "Company" , @QuestionSn = Model.QuestionSn, @status = Model.Status })" class="btn_a gray" value="다음" onclick="alt();">다음</a>
+            </div>
+        </div>
+    </div>
+
+
+</div>
+
+

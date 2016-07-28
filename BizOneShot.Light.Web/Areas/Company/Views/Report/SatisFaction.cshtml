@@ -1,0 +1,613 @@
+﻿@model BizOneShot.Light.Models.ViewModels.VcSatCheckViewModel
+@{
+    Layout = "~/Areas/Company/Views/Shared/_MainDetailLayout.cshtml";
+}
+
+<style>
+    #btnwrap_sub .rightwrap {
+        margin-right: 15px;
+    }
+    
+    #btnwrap_sub .rightwrap button, #btnwrap_sub .rightwrap a {
+        margin-top: 0px;
+    }
+
+    .container {
+        height: auto !important;
+    }
+
+    .sub_gnbwrap .navi_left .bg_col_g {
+        height: 2286px !important;
+    }
+</style>
+
+
+<script>
+    $(document).ready(function () {
+        // side Menu
+        $('.vc_iconSB_02').addClass('on01'); // 보고서 icon
+        $('.vc_title_01').addClass('on');    // 보고서 label
+        $('.a_label03').addClass('on');      // 보고서 내부 메뉴 label (기초경영역량 문진표)
+    });
+</script>
+
+<div class="tcms">
+    <div class="main_top short">
+        <div class="list_icon"></div><div class="sub_title">만족도조사</div>
+        @RenderPage("~/Areas/Company/Views/Shared/_MainTopMenuPartial.cshtml")
+    </div>
+    <div class="main_mid">
+        @using (Html.BeginForm("SatisFaction", "Report", FormMethod.Post, new { area = "", @class = "form-horizontal", role = "form", id = "mainForm" }))
+        {
+            @Html.AntiForgeryToken()
+            @Html.HiddenFor(model => model.SatSn)
+            @Html.HiddenFor(model => model.CompSn)
+            @Html.HiddenFor(model => model.SubNumSn)
+            @Html.HiddenFor(model => model.MentorSn)
+            @Html.HiddenFor(model => model.NumSn)
+            @Html.HiddenFor(model => model.TotalReportSn)
+            <div class="tablewrap">
+                <table class="admin_list">
+                    <colgroup>
+                        <col width="50%">
+                        <col width="10%">
+                        <col width="10%">
+                        <col width="10%">
+                        <col width="10%">
+                        <col width="10%">
+                    </colgroup>
+                    <tr>
+                        <th class="topcen" colspan="6">【사업수행 만족도】</th>
+                    </tr>
+                    <tr>
+                        <th class="tr_blank" colspan="6"></th>
+                    </tr>
+                    <tr>
+                        <th class="tr_blank" colspan="6">각 문항을 읽으시고 해당하는 부분에 체크를 해주시길 바랍니다.</th>
+                    </tr>
+                    <tr>
+                        <th class="tr_blank" colspan="6"></th>
+                    </tr>
+                    <tr>
+                        <th class="topcen td_left" colspan="6">A. 지원정책 만족도</th>
+                    </tr>
+                    <tr>
+                        <th class="topcen">구분</th>
+                        <th class="topcen">매우<br />그렇지않음</th>
+                        <th class="topcen">그렇지않음</th>
+                        <th class="topcen">보통</th>
+                        <th class="topcen">그러함</th>
+                        <th class="topcen">매우<br />그러함</th>
+                    </tr>
+                    <tr>
+                        <td class="td_left">1. 지원 사업의 전반적인 만족도</td>
+                        <td>
+                            @Html.RadioButtonFor(model => model.Check01, "1")
+                        </td>
+                        <td>
+                            @Html.RadioButtonFor(model => model.Check01, "2")
+                        </td>
+                        <td>
+                            @Html.RadioButtonFor(model => model.Check01, "3")
+                        </td>
+                        <td>
+                            @Html.RadioButtonFor(model => model.Check01, "4")
+                        </td>
+                        <td>
+                            @Html.RadioButtonFor(model => model.Check01, "5")
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="td_left">2. 사업에 대한 정보 및 안내가 충분히 제공된다.</td>
+                        <td>
+                            @Html.RadioButtonFor(model => model.Check02, "1")
+                        </td>
+                        <td>
+                            @Html.RadioButtonFor(model => model.Check02, "2")
+                        </td>
+                        <td>
+                            @Html.RadioButtonFor(model => model.Check02, "3")
+                        </td>
+                        <td>
+                            @Html.RadioButtonFor(model => model.Check02, "4")
+                        </td>
+                        <td>
+                            @Html.RadioButtonFor(model => model.Check02, "5")
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="td_left">3. 사업 지원신청과 지원결정까지의 절차가 간편하다</td>
+                        <td>
+                            @Html.RadioButtonFor(model => model.Check03, "1")
+                        </td>
+                        <td>
+                            @Html.RadioButtonFor(model => model.Check03, "2")
+                        </td>
+                        <td>
+                            @Html.RadioButtonFor(model => model.Check03, "3")
+                        </td>
+                        <td>
+                            @Html.RadioButtonFor(model => model.Check03, "4")
+                        </td>
+                        <td>
+                            @Html.RadioButtonFor(model => model.Check03, "5")
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="td_left">4. 사업의 지원규모가 적정하다.</td>
+                        <td>
+                            @Html.RadioButtonFor(model => model.Check04, "1")
+                        </td>
+                        <td>
+                            @Html.RadioButtonFor(model => model.Check04, "2")
+                        </td>
+                        <td>
+                            @Html.RadioButtonFor(model => model.Check04, "3")
+                        </td>
+                        <td>
+                            @Html.RadioButtonFor(model => model.Check04, "4")
+                        </td>
+                        <td>
+                            @Html.RadioButtonFor(model => model.Check04, "5")
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="td_left">5. 사업에 대한 성과관리 및 평가가 체계적이다.</td>
+                        <td>
+                            @Html.RadioButtonFor(model => model.Check05, "1")
+                        </td>
+                        <td>
+                            @Html.RadioButtonFor(model => model.Check05, "2")
+                        </td>
+                        <td>
+                            @Html.RadioButtonFor(model => model.Check05, "3")
+                        </td>
+                        <td>
+                            @Html.RadioButtonFor(model => model.Check05, "4")
+                        </td>
+                        <td>
+                            @Html.RadioButtonFor(model => model.Check05, "5")
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="td_left">6. 사업이 지원기업에 실질적인 도움이 된다.</td>
+                        <td>
+                            @Html.RadioButtonFor(model => model.Check06, "1")
+                        </td>
+                        <td>
+                            @Html.RadioButtonFor(model => model.Check06, "2")
+                        </td>
+                        <td>
+                            @Html.RadioButtonFor(model => model.Check06, "3")
+                        </td>
+                        <td>
+                            @Html.RadioButtonFor(model => model.Check06, "4")
+                        </td>
+                        <td>
+                            @Html.RadioButtonFor(model => model.Check06, "5")
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="td_left">7. 사업은 기업체의 경쟁력제고에 도움이 된다.</td>
+                        <td>
+                            @Html.RadioButtonFor(model => model.Check07, "1")
+                        </td>
+                        <td>
+                            @Html.RadioButtonFor(model => model.Check07, "2")
+                        </td>
+                        <td>
+                            @Html.RadioButtonFor(model => model.Check07, "3")
+                        </td>
+                        <td>
+                            @Html.RadioButtonFor(model => model.Check07, "4")
+                        </td>
+                        <td>
+                            @Html.RadioButtonFor(model => model.Check07, "5")
+                        </td>
+                    </tr>
+                    <tr>
+                        <th class="tr_blank" colspan="6"></th>
+                    </tr>
+                    <tr>
+                        <th class="topcen td_left" colspan="6">B. 기술사업화서비스전문기관(BA) 만족도</th>
+                    </tr>
+                    <tr>
+                        <th class="topcen">구분</th>
+                        <th class="topcen">매우<br />그렇지않음</th>
+                        <th class="topcen">그렇지않음</th>
+                        <th class="topcen">보통</th>
+                        <th class="topcen">그러함</th>
+                        <th class="topcen">매우<br />그러함</th>
+                    </tr>
+                    <tr>
+                        <td class="td_left">1. 서비스 신청 분야에 대한 정보 및 안내가 충분히 제공되었다.</td>
+                        <td>
+                            @Html.RadioButtonFor(model => model.Check08, "1")
+                        </td>
+                        <td>
+                            @Html.RadioButtonFor(model => model.Check08, "2")
+                        </td>
+                        <td>
+                            @Html.RadioButtonFor(model => model.Check08, "3")
+                        </td>
+                        <td>
+                            @Html.RadioButtonFor(model => model.Check08, "4")
+                        </td>
+                        <td>
+                            @Html.RadioButtonFor(model => model.Check08, "5")
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="td_left">2. 서비스전문기관(컨설턴트) 역량 및 서비스 지원이 원활하였다.</td>
+                        <td>
+                            @Html.RadioButtonFor(model => model.Check09, "1")
+                        </td>
+                        <td>
+                            @Html.RadioButtonFor(model => model.Check09, "2")
+                        </td>
+                        <td>
+                            @Html.RadioButtonFor(model => model.Check09, "3")
+                        </td>
+                        <td>
+                            @Html.RadioButtonFor(model => model.Check09, "4")
+                        </td>
+                        <td>
+                            @Html.RadioButtonFor(model => model.Check09, "5")
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="td_left">3. 제공 받은 서비스가 신청분야와 잘 부합하여 목적을 달성하였다.</td>
+                        <td>
+                            @Html.RadioButtonFor(model => model.Check10, "1")
+                        </td>
+                        <td>
+                            @Html.RadioButtonFor(model => model.Check10, "2")
+                        </td>
+                        <td>
+                            @Html.RadioButtonFor(model => model.Check10, "3")
+                        </td>
+                        <td>
+                            @Html.RadioButtonFor(model => model.Check10, "4")
+                        </td>
+                        <td>
+                            @Html.RadioButtonFor(model => model.Check10, "5")
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="td_left">4. 컨설턴트가 기업사정을 잘 파악하여 현장지원이 효율적이었다.</td>
+                        <td>
+                            @Html.RadioButtonFor(model => model.Check11, "1")
+                        </td>
+                        <td>
+                            @Html.RadioButtonFor(model => model.Check11, "2")
+                        </td>
+                        <td>
+                            @Html.RadioButtonFor(model => model.Check11, "3")
+                        </td>
+                        <td>
+                            @Html.RadioButtonFor(model => model.Check11, "4")
+                        </td>
+                        <td>
+                            @Html.RadioButtonFor(model => model.Check11, "5")
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="td_left">5. 기업현장 목소리를 잘 파악하여 대응이 효과적으로 이루어졌다.</td>
+                        <td>
+                            @Html.RadioButtonFor(model => model.Check12, "1")
+                        </td>
+                        <td>
+                            @Html.RadioButtonFor(model => model.Check12, "2")
+                        </td>
+                        <td>
+                            @Html.RadioButtonFor(model => model.Check12, "3")
+                        </td>
+                        <td>
+                            @Html.RadioButtonFor(model => model.Check12, "4")
+                        </td>
+                        <td>
+                            @Html.RadioButtonFor(model => model.Check12, "5")
+                        </td>
+                    </tr>
+                    <tr>
+                        <th class="tr_blank" colspan="6"></th>
+                    </tr>
+                    <tr>
+                        <th class="tr_blank" colspan="6"></th>
+                    </tr>
+                    <tr>
+                        <th class="topcen" colspan="6">【사업수행 기대효과】</th>
+                    </tr>
+                    <tr>
+                        <th class="tr_blank" colspan="6"></th>
+                    </tr>
+                    <tr>
+                        <th class="tr_blank" colspan="6">각 문항을 읽으시고 해당하는 부분에 체크를 해주시길 바랍니다.</th>
+                    </tr>
+                    <tr>
+                        <th class="tr_blank" colspan="6"></th>
+                    </tr>
+                    <tr>
+                        <th class="topcen">구분</th>
+                        <th class="topcen">매우<br />그렇지않음</th>
+                        <th class="topcen">그렇지않음</th>
+                        <th class="topcen">보통</th>
+                        <th class="topcen">그러함</th>
+                        <th class="topcen">매우<br />그러함</th>
+                    </tr>
+                    <tr>
+                        <td class="td_left">1. 수출 및 판매 등 매출액 증대 향상</td>
+                        <td>
+                            @Html.RadioButtonFor(model => model.Check13, "1")
+                        </td>
+                        <td>
+                            @Html.RadioButtonFor(model => model.Check13, "2")
+                        </td>
+                        <td>
+                            @Html.RadioButtonFor(model => model.Check13, "3")
+                        </td>
+                        <td>
+                            @Html.RadioButtonFor(model => model.Check13, "4")
+                        </td>
+                        <td>
+                            @Html.RadioButtonFor(model => model.Check13, "5")
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="td_left">2. 기술개발 노하우 및 참여인력의 능력 향상</td>
+                        <td>
+                            @Html.RadioButtonFor(model => model.Check14, "1")
+                        </td>
+                        <td>
+                            @Html.RadioButtonFor(model => model.Check14, "2")
+                        </td>
+                        <td>
+                            @Html.RadioButtonFor(model => model.Check14, "3")
+                        </td>
+                        <td>
+                            @Html.RadioButtonFor(model => model.Check14, "4")
+                        </td>
+                        <td>
+                            @Html.RadioButtonFor(model => model.Check14, "5")
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="td_left">3. 전문기술인력 양성효과</td>
+                        <td>
+                            @Html.RadioButtonFor(model => model.Check15, "1")
+                        </td>
+                        <td>
+                            @Html.RadioButtonFor(model => model.Check15, "2")
+                        </td>
+                        <td>
+                            @Html.RadioButtonFor(model => model.Check15, "3")
+                        </td>
+                        <td>
+                            @Html.RadioButtonFor(model => model.Check15, "4")
+                        </td>
+                        <td>
+                            @Html.RadioButtonFor(model => model.Check15, "5")
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="td_left">4. 고용창출효과</td>
+                        <td>
+                            @Html.RadioButtonFor(model => model.Check16, "1")
+                        </td>
+                        <td>
+                            @Html.RadioButtonFor(model => model.Check16, "2")
+                        </td>
+                        <td>
+                            @Html.RadioButtonFor(model => model.Check16, "3")
+                        </td>
+                        <td>
+                            @Html.RadioButtonFor(model => model.Check16, "4")
+                        </td>
+                        <td>
+                            @Html.RadioButtonFor(model => model.Check16, "5")
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="td_left">5. 지적 재산권 취득효과</td>
+                        <td>
+                            @Html.RadioButtonFor(model => model.Check17, "1")
+                        </td>
+                        <td>
+                            @Html.RadioButtonFor(model => model.Check17, "2")
+                        </td>
+                        <td>
+                            @Html.RadioButtonFor(model => model.Check17, "3")
+                        </td>
+                        <td>
+                            @Html.RadioButtonFor(model => model.Check17, "4")
+                        </td>
+                        <td>
+                            @Html.RadioButtonFor(model => model.Check17, "5")
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="td_left">6. 지역경제 활성화 기여</td>
+                        <td>
+                            @Html.RadioButtonFor(model => model.Check18, "1")
+                        </td>
+                        <td>
+                            @Html.RadioButtonFor(model => model.Check18, "2")
+                        </td>
+                        <td>
+                            @Html.RadioButtonFor(model => model.Check18, "3")
+                        </td>
+                        <td>
+                            @Html.RadioButtonFor(model => model.Check18, "4")
+                        </td>
+                        <td>
+                            @Html.RadioButtonFor(model => model.Check18, "5")
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="td_left">7. 수입대체효과 능력 향상</td>
+                        <td>
+                            @Html.RadioButtonFor(model => model.Check19, "1")
+                        </td>
+                        <td>
+                            @Html.RadioButtonFor(model => model.Check19, "2")
+                        </td>
+                        <td>
+                            @Html.RadioButtonFor(model => model.Check19, "3")
+                        </td>
+                        <td>
+                            @Html.RadioButtonFor(model => model.Check19, "4")
+                        </td>
+                        <td>
+                            @Html.RadioButtonFor(model => model.Check19, "5")
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="td_left">8. 전반적인 효과</td>
+                        <td>
+                            @Html.RadioButtonFor(model => model.Check20, "1")
+                        </td>
+                        <td>
+                            @Html.RadioButtonFor(model => model.Check20, "2")
+                        </td>
+                        <td>
+                            @Html.RadioButtonFor(model => model.Check20, "3")
+                        </td>
+                        <td>
+                            @Html.RadioButtonFor(model => model.Check20, "4")
+                        </td>
+                        <td>
+                            @Html.RadioButtonFor(model => model.Check20, "5")
+                        </td>
+                    </tr>
+                    <tr>
+                        <th class="tr_blank" colspan="6"></th>
+                    </tr>
+                    <tr>
+                        <th class="tr_blank" colspan="6"></th>
+                    </tr>
+                    <tr>
+                        <th class="topcen" colspan="6">【기타의견 및 애로사항】</th>
+                    </tr>
+                    <tr>
+                        <th class="tr_blank" colspan="6"></th>
+                    </tr>
+                    <tr>
+                        <th class="tr_blank" colspan="6">각 문항을 읽으시고 해당하는 부분에 체크를 해주시길 바랍니다.</th>
+                    </tr>
+                    <tr>
+                        <th class="tr_blank" colspan="6"></th>
+                    </tr>
+                    <tr>
+                        <th class="topcen td_left" colspan="6">A. 사업 적정 지원 희망기간 및 규모 <span class="float-right">(단위 :개월)</span></th>
+                    </tr>
+                    <tr>
+                        <th class="topcen">구분</th>
+                        <th class="topcen">2</th>
+                        <th class="topcen">3</th>
+                        <th class="topcen">4</th>
+                        <th class="topcen">5</th>
+                        <th class="topcen">6</th>
+                    </tr>
+                    <tr>
+                        <td class="td_left">1. 사업 적정 지원 희망기간</td>
+                        <td>
+                            @Html.RadioButtonFor(model => model.Check21, "2")
+                        </td>
+                        <td>
+                            @Html.RadioButtonFor(model => model.Check21, "3")
+                        </td>
+                        <td>
+                            @Html.RadioButtonFor(model => model.Check21, "4")
+                        </td>
+                        <td>
+                            @Html.RadioButtonFor(model => model.Check21, "5")
+                        </td>
+                        <td>
+                            @Html.RadioButtonFor(model => model.Check21, "6")
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="td_left">2. 희망기간 선택에 비추어 볼 때 적정 지원 규모</td>
+                        <td>
+                            @Html.RadioButtonFor(model => model.Check22, "2")
+                        </td>
+                        <td>
+                            @Html.RadioButtonFor(model => model.Check22, "3")
+                        </td>
+                        <td>
+                            @Html.RadioButtonFor(model => model.Check22, "4")
+                        </td>
+                        <td>
+                            @Html.RadioButtonFor(model => model.Check22, "5")
+                        </td>
+                        <td>
+                            @Html.RadioButtonFor(model => model.Check22, "6")
+                        </td>
+                    </tr>
+                    <tr>
+                        <td colspan="6">
+                            <div class="ex_div ex_div_b5">예시) 1천만원 / 3개월</div>
+                            <div class="ex_div ex_div_b5">사유)</div>
+                            <div class="ex_textBox">
+                                @Html.TextAreaFor(model => model.Text01, new { @class = "ex_text", @placeholder = "150자 내로 작성하시기 바랍니다.", @maxlength = "150" })
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <th class="tr_blank" colspan="6"></th>
+                    </tr>
+                    <tr>
+                        <th class="topcen td_left" colspan="6">B. 기술사업화 서비스(바우처) 지원사업 향후 지원 의사</th>
+                    </tr>
+                    <tr>
+                        <th class="topcen">구분</th>
+                        <th class="th_none" colspan="5">
+                            <div class="td_half">의향 있음</div>
+                            <div class="td_half">의향 없음</div>
+                        </th>
+
+                    </tr>
+                    <tr>
+                        <td class="td_left">1. 향후 지원 의사</td>
+                        <td class="td_none" colspan="5">
+                            <div class="td_half">@Html.RadioButtonFor(model => model.Check21, "1")</div>
+                            <div class="td_half">@Html.RadioButtonFor(model => model.Check21, "2")</div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="td_left">2. "의향 없음" 선택 사유</td>
+                        <td class="td_none" colspan="5">
+                            <div class="td_half">@Html.RadioButtonFor(model => model.Check22, "1")</div>
+                            <div class="td_half">@Html.RadioButtonFor(model => model.Check22, "2")</div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <th class="tr_blank" colspan="6"></th>
+                    </tr>
+                    <tr>
+                        <th class="topcen td_left" colspan="6">
+                            <div class="ex_div2">C. 사업 수행 시 애로사항이나 필요로 여겨지는 사업지원(건의사항)에 대해 자유롭게 기술하여 주시길 바랍니다.</div>
+                            <div class="ex_div2">단, 본 항목은 “기술사업화 서비스(바우처) 지원사업”에 한하여 기술하여 구시길 바랍니다.</div>
+                        </th>
+                        
+                    </tr>
+                    <tr>
+                        <td colspan="6">
+                            <div class="ex_textBox">
+                                @Html.TextAreaFor(model => model.Text02, new { @class = "ex_text", @placeholder = "150자 내로 작성하시기 바랍니다.", @maxlength = "150" })
+                            </div>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+
+            <div id="btnwrap_sub" style="float:right;">
+                <div class="rightwrap">
+                    <button type="submit" class="btn_big red rightmargin" value="저장" onclick="if (confirm('만족도 조사를 완료하시겠습니까?')) location.href='@Url.Action("DeepenReportList", "Report")'">저장</button>
+                    <button type="button" class="btn_big gray right" value="취소" onclick="if (confirm('작성을 취소하고 목록으로 돌아가시겠습니까?')) location.href='@Url.Action("DeepenReportList", "Report")'">취소</button>
+                </div>
+            </div><!--btnwrap//-->
+        }
+    </div>
+</div>
+

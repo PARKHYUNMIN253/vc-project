@@ -1,0 +1,420 @@
+﻿@model BizOneShot.Light.Models.ViewModels.RegMarketStateViewModel
+
+@{
+    Layout = "~/Areas/SysManager/Views/Shared/_MainLayout.cshtml";
+}
+
+<script>
+    $(document).ready(function () {
+        //top menu
+        $('#naviwrap_biz > .navi_biz >  a > .top_menu > .header_report01 ').addClass('on');
+        $('#naviwrap_biz > .navi_biz >  a > .top_menu > .top_text_report ').addClass('on');
+        //Cs menu
+        $('#sub_leftwrap > .sub_gnbwrap > ul > li > a.gnb_marketstate').addClass('on');
+
+        $('#mainForm').bind('submit', function () {
+
+            var valid = true;
+
+            var names = {};
+            $('input:radio').each(function () { // find unique names
+                names[$(this).attr('name')] = true;
+            });
+
+            var count = 0;
+            $.each(names, function () { // then count them
+                count++;
+            });
+
+            if ($('input:radio:checked').length != count && valid == true) {
+                alert("라디오버튼을 선택해 주세요");
+                valid = false;
+                return false;
+            }
+
+            return valid;
+        });
+
+        $('#makdt').on("change", function () {
+            //console.log("change");
+            $('#curPage').val(1);
+
+            var makdt = $('#makdt').val();
+
+            //$('input[type="radio"]').attr('disabled', true);
+
+            $.ajax({
+                url: '@Url.Action("MarketStateJson", "Report")',
+                type: "post",
+                dataType: "json",
+                data: { year: makdt },
+                //async: false,
+                success: function (ret) {
+                    if (ret.length > 0) return alert("해당 년도의 상품화역량 시장현황이 등록되어있습니다.");
+
+                }
+            });
+
+        });
+       
+
+    });
+</script>
+
+<div id="sub_rightwrap">
+    <div class="sub_right_title right_text"><img src="~/images/list.png" class="icon_list" />상품화역량 시장현황 등록</div>
+
+    @using (Html.BeginForm("RegMarketState", "Report", FormMethod.Post, new { area = "", @class = "form-horizontal", role = "form", id = "mainForm" }))
+    {
+        @Html.AntiForgeryToken()
+        <div class="tablewrap">
+            <!--목록-->
+            <table>
+                <!--사업자명 외-->
+                <colgroup>
+                    <col width="10%" />
+                    <col width="10%" />
+                    <col width="10%" />
+                    <col width="10%" />
+                    <col width="10%" />
+                    <col width="10%" />
+                    <col width="10%" />
+                    <col width="10%" />
+                    <col width="10%" />
+                    <col width="10%" />
+                </colgroup>
+                <tr>
+
+                    <th rowspan="4" colspan="2" class="topcen">
+                        @Html.DropDownListFor(model => model.MakDt, new SelectList(
+                 new List<Object>{
+                                new { value = "" , text = "년도"  },
+                                new { value = "2010" , text = "2010"  },
+                                new { value = "2011" , text = "2011" },
+                                new { value = "2012" , text = "2012" },
+                                new { value = "2013" , text = "2013" },
+                                new { value = "2014" , text = "2014" },
+                                new { value = "2015" , text = "2015" },
+                                new { value = "2016" , text = "2016" },
+                                new { value = "2017" , text = "2017" },
+                                new { value = "2018" , text = "2018" },
+                                new { value = "2019" , text = "2019" },
+                                new { value = "2020" , text = "2020" },
+                 }, "value", "text", 2), new { @class = "w67", @id = "makdt" })
+                    </th>
+                    <th colspan="8" class="topcen">가치사슬 발전단계</th>
+                </tr>
+                <tr>
+
+                    <th colspan="2" class="topcen">Pre-R&D</th>
+                    <th colspan="2" class="topcen">R&D</th>
+                    <th colspan="2" class="topcen">사업화</th>
+                    <th colspan="2" class="topcen">마케팅</th>
+                </tr>
+                <tr>
+                    <th colspan="2" class="topcen">제품 아이디어를<br />구상, 고객분석 진행</th>
+                    <th colspan="2" class="topcen">컨셉기획에 새로운<br />가치를 찾아 개발</th>
+                    <th colspan="2" class="topcen">개발된 가치를<br />최소비용에 생산</th>
+                    <th colspan="2" class="topcen">개발된 가치에 딱<br />맞는 고객에게 전달</th>
+                </tr>
+                <tr>
+                    <th class="topcen">고객분석</th>
+                    <th class="topcen">상품화기획<br />(컨셉디자인)</th>
+                    <th class="topcen">기술개발</th>
+                    <th class="topcen">협력사 서칭</th>
+                    <th class="topcen">시제품</th>
+                    <th class="topcen">생산시설구축</th>
+                    <th class="topcen">마케팅(영업)</th>
+                    <th class="topcen">고객관리(물류)</th>
+                </tr>
+                <tr>
+                    <td rowspan="3" class="form2">시장현황</td>
+                    <td class="form2">서비스</td>
+                    <td class="center_td center">
+                        <div class="contact">
+                            @Html.RadioButtonFor(model => model.MaksCa, "1", new { @id = "comment0" }) ●
+                        </div>
+                        <div class="contact">
+                            @Html.RadioButtonFor(model => model.MaksCa, "2", new { @id = "comment0" }) △
+                        </div>
+                        <div class="contact">
+                            @Html.RadioButtonFor(model => model.MaksCa, "3", new { @id = "comment0" }) ⅹ
+
+                        </div>
+                    </td>
+                    <td class="center_td center">
+                        <div class="contact">
+                            @Html.RadioButtonFor(model => model.MaksMp, "1", new { @id = "comment1" }) ●
+                        </div>
+                        <div class="contact">
+                            @Html.RadioButtonFor(model => model.MaksMp, "2", new { @id = "comment1" }) △
+                        </div>
+                        <div class="contact">
+                            @Html.RadioButtonFor(model => model.MaksMp, "3", new { @id = "comment1" }) ⅹ
+                        </div>
+                    </td>
+                    <td class="center_td center">
+                        <div class="contact">
+                            @Html.RadioButtonFor(model => model.MaksTd, "1", new { @id = "comment2" }) ●
+                        </div>
+                        <div class="contact">
+                            @Html.RadioButtonFor(model => model.MaksTd, "2", new { @id = "comment2" }) △
+                        </div>
+                        <div class="contact">
+                            @Html.RadioButtonFor(model => model.MaksTd, "3", new { @id = "comment2" }) ⅹ
+                        </div>
+                    </td>
+                    <td class="center_td center">
+                        <div class="contact">
+                            @Html.RadioButtonFor(model => model.MaksPs, "1", new { @id = "comment3" }) ●
+                        </div>
+                        <div class="contact">
+                            @Html.RadioButtonFor(model => model.MaksPs, "2", new { @id = "comment3" }) △
+                        </div>
+                        <div class="contact">
+                            @Html.RadioButtonFor(model => model.MaksPs, "3", new { @id = "comment3" }) ⅹ
+                        </div>
+                    </td>
+                    <td class="center_td center">
+                        <div class="contact">
+                            @Html.RadioButtonFor(model => model.MaksPro, "1", new { @id = "comment4" }) ●
+                        </div>
+                        <div class="contact">
+                            @Html.RadioButtonFor(model => model.MaksPro, "2", new { @id = "comment4" }) △
+                        </div>
+                        <div class="contact">
+                            @Html.RadioButtonFor(model => model.MaksPro, "3", new { @id = "comment4" }) ⅹ
+                        </div>
+                    </td>
+                    <td class="center_td center">
+                        <div class="contact">
+                            @Html.RadioButtonFor(model => model.MaksPb, "1", new { @id = "comment5" }) ●
+                        </div>
+                        <div class="contact">
+                            @Html.RadioButtonFor(model => model.MaksPb, "2", new { @id = "comment5" }) △
+                        </div>
+                        <div class="contact">
+                            @Html.RadioButtonFor(model => model.MaksPb, "3", new { @id = "comment5" }) ⅹ
+                        </div>
+                    </td>
+                    <td class="center_td center">
+                        <div class="contact">
+                            @Html.RadioButtonFor(model => model.MaksMak, "1", new { @id = "comment6" }) ●
+                        </div>
+                        <div class="contact">
+                            @Html.RadioButtonFor(model => model.MaksMak, "2", new { @id = "comment6" }) △
+                        </div>
+                        <div class="contact">
+                            @Html.RadioButtonFor(model => model.MaksMak, "3", new { @id = "comment6" }) ⅹ
+                        </div>
+                    </td>
+                    <td class="center_td center">
+                        <div class="contact">
+                            @Html.RadioButtonFor(model => model.MaksCc, "1", new { @id = "comment7" }) ●
+                        </div>
+                        <div class="contact">
+                            @Html.RadioButtonFor(model => model.MaksCc, "2", new { @id = "comment7" }) △
+                        </div>
+                        <div class="contact">
+                            @Html.RadioButtonFor(model => model.MaksCc, "3", new { @id = "comment7" }) ⅹ
+                        </div>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="form2">솔루션</td>
+                    <td class="center_td center">
+                        <div class="contact">
+                            @Html.RadioButtonFor(model => model.MakslCa, "1", new { @id = "comment8" }) ●
+                        </div>
+                        <div class="contact">
+                            @Html.RadioButtonFor(model => model.MakslCa, "2", new { @id = "comment8" }) △
+                        </div>
+                        <div class="contact">
+                            @Html.RadioButtonFor(model => model.MakslCa, "3", new { @id = "comment8" }) ⅹ
+                        </div>
+                    </td>
+                    <td class="center_td center">
+                        <div class="contact">
+                            @Html.RadioButtonFor(model => model.MakslMp, "1", new { @id = "comment9" }) ●
+                        </div>
+                        <div class="contact">
+                            @Html.RadioButtonFor(model => model.MakslMp, "2", new { @id = "comment9" }) △
+                        </div>
+                        <div class="contact">
+                            @Html.RadioButtonFor(model => model.MakslMp, "3", new { @id = "comment9" }) ⅹ
+                        </div>
+                    </td>
+                    <td class="center_td center">
+                        <div class="contact">
+                            @Html.RadioButtonFor(model => model.MakslTd, "1", new { @id = "comment10" }) ●
+                        </div>
+                        <div class="contact">
+                            @Html.RadioButtonFor(model => model.MakslTd, "2", new { @id = "comment10" }) △
+                        </div>
+                        <div class="contact">
+                            @Html.RadioButtonFor(model => model.MakslTd, "3", new { @id = "comment10" }) ⅹ
+                        </div>
+                    </td>
+                    <td class="center_td center">
+                        <div class="contact">
+                            @Html.RadioButtonFor(model => model.MakslPs, "1", new { @id = "comment11" }) ●
+                        </div>
+                        <div class="contact">
+                            @Html.RadioButtonFor(model => model.MakslPs, "2", new { @id = "comment11" }) △
+                        </div>
+                        <div class="contact">
+                            @Html.RadioButtonFor(model => model.MakslPs, "3", new { @id = "comment11" }) ⅹ
+                        </div>
+                    </td>
+                    <td class="center_td center">
+                        <div class="contact">
+                            @Html.RadioButtonFor(model => model.MakslPro, "1", new { @id = "comment12" }) ●
+                        </div>
+                        <div class="contact">
+                            @Html.RadioButtonFor(model => model.MakslPro, "2", new { @id = "comment12" }) △
+                        </div>
+                        <div class="contact">
+                            @Html.RadioButtonFor(model => model.MakslPro, "3", new { @id = "comment12" }) ⅹ
+                        </div>
+                    </td>
+                    <td class="center_td center">
+                        <div class="contact">
+                            @Html.RadioButtonFor(model => model.MakslPb, "1", new { @id = "comment13" }) ●
+                        </div>
+                        <div class="contact">
+                            @Html.RadioButtonFor(model => model.MakslPb, "2", new { @id = "comment13" }) △
+                        </div>
+                        <div class="contact">
+                            @Html.RadioButtonFor(model => model.MakslPb, "3", new { @id = "comment13" }) ⅹ
+                        </div>
+                    </td>
+                    <td class="center_td center">
+                        <div class="contact">
+                            @Html.RadioButtonFor(model => model.MakslMak, "1", new { @id = "comment14" }) ●
+                        </div>
+                        <div class="contact">
+                            @Html.RadioButtonFor(model => model.MakslMak, "2", new { @id = "comment14" }) △
+                        </div>
+                        <div class="contact">
+                            @Html.RadioButtonFor(model => model.MakslMak, "3", new { @id = "comment14" }) ⅹ
+                        </div>
+                    </td>
+                    <td class="center_td center">
+                        <div class="contact">
+                            @Html.RadioButtonFor(model => model.MakslCc, "1", new { @id = "comment15" }) ●
+                        </div>
+                        <div class="contact">
+                            @Html.RadioButtonFor(model => model.MakslCc, "2", new { @id = "comment15" }) △
+                        </div>
+                        <div class="contact">
+                            @Html.RadioButtonFor(model => model.MakslCc, "3", new { @id = "comment15" }) ⅹ
+                        </div>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="form2">상품화</td>
+                    <td class="center_td center">
+                        <div class="contact">
+                            @Html.RadioButtonFor(model => model.MaksmCa, "1", new { @id = "comment16" }) ●
+                        </div>
+                        <div class="contact">
+                            @Html.RadioButtonFor(model => model.MaksmCa, "2", new { @id = "comment16" }) △
+                        </div>
+                        <div class="contact">
+                            @Html.RadioButtonFor(model => model.MaksmCa, "3", new { @id = "comment16" }) ⅹ
+                        </div>
+                    </td>
+                    <td class="center_td center">
+                        <div class="contact">
+                            @Html.RadioButtonFor(model => model.MaksmMp, "1", new { @id = "comment17" }) ●
+                        </div>
+                        <div class="contact">
+                            @Html.RadioButtonFor(model => model.MaksmMp, "2", new { @id = "comment17" }) △
+                        </div>
+                        <div class="contact">
+                            @Html.RadioButtonFor(model => model.MaksmMp, "3", new { @id = "comment17" }) ⅹ
+                        </div>
+                    </td>
+                    <td class="center_td center">
+                        <div class="contact">
+                            @Html.RadioButtonFor(model => model.MaksmTd, "1", new { @id = "comment18" }) ●
+                        </div>
+                        <div class="contact">
+                            @Html.RadioButtonFor(model => model.MaksmTd, "2", new { @id = "comment18" }) △
+                        </div>
+                        <div class="contact">
+                            @Html.RadioButtonFor(model => model.MaksmTd, "3", new { @id = "comment18" }) ⅹ
+                        </div>
+                    </td>
+                    <td class="center_td center">
+                        <div class="contact">
+                            @Html.RadioButtonFor(model => model.MaksmPs, "1", new { @id = "comment19" }) ●
+                        </div>
+                        <div class="contact">
+                            @Html.RadioButtonFor(model => model.MaksmPs, "2", new { @id = "comment19" }) △
+                        </div>
+                        <div class="contact">
+                            @Html.RadioButtonFor(model => model.MaksmPs, "3", new { @id = "comment19" }) ⅹ
+                        </div>
+                    </td>
+                    <td class="center_td center">
+                        <div class="contact">
+                            @Html.RadioButtonFor(model => model.MaksmPro, "1", new { @id = "comment20" }) ●
+                        </div>
+                        <div class="contact">
+                            @Html.RadioButtonFor(model => model.MaksmPro, "2", new { @id = "comment20" }) △
+                        </div>
+                        <div class="contact">
+                            @Html.RadioButtonFor(model => model.MaksmPro, "3", new { @id = "comment20" }) ⅹ
+                        </div>
+                    </td>
+                    <td class="center_td center">
+                        <div class="contact">
+                            @Html.RadioButtonFor(model => model.MaksmPb, "1", new { @id = "comment21" }) ●
+                        </div>
+                        <div class="contact">
+                            @Html.RadioButtonFor(model => model.MaksmPb, "2", new { @id = "comment21" }) △
+                        </div>
+                        <div class="contact">
+                            @Html.RadioButtonFor(model => model.MaksmPb, "3", new { @id = "comment21" }) ⅹ
+                        </div>
+                    </td>
+                    <td class="center_td center">
+                        <div class="contact">
+                            @Html.RadioButtonFor(model => model.MaksmMak, "1", new { @id = "comment22" }) ●
+                        </div>
+                        <div class="contact">
+                            @Html.RadioButtonFor(model => model.MaksmMak, "2", new { @id = "comment22" }) △
+                        </div>
+                        <div class="contact">
+                            @Html.RadioButtonFor(model => model.MaksmMak, "3", new { @id = "comment22" }) ⅹ
+                        </div>
+                    </td>
+                    <td class="center_td center">
+                        <div class="contact">
+                            @Html.RadioButtonFor(model => model.MaksmCc, "1", new { @id = "comment23" }) ●
+                        </div>
+                        <div class="contact">
+                            @Html.RadioButtonFor(model => model.MaksmCc, "2", new { @id = "comment23" }) △
+                        </div>
+                        <div class="contact">
+                            @Html.RadioButtonFor(model => model.MaksmCc, "3", new { @id = "comment23" }) ⅹ
+                        </div>
+                    </td>
+                </tr>
+            </table>
+        </div>
+        <!--tablewrap//-->
+
+        <div id="btnwrap_sub">
+            <div class="rightwrap">
+                <button type="submit" class="btn_big red rightmargin" value="저장" onclick="if (confirm('상품화역량 시장현황을 저장하시겠습니까?')) location.href='@Url.Action("MarketState", "Report")'">저장</button>
+                <button type="button" class="btn_big gray right" value="취소" onclick="if (confirm('등록을 취소하고 목록으로 돌아가시겠습니까?')) location.href='@Url.Action("MarketState", "Report")'">취소</button>
+            </div>
+        </div><!--btnwrap//-->
+
+    }
+    @section Scripts {
+        @Scripts.Render("~/bundles/jqueryval")
+    }
+</div><!--sub_rightwrap//-->

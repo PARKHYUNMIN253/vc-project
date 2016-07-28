@@ -1,0 +1,35 @@
+﻿
+<div id="sub_leftwrap">
+    <div class="sub_gnbwrap">
+        @*<ul>
+                @if (ViewBag.LeftMenu == Global.BizMng)//사업관리기관 관리
+                {
+                    <li class="title left_text">사업기관 관리</li>
+                    <li><a href="@Url.Action("BizManager","BizManager",new { area= "SysManager" })" class="gnb gnb_bizMng">사업기관 관리</a></li>
+                    <li><a href="@Url.Action("RegBizManager","BizManager",new { area= "SysManager" })" class="gnb gnb_regBizMng">사업기관 등록</a></li>
+                }
+
+                else if (ViewBag.LeftMenu == Global.Report)//보고서관리
+                {
+                    <li class="title left_text">보고서</li>
+                    <li><a href="@Url.Action("BasicSurveyReport","Report",new { area= "SysManager" })" class="gnb gnb_basicReport">기초경영역량 보고서</a></li>
+                }
+                else
+                {
+
+                }
+            </ul>*@
+        <div class="navi_left">
+            <a href="@Url.Action("Index","Main")"><div class="kath_logo"></div></a>
+            <div class="bg_col_g">
+                <ul>
+                    @*href다음에 부르는 곳에서는 이렇게 쓰자*@
+                    @*@Url.Action("ReportTest", "Main")*@
+                    <li><div class="iconBox"><div class="vc_iconSB_02"></div><a href="@Url.Action("BasicSurveyReport","Report")" class="vc_title_01 fw_600">보고서</a></div></li>
+                    <li><div class="iconBox"><div class="vc_iconSB_03"></div><a href="@Url.Action("MentorList","MentorMng")" class="vc_title_02 fw_600">멘토링관리</a></div></li>
+                </ul>
+            </div>
+        </div>
+
+    </div><!--sub_gnbwrap//-->
+</div><!--sub_leftwrap//-->

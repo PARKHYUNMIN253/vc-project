@@ -1,0 +1,102 @@
+﻿@model IPagedList<BizOneShot.Light.Models.ViewModels.ManualViewModel>
+
+<script>
+    $(document).ready(function () {
+        //top menu
+        //top menu
+        $('#naviwrap_biz > .navi_biz >  a > .top_menu > .header_customer ').addClass('on');
+        $('#naviwrap_biz > .navi_biz >  a > .top_menu > .top_text_customer ').addClass('on');
+
+        //Cs menu
+        $('#sub_leftwrap > .sub_gnbwrap > ul > li > a.gnb_menual').addClass('on');
+
+        $('#search').bind('click', function () {
+            goPage(1);
+        });
+
+    });
+
+
+    function goPage(page) {
+        $('#curPage').val(page);
+        $('#searchForm').submit();
+    }
+</script>
+
+
+<div id="sub_rightwrap">
+    <div class="sub_right_title right_text"><img src="~/images/list.png" class="icon_list" />메뉴얼 및 서식</div>
+
+    <div class="tablewrap">
+        <!--목록-->
+        <table>
+            <colgroup>
+                @*<col width="8%">*@
+                <col width="13%">
+                <col width="72%">
+                <col width="15%">
+            </colgroup>
+            <tr>
+                @*<th class="topcen">번호</th>*@
+                <th class="topcen">구분</th>
+                <th class="topcen">제목</th>
+                <th class="topcen">등록일</th>
+            </tr>
+            @foreach (var item in Model)
+            {
+                <tr>
+                    @*<td class="center">@item.FORM_SN</td>*@
+                    @if (item.FormType == "P")
+                    {
+                <td class="center">프로그램</td>}
+                    @if (item.FormType == "S")
+                    {
+                <td class="center">SCP표준서식</td>}
+                    @if (item.FormType == "N")
+                    {
+                <td class="center">일반서식</td>}
+                    @if (item.FormType == "M")
+                    {
+                <td class="center">메뉴얼</td>}
+                    <td>@Html.ActionLink(item.Subject, "ManualDetail", new { formSn = item.FormSn }, new { @style = "text-decoration:underline;" })</td>
+                    <td class="center">@item.RegDt.Value.ToShortDateString()</td>
+                </tr>
+            }
+            @if (Model.TotalItemCount == 0)
+            {
+                <tr>
+                    <td colspan="3" style="text-align:center;">검색 결과가 없습니다.</td>
+                </tr>
+            }
+        </table>
+    </div><!--tablewrap//-->
+    @if (Model != null && Model.TotalItemCount != 0)
+    {
+        @Html.Pagination("goPage", Model.PageNumber, Model.PageCount, Model.HasPreviousPage, Model.HasNextPage)
+    }
+
+    
+    <div id="custom_search_box">
+        @using (Html.BeginForm("Manual", "Cs", FormMethod.Post, new
+        {
+            id = "searchForm"@*, onsubmit = "return goPage(1);"*@ }))
+        {
+            <span class="bold">SEARCH&nbsp;</span>
+
+            @Html.DropDownList("SelectList", null, new { @class = "select", @id = "searchType" })
+
+            <img src="~/Images/icon_lenz.png" class="lenz">@Html.TextBox("QUERY", null, new { @class = "search", @placeholder = "검색어를 입력하세요", @id = "QUERY" })
+            <input type="submit" id="search" class="btn_small gray1" value="검색" onclick="goPage('1');">
+
+            @Html.Hidden("curPage", "1")
+        }
+    </div>
+
+   @if (Session[Global.UserType] != null && (Session[Global.UserType].Equals(Global.SysManager) || Session[Global.UserType].Equals(Global.BizManager)))
+   {
+        <div id="btnwrap_sub">
+            <a href="@Url.Action("RegManual","Cs")" class="btn_a red right">매뉴얼 및 서식 등록</a>
+        </div><!--btnwrap//-->
+    }
+
+</div><!--sub_rightwrap//-->

@@ -1,0 +1,405 @@
+﻿@model BizOneShot.Light.Models.ViewModels.QuesCompanyInfoViewModel
+
+@{
+    Layout = "~/Areas/Company/Views/Shared/_MainDetailLayout.cshtml";
+}
+<style>
+    .sub_report_checkbox .report_main_mid .main_mid_cont TABLE.join_info TR TD:last-child {
+        text-align:left;
+    }
+</style>
+<script src="/Scripts/jquery.formatter.min.js"></script>
+<script>
+    $(document).ready(function () {
+
+        $('.vc_iconSB_02').addClass('on01'); // 보고서 icon
+        $('.vc_title_01').addClass('on');    // 보고서 label
+        $('.a_label01').addClass('on');      // 보고서 내부 메뉴 label (기초경영역량 문진표)
+
+        // 사이드 바를 위한 class 추가
+        $('.container').addClass('height_content_auto');
+        $('.sub_gnbwrap > .navi_left > .bg_col_g').addClass('height_bsurvey');
+
+        //top menu
+        $('#naviwrap_biz > .navi_biz >  a > .top_menu > .header_report01 ').addClass('on');
+        $('#naviwrap_biz > .navi_biz >  a > .top_menu > .top_text_report ').addClass('on');
+        //Accounting menu
+        $('#sub_leftwrap > .sub_gnbwrap > ul > li > a.gnb_basicsurvey').addClass('on');
+
+        //$('#mainForm input').attr('disabled', true);
+
+        if ($('#status').val() == "C") {
+            $('#mainForm input').attr('disabled', true);
+        }
+    });
+
+    function goSubmit(submitType) {
+
+        $('#submitType').val(submitType);
+        $('#mainForm').submit();
+
+    }
+
+    /* 작성자정보 파라미터 검증 함수 */
+    //function userValidate() {
+    //    var comName = $("#CompNm");
+    //    if ($.trim(comName.val()).length == 0) {
+    //        alert("회사명(한글)을 입력해주세요.");
+    //        comName.focus();
+    //        return false;
+    //    }
+
+    //    var telNo = $("#TelNo");
+    //    if ($.trim(telNo.val()).length == 0) {
+    //        alert("연락처(전화)를 입력해주세요.");
+    //        telNo.focus();
+    //        return false;
+    //    }
+
+    //    var engCompNm = $("#EngCompNm");
+    //    if ($.trim(engCompNm.val()).length == 0) {
+    //        alert("회사명(영문)을 입력해주세요.");
+    //        engCompNm.focus();
+    //        return false;
+    //    }
+
+    //    var faxNo = $("#FaxNo");
+    //    if ($.trim(faxNo.val()).length == 0) {
+    //        alert("연락처(팩스)를 입력해주세요.");
+    //        faxNo.focus();
+    //        return false;
+    //    }
+
+    //    var name = $("#Name");
+    //    if ($.trim(name.val()).length == 0) {
+    //        alert("대표자 성명을 입력해주세요.");
+    //        name.focus();
+    //        return false;
+    //    }
+
+    //    var email = $("#Email");
+    //    if ($.trim(email.val()).length == 0) {
+    //        alert("대표자 이메일을 입력해주세요.");
+    //        email.focus();
+    //        return false;
+    //    }
+    //    var registrationNo = $("#RegistrationNo");
+    //    if ($.trim(registrationNo.val()).length == 0) {
+    //        alert("사업자등록번호를 입력해주세요.");
+    //        registrationNo.focus();
+    //        return false;
+    //    }
+    //    var coRegistrationNo = $("#CoRegistrationNo");
+    //    if ($.trim(coRegistrationNo.val()).length == 0) {
+    //        alert("법인등록번호를 입력해주세요.");
+    //        coRegistrationNo.focus();
+    //        return false;
+    //    }
+    //    var publishDt = $("#PublishDt");
+    //    if ($.trim(publishDt.val()).length == 0) {
+    //        alert("설립년월일을 입력해주세요.");
+    //        publishDt.focus();
+    //        return false;
+    //    }
+
+    //    checkdate(publishDt);
+
+    //    var compAddr = $("#CompAddr");
+    //    if ($.trim(compAddr.val()).length == 0) {
+    //        alert("사업장소재지(본사)를 입력해주세요.");
+    //        compAddr.focus();
+    //        return false;
+    //    }
+
+    //    var facType = $(':radio[name="FacPossessYn"]:checked').val();
+    //    if (facType != "N") {
+    //        var factoryAddr = $("#FactoryAddr");
+    //        if ($.trim(factoryAddr.val()).length == 0) {
+    //            alert("사업장소재지(공장주소)를 입력해주세요.");
+    //            factoryAddr.focus();
+    //            return false;
+    //        }
+    //    }
+
+    //    var rndYn = $(':radio[name="RndYn"]:checked').val();
+    //    if (rndYn != "N") {
+    //        var labAddr = $("#LabAddr");
+    //        if ($.trim(labAddr.val()).length == 0) {
+    //            alert("사업장소재지(기술연구소 주소)를 입력해주세요.");
+    //            labAddr.focus();
+    //            return false;
+    //        }
+    //    }
+
+    //    var productNm1 = $("#ProductNm1");
+    //    if ($.trim(productNm1.val()).length == 0) {
+    //        alert("주요생산품을 최소 1개는 입력해주세요.");
+    //        productNm1.focus();
+    //        return false;
+    //    }
+
+    //    return true;
+    //}
+
+    //function checkdate(input) {
+    //    //alert(input.val());
+    //    var validformat = /^\d{4}\-\d{2}\-\d{2}$/; //Basic check for format validity
+    //    var returnval = false;
+    //    if (!validformat.test(input.val())) {
+    //        alert("날짜 형식이 올바르지 않습니다. YYYY-MM-DD");
+    //    } else { //Detailed check for valid date ranges
+    //        var yearfield = input.val().split("-")[0];
+    //        var monthfield = input.val().split("-")[1];
+    //        var dayfield = input.val().split("-")[2];
+    //        var dayobj = new Date(yearfield, monthfield - 1, dayfield);
+    //    }
+    //    if ((dayobj.getMonth() + 1 != monthfield)
+    //    || (dayobj.getDate() != dayfield)
+    //    || (dayobj.getFullYear() != yearfield)) {
+    //        alert("날짜 형식이 올바르지 않습니다. YYYY-MM-DD");
+    //    } else {
+    //        //alert ('Correct date');
+    //        returnval = true;
+    //    }
+    //    if (returnval == false) {
+    //        input.select();
+    //    }
+    //    return returnval;
+    //}
+</script>
+
+<div class="tcms">
+    <div class="main_top short">
+        <div class="sub_right_title right_text">
+            <div class="list_icon"></div><div class="sub_title">기초경영역량 문진표</div>
+        </div>
+        @RenderPage("~/Areas/Company/Views/Shared/_MainTopMenuPartial.cshtml")
+    </div>
+    <div id="sub_rightwrap_report">
+        <div id="report_wm_step">
+            <!--STEP 아이콘-->
+            <ul>
+                <li class="basic_step01"><a href="@Url.Action("Summary01","Report",new { area= "Company", @questionSn = @Model.QuestionSn, @status = Model.Status })" class="ablock"><em>STEP01.진단개요</em></a></li>
+                <li class="basic_step02 on"><a href="@Url.Action("CompanyInfo01","Report",new { area= "Company", @questionSn = @Model.QuestionSn, @status = Model.Status })" class="ablock"><em>STEP02.기업정보</em></a></li>
+                <li class="basic_step03">
+                    @if (Model.Status == "C")
+                {
+                <a href="@Url.Action("BizCheck01", "Report", new { area = "Company", @questionSn = @Model.QuestionSn, @status = Model.Status })" class="ablock"><em>STEP03.경영진단</em></a>
+                }
+                else
+                {
+                <em>STEP03.경영진단</em>
+                }
+                </li>
+                <li class="basic_step04">
+                    @if (Model.Status == "C")
+                {
+                <a href="@Url.Action("FinanceCheck01", "Report", new { area = "Company", @questionSn = @Model.QuestionSn, @status = Model.Status })" class="ablock"><em>STEP04.재무진단</em></a>
+                }
+                else
+                {
+                <em>STEP04.재무진단</em>
+                }
+                </li>
+                <li class="basic_step05">
+                    @if (Model.Status == "C")
+                {
+                <a href="@Url.Action("OrgCheck01","Report",new { area= "Company", @questionSn = @Model.QuestionSn, @status = Model.Status })" class="ablock"><em>STEP05.조직진단</em></a>
+                }
+                else
+                {
+                <em>STEP05.조직진단</em>
+                }
+                </li>
+                <li class="basic_step06">
+                    @if (Model.Status == "C")
+                {
+                <a href="@Url.Action("BasicSurveyComplete","Report",new { area= "Company", @questionSn = @Model.QuestionSn, @status = Model.Status })" class="ablock"><em>STEP06.작성완료</em></a>
+                }
+                else
+                {
+                <em>STEP06.작성완료</em>
+                }
+                </li>
+            </ul>
+        </div>
+
+        @using (Html.BeginForm("CompanyInfo01", "Report", FormMethod.Post, new { area = "Company", @class = "form-horizontal", role = "form", id = "mainForm" }))
+        {
+            @Html.HiddenFor(model => model.SubmitType, new { @id = "submitType" })
+            @Html.HiddenFor(model => model.QuestionSn, new { @id = "QuestionSn" })
+            @Html.HiddenFor(model => model.Status, new { @id = "status" })
+            <div class="sub_report_checkbox">
+                <div class="report_main_top2">
+                    <div class="title_medium">Ⅱ. 기업정보</div>
+                </div>
+                <div class="report_main_mid">
+                    <div class="main_mid_cont">
+                        <p>
+                            기업을 진단하기에 앞서 기초적인 기업정보를 수집 해야합니다. 기업 정보는 기본정보와 확장정보로 구분하여
+                            구성 하였습니다. 기본정보는 기업 일반정보, 기업분류, 확장정보는 대표자 현황, 기업연혁을
+                            포함합니다.
+                        </p>
+                    </div>
+                    <div class="main_mid_cont">
+                        <p class="full_p">기업 기본정보</p>
+                        <p>
+                            <span>∎</span>기업 일반정보
+                        </p>
+                        <table class="join_info">
+                            <colgroup>
+                                <col width="15%">
+                                <col width="35%">
+                                <col width="15%">
+                                <col width="35%">
+                            </colgroup>
+                            <tr>
+                                <td rowspan="2" class="left_memo">회사명</td>
+                                <td>(한글)@Html.TextBoxFor(model => model.CompNm)</td>
+                                <td rowspan="2" class="left_memo">연락처</td>
+                                <td>(전화)@Html.TextBoxFor(model => model.TelNo)</td>
+                            </tr>
+                            <tr>
+                                <td>(영문)@Html.TextBoxFor(model => model.EngCompNm, new { maxlength = "70" })</td>
+                                <td>(팩스)@Html.TextBoxFor(model => model.FaxNo)</td>
+                            </tr>
+                            <tr>
+                                <td class="left_memo">대표자 성명</td>
+                                <td>@Html.TextBoxFor(model => model.Name)</td>
+                                <td class="left_memo">대표자 e-mail</td>
+                                <td>@Html.TextBoxFor(model => model.Email)</td>
+                            </tr>
+                            <tr>
+                                <td class="left_memo">
+                                    사업자<br>등록번호
+                                </td>
+                                <td>@Html.TextBoxFor(model => model.RegistrationNo, new { maxlength = "10" })</td>
+                                <td class="left_memo">법인 등록번호</td>
+                                <td>@Html.TextBoxFor(model => model.CoRegistrationNo, new { @placeholder = "개인사업자는 대표자 주민번호 앞 6자리 입력", maxlength = "15" })</td>
+                            </tr>
+                            <tr>
+                                <td class="left_memo">설립년.월일</td>
+                                <td>@Html.TextBoxFor(model => model.PublishDt, new { @placeholder = "YYYY-MM-DD 형식 입력" })</td>
+                                <td class="left_memo">홈페이지</td>
+                                <td>@Html.TextBoxFor(model => model.HomeUrl, new { maxlength = "200" })</td>
+                            </tr>
+                            <tr>
+                                <td class="left_memo" rowspan="3">사업장소재지</td>
+                                <td colspan="2">(본사)@Html.TextBoxFor(model => model.CompAddr, new { maxlength = "255" })</td>
+                                <td>
+                                    @Html.RadioButtonFor(model => model.CompLeaseYn, "Y")임대
+                                    @Html.RadioButtonFor(model => model.CompLeaseYn, "N")자가
+                                </td>
+                            </tr>
+                            <tr>
+                                <td colspan="2">
+                                    (공장)@Html.TextBoxFor(model => model.FactoryAddr, new { maxlength = "255" })
+                                </td>
+                                <td>
+                                    @Html.RadioButtonFor(model => model.FactoryLeaseYn, "Y")임대
+                                    @Html.RadioButtonFor(model => model.FactoryLeaseYn, "N")자가
+                                </td>
+                            </tr>
+                            <tr>
+                                <td colspan="2">
+                                    (기술연구소) @Html.TextBoxFor(model => model.LabAddr, new { maxlength = "255"})
+                                </td>
+                                <td>
+                                    @Html.RadioButtonFor(model => model.LabLeaseYn, "Y")임대
+                                    @Html.RadioButtonFor(model => model.LabLeaseYn, "N")자가
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="left_memo" rowspan="3">
+                                    주요생산품<br>
+                                    (중요순서순)
+                                </td>
+                                <td colspan="2">(제품/제품군 1)@Html.TextBoxFor(model => model.ProductNm1, new { maxlength = "100" })</td>
+                                <td>표준산업분류 @Html.TextBoxFor(model => model.StandardCode1, new { @class = "standard_code" }) </td>
+                            </tr>
+                            <tr>
+                                <td colspan="2">(제품/제품군 2)@Html.TextBoxFor(model => model.ProductNm2, new { maxlength = "100" })</td>
+                                <td>표준산업분류 @Html.TextBoxFor(model => model.StandardCode2, new { @class = "standard_code" }) </td>
+                            </tr>
+                            <tr>
+                                <td colspan="2">(제품/제품군 3)@Html.TextBoxFor(model => model.ProductNm3, new { maxlength = "100" })</td>
+                                <td>표준산업분류 @Html.TextBoxFor(model => model.StandardCode3, new { @class = "standard_code" }) </td>
+                            </tr>
+                            <tr>
+                                <td class="left_memo" rowspan="2">제품 판매처</td>
+                                <td colspan="3">
+                                    (중복가능) @Html.CheckBoxFor(model => model.MarketPublic)정부/공공기관 
+                                    @Html.CheckBoxFor(model => model.MarketCivil)민간기관 
+                                    @Html.CheckBoxFor(model => model.MarketConsumer)일반 소비자 
+                                    @Html.CheckBoxFor(model => model.MarketForeing)해외 
+                                    @Html.CheckBoxFor(model => model.MarketEtc)
+                                    (@Html.TextBoxFor(model => model.MarketEtcText, new { @class = "input_etc"}))
+                                </td>
+                            </tr>
+                            <tr>
+
+                                <td colspan="3">(주요판매처) @Html.TextBoxFor(model => model.MainSellMarket)</td>
+                            </tr>
+                            <tr>
+                                <td class="left_memo">기업유형</td>
+                                <td colspan="3">
+                                    @Html.RadioButtonFor(model => model.CompType, "0", new { @checked = "checked" }) 영세기업 (상시 근로자 5인 미만)
+                                    @Html.RadioButtonFor(model => model.CompType, "1") 소기업 (상시 근로자 49인 이하)
+                                    <br />
+                                    @Html.RadioButtonFor(model => model.CompType, "2") 중기업 (상시 근로자 299인 이하)
+                                    @Html.RadioButtonFor(model => model.CompType, "3") 중견기업 (상시 근로자 300인 이상)
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="left_memo">입주유무<br />(해당시)</td>
+                                <td colspan="3">
+                                    @Html.RadioButtonFor(model => model.ResidentType, "1", new { @checked = "checked" })창업보육센터
+                                    @Html.RadioButtonFor(model => model.ResidentType, "2")지역특화센터
+                                    @Html.RadioButtonFor(model => model.ResidentType, "3")테크노파크
+                                    @Html.RadioButtonFor(model => model.ResidentType, "0")졸업기업
+                                    @Html.RadioButtonFor(model => model.ResidentType, "4")기타
+                                    (@Html.TextBoxFor(model => model.ResidenteEtcText, new { @class = "input_etc"}))
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="left_memo">인증유무</td>
+                                <td colspan="3">
+                                    @Html.CheckBoxFor(model => model.CertiVenture)벤처기업 @Html.CheckBoxFor(model => model.CertiInnobiz)이노비즈기업
+                                    @Html.CheckBoxFor(model => model.CertiMainbiz)메인비즈기업 @Html.CheckBoxFor(model => model.CertiRoot)뿌리기업
+                                    @Html.CheckBoxFor(model => model.CertiGreen)녹색인증기업
+                                    <br />
+                                    @Html.CheckBoxFor(model => model.CertiWoman)여성기업 @Html.CheckBoxFor(model => model.CertiSocial)사회적기업
+                                    @Html.CheckBoxFor(model => model.CertiRnd)부설연구소 @Html.CheckBoxFor(model => model.CertiEtc)
+                                    기타(@Html.TextBoxFor(model => model.CertiEtcText, new { @class = "input_etc" }))
+                                </td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+            </div>
+    <!--container//-->
+
+            <div id="btnwrap_sub">
+                <div class="rightwrap left">
+                    <a href="@Url.Action("Summary02", "Report", new { area = "Company", @questionSn = @Model.QuestionSn, @status = Model.Status })" class="btn_a gray" value="이전">이전</a>
+                </div>
+                <div class="rightwrap right">
+                    @if (Model.Status != "C")
+                    {
+                        <button type="button" class="btn_big gray" onclick="goSubmit('N');" value="다음">다음</button>
+                    }
+                    else
+                    {
+                        <a href="@Url.Action("CompanyInfo02", "Report", new { area = "Company", @questionSn = @Model.QuestionSn, @status = Model.Status })" class="btn_a gray" value="다음">다음</a>
+                    }
+                </div>
+                @if (Model.Status != "C")
+                {
+                    <div class="centerwrap">
+                        <button type="button" class="btn_big red" onclick="goSubmit('T');" value="임시저장">임시저장</button>
+                    </div>
+                }
+            </div>
+        }
+        </div>
+    </div>

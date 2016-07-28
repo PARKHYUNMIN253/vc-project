@@ -1,0 +1,193 @@
+﻿@model IPagedList<BizOneShot.Light.Models.ViewModels.JoinMentorViewModel>
+@using BizOneShot.Light.Models.ViewModels
+
+@{
+    Layout = "~/Areas/BizManager/Views/Shared/_MainDetailLayout.cshtml";
+}
+
+<script>
+    $(document).ready(function () {
+        //top menu
+        $('#naviwrap_biz > .navi_biz >  a > .top_menu > .header_person').addClass('on');
+        $('#naviwrap_biz > .navi_biz >  a > .top_menu > .top_text_person').addClass('on');
+        //Accounting menu
+        $('#sub_leftwrap > .sub_gnbwrap > ul > li > a.gnb_mentorList').addClass('on');
+
+        // 기업선택시 컨설팅 코드 변경
+        $('#CompSn').change(function () {
+            $('#curPage').val(1);
+            ChangeCompNm();
+        });
+
+        //체크박스 전체선택
+        $("#checkAll").click(function () {
+            $('input:checkbox').not(this).prop('checked', this.checked);
+        });
+
+        // selectBox 확인
+        $('#searchForm').bind('submit', function () {
+            if ($('#CompSnSelect').val() == "0") {
+                alert("기업을 선택하지 않았습니다.");
+                return false;
+            }
+
+            if ($('#MentorSn').val() == "0") {
+                alert("멘토를 선택하지 않았습니다.");
+                return false;
+            }
+
+            if ($('#ConCode').val() == "0") {
+                alert("컨설팅 코드를 선택하지 않았습니다.");
+                return false;
+            }
+
+            var checkCompSn = $('#CompSn').val();
+            var checkConCode = $('#ConCode').val();
+            var returnValue = true;
+
+            $.ajax({
+                url: '@Url.Action("CheckCompMapping", "MentorMng")',
+                type: "post",
+                dataType: "json",
+                data: {
+                    compSn:checkCompSn,
+                    conCode:checkConCode
+                },          // 보낼 데이터
+                async: false,
+                success: function (result) {    // 전송 성공시
+                    console.log(result);
+                    console.log(result.result);
+                    if (result == "N") {
+                        alert('이미 매핑되었습니다.');
+                        returnValue = false;
+                        return returnValue;
+                    }
+                    else if (result == "Y") {
+                        returnValue = true;
+                        return returnValue;
+                    }
+
+                },
+                error: function () {
+                    console.log("an Error Occured!");
+                    return false;
+                }
+            });
+
+            return returnValue;
+
+            $('#curPage').val('1');
+        });
+
+
+    });
+
+
+    function ChangeCompNm() {
+
+        var compSnCheck = $('#CompSn').val();
+        if (compSnCheck == 0) {
+            $('#ConCode').html("<option value='0'>컨설팅 코드 선택</option>");
+        } else {
+            $('#ConCode').html("");
+            $.ajax({
+                url: '@Url.Action("GetCompNm", "MentorMng", new { area = "BizManager" })',
+                type: "post",
+                dataType: "json",
+                data: { compSn: compSnCheck },
+                async: false,
+                success: function (result) {
+                    for (var i = 0; i < result.length; i++) {
+                        $('#ConCode').append("<option value='" + result[i].Value + "'>" + result[i].Text + "</option>");
+                    }
+                }
+            });
+        }
+    }
+
+    $('.vc_iconSB_03 ').addClass('on01');
+    $('.vc_title_02 ').addClass('on');
+    $('.a_label03 ').addClass('on');
+
+</script>
+
+<div class="tcms">
+    <div class="main_top">
+        <div class="list_icon"></div>
+        <div class="sub_title">멘토기업 매핑</div>
+        @RenderPage("~/Areas/BizManager/Views/Shared/_MainTopMenuPartial.cshtml")
+    </div>
+    @using (Html.BeginForm("MentorCompMapping", "MentorMng", FormMethod.Post, new { area = "BizManager", id = "searchForm" }))
+    {
+        @Html.Hidden("curPage", "1")
+
+        <div id="custom_search_box">
+
+            @Html.DropDownList("CompSn", ViewBag.SelectCompList as SelectList, new { @class = "select width250", @id = "CompSn" })
+            @Html.DropDownList("ConCode", ViewBag.SelectConCodeList as SelectList, new { @class = "select width115", @id = "ConCode" })
+            @Html.DropDownList("MentorSn", ViewBag.SelectMentorList as SelectList, new { @class = "select", @id = "MentorSn" })
+
+            <button type="submit" class="btn_small gray1" value="종합보고서조회" style="margin:0">매칭</button>
+
+        </div><!--sub_inquiry_box//-->
+         
+    }
+    <div class="tablewrap">
+        <!--목록-->
+        <table class="admin_list">
+            <caption>멘토링 일지 조회 목록</caption>
+            <colgroup>
+                <col width="33%">
+                <col width="19%">
+                <col width="17%">
+                <col width="19%">
+                <col width="12%">
+            </colgroup>
+            <tr>
+                <th class="topcen">기업명</th>
+                <th class="topcen">코드(분야)</th>
+                <th class="topcen">멘토명</th>
+                <th class="topcen">매칭 여부</th>
+            </tr>
+
+            @if (Model.Count == 0)
+            {
+                <tr>
+                    <td colspan="5" style="text-align:center;"> 기업 매칭이 모두 완료되었습니다. </td>
+                </tr>
+            }
+            else
+            {
+
+                foreach (var item in Model)
+                {
+                    <tr>
+                        <td> @item.CompNm </td>
+
+
+                        @if (item.MentorNm == null)
+                        {
+                            <td>-</td>
+                            <td class="unset">지정맨토 없음</td>
+                                    <td> - </td>
+                        }
+                        else
+                        {
+                            <td> @item.ConCode </td>
+                            <td> @item.MentorNm </td>
+                                    <td class="blue_text"> 매칭 완료 </td>
+                        }
+
+                    </tr>
+                }
+
+            }
+        </table>
+    </div><!--tablewrap//-->
+
+    @if (Model != null && Model.Count != 0)
+            {
+        @Html.Pagination("goPage", Model.PageNumber, Model.PageCount, Model.HasPreviousPage, Model.HasNextPage)
+    }
+
+</div><!--sub_rightwrap//-->

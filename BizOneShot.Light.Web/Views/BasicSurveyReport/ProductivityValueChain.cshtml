@@ -1,0 +1,1327 @@
+﻿@model List<object>
+
+@{
+    Layout = "~/Views/Shared/_MainDetailLayout.cshtml";
+    RiskMgmtViewModel viewModel1 = Model[0] as RiskMgmtViewModel;
+    ProductivityRelationViewModel viewModel2 = Model[1] as ProductivityRelationViewModel;
+}
+<style>
+    .capacity_comment {margin-top:0px !important}
+    .sub_report_checkbox .report_main_mid .main_mid_cont .main_mid_listBox .capacity_comment .capacity_comment_right {
+    float: left;
+    width: 72%;
+    border: 1px solid #ddd;
+    margin-left: 6px;
+    }
+
+    .sub_report_checkbox .report_main_mid .main_mid_cont .main_mid_listBox .capacity_comment .capacity_comment_left {
+    float: left;
+    width: 25%;
+    border: 1px solid #ddd;
+    text-align: center;
+    padding: 5px 0;
+    margin-left: 0px;
+    margin-right: 10px;
+    }
+
+    .sub_report_checkbox .report_main_mid .main_mid_cont .main_mid_listBox {
+    margin-bottom:5px
+    }
+    .sub_report_checkbox .report_main_mid .main_mid_cont .main_mid_listBox .full_line {
+    margin-top:5px
+    }
+</style>
+
+<script type="text/javascript" src="~/Scripts/jquery.easyModal.js"></script>
+<script>
+    $(document).ready(function () {
+
+        // 사이드 바를 위한 class 추가
+        $('.container').addClass('height_content_auto');
+        $('.sub_gnbwrap > .navi_left > .bg_col_g').addClass('height_rreport');
+
+        $('.vc_iconSB_10 ').addClass('on01');
+        $('.vc_title_10 ').addClass('on');
+        $('.a_label10').addClass('on');
+
+        $('#mainForm').bind('submit', function () {
+
+            var valid = true;
+            if ($('#submitType').val() == "N") {
+                $('input[id^="comment"]').each(function () {
+                    if ($(this).val().length == 0) {
+                        alert("필수항목을 입력해 주세요");
+                        $(this).focus();
+                        valid = false;
+
+                        return false;
+                    }
+                });
+
+
+                $('textarea[id^="comment"]').each(function () {
+                    if ($(this).val().length == 0 && valid == true) {
+                        alert("필수항목을 입력해 주세요");
+                        $(this).focus();
+                        valid = false;
+
+                        return false;
+                    }
+                });
+
+                return valid;
+            }
+
+        });
+
+        if ($('#Status').val() == "C") {
+            $('#mainForm input').attr('disabled', true);
+            $('#mainForm textarea').attr('disabled', true);
+        }
+        else {
+            $('#sub_leftwrap > .sub_gnbwrap > ul > li > a.list_33').hide();
+        }
+        
+        var usrType = $("#usrType").val();
+
+        if (usrType == "C") {
+
+            $('.vc_iconSB_02').addClass('on01'); // 보고서 icon
+            $('.vc_title_01').addClass('on');    // 보고서 label
+            $('.a_label02').addClass('on');      // 보고서 내부 메뉴 label (기초경영역량 보고서)
+
+        } else if (usrType == "M" || usrType == "B") {
+
+            $('.vc_iconSB_02 ').addClass('on01');   // 보고서 icon
+            $('.vc_title_01 ').addClass('on');      // 보고서 label
+            $('.a_label01 ').addClass('on');        // 보고서 내부메뉴
+
+        }
+
+    });
+
+    function goSubmit(submitType) {
+        $('#submitType').val(submitType);
+        $('#mainForm').submit();
+    }
+
+    /* easy-modal */
+    $(function () {
+        $('.easy-modal').easyModal({
+            top: 200,
+            overlay: 0.2
+        });
+
+        $('.easy-modal-open').click(function (e) {
+            var target = $(this).attr('href');
+            $(target).trigger('openModal');
+            e.preventDefault();
+        });
+
+        $('.easy-modal-close').click(function (e) {
+            $('.easy-modal').trigger('closeModal');
+        });
+
+        $('.easy-modal-animated').easyModal({
+            top: 200,
+            overlay: 0.2,
+            transitionIn: 'animated bounceInLeft',
+            transitionOut: 'animated bounceOutRight',
+            closeButtonClass: '.animated-close'
+        });
+    });
+
+</script>
+@Styles.Render("~/css/print")
+
+<div class="tcms">
+    <div class="main_top short">
+        <div class="list_icon"></div><div class="sub_title">기초경영역량보고서</div>
+        @RenderPage("~/Views/Shared/_MainTopMenuPartial.cshtml")
+    </div>
+
+    <div id="sub_rightwrap_report">
+
+        @using (Html.BeginForm("ProductivityValueChain", "BasicSurveyReport", FormMethod.Post, new { area = "", @class = "form-horizontal", role = "form", id = "mainForm" }))
+        {
+            @Html.HiddenFor(model => viewModel1.SubmitType, new { @id = "submitType" })
+            @Html.Hidden("NumSn", ViewBag.paramModel.NumSn as string)
+            @Html.Hidden("CompSn", ViewBag.paramModel.CompSn as string)
+            @Html.Hidden("BizWorkYear", ViewBag.paramModel.BizWorkYear as string)
+            @Html.Hidden("QuestionSn", ViewBag.paramModel.QuestionSn as string)
+            @Html.Hidden("Status", ViewBag.paramModel.Status as string)
+            @Html.Hidden("CompNm", ViewBag.paramModel.CompNm as string)
+            @Html.Hidden("PageNum", ViewBag.paramModel.PageNum as string)
+            @Html.Hidden("usrType", Session[Global.UserType] as string)
+
+            <div class="sub_report_checkbox">
+                <div class="compname">@ViewBag.paramModel.CompNm</div>
+                <div class="pagenum">13/27</div>
+                <div class="report_main_top2"></div>
+                <div class="report_main_mid">
+                    <div class="main_mid_cont">
+                        <p class="title_mid">
+                            Ⅱ. 기초역량검토 종합결과 _ <span class="small_span float_right">역량별 검토결과</span>
+                        </p>
+                    </div>
+                    <div class="main_mid_cont">
+                        <div class="main_mid_listBox nomargin2">
+                            <div class="listBox_tap longbg_on noline">
+                                <span>(2)상품화역량</span>
+                            </div>
+                            <table class="join_info">
+                                <colgroup>
+                                    <col width="20%">
+                                    <col width="20%">
+                                    <col width="60%">
+                                </colgroup>
+                                <tr>
+                                    <td class="left_memo">역량 검토 항목</td>
+                                    <td>
+                                        <span class="span_weak">□ 기초역량 평가</span>
+                                        <span class="span_weak">□ 재무지표 평가</span>
+                                        <span class="span_on">■ 전문가 평가</span>
+                                    </td>
+                                    <td class="center_td">
+                                        <div class="label_td" style="width: 30%">상품화구조 Check</div> 
+                                        <span class="label_span" style="width: 62%">
+                                            고객에게 제공하는 제품/서비스의 가치는 다양한 방식으로 
+                                            제공됩니다. 기업의 가치전달 모델, 가치사슬 프로세스 및 경쟁분석을 통해 상품화 역량 검토가 가능합니다.
+                                        </span>
+                                    </td>
+                                </tr>
+                            </table>
+                        </div>
+                    </div>
+
+                    <div class="main_mid_cont">
+                        <div class="main_mid_listBox nomargin2">
+                            <div class="listBox_tap longbg_on full_line noline">
+                                <span>사업모델 도출과정</span><a class="easy-modal-open" href="#modal1"><img src="~/images/modal_info.png" /></a>
+                            </div>
+                            <table class="capacity_table">
+                                <colgroup>
+                                    <col width="10%">
+                                    <col width="10%">
+                                    <col width="16%">
+                                    <col width="16%">
+                                    <col width="20%">
+                                    <col width="28%">
+                                </colgroup>
+                                <tr>
+                                    <td class="left_memo ">발전단계</td>
+                                    <td class="left_memo">구분</td>
+                                    <td class="left_memo">가치제공 유형</td>
+                                    <td class="left_memo">제품개발 수준</td>
+                                    <td class="left_memo">영업방식</td>
+                                    <td class="left_memo">최종 제품형태</td>
+
+                                </tr>
+                                <tr>
+                                    <td class="center_td center bold">창업보육</td>
+                                    <td class="center_td center bold">서비스</td>
+                                    <td class="center_td center">
+                                        고객맞춤형 @Html.CheckBoxFor(model => viewModel1.CheckBoxList[0].CheckVal, new { @id = "check0" })
+                                        @Html.HiddenFor(model => viewModel1.CheckBoxList[0].DetailCd)
+                                    </td>
+                                    <td class="center_td center">
+                                        기능적 완성 @Html.CheckBoxFor(model => viewModel1.CheckBoxList[1].CheckVal, new { @id = "check1" })
+                                        @Html.HiddenFor(model => viewModel1.CheckBoxList[1].DetailCd)
+                                    </td>
+                                    <td class="center_td center">
+                                        총판방식 @Html.CheckBoxFor(model => viewModel1.CheckBoxList[2].CheckVal, new { @id = "check2" })
+                                        @Html.HiddenFor(model => viewModel1.CheckBoxList[2].DetailCd)
+                                    </td>
+                                    <td class="center_td center">
+                                        서비스 / 용역 @Html.CheckBoxFor(model => viewModel1.CheckBoxList[3].CheckVal, new { @id = "check3" })
+                                        @Html.HiddenFor(model => viewModel1.CheckBoxList[3].DetailCd)
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="center_td center bold">보육성장</td>
+                                    <td class="center_td center bold">솔루션</td>
+                                    <td class="center_td center">
+                                        가치창출형 @Html.CheckBoxFor(model => viewModel1.CheckBoxList[4].CheckVal, new { @id = "check4" })
+                                        @Html.HiddenFor(model => viewModel1.CheckBoxList[4].DetailCd)
+                                    </td>
+                                    <td class="center_td center">
+                                        제품적 완성 @Html.CheckBoxFor(model => viewModel1.CheckBoxList[5].CheckVal, new { @id = "check5" })
+                                        @Html.HiddenFor(model => viewModel1.CheckBoxList[5].DetailCd)
+                                    </td>
+                                    <td class="center_td center">
+                                        영업팀운영 @Html.CheckBoxFor(model => viewModel1.CheckBoxList[6].CheckVal, new { @id = "check6" })
+                                        @Html.HiddenFor(model => viewModel1.CheckBoxList[6].DetailCd)
+                                    </td>
+                                    <td class="center_td center">
+                                        부품 / 원료 (솔루션)@Html.CheckBoxFor(model => viewModel1.CheckBoxList[7].CheckVal, new { @id = "check7" })
+                                        @Html.HiddenFor(model => viewModel1.CheckBoxList[7].DetailCd)<br>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="center_td center bold">자립성장</td>
+                                    <td class="center_td center bold">상품화</td>
+                                    <td class="center_td center">
+                                        비용최소화 @Html.CheckBoxFor(model => viewModel1.CheckBoxList[8].CheckVal, new { @id = "check8" })
+                                        @Html.HiddenFor(model => viewModel1.CheckBoxList[8].DetailCd)
+                                    </td>
+                                    <td class="center_td center">
+                                        영업적 완성 @Html.CheckBoxFor(model => viewModel1.CheckBoxList[9].CheckVal, new { @id = "check9" })
+                                        @Html.HiddenFor(model => viewModel1.CheckBoxList[9].DetailCd)
+                                    </td>
+                                    <td class="center_td center">
+                                        대리점 운영 @Html.CheckBoxFor(model => viewModel1.CheckBoxList[10].CheckVal, new { @id = "check10" })
+                                        @Html.HiddenFor(model => viewModel1.CheckBoxList[10].DetailCd)
+                                    </td>
+                                    <td class="center_td center">
+                                        완제품 @Html.CheckBoxFor(model => viewModel1.CheckBoxList[11].CheckVal, new { @id = "check11" })
+                                        @Html.HiddenFor(model => viewModel1.CheckBoxList[11].DetailCd)
+                                    </td>
+                                </tr>
+
+                            </table>
+
+                            <div class="main_mid_cont margin_b15">
+                                <div class="main_mid_listBox nomargin2">
+                                    <div class="listBox_tap longbg_on full_line" style="margin-top:5px">
+                                        <span>제품생산 판매관계망 검토</span>
+                                    </div>
+                                    <div class="table_note">핵심단계 : ● , 보조단계 : △</div>
+                                    <table class="capacity_table margin_t">
+                                        <colgroup>
+                                            <col width="8%">
+                                            <col width="12%">
+                                            <col width="10%">
+                                            <col width="10%">
+                                            <col width="10%">
+                                            <col width="10%">
+                                            <col width="10%">
+                                            <col width="10%">
+                                            <col width="10%">
+                                            <col width="10%">
+                                        </colgroup>
+                                        <tr>
+                                            <td class="left_memo" colspan="2" rowspan="3">가치사슬 발전단계</td>
+                                            <td class="left_memo" colspan="2">Pre-R&D</td>
+                                            <td class="left_memo" colspan="2">R&D</td>
+                                            <td class="left_memo" colspan="2">사업화</td>
+                                            <td class="left_memo" colspan="2">마케팅</td>
+                                        </tr>
+                                        <tr>
+                                            <td class="center_td center bold" colspan="2">
+                                                제품 아이디어를
+                                                구상,고객분석 진행
+                                            </td>
+                                            <td class="center_td center bold" colspan="2">
+                                                컨셉기획에 새로운<br>가치를
+                                                찾아 개발
+                                            </td>
+                                            <td class="center_td center bold" colspan="2">
+                                                개발된 가치를<br />
+                                                최소비용에 생산
+                                            </td>
+                                            <td class="center_td center bold" colspan="2">
+                                                개발된 가치에 딱
+                                                맞는 고객에게 전달
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td class="center_td center bold">고객분석</td>
+                                            <td class="center_td center bold">
+                                                상품화<br> 기획<br>(컨셉<br>디자인)
+                                            </td>
+                                            <td class="center_td center bold">기술개발</td>
+                                            <td class="center_td center bold">
+                                                협력사<br>서칭
+                                            </td>
+                                            <td class="center_td center bold">시제품</td>
+                                            <td class="center_td center bold">생산시설구축</td>
+                                            <td class="center_td center bold">마케팅(영업)</td>
+                                            <td class="center_td center bold">고객관리(물류)</td>
+                                        </tr>
+                                        <tr>
+                                            <td class="center_td center bold" rowspan="3">시장<br />현황</td>
+                                            <td class="center_td center bold">서비스</td>
+                                            <td class="center_td center nochecked">
+                                                @if (viewModel2.MakCommentDetail.MaksCa == int.Parse("1"))
+                                                {
+                                                    <div class="contact">●</div>
+                                                }
+                                                else if (viewModel2.MakCommentDetail.MaksCa == int.Parse("2"))
+                                                {
+                                                    <div class="contact">△</div>
+                                                }
+                                                else
+                                                {
+                                                    <div class="contact">X</div>
+                                                }
+                                            </td>
+                                            <td class="center_td center nochecked">
+                                                @if (viewModel2.MakCommentDetail.MaksMp == int.Parse("1"))
+                                                {
+                                                    <div class="contact">●</div>
+                                                }
+                                                else if (viewModel2.MakCommentDetail.MaksMp == int.Parse("2"))
+                                                {
+                                                    <div class="contact">△</div>
+                                                }
+                                                else
+                                                {
+                                                    <div class="contact">X</div>
+                                                }
+                                            </td>
+                                            <td class="center_td center nochecked">
+                                                @if (viewModel2.MakCommentDetail.MaksTd == int.Parse("1"))
+                                                {
+                                                    <div class="contact">●</div>
+                                                }
+                                                else if (viewModel2.MakCommentDetail.MaksTd == int.Parse("2"))
+                                                {
+                                                    <div class="contact">△</div>
+                                                }
+                                                else
+                                                {
+                                                    <div class="contact">X</div>
+                                                }
+                                            </td>
+                                            <td class="center_td center nochecked">
+                                                @if (viewModel2.MakCommentDetail.MaksPs == int.Parse("1"))
+                                                {
+                                                    <div class="contact">●</div>
+                                                }
+                                                else if (viewModel2.MakCommentDetail.MaksPs == int.Parse("2"))
+                                                {
+                                                    <div class="contact">△</div>
+                                                }
+                                                else
+                                                {
+                                                    <div class="contact">X</div>
+                                                }
+                                            </td>
+                                            <td class="center_td center nochecked">
+                                                @if (viewModel2.MakCommentDetail.MaksPro == int.Parse("1"))
+                                                {
+                                                    <div class="contact">●</div>
+                                                }
+                                                else if (viewModel2.MakCommentDetail.MaksPro == int.Parse("2"))
+                                                {
+                                                    <div class="contact">△</div>
+                                                }
+                                                else
+                                                {
+                                                    <div class="contact">X</div>
+                                                }
+                                            </td>
+                                            <td class="center_td center nochecked">
+                                                @if (viewModel2.MakCommentDetail.MaksPb == int.Parse("1"))
+                                                {
+                                                    <div class="contact">●</div>
+                                                }
+                                                else if (viewModel2.MakCommentDetail.MaksPb == int.Parse("2"))
+                                                {
+                                                    <div class="contact">△</div>
+                                                }
+                                                else
+                                                {
+                                                    <div class="contact">X</div>
+                                                }
+                                            </td>
+                                            <td class="center_td center nochecked">
+                                                @if (viewModel2.MakCommentDetail.MaksMak == int.Parse("1"))
+                                                {
+                                                    <div class="contact">●</div>
+                                                }
+                                                else if (viewModel2.MakCommentDetail.MaksMak == int.Parse("2"))
+                                                {
+                                                    <div class="contact">△</div>
+                                                }
+                                                else
+                                                {
+                                                    <div class="contact">X</div>
+                                                }
+                                            </td>
+                                            <td class="center_td center nochecked">
+                                                @if (viewModel2.MakCommentDetail.MaksCc == int.Parse("1"))
+                                                {
+                                                    <div class="contact">●</div>
+                                                }
+                                                else if (viewModel2.MakCommentDetail.MaksCc == int.Parse("2"))
+                                                {
+                                                    <div class="contact">△</div>
+                                                }
+                                                else
+                                                {
+                                                    <div class="contact">X</div>
+                                                }
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td class="center_td center bold">솔루션</td>
+                                            <td class="center_td center nochecked">
+                                                @if (viewModel2.MakCommentDetail.MakslCa == int.Parse("1"))
+                                                {
+                                                    <div class="contact">●</div>
+                                                }
+                                                else if (viewModel2.MakCommentDetail.MakslCa == int.Parse("2"))
+                                                {
+                                                    <div class="contact">△</div>
+                                                }
+                                                else
+                                                {
+                                                    <div class="contact">X</div>
+                                                }
+                                            </td>
+                                            <td class="center_td center nochecked">
+                                                @if (viewModel2.MakCommentDetail.MakslMp == int.Parse("1"))
+                                                {
+                                                    <div class="contact">●</div>
+                                                }
+                                                else if (viewModel2.MakCommentDetail.MakslMp == int.Parse("2"))
+                                                {
+                                                    <div class="contact">△</div>
+                                                }
+                                                else
+                                                {
+                                                    <div class="contact">X</div>
+                                                }
+                                            </td>
+                                            <td class="center_td center nochecked">
+                                                @if (viewModel2.MakCommentDetail.MakslTd == int.Parse("1"))
+                                                {
+                                                    <div class="contact">●</div>
+                                                }
+                                                else if (viewModel2.MakCommentDetail.MakslTd == int.Parse("2"))
+                                                {
+                                                    <div class="contact">△</div>
+                                                }
+                                                else
+                                                {
+                                                    <div class="contact">X</div>
+                                                }
+                                            </td>
+                                            <td class="center_td center nochecked">
+                                                @if (viewModel2.MakCommentDetail.MakslPs == int.Parse("1"))
+                                                {
+                                                    <div class="contact">●</div>
+                                                }
+                                                else if (viewModel2.MakCommentDetail.MakslPs == int.Parse("2"))
+                                                {
+                                                    <div class="contact">△</div>
+                                                }
+                                                else
+                                                {
+                                                    <div class="contact">X</div>
+                                                }
+                                            </td>
+                                            <td class="center_td center nochecked">
+                                                @if (viewModel2.MakCommentDetail.MakslPro == int.Parse("1"))
+                                                {
+                                                    <div class="contact">●</div>
+                                                }
+                                                else if (viewModel2.MakCommentDetail.MakslPro == int.Parse("2"))
+                                                {
+                                                    <div class="contact">△</div>
+                                                }
+                                                else
+                                                {
+                                                    <div class="contact">X</div>
+                                                }
+                                            </td>
+                                            <td class="center_td center nochecked">
+                                                @if (viewModel2.MakCommentDetail.MakslPb == int.Parse("1"))
+                                                {
+                                                    <div class="contact">●</div>
+                                                }
+                                                else if (viewModel2.MakCommentDetail.MakslPb == int.Parse("2"))
+                                                {
+                                                    <div class="contact">△</div>
+                                                }
+                                                else
+                                                {
+                                                    <div class="contact">X</div>
+                                                }
+                                            </td>
+                                            <td class="center_td center nochecked">
+                                                @if (viewModel2.MakCommentDetail.MakslMak == int.Parse("1"))
+                                                {
+                                                    <div class="contact">●</div>
+                                                }
+                                                else if (viewModel2.MakCommentDetail.MakslMak == int.Parse("2"))
+                                                {
+                                                    <div class="contact">△</div>
+                                                }
+                                                else
+                                                {
+                                                    <div class="contact">X</div>
+                                                }
+                                            </td>
+                                            <td class="center_td center nochecked">
+                                                @if (viewModel2.MakCommentDetail.MakslCc == int.Parse("1"))
+                                                {
+                                                    <div class="contact">●</div>
+                                                }
+                                                else if (viewModel2.MakCommentDetail.MakslCc == int.Parse("2"))
+                                                {
+                                                    <div class="contact">△</div>
+                                                }
+                                                else
+                                                {
+                                                    <div class="contact">X</div>
+                                                }
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td class="center_td center bold">상품화</td>
+                                            <td class="center_td center nochecked">
+                                                @if (viewModel2.MakCommentDetail.MaksmCa == int.Parse("1"))
+                                                {
+                                                    <div class="contact">●</div>
+                                                }
+                                                else if (viewModel2.MakCommentDetail.MaksmCa == int.Parse("2"))
+                                                {
+                                                    <div class="contact">△</div>
+                                                }
+                                                else
+                                                {
+                                                    <div class="contact">X</div>
+                                                }
+                                            </td>
+                                            <td class="center_td center nochecked">
+                                                @if (viewModel2.MakCommentDetail.MaksmMp == int.Parse("1"))
+                                                {
+                                                    <div class="contact">●</div>
+                                                }
+                                                else if (viewModel2.MakCommentDetail.MaksmMp == int.Parse("2"))
+                                                {
+                                                    <div class="contact">△</div>
+                                                }
+                                                else
+                                                {
+                                                    <div class="contact">X</div>
+                                                }
+                                            </td>
+                                            <td class="center_td center nochecked">
+                                                @if (viewModel2.MakCommentDetail.MaksmTd == int.Parse("1"))
+                                                {
+                                                    <div class="contact">●</div>
+                                                }
+                                                else if (viewModel2.MakCommentDetail.MaksmTd == int.Parse("2"))
+                                                {
+                                                    <div class="contact">△</div>
+                                                }
+                                                else
+                                                {
+                                                    <div class="contact">X</div>
+                                                }
+                                            </td>
+                                            <td class="center_td center nochecked">
+                                                @if (viewModel2.MakCommentDetail.MaksmPs == int.Parse("1"))
+                                                {
+                                                    <div class="contact">●</div>
+                                                }
+                                                else if (viewModel2.MakCommentDetail.MaksmPs == int.Parse("2"))
+                                                {
+                                                    <div class="contact">△</div>
+                                                }
+                                                else
+                                                {
+                                                    <div class="contact">X</div>
+                                                }
+                                            </td>
+                                            <td class="center_td center nochecked">
+                                                @if (viewModel2.MakCommentDetail.MaksmPro == int.Parse("1"))
+                                                {
+                                                    <div class="contact">●</div>
+                                                }
+                                                else if (viewModel2.MakCommentDetail.MaksmPro == int.Parse("2"))
+                                                {
+                                                    <div class="contact">△</div>
+                                                }
+                                                else
+                                                {
+                                                    <div class="contact">X</div>
+                                                }
+                                            </td>
+                                            <td class="center_td center nochecked">
+                                                @if (viewModel2.MakCommentDetail.MaksmPb == int.Parse("1"))
+                                                {
+                                                    <div class="contact">●</div>
+                                                }
+                                                else if (viewModel2.MakCommentDetail.MaksmPb == int.Parse("2"))
+                                                {
+                                                    <div class="contact">△</div>
+                                                }
+                                                else
+                                                {
+                                                    <div class="contact">X</div>
+                                                }
+                                            </td>
+                                            <td class="center_td center nochecked">
+                                                @if (viewModel2.MakCommentDetail.MaksmMak == int.Parse("1"))
+                                                {
+                                                    <div class="contact">●</div>
+                                                }
+                                                else if (viewModel2.MakCommentDetail.MaksmMak == int.Parse("2"))
+                                                {
+                                                    <div class="contact">△</div>
+                                                }
+                                                else
+                                                {
+                                                    <div class="contact">X</div>
+                                                }
+                                            </td>
+                                            <td class="center_td center nochecked">
+                                                @if (viewModel2.MakCommentDetail.MaksmCc == int.Parse("1"))
+                                                {
+                                                    <div class="contact">●</div>
+                                                }
+                                                else if (viewModel2.MakCommentDetail.MaksmCc == int.Parse("2"))
+                                                {
+                                                    <div class="contact">△</div>
+                                                }
+                                                else
+                                                {
+                                                    <div class="contact">X</div>
+                                                }
+                                            </td>
+                                        </tr>
+
+                                        <tr>
+                                            <td class="center_td center bold" rowspan="3">자사<br />현황</td>
+                                            <td class="center_td center bold">상황</td>
+                                            <td class="center_td center">
+                                                @if (ViewBag.paramModel.Status != "C")
+                                                {
+                                                    <div class="contact">
+                                                        @Html.RadioButtonFor(model => viewModel2.CommentList[0].Comment, "1", new { @id = "radio0" }) ●
+                                                    </div>
+                                                    <div class="contact">
+                                                        @Html.RadioButtonFor(model => viewModel2.CommentList[0].Comment, "2", new { @id = "radio0" }) △
+                                                    </div>
+                                                    <div class="contact">
+                                                        @Html.RadioButtonFor(model => viewModel2.CommentList[0].Comment, "3", new { @id = "radio0" }) ⅹ
+                                                        @Html.HiddenFor(model => viewModel2.CommentList[0].DetailCd)
+                                                    </div>
+                                                }
+                                                else
+                                                {
+                                                    if (viewModel2.CommentList[0].Comment == "1")
+                                                    {
+                                                        <div class="contact">●</div>
+                                                    }
+                                                    else if (viewModel2.CommentList[0].Comment == "2")
+                                                    {
+                                                        <div class="contact">△</div>
+                                                    }
+                                                    else
+                                                    {
+                                                        <div class="contact">X</div>
+                                                    }
+                                                }
+                                            </td>
+                                            <td class="center_td center">
+                                                @if (ViewBag.paramModel.Status != "C")
+                                                {
+                                                    <div class="contact">
+                                                        @Html.RadioButtonFor(model => viewModel2.CommentList[1].Comment, "1", new { @id = "radio1" }) ●
+                                                    </div>
+                                                    <div class="contact">
+                                                        @Html.RadioButtonFor(model => viewModel2.CommentList[1].Comment, "2", new { @id = "radio1" }) △
+                                                    </div>
+                                                    <div class="contact">
+                                                        @Html.RadioButtonFor(model => viewModel2.CommentList[1].Comment, "3", new { @id = "radio1" }) ⅹ
+                                                        @Html.HiddenFor(model => viewModel2.CommentList[1].DetailCd)
+                                                    </div>
+                                                }
+                                                else
+                                                {
+                                                    if (viewModel2.CommentList[1].Comment == "1")
+                                                    {
+                                                        <div class="contact">●</div>
+                                                    }
+                                                    else if (viewModel2.CommentList[1].Comment == "2")
+                                                    {
+                                                        <div class="contact">△</div>
+                                                    }
+                                                    else
+                                                    {
+                                                        <div class="contact">X</div>
+                                                    }
+                                                }
+                                            </td>
+                                            <td class="center_td center">
+                                                @if (ViewBag.paramModel.Status != "C")
+                                                {
+                                                    <div class="contact">
+                                                        @Html.RadioButtonFor(model => viewModel2.CommentList[2].Comment, "1", new { @id = "comment2" }) ●
+                                                    </div>
+                                                    <div class="contact">
+                                                        @Html.RadioButtonFor(model => viewModel2.CommentList[2].Comment, "2", new { @id = "comment2" }) △
+                                                    </div>
+                                                    <div class="contact">
+                                                        @Html.RadioButtonFor(model => viewModel2.CommentList[2].Comment, "3", new { @id = "comment2" }) ⅹ
+                                                        @Html.HiddenFor(model => viewModel2.CommentList[2].DetailCd)
+                                                    </div>
+                                                }
+                                                else
+                                                {
+                                                    if (viewModel2.CommentList[2].Comment == "1")
+                                                    {
+                                                        <div class="contact">●</div>
+                                                    }
+                                                    else if (viewModel2.CommentList[2].Comment == "2")
+                                                    {
+                                                        <div class="contact">△</div>
+                                                    }
+                                                    else
+                                                    {
+                                                        <div class="contact">X</div>
+                                                    }
+                                                }
+                                            </td>
+                                            <td class="center_td center">
+                                                @if (ViewBag.paramModel.Status != "C")
+                                                {
+                                                    <div class="contact">
+                                                        @Html.RadioButtonFor(model => viewModel2.CommentList[3].Comment, "1", new { @id = "comment3" }) ●
+                                                    </div>
+                                                    <div class="contact">
+                                                        @Html.RadioButtonFor(model => viewModel2.CommentList[3].Comment, "2", new { @id = "comment3" }) △
+                                                    </div>
+                                                    <div class="contact">
+                                                        @Html.RadioButtonFor(model => viewModel2.CommentList[3].Comment, "3", new { @id = "comment3" }) ⅹ
+                                                        @Html.HiddenFor(model => viewModel2.CommentList[3].DetailCd)
+                                                    </div>
+                                                }
+                                                else
+                                                {
+                                                    if (viewModel2.CommentList[3].Comment == "1")
+                                                    {
+                                                        <div class="contact">●</div>
+                                                    }
+                                                    else if (viewModel2.CommentList[3].Comment == "2")
+                                                    {
+                                                        <div class="contact">△</div>
+                                                    }
+                                                    else
+                                                    {
+                                                        <div class="contact">X</div>
+                                                    }
+                                                }
+                                            </td>
+                                            <td class="center_td center">
+                                                @if (ViewBag.paramModel.Status != "C")
+                                                {
+                                                    <div class="contact">
+                                                        @Html.RadioButtonFor(model => viewModel2.CommentList[4].Comment, "1", new { @id = "comment4" }) ●
+                                                    </div>
+                                                    <div class="contact">
+                                                        @Html.RadioButtonFor(model => viewModel2.CommentList[4].Comment, "2", new { @id = "comment4" }) △
+                                                    </div>
+                                                    <div class="contact">
+                                                        @Html.RadioButtonFor(model => viewModel2.CommentList[4].Comment, "3", new { @id = "comment4" }) ⅹ
+                                                        @Html.HiddenFor(model => viewModel2.CommentList[4].DetailCd)
+                                                    </div>
+                                                }
+                                                else
+                                                {
+                                                    if (viewModel2.CommentList[4].Comment == "1")
+                                                    {
+                                                        <div class="contact">●</div>
+                                                    }
+                                                    else if (viewModel2.CommentList[4].Comment == "2")
+                                                    {
+                                                        <div class="contact">△</div>
+                                                    }
+                                                    else
+                                                    {
+                                                        <div class="contact">X</div>
+                                                    }
+                                                }
+                                            </td>
+                                            <td class="center_td center">
+                                                @if (ViewBag.paramModel.Status != "C")
+                                                {
+                                                    <div class="contact">
+                                                        @Html.RadioButtonFor(model => viewModel2.CommentList[5].Comment, "1", new { @id = "comment5" }) ●
+                                                    </div>
+                                                    <div class="contact">
+                                                        @Html.RadioButtonFor(model => viewModel2.CommentList[5].Comment, "2", new { @id = "comment5" }) △
+                                                    </div>
+                                                    <div class="contact">
+                                                        @Html.RadioButtonFor(model => viewModel2.CommentList[5].Comment, "3", new { @id = "comment5" }) ⅹ
+                                                        @Html.HiddenFor(model => viewModel2.CommentList[5].DetailCd)
+                                                    </div>
+                                                }
+                                                else
+                                                {
+                                                    if (viewModel2.CommentList[5].Comment == "1")
+                                                    {
+                                                        <div class="contact">●</div>
+                                                    }
+                                                    else if (viewModel2.CommentList[5].Comment == "2")
+                                                    {
+                                                        <div class="contact">△</div>
+                                                    }
+                                                    else
+                                                    {
+                                                        <div class="contact">X</div>
+                                                    }
+                                                }
+                                            </td>
+                                            <td class="center_td center">
+                                                @if (ViewBag.paramModel.Status != "C")
+                                                {
+                                                    <div class="contact">
+                                                        @Html.RadioButtonFor(model => viewModel2.CommentList[6].Comment, "1", new { @id = "comment6" }) ●
+                                                    </div>
+                                                    <div class="contact">
+                                                        @Html.RadioButtonFor(model => viewModel2.CommentList[6].Comment, "2", new { @id = "comment6" }) △
+                                                    </div>
+                                                    <div class="contact">
+                                                        @Html.RadioButtonFor(model => viewModel2.CommentList[6].Comment, "3", new { @id = "comment6" }) ⅹ
+                                                        @Html.HiddenFor(model => viewModel2.CommentList[6].DetailCd)
+                                                    </div>
+                                                }
+                                                else
+                                                {
+                                                    if (viewModel2.CommentList[6].Comment == "1")
+                                                    {
+                                                        <div class="contact">●</div>
+                                                    }
+                                                    else if (viewModel2.CommentList[6].Comment == "2")
+                                                    {
+                                                        <div class="contact">△</div>
+                                                    }
+                                                    else
+                                                    {
+                                                        <div class="contact">X</div>
+                                                    }
+                                                }
+                                            </td>
+                                            <td class="center_td center">
+                                                @if (ViewBag.paramModel.Status != "C")
+                                                {
+                                                    <div class="contact">
+                                                        @Html.RadioButtonFor(model => viewModel2.CommentList[7].Comment, "1", new { @id = "comment7" }) ●
+                                                    </div>
+                                                    <div class="contact">
+                                                        @Html.RadioButtonFor(model => viewModel2.CommentList[7].Comment, "2", new { @id = "comment7" }) △
+                                                    </div>
+                                                    <div class="contact">
+                                                        @Html.RadioButtonFor(model => viewModel2.CommentList[7].Comment, "3", new { @id = "comment7" }) ⅹ
+                                                        @Html.HiddenFor(model => viewModel2.CommentList[7].DetailCd)
+                                                    </div>
+                                                }
+                                                else
+                                                {
+                                                    if (viewModel2.CommentList[7].Comment == "1")
+                                                    {
+                                                        <div class="contact">●</div>
+                                                    }
+                                                    else if (viewModel2.CommentList[7].Comment == "2")
+                                                    {
+                                                        <div class="contact">△</div>
+                                                    }
+                                                    else
+                                                    {
+                                                        <div class="contact">X</div>
+                                                    }
+                                                }
+
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td class="center_td center bold">
+                                                누가<br>(외부이면<br />표시)
+                                            </td>
+                                            <td class="center_td2 center">
+                                                @Html.TextAreaFor(model => viewModel2.CommentList[8].Comment, new { @id = "comment8", @class = "textarea_s" })
+                                                @Html.HiddenFor(model => viewModel2.CommentList[8].DetailCd)
+                                            </td>
+                                            <td class="center_td2 center">
+                                                @Html.TextAreaFor(model => viewModel2.CommentList[9].Comment, new { @id = "comment9", @class = "textarea_s" })
+                                                @Html.HiddenFor(model => viewModel2.CommentList[9].DetailCd)
+                                            </td>
+                                            <td class="center_td2 center">
+                                                @Html.TextAreaFor(model => viewModel2.CommentList[10].Comment, new { @id = "comment10", @class = "textarea_s" })
+                                                @Html.HiddenFor(model => viewModel2.CommentList[10].DetailCd)
+                                            </td>
+                                            <td class="center_td2 center">
+                                                @Html.TextAreaFor(model => viewModel2.CommentList[11].Comment, new { @id = "comment11", @class = "textarea_s" })
+                                                @Html.HiddenFor(model => viewModel2.CommentList[11].DetailCd)
+                                            </td>
+                                            <td class="center_td2 center">
+                                                @Html.TextAreaFor(model => viewModel2.CommentList[12].Comment, new { @id = "comment12", @class = "textarea_s" })
+                                                @Html.HiddenFor(model => viewModel2.CommentList[12].DetailCd)
+                                            </td>
+                                            <td class="center_td2 center">
+                                                @Html.TextAreaFor(model => viewModel2.CommentList[13].Comment, new { @id = "comment13", @class = "textarea_s" })
+                                                @Html.HiddenFor(model => viewModel2.CommentList[13].DetailCd)
+                                            </td>
+                                            <td class="center_td2 center">
+                                                @Html.TextAreaFor(model => viewModel2.CommentList[14].Comment, new { @id = "comment14", @class = "textarea_s" })
+                                                @Html.HiddenFor(model => viewModel2.CommentList[14].DetailCd)
+                                            </td>
+                                            <td class="center_td2 center">
+                                                @Html.TextAreaFor(model => viewModel2.CommentList[15].Comment, new { @id = "comment15", @class = "textarea_s" })
+                                                @Html.HiddenFor(model => viewModel2.CommentList[15].DetailCd)
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td class="center_td center bold">향후목표</td>
+                                            <td class="center_td2 center">
+                                                @Html.TextAreaFor(model => viewModel2.CommentList[16].Comment, new { @id = "comment16", @class = "textarea_s" })
+                                                @Html.HiddenFor(model => viewModel2.CommentList[16].DetailCd)
+                                            </td>
+                                            <td class="center_td2 center">
+                                                @Html.TextAreaFor(model => viewModel2.CommentList[17].Comment, new { @id = "comment17", @class = "textarea_s" })
+                                                @Html.HiddenFor(model => viewModel2.CommentList[17].DetailCd)
+                                            </td>
+                                            <td class="center_td2 center">
+                                                @Html.TextAreaFor(model => viewModel2.CommentList[18].Comment, new { @id = "comment18", @class = "textarea_s" })
+                                                @Html.HiddenFor(model => viewModel2.CommentList[18].DetailCd)
+                                            </td>
+                                            <td class="center_td2 center">
+                                                @Html.TextAreaFor(model => viewModel2.CommentList[19].Comment, new { @id = "comment19", @class = "textarea_s" })
+                                                @Html.HiddenFor(model => viewModel2.CommentList[19].DetailCd)
+                                            </td>
+                                            <td class="center_td2 center">
+                                                @Html.TextAreaFor(model => viewModel2.CommentList[20].Comment, new { @id = "comment20", @class = "textarea_s" })
+                                                @Html.HiddenFor(model => viewModel2.CommentList[20].DetailCd)
+                                            </td>
+                                            <td class="center_td2 center">
+                                                @Html.TextAreaFor(model => viewModel2.CommentList[21].Comment, new { @id = "comment21", @class = "textarea_s" })
+                                                @Html.HiddenFor(model => viewModel2.CommentList[21].DetailCd)
+                                            </td>
+                                            <td class="center_td2 center">
+                                                @Html.TextAreaFor(model => viewModel2.CommentList[22].Comment, new { @id = "comment22", @class = "textarea_s" })
+                                                @Html.HiddenFor(model => viewModel2.CommentList[22].DetailCd)
+                                            </td>
+                                            <td class="center_td2 center">
+                                                @Html.TextAreaFor(model => viewModel2.CommentList[23].Comment, new { @id = "comment23", @class = "textarea_s" })
+                                                @Html.HiddenFor(model => viewModel2.CommentList[23].DetailCd)
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td class="center_td center bold" colspan="2">경쟁자</td>
+
+                                            <td class="center_td center">
+                                                @if (ViewBag.paramModel.Status != "C")
+                                                {
+                                                    <div class="contact">
+                                                        @Html.RadioButtonFor(model => viewModel2.CommentList[24].Comment, "1", new { @id = "comment24" }) ●
+                                                    </div>
+                                                    <div class="contact">
+                                                        @Html.RadioButtonFor(model => viewModel2.CommentList[24].Comment, "2", new { @id = "comment24" }) △
+                                                    </div>
+                                                    <div class="contact">
+                                                        @Html.RadioButtonFor(model => viewModel2.CommentList[24].Comment, "3", new { @id = "comment24" }) ⅹ
+                                                        @Html.HiddenFor(model => viewModel2.CommentList[24].DetailCd)
+                                                    </div>
+                                                }
+                                                else
+                                                {
+                                                    if (viewModel2.CommentList[24].Comment == "1")
+                                                    {
+                                                        <div class="contact">●</div>
+                                                    }
+                                                    else if (viewModel2.CommentList[24].Comment == "2")
+                                                    {
+                                                        <div class="contact">△</div>
+                                                    }
+                                                    else
+                                                    {
+                                                        <div class="contact">X</div>
+                                                    }
+                                                }
+                                            </td>
+                                            <td class="center_td center">
+                                                @if (ViewBag.paramModel.Status != "C")
+                                                {
+                                                    <div class="contact">
+                                                        @Html.RadioButtonFor(model => viewModel2.CommentList[25].Comment, "1", new { @id = "comment25" }) ●
+                                                    </div>
+                                                    <div class="contact">
+                                                        @Html.RadioButtonFor(model => viewModel2.CommentList[25].Comment, "2", new { @id = "comment25" }) △
+                                                    </div>
+                                                    <div class="contact">
+                                                        @Html.RadioButtonFor(model => viewModel2.CommentList[25].Comment, "3", new { @id = "comment25" }) ⅹ
+                                                        @Html.HiddenFor(model => viewModel2.CommentList[25].DetailCd)
+                                                    </div>
+                                                }
+                                                else
+                                                {
+                                                    if (viewModel2.CommentList[25].Comment == "1")
+                                                    {
+                                                        <div class="contact">●</div>
+                                                    }
+                                                    else if (viewModel2.CommentList[25].Comment == "2")
+                                                    {
+                                                        <div class="contact">△</div>
+                                                    }
+                                                    else
+                                                    {
+                                                        <div class="contact">X</div>
+                                                    }
+                                                }
+                                            </td>
+                                            <td class="center_td center">
+                                                @if (ViewBag.paramModel.Status != "C")
+                                                {
+                                                    <div class="contact">
+                                                        @Html.RadioButtonFor(model => viewModel2.CommentList[26].Comment, "1", new { @id = "comment26" }) ●
+                                                    </div>
+                                                    <div class="contact">
+                                                        @Html.RadioButtonFor(model => viewModel2.CommentList[26].Comment, "2", new { @id = "comment26" }) △
+                                                    </div>
+                                                    <div class="contact">
+                                                        @Html.RadioButtonFor(model => viewModel2.CommentList[26].Comment, "3", new { @id = "comment26" }) ⅹ
+                                                        @Html.HiddenFor(model => viewModel2.CommentList[26].DetailCd)
+                                                    </div>
+                                                }
+                                                else
+                                                {
+                                                    if (viewModel2.CommentList[26].Comment == "1")
+                                                    {
+                                                        <div class="contact">●</div>
+                                                    }
+                                                    else if (viewModel2.CommentList[26].Comment == "2")
+                                                    {
+                                                        <div class="contact">△</div>
+                                                    }
+                                                    else
+                                                    {
+                                                        <div class="contact">X</div>
+                                                    }
+                                                }
+                                            </td>
+                                            <td class="center_td center">
+                                                @if (ViewBag.paramModel.Status != "C")
+                                                {
+                                                    <div class="contact">
+                                                        @Html.RadioButtonFor(model => viewModel2.CommentList[27].Comment, "1", new { @id = "comment27" }) ●
+                                                    </div>
+                                                    <div class="contact">
+                                                        @Html.RadioButtonFor(model => viewModel2.CommentList[27].Comment, "2", new { @id = "comment27" }) △
+                                                    </div>
+                                                    <div class="contact">
+                                                        @Html.RadioButtonFor(model => viewModel2.CommentList[27].Comment, "3", new { @id = "comment27" }) ⅹ
+                                                        @Html.HiddenFor(model => viewModel2.CommentList[27].DetailCd)
+                                                    </div>
+                                                }
+                                                else
+                                                {
+                                                    if (viewModel2.CommentList[27].Comment == "1")
+                                                    {
+                                                        <div class="contact">●</div>
+                                                    }
+                                                    else if (viewModel2.CommentList[27].Comment == "2")
+                                                    {
+                                                        <div class="contact">△</div>
+                                                    }
+                                                    else
+                                                    {
+                                                        <div class="contact">X</div>
+                                                    }
+                                                }
+                                            </td>
+                                            <td class="center_td center">
+                                                @if (ViewBag.paramModel.Status != "C")
+                                                {
+                                                    <div class="contact">
+                                                        @Html.RadioButtonFor(model => viewModel2.CommentList[28].Comment, "1", new { @id = "comment28" }) ●
+                                                    </div>
+                                                    <div class="contact">
+                                                        @Html.RadioButtonFor(model => viewModel2.CommentList[28].Comment, "2", new { @id = "comment28" }) △
+                                                    </div>
+                                                    <div class="contact">
+                                                        @Html.RadioButtonFor(model => viewModel2.CommentList[28].Comment, "3", new { @id = "comment28" }) ⅹ
+                                                        @Html.HiddenFor(model => viewModel2.CommentList[28].DetailCd)
+                                                    </div>
+                                                }
+                                                else
+                                                {
+                                                    if (viewModel2.CommentList[28].Comment == "1")
+                                                    {
+                                                        <div class="contact">●</div>
+                                                    }
+                                                    else if (viewModel2.CommentList[28].Comment == "2")
+                                                    {
+                                                        <div class="contact">△</div>
+                                                    }
+                                                    else
+                                                    {
+                                                        <div class="contact">X</div>
+                                                    }
+                                                }
+                                            </td>
+                                            <td class="center_td center">
+                                                @if (ViewBag.paramModel.Status != "C")
+                                                {
+                                                    <div class="contact">
+                                                        @Html.RadioButtonFor(model => viewModel2.CommentList[29].Comment, "1", new { @id = "comment29" }) ●
+                                                    </div>
+                                                    <div class="contact">
+                                                        @Html.RadioButtonFor(model => viewModel2.CommentList[29].Comment, "2", new { @id = "comment29" }) △
+                                                    </div>
+                                                    <div class="contact">
+                                                        @Html.RadioButtonFor(model => viewModel2.CommentList[29].Comment, "3", new { @id = "comment29" }) ⅹ
+                                                        @Html.HiddenFor(model => viewModel2.CommentList[29].DetailCd)
+                                                    </div>
+                                                }
+                                                else
+                                                {
+                                                    if (viewModel2.CommentList[29].Comment == "1")
+                                                    {
+                                                        <div class="contact">●</div>
+                                                    }
+                                                    else if (viewModel2.CommentList[29].Comment == "2")
+                                                    {
+                                                        <div class="contact">△</div>
+                                                    }
+                                                    else
+                                                    {
+                                                        <div class="contact">X</div>
+                                                    }
+                                                }
+                                            </td>
+                                            <td class="center_td center">
+                                                @if (ViewBag.paramModel.Status != "C")
+                                                {
+                                                    <div class="contact">
+                                                        @Html.RadioButtonFor(model => viewModel2.CommentList[30].Comment, "1", new { @id = "comment30" }) ●
+                                                    </div>
+                                                    <div class="contact">
+                                                        @Html.RadioButtonFor(model => viewModel2.CommentList[30].Comment, "2", new { @id = "comment30" }) △
+                                                    </div>
+                                                    <div class="contact">
+                                                        @Html.RadioButtonFor(model => viewModel2.CommentList[30].Comment, "3", new { @id = "comment30" }) ⅹ
+                                                        @Html.HiddenFor(model => viewModel2.CommentList[30].DetailCd)
+                                                    </div>
+                                                }
+                                                else
+                                                {
+                                                    if (viewModel2.CommentList[30].Comment == "1")
+                                                    {
+                                                        <div class="contact">●</div>
+                                                    }
+                                                    else if (viewModel2.CommentList[30].Comment == "2")
+                                                    {
+                                                        <div class="contact">△</div>
+                                                    }
+                                                    else
+                                                    {
+                                                        <div class="contact">X</div>
+                                                    }
+                                                }
+                                            </td>
+                                            <td class="center_td center">
+                                                @if (ViewBag.paramModel.Status != "C")
+                                                {
+                                                    <div class="contact">
+                                                        @Html.RadioButtonFor(model => viewModel2.CommentList[31].Comment, "1", new { @id = "comment31" }) ●
+                                                    </div>
+                                                    <div class="contact">
+                                                        @Html.RadioButtonFor(model => viewModel2.CommentList[31].Comment, "2", new { @id = "comment31" }) △
+                                                    </div>
+                                                    <div class="contact">
+                                                        @Html.RadioButtonFor(model => viewModel2.CommentList[31].Comment, "3", new { @id = "comment31" }) ⅹ
+                                                        @Html.HiddenFor(model => viewModel2.CommentList[31].DetailCd)
+                                                    </div>
+                                                }
+                                                else
+                                                {
+                                                    if (viewModel2.CommentList[31].Comment == "1")
+                                                    {
+                                                        <div class="contact">●</div>
+                                                    }
+                                                    else if (viewModel2.CommentList[31].Comment == "2")
+                                                    {
+                                                        <div class="contact">△</div>
+                                                    }
+                                                    else
+                                                    {
+                                                        <div class="contact">X</div>
+                                                    }
+                                                }
+                                            </td>
+                                        </tr>
+                                    </table>
+                                </div>
+                            </div>
+
+                            <div class="capacity_comment">
+                                <div class="capacity_comment_left bold">상품 및 마케팅 수준 발전단계</div>
+                                <div class="capacity_comment_right">
+                                    <div class="label bold">
+                                        창업보육단계
+                                        @Html.RadioButtonFor(model => viewModel1.CommentList[0].Comment, "1", new { @id = "comment0" })
+                                    </div>
+                                    <div class="label bold">
+                                        보육성장단계
+                                        @Html.RadioButtonFor(model => viewModel1.CommentList[0].Comment, "2", new { @id = "comment0" })
+                                    </div>
+                                    <div class="label bold">
+                                        자립성장단계
+                                        @Html.RadioButtonFor(model => viewModel1.CommentList[0].Comment, "3", new { @id = "comment0" })
+                                        @Html.HiddenFor(model => viewModel1.CommentList[0].DetailCd)
+                                        @Html.HiddenFor(model => viewModel1.CommentList[0].Comment, new { @id = "provalhid" })
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+    <!--container//-->
+            <div id="btnwrap_sub" class="bottom_left2">
+
+                <div class="rightwrap left">
+                    <a href="@Url.Action("ProductivityProfitability", "BasicSurveyReport", new { area = "", NumSn = ViewBag.paramModel.NumSn, CompSn = ViewBag.paramModel.CompSn, BizWorkYear = ViewBag.paramModel.BizWorkYear, Status = ViewBag.paramModel.Status, QuestionSn = ViewBag.paramModel.QuestionSn })" class="btn_a gray left" value="이전">이전</a>
+                </div>
+                <div class="rightwrap right">
+                    @if (ViewBag.paramModel.Status != "C")
+                {
+                        <button type="button" class="btn_big gray" onclick="goSubmit('N');" value="다음">다음</button>
+                    }
+                    else
+                    {
+                        <a href="@Url.Action("ProductivityRelation2", "BasicSurveyReport", new { area = "" , NumSn = ViewBag.paramModel.NumSn, CompSn = ViewBag.paramModel.CompSn, BizWorkYear = ViewBag.paramModel.BizWorkYear, Status = ViewBag.paramModel.Status, QuestionSn = ViewBag.paramModel.QuestionSn})" class="btn_a gray right" value="다음">다음</a>
+                    }
+                </div>
+                @if (ViewBag.paramModel.Status != "C")
+                {
+                <div class="rightwrap centerwrap">
+                    <button type="button" class="btn_big red" onclick="goSubmit('T');" value="임시저장">임시저장</button>
+                </div>
+                }
+            </div>
+        }
+    </div>
+</div>
+<div class="easy-modal" id="modal1">
+    <div class="easy-modal-inner">
+        <button class="easy-modal-close" title="Close">&times;</button>
+        <h1>참고 : 가치사슬(Value-Chain) 분석을 위한 기본 전제</h1>
+        <br />
+        <p>
+            1.사업화역량을 보다 정밀히 하고, 이후 나오는 제품판매관계망 검토를 위해서는 해당 산업군의 가치사슬 분석을 진행해야 합니다.<br /> <br />
+            2.산업군별로 가치를 부여하는 연관망은 차이가 있으나, 보편적인 업무단계를 나눌 수 있습니다.<br /> <br />
+            3.아래의 그림은 제품구상 → 연구개발 → 생산 → 판매에 이르는 각 단계를 각각 2단계씩 총 8단계로 구분한 것으로 가치사슬 분석의 기본이됩니다.<br /> <br />
+            4.제품판매관계망 분석에서는 아래의 그림을 전제로 해당 회사에서 내부적으로 수행하는 것과 외부에 위탁하는 것을 구분하여 진행합니다.<br /> <br />
+            5.지역 혹은 산업별로 가치사슬 분석에서 차이가 나는 부분에 따라 해당 부분을 추가, 변경 혹은 삭제하여 검토할 수 있습니다.<br /><br />
+            <br />
+
+        </p>
+        <p>
+            <img src="~/images/capacity_bg.png" width="800" height="400" />
+        </p>
+    </div>
+</div>
+
+    
+
+
+
+
+    

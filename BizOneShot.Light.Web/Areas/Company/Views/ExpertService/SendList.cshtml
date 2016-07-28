@@ -1,0 +1,111 @@
+﻿@model IPagedList<BizOneShot.Light.Models.ViewModels.DataRequstViewModels>
+
+@{
+    Layout = "~/Areas/Company/Views/Shared/_MainLayout.cshtml";
+}
+
+<script>
+    $(document).ready(function () {
+        //top menu
+        $('#naviwrap_biz > .navi_biz >  a > .top_menu > .header_person ').addClass('on');
+        $('#naviwrap_biz > .navi_biz >  a > .top_menu > .top_text_person ').addClass('on');
+        //left menu
+        if ($('#expertType').val() == "T") {
+            $('#sub_leftwrap > .sub_gnbwrap > ul > li > a.gnb_tax').addClass('on'); //회계-세무
+        }
+        else if ($('#expertType').val() == "L") {
+            $('#sub_leftwrap > .sub_gnbwrap > ul > li > a.gnb_law').addClass('on'); // 법무
+        }
+        else if ($('#expertType').val() == "W") {
+            $('#sub_leftwrap > .sub_gnbwrap > ul > li > a.gnb_work').addClass('on'); //노무
+        }
+        else if ($('#expertType').val() == "P") {
+            $('#sub_leftwrap > .sub_gnbwrap > ul > li > a.gnb_patent').addClass('on'); //특허
+        }
+        else if ($('#expertType').val() == "M") {
+            $('#sub_leftwrap > .sub_gnbwrap > ul > li > a.gnb_marketing').addClass('on'); //마케팅
+        }
+
+    });
+
+    function goPage(page) {
+        $('#curPage').val(page);
+        $('#searchForm').submit();
+    }
+</script>
+
+
+
+<div id="sub_rightwrap">
+
+    <div class="sub_right_title right_text"><img src="~/images/list.png" class="icon_list" />자료요청 발신함</div>
+
+    <div id="tabswrap_three" class="tab02">
+        <!--기업별 조회 목록 탭-->
+        <ul>
+            <li><a href="@Url.Action("ReceiveList","ExpertService",new { area= "Company", expertType=ViewBag.ExpertType})" >수신함</a></li>
+            <li><a href="@Url.Action("SendList","ExpertService",new { area= "Company", expertType=ViewBag.ExpertType})" class="on">발신함</a></li>
+            <li><a href="@Url.Action("CompanyQAList","ExpertService",new { area= "Company", expertType=ViewBag.ExpertType})">문의등록</a></li>
+        </ul>
+    </div>
+
+    @using (Html.BeginForm("SendList", "ExpertService", FormMethod.Post, new { area = "Company", id = "searchForm" }))
+    {
+        @Html.Hidden("expertType", ViewBag.ExpertType as string)
+        @Html.Hidden("curPage", "1")
+    }
+    @*<div class="line_dot20"></div>*@
+
+    <div class="tablewrap">
+        <table>
+            <colgroup>
+                <col width="45%">
+                <col width="15%">
+                <col width="20%">
+                <col width="20%">
+            </colgroup>
+            <tr>
+                <th class="topcen">제목</th>
+                <th class="topcen">수신자</th>
+                <th class="topcen">요청일자</th>
+                <th class="topcen">답변일자</th>
+            </tr>
+            @if (Model == null || Model.TotalItemCount == 0)
+            {
+                <tr>
+                    <td colspan="5" style="text-align:center;">검색 결과가 없습니다.</td>
+                </tr>
+            }
+            else
+            {
+                foreach (var item in Model)
+                {
+                    <tr>
+                        <td class="center">
+                            <span class="full_line">@Html.ActionLink(item.ReqSubject, "SendDetail", new { reqDocSn = item.ReqDocSn,  expertType = ViewBag.ExpertType }, new { @style = "text-decoration:underline;" })</span>
+                        </td>
+                        <td class="center">@item.ReceiverName</td>
+                        <td class="center">@item.ReqDt.GetValueOrDefault().ToShortDateString()</td>
+                        @if (item.ResDt == null)
+                        {
+                            <td></td>
+                        }
+                        else
+                        {
+                            <td class="center">@item.ResDt.GetValueOrDefault().ToShortDateString()</td>
+                        }
+                    </tr>
+                }
+            }
+        </table>
+    </div><!--tablewrap//-->
+    <div id="btnwrap_sub">
+        <p><a href="@Url.Action("RegSend","ExpertService", new { expertType = ViewBag.ExpertType } )" class="btn_a red right">새 자료요청 보내기</a></p>
+    </div>
+    @if (Model != null && Model.TotalItemCount != 0)
+    {
+        @Html.Pagination("goPage", Model.PageNumber, Model.PageCount, Model.HasPreviousPage, Model.HasNextPage)
+    }
+    <!--검색결과 끝-->
+
+</div><!--custom_rightwrap//-->

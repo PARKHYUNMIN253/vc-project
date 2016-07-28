@@ -1,0 +1,24 @@
+﻿
+<div id="sub_leftdetailtwrap">
+    <div class="sub_gnbwrap">
+
+        <div class="navi_detail">
+            @if (ViewBag.naviLeftMenu == Global.CompMng)
+            {
+                <div class="detail_title">현황관리</div>
+                <ul>
+                    <li><a href="@Url.Action("CompStateManage", "ConditionManagement")" class="a_label01 fw_400">기업현황</a></li>
+                    <li><a href="@Url.Action("BaStateManage", "ConditionManagement")" class="a_label02 fw_400">전문기관(BA) 현황</a></li>
+                </ul>
+            }
+            else if (ViewBag.naviLeftMenu == Global.Report)
+            {
+                <div class="detail_title">보고서</div>
+                <ul>
+                    <li><a href="@Url.Action("BasicSurveyReport", "Report")" class="a_label10 fw_400">기초경영역량보고서</a></li>
+                    <li><a href="@Url.Action("DeepenReport", "Report")" class="a_label02 fw_400">심화보고서</a></li>
+                </ul>
+            }
+        </div>
+    </div><!--sub_gnbwrap//-->
+</div><!--sub_leftwrap//-->

@@ -1,0 +1,44 @@
+﻿
+<div id="sub_leftdetailtwrap">
+    <div class="sub_gnbwrap">
+        @*<ul>
+                @if (ViewBag.LeftMenu == Global.BizMng)//사업관리기관 관리
+                {
+                    <li class="title left_text">사업기관 관리</li>
+                    <li><a href="@Url.Action("BizManager","BizManager",new { area= "SysManager" })" class="gnb gnb_bizMng">사업기관 관리</a></li>
+                    <li><a href="@Url.Action("RegBizManager","BizManager",new { area= "SysManager" })" class="gnb gnb_regBizMng">사업기관 등록</a></li>
+                }
+
+                else if (ViewBag.LeftMenu == Global.Report)//보고서관리
+                {
+                    <li class="title left_text">보고서</li>
+                    <li><a href="@Url.Action("BasicSurveyReport","Report",new { area= "SysManager" })" class="gnb gnb_basicReport">기초경영역량 보고서</a></li>
+                }
+                else
+                {
+
+                }
+            </ul>*@
+        <div class="navi_detail">
+            @if (ViewBag.naviLeftMenu == Global.Report)
+            {
+                <div class="detail_title">보고서</div>
+                <ul>
+                    <li><a href="@Url.Action("BasicSurveyReport", "Report")" class="a_label01 fw_400">기초경영역량 보고서</a></li>    @*BasicSurvey*@
+                    <li><a href="@Url.Action("DeepenReportList", "Report")" class="a_label03 fw_400">심화보고서</a></li> @*DeepenReportList*@
+                </ul>
+            }
+
+            else if (ViewBag.naviLeftMenu == Global.MentoringReport)
+            {
+                <div class="detail_title">멘토링 관리</div>
+                <ul>
+                    <li><a href="@Url.Action("CompList", "MentoringReport")" class="a_label01 fw_400">담당 기업 조회</a></li>    @*+MentoringCompanyList*@
+                    <li><a href="@Url.Action("MentoringReportList", "MentoringReport")" class="a_label02 fw_400">멘토링 일지 조회</a></li>  @*MentoringReportList*@
+                    <li><a href="@Url.Action("RegMentoringReport", "MentoringReport")" class="a_label03 fw_400">멘토링 일지 등록</a></li>  @*RegMentoringReport*@
+                </ul>
+            }
+        </div>
+
+    </div><!--sub_gnbwrap//-->
+</div><!--sub_leftwrap//-->

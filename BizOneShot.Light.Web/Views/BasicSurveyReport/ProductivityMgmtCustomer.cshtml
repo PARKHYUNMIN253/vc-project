@@ -1,0 +1,326 @@
+﻿@model BizOneShot.Light.Models.ViewModels.RiskMgmtViewModel
+
+@{
+    Layout = "~/Views/Shared/_MainDetailLayout.cshtml";
+}
+
+<style>
+    .full_p {
+        margin-top: 30px;
+    }
+
+    .capacity_table {
+        margin-bottom: 30px;
+        height: 232px;
+    }
+</style>
+<script type="text/javascript" src="~/Scripts/jquery.easyModal.js"></script>
+<script>
+$(document).ready(function () {
+    $('.vc_iconSB_10 ').addClass('on01');
+    $('.vc_title_10 ').addClass('on');
+    $('.a_label10').addClass('on');
+
+    // 사이드 바를 위한 class 추가
+    $('.container').addClass('height_content_auto');
+    $('.sub_gnbwrap > .navi_left > .bg_col_g').addClass('height_rreport');
+
+    $('#mainForm').bind('submit', function () {
+
+        var valid = true;
+        if ($('#submitType').val() == "N") {
+
+            $('textarea[id^="comment"]').each(function () {
+                if ($(this).val().length == 0 && valid == true) {
+                    alert("필수항목을 입력해 주세요");
+                    $(this).focus();
+                    valid = false;
+
+                    return false;
+                }
+            });
+            return valid;
+        }
+
+    });
+
+    if ($('#Status').val() == "C") {
+        $('#mainForm input').attr('disabled', true);
+        $('#mainForm textarea').attr('disabled', true);
+        $('.mentorcomment').hide();
+    }
+    else {
+        $('#sub_leftwrap > .sub_gnbwrap > ul > li > a.list_33').hide();
+    }
+
+    var usrType = $("#usrType").val();
+
+    if (usrType == "C") {
+
+        $('.vc_iconSB_02').addClass('on01'); // 보고서 icon
+        $('.vc_title_01').addClass('on');    // 보고서 label
+        $('.a_label02').addClass('on');      // 보고서 내부 메뉴 label (기초경영역량 보고서)
+
+    } else if (usrType == "M" || usrType =="B") {
+
+        $('.vc_iconSB_02 ').addClass('on01');   // 보고서 icon
+        $('.vc_title_01 ').addClass('on');      // 보고서 label
+        $('.a_label01 ').addClass('on');        // 보고서 내부메뉴
+
+    }
+
+});
+
+function goSubmit(submitType) {
+    $('#submitType').val(submitType);
+    $('#mainForm').submit();
+}
+function RptCommentPopupOpen() {
+    //var year = $('#BizWorkYear').val();
+    //var month = $('#SelectMonth').val();
+    var questionSn = $('#QuestionSn').val();
+    var NumSn = $('#NumSn').val();
+    //var status = $('#Status').val();
+    var basicyear = $('#BizWorkYear').val();
+    var detailCode = $('#CommentList_0__DetailCd').val();
+    var compSn = $('#CompSn').val();
+
+    w = 700;    //팝업창의 너비
+    h = 520;    //팝업창의 높이
+    //중앙위치 구해오기
+    LeftPosition = (screen.width - w) / 2;
+    TopPosition = (screen.height - h) / 2;
+    var url = "/BasicSurveyReport/RptCommentPop?&NumSn=" + NumSn + "&QuestionSn=" + questionSn + "&BasicYear=" + basicyear + "&DetailCode=" + detailCode + "&CompSn=" + compSn;
+
+    console.log(url);
+
+    window.open(url, "popup", "resizable=yes, scrollbars=yes, left=" + LeftPosition + ", top=" + TopPosition + ", width=" + w + "px, height=" + h + "px");
+}
+$(function () {
+    $('.easy-modal').easyModal({
+        top: 200,
+        overlay: 0.2
+    });
+
+    $('.easy-modal-open').click(function (e) {
+        var target = $(this).attr('href');
+        $(target).trigger('openModal');
+        e.preventDefault();
+    });
+
+    $('.easy-modal-close').click(function (e) {
+        $('.easy-modal').trigger('closeModal');
+    });
+
+    $('.easy-modal-animated').easyModal({
+        top: 200,
+        overlay: 0.2,
+        transitionIn: 'animated bounceInLeft',
+        transitionOut: 'animated bounceOutRight',
+        closeButtonClass: '.animated-close'
+    });
+});
+</script>
+@Styles.Render("~/css/print")
+
+
+<div class="tcms">
+    <div class="main_top short">
+        <div class="list_icon"></div><div class="sub_title">기초경영역량보고서</div>
+        @RenderPage("~/Views/Shared/_MainTopMenuPartial.cshtml")
+    </div>
+
+    <div id="sub_rightwrap_report">
+
+        @using (Html.BeginForm("ProductivityMgmtCustomer", "BasicSurveyReport", FormMethod.Post, new { area = "", @class = "form-horizontal", role = "form", id = "mainForm" }))
+        {
+            @Html.HiddenFor(model => model.SubmitType, new { @id = "submitType" })
+            @Html.Hidden("NumSn", ViewBag.paramModel.NumSn as string)
+            @Html.Hidden("CompSn", ViewBag.paramModel.CompSn as string)
+            @Html.Hidden("BizWorkYear", ViewBag.paramModel.BizWorkYear as string)
+            @Html.Hidden("QuestionSn", ViewBag.paramModel.QuestionSn as string)
+            @Html.Hidden("Status", ViewBag.paramModel.Status as string)
+            @Html.Hidden("CompNm", ViewBag.paramModel.CompNm as string)
+            @Html.Hidden("PageNum", ViewBag.paramModel.PageNum as string)
+            @Html.Hidden("usrType", Session[Global.UserType] as string)
+
+            <div class="sub_report_checkbox">
+                <div class="compname">@ViewBag.paramModel.CompNm</div>
+                <div class="pagenum">11/27</div>
+                <div class="report_main_top2"></div>
+                <div class="report_main_mid">
+                    <div class="main_mid_cont">
+                        <p class="title_mid">
+                            Ⅱ. 기초역량검토 종합결과 _ <span class="small_span float_right">
+                                역량별
+                                검토결과
+                            </span>
+                        </p>
+                    </div>
+                    <div class="main_mid_cont">
+                        <div class="main_mid_listBox">
+
+                            <div class="listBox_tap longbg_on noline">
+                                <span>(2)상품화역량</span>
+                            </div>
+                            <table class="join_info">
+                                <colgroup>
+                                    <col width="20%">
+                                    <col width="20%">
+                                    <col width="60%">
+                                </colgroup>
+                                <tr>
+                                    <td class="left_memo">역량 검토 항목</td>
+                                    <td>
+                                        <span class="span_on">■ 기초역량 평가</span> <span class="span_weak">□ 재무지표 평가</span> <span class="span_weak">
+                                            □
+                                            전문가 평가
+                                        </span>
+                                    </td>
+                                    <td class="center_td">
+                                        <div class="label_td">마케팅 관리</div> <span class="label_span"></span>
+                                    </td>
+                                </tr>
+                            </table>
+                        </div>
+                    </div>
+
+                    <div class="main_mid_cont">
+                        <p class="full_p">
+                            <span class="big_span">고객 관리 _</span><span class="small_span">
+                                고객의
+                                충성도를 높이도록 하는 효율적인 고객관리 체제 여부
+                            </span>
+                            <a class="easy-modal-open" href="#modal1"><img src="~/images/modal_info.png" /></a>
+                        </p>
+                    </div>
+
+                    <div class="main_mid_cont">
+                        <div class="main_mid_listBox nomargin2">
+                            <table class="capacity_table">
+                                <colgroup>
+                                    <col width="5%">
+                                    <col width="33.5%">
+                                    <col width="7%">
+                                    <col width="12%">
+                                    <col width="12%">
+                                    <col width="12%">
+                                    <col width="10%">
+                                    <col width="8.5%">
+                                </colgroup>
+                                <tr>
+                                    <td class="left_memo ">NO</td>
+                                    <td class="left_memo">체크리스트 항목</td>
+                                    <td class="left_memo">해당기업</td>
+                                    <td class="left_memo">
+                                        창업보육<br>단계 평균
+                                    </td>
+                                    <td class="left_memo">
+                                        보육성장<br> 단계 평균
+                                    </td>
+                                    <td class="left_memo">
+                                        자립성장<br> 단계 평균
+                                    </td>
+                                    <td class="left_memo">
+                                        참여<br>기업평균
+                                    </td>
+                                    <td class="left_memo">전체<br />평균</td>
+                                </tr>
+                                @if (Model == null || Model.CheckList.Count == 0)
+                                {
+                                    <tr>
+                                        <td colspan="7" style="text-align:center;">검색 결과가 없습니다.</td>
+                                    </tr>
+                                }
+                                else
+                                {
+                                    foreach (var item in Model.CheckList)
+                                    {
+                                        <tr>
+                                            <td class="center_td center">@item.Count</td>
+                                            <td class="center_td center">@item.Title</td>
+                                            @if (item.AnsVal == true)
+                                            {
+                                                <td class="center_td center">∎</td>
+                                            }
+                                            else
+                                            {
+                                                <td class="center_td center">□</td>
+                                            }
+                                            <td class="center_td center">@item.StartUpAvg %</td>
+                                            <td class="center_td center">@item.GrowthAvg %</td>
+                                            <td class="center_td center">@item.IndependentAvg %</td>
+                                            <td class="center_td center">@item.BizInCompanyAvg %</td>
+                                            <td class="center_td center">@item.TotalAvg %</td>
+                                        </tr>
+                                    }
+                                }
+                            </table>
+                        </div>
+
+                    </div>
+                    <div class="main_mid_cont fix_bot list_print">
+                        <div class="main_mid_listBox nomargin2">
+                            <div class="listBox_tap bg_on">
+                                <span>검토결과</span>
+                            </div>
+                            @Html.TextAreaFor(model => model.CommentList[0].Comment, new { @id = "comment0", @class = "bot_textarea_365", @maxlength = "1000", @placeholder = "1000자 내로 작성하시기 바랍니다." })
+                            @Html.HiddenFor(model => model.CommentList[0].DetailCd)
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+            <!--container//-->
+            <div id="btnwrap_sub" class="bottom_left2">
+
+                <div class="rightwrap left">
+                    <a href="@Url.Action("ProductivityQC", "BasicSurveyReport", new { area = "", NumSn = ViewBag.paramModel.NumSn, CompSn = ViewBag.paramModel.CompSn, BizWorkYear = ViewBag.paramModel.BizWorkYear, Status = ViewBag.paramModel.Status, QuestionSn = ViewBag.paramModel.QuestionSn })" class="btn_a gray left" value="이전">이전</a>
+
+                </div>
+                <div class="rightwrap right">
+                    @if (ViewBag.paramModel.Status != "C")
+                    {
+                        <button type="button" class="btn_big gray" onclick="goSubmit('N');" value="다음">다음</button>
+                    }
+                    else
+                    {
+                        <a href="@Url.Action("ProductivityProfitability", "BasicSurveyReport", new { area = "", NumSn = ViewBag.paramModel.NumSn, CompSn = ViewBag.paramModel.CompSn, BizWorkYear = ViewBag.paramModel.BizWorkYear, Status = ViewBag.paramModel.Status, QuestionSn = ViewBag.paramModel.QuestionSn })" class="btn_a gray right" value="다음">다음</a>
+                    }
+                </div>
+                @if (ViewBag.paramModel.Status != "C")
+                {
+                    <div class="rightwrap centerwrap">
+                        <button type="button" class="btn_big red" onclick="goSubmit('T');" value="임시저장">임시저장</button>
+                    </div>
+                }
+            </div>
+        }
+    </div>
+
+
+</div>
+
+<div class="easy-modal" id="modal1">
+    <div class="easy-modal-inner">
+        <button class="easy-modal-close" title="Close">&times;</button>
+        <h1>고객 관리</h1>
+        <br />
+        <p>
+            • 기업에 있어서 고객은 가장 중요한 이해관계자입니다. 따라서 고객관리의 기업 규모에 관계없이 매우 중요한 관리 요소입니다.<br />
+            &nbsp;&nbsp;&nbsp;&nbsp;특정 기업에 대한 충성도가 높은 고객은 제품구매에 대한 충성도, 재구매율이 높기 때문에 기업 수익에 많은 도움을 줍니다. <br />
+            &nbsp;&nbsp;&nbsp;&nbsp;고객관계관리가 지속적으로 관심의 대상이 되는 것이 이 때문입니다.<br /><br />
+            • 성공적인 고객관리를 위해서는 고객을 관리하는 조직이 있어야 하고 고객에 관한 정보관리가 필수적입니다.<br />
+            &nbsp;&nbsp;&nbsp;&nbsp;특히 고객의 니즈(needs)를 파악하고 이에 대처하고 있는지가 중요합니다.<br /><br />
+            • 이러한 관점에서 고객관리 전담인력이 있는지, 고객관리를 위한 각종 자료가 있는지, 고객의 요구를 파악하고 있고<br />
+            &nbsp;&nbsp;&nbsp;&nbsp;이를 경영활동에 반영하고 있는지를 중심으로 검토합니다.
+        </p>
+    </div>
+</div>
+
+
+
+
+
+
+

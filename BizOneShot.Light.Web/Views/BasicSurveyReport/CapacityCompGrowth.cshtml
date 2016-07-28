@@ -1,0 +1,150 @@
+﻿@model BizOneShot.Light.Models.ViewModels.GrowthStrategyViewModel
+
+@{
+    Layout = "~/Views/Shared/_MainLayout.cshtml";
+}
+
+<script>
+    $(document).ready(function () {
+        //top menu
+        $('#naviwrap_biz > .navi_biz >  a > .top_menu > .header_report01 ').addClass('on');
+        $('#naviwrap_biz > .navi_biz >  a > .top_menu > .top_text_report ').addClass('on');
+        //Cs menu
+        $('#sub_leftwrap > .sub_gnbwrap > ul > li > a.gnb_basicReport').addClass('on');
+        $('#sub_leftwrap a.list_33').addClass('list_on');
+
+    });
+
+    function goSubmit(submitType) {
+        if (submitType == "N") {
+            if (!confirm('작성완료 하시겠습니까?')) {
+                return false;
+            }
+        }
+        $('#submitType').val(submitType);
+        $('#mainForm').submit();
+    }
+
+</script>
+
+@Styles.Render("~/css/print")
+
+<div id="sub_rightwrap_report">
+
+    <div class="list_icon"></div><div class="sub_title">기초경영역량보고서</div>
+    
+    @using (Html.BeginForm("CapacityCompGrowth", "BasicSurveyReport", FormMethod.Post, new { area = "", @class = "form-horizontal", role = "form", id = "mainForm" }))
+    {
+        @Html.HiddenFor(model => model.SubmitType, new { @id = "submitType" })
+        @Html.Hidden("NumSn", ViewBag.paramModel.NumSn as string)
+        @Html.Hidden("CompSn", ViewBag.paramModel.CompSn as string)
+        @Html.Hidden("BizWorkYear", ViewBag.paramModel.BizWorkYear as string)
+        @Html.Hidden("QuestionSn", ViewBag.paramModel.QuestionSn as string)
+        @Html.Hidden("Status", ViewBag.paramModel.Status as string)
+
+
+        <div class="sub_report_checkbox">
+            <div class="compname"></div>
+            <div class="pagenum">24/27</div>
+            <div class="report_main_top2"></div>
+            <div class="report_main_mid">
+                <div class="main_mid_cont">
+                    <p class="title_mid">
+                        (별첨) 역량분석 방법 배경_ <span class="small_span float_right">
+                            기업발전도 검토
+                        </span>
+                    </p>
+                </div>
+
+                <div class="main_mid_cont">
+                    <div class="main_mid_listBox nomargin2">
+                        <div class="listBox_tap longbg_on2">
+                            <span>자금유치방법 - 기업자금의 공개도</span>
+                        </div>
+                    </div>
+                </div>
+
+                @* 이미지 부분 *@
+
+                <div class="main_mid_cont">
+                    <div class=bg_comp_growth></div>
+                </div>
+
+                @* 텍스트 부분 *@
+                <div class="main_mid_cont">
+                    <div class="main_mid_listBox nomargin2">
+                        <div class="listBox_tap longbg_on2 noline">
+                            <span>해설</span>
+                        </div>
+                    </div>
+                    <div class="explainBox nomargin2">
+                        <div class="label_ex">
+                            <p class="ex_p">
+                                <span style="height: 45px">•</span>사업 전략은 경쟁 전략을 근간으로 하고 있습니다. 경쟁 전략은 관리기업이 어떤 핵심역량을 보유했는가에 따라 전략의 방향이 달라지게 됩니다.
+                                Michael E. Porter가 제시한 근본적 전략은 기업이 보유한 핵심역량을 무기로 차별적인 경쟁우위를 확보할 수 있는 전략의 3가지 방향을 설명하고 있습니다.
+                            </p>
+
+                            <p class="ex_p">
+                                <span style="height: 70px">•</span>공급자 위주에서 고객 위주의 시대로 전환되어 고객지향적인 차별화 가치가 무엇보다 중요시되고 있습니다.
+                                그러나 산업의 특성에 따라 제품의 가치보다는 낮은 가격이 더 중요한 분야(예 : 성숙기에 진입한 일상용품)도 있으므로
+                                기업의 사업 특성에 따라 비용우위전략을 중요하게 여길 수도 있습니다.
+                                경쟁사들의 관심이 적은 틈새시장을 공략하는 전략 역시 요즘은 유용한 경쟁전략으로 활용할 수 있습니다.
+                            </p>
+                            <p class="ex_p">
+                                <span  style="height: 70px">•</span>기본적으로 혁신형 중소기업은 가치중심으로 일반형 중소기업은 비용 중심으로 타깃고객을 만족시키고자 하게 됩니다.
+                                그렇지만, 기업의 성장단계 및 산업환경에 따라 시기에 따라 불가피하게 일반형 중소기업에서 혁신혁 기업으로의 도약이 필요한 시기가 있을 수 있습니다.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+    <!--container//-->
+        <div id="btnwrap_sub" class="bottom_left2">
+
+            <div class="rightwrap left">
+                <a href="@Url.Action("CapacityDiffStartUp", "BasicSurveyReport", new { area = "", NumSn = ViewBag.paramModel.NumSn, CompSn = ViewBag.paramModel.CompSn, BizWorkYear = ViewBag.paramModel.BizWorkYear, Status = ViewBag.paramModel.Status, QuestionSn = ViewBag.paramModel.QuestionSn })" class="btn_a gray left" value="이전">이전</a>
+
+            </div>
+            <div class="rightwrap right">
+                @if (ViewBag.paramModel.Status != "C")
+                {
+                    <button type="button" class="btn_big red" onclick="goSubmit('N');" value="작성완료">작성완료</button>
+                }
+                else
+                {
+                    if (Session[Global.UserType].Equals(Global.Company))
+                    {
+                        <a href="@Url.Action("BasicSurveyReport", "Report", new { area = "Company"})" class="btn_a gray left nomargin2" value="목록">목록</a>
+                    }
+                    else if (Session[Global.UserType].Equals(Global.BizManager))
+                    {
+                        <a href="@Url.Action("BasicSurveyReport", "Report", new { area = "BizManager"})" class="btn_a gray left nomargin2" value="목록">목록</a>
+                    }
+                    else if (Session[Global.UserType].Equals(Global.Mentor))
+                    {
+                        <a href="@Url.Action("BasicSurveyReport", "Report", new { area = "Mentor"})" class="btn_a gray left nomargin2" value="목록">목록</a>
+                    }
+                    else if (Session[Global.UserType].Equals(Global.Expert))
+                    {
+                        <a href="@Url.Action("BasicSurveyReport", "Report", new { area = "Expert"})" class="btn_a gray left nomargin2" value="목록">목록</a>
+                    }
+                    else if (Session[Global.UserType].Equals(Global.SysManager))
+                    {
+                        <a href="@Url.Action("BasicSurveyReport", "Report", new { area = "SysManager"})" class="btn_a gray left nomargin2" value="목록">목록</a>
+                    }
+                }
+            </div>
+
+            @*@if (ViewBag.paramModel.Status != "C")
+                         {
+                         <div class="rightwrap centerwrap">
+                             <button type="button" class="btn_big red" onclick="goSubmit('T');" value="임시저장">임시저장</button>
+                         </div>
+            }*@
+
+        </div>
+    }
+</div>
