@@ -245,11 +245,12 @@ namespace BizOneShot.Light.Web.Controllers
         {
             var method = base.LogOff();
 
-            if(method != "")
-            {
-                return RedirectToAction(method, "Home");
-            }
-            return RedirectToAction("Login", "Home");
+            //if(method != "")
+            //{
+            //    return RedirectToAction(method, "Home");
+            //}
+            //return RedirectToAction("Login", "Home");
+            return Redirect("http://tcms.or.kr");
         }
 
         public  ActionResult WoonjooUniv()
