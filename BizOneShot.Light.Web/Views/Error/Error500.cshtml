@@ -23,7 +23,9 @@
         <div id="err">
 
             <div class="errWrap">
+
                 <div class="top">
+
                     @if (ViewBag.area == "")
                     {
                         <h1><a href="@Url.Action("Index","Home",new { area= ViewBag.area })"><img src="~/Images/bi_main.png" /></a></h1>
@@ -32,6 +34,7 @@
                     {
                         <h1><a href="@Url.Action("Index","Main",new { area= ViewBag.area })"><img src="~/Images/bi_main.png" /></a></h1>
                     }
+
                 </div>
 
                 <div class="con">
