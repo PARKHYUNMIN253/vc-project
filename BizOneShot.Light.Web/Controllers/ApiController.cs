@@ -1088,6 +1088,7 @@ namespace BizOneShot.Light.Web.Controllers
             return myObj;   // 필요한 데이터 모델로 만들어서 Return 완료
         }
 
+        // testLogin
         public async Task<ActionResult> testLogin(string tcmsLoginKey)
         {
             VcUsrInfo scUsr = await _scUsrService.SelectScUsr(tcmsLoginKey);
