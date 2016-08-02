@@ -1057,12 +1057,14 @@ namespace BizOneShot.Light.Web.Controllers
                     }
                     else
                     {
-                        return Redirect("http://tcms.or.kr");
+                        //return Redirect("http://tcms.or.kr");
+                        return RedirectToAction("LoginError", "Error");
                     }
                 }
             }
 
-            return Redirect("http://tcms.or.kr");
+            //return Redirect("http://tcms.or.kr");
+            return RedirectToAction("LoginError", "Error");
             // 만약 cookie에 값이 존재한다면
         }
 

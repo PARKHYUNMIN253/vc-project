@@ -1215,6 +1215,7 @@
     <Content Include="Views\BasicSurveyReport\FinanceStatements.cshtml" />
     <Content Include="Views\BasicSurveyReport\FinanceIncomeStatements.cshtml" />
     <Content Include="Views\BasicSurveyReport\ManufacturingCostStatements.cshtml" />
+    <Content Include="Views\Error\LoginError.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

@@ -56,5 +56,10 @@ namespace BizOneShot.Light.Web.Controllers
             ViewBag.area = area;
             return View();
         }
+
+        public ActionResult LoginError()
+        {
+            return View();
+        }
     }
 }
