@@ -1002,5 +1002,27 @@ namespace BizOneShot.Light.Web.Areas.Mentor.Controllers
             return RedirectToAction("DeepenReportList", "Report", new { area = "Mentor" });
         }
 
+        [HttpPost]
+        public async Task<JsonResult> CheckReport(int CompSn)
+        {
+            var year = DateTime.Now.Year;
+            var result = "F";
+
+            var checkReport = await rptMasterService.getRptMasterByCompSnBasicYear(CompSn, year);
+
+            // 작성된 기초보고서가 없을경우
+            if (checkReport == null)
+            {
+                result = "F";
+            }
+            else
+            {
+                result = "T";
+            }
+
+            return Json(result);
+
+        }
+
     }
 }

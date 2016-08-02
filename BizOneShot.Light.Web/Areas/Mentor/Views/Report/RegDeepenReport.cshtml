@@ -4,7 +4,6 @@
     Layout = "~/Areas/Mentor/Views/Shared/_MainDetailLayout.cshtml";
 }
 
-
 @* 캘린더 처리를위해 추가한 JS 및 SCC *@
 @Styles.Render("~/css/jquery-ui")
 @Scripts.Render("~/bundles/jquery-ui")
@@ -13,11 +12,9 @@
 
 <script>
     $(document).ready(function () {
-
         //top menu
         $('#naviwrap_biz > .navi_biz >  a > .top_menu > .header_mentor ').addClass('on');
         $('#naviwrap_biz > .navi_biz >  a > .top_menu > .top_text_mentor ').addClass('on');
-
         //left menu
         $('#sub_leftwrap > .sub_gnbwrap > ul > li > a.gnb_regMentoringTr').addClass('on');
 
@@ -32,7 +29,7 @@
             monthNamesShort: ['1월', '2월', '3월', '4월', '5월', '6월', '7월', '8월', '9월', '10월', '11월', '12월'],
             dayNamesMin: ['일', '월', '화', '수', '목', '금', '토'],
             dateFormat: 'yy-mm-dd'
-        });  
+        });
 
 
         $('.bt_calendar').on('click', function () {
@@ -52,6 +49,7 @@
                 $('#CompSn').attr("disabled", false);
                 $('#CompSn').html("");
 
+
                 $.ajax({
                     url: '@Url.Action("getBizComp", "MentoringReport")',
                     type: "post",
@@ -64,6 +62,8 @@
                         }
                     }
                 });
+
+
             }
         });
 
@@ -99,11 +99,13 @@
                     fileSize = $('input[type="file"]').get(inputFileCount).files[0].size;
                     totalSize = totalSize + fileSize;
 
+                    //inputFileCount += 1;
                     inputFileCount += 1;
                     console.log("----------");
                     console.log(inputFileCount);
-
                 }
+
+
 
             });
 
@@ -116,14 +118,13 @@
                     fileSize = $('span[type="file"]').get(inputFileCount).files[0].size;
                     totalSize = totalSize + fileSize;
 
-                }
+                    //inputFileCount += 1;
 
+                }
                 inputFileCount += 1;
                 console.log("!!!!!!!");
                 console.log(inputFileCount + "\n test");
-
             });
-            
 
             if (inputFileCount == 0) {
                 alert("첨부파일은 1개이상 등록해야 합니다.");
@@ -143,6 +144,7 @@
             var hasDups = !fileNames.every(function (v, i) {
                 return fileNames.indexOf(v) == i;
             });
+
             if (hasDups) {
                 // having duplicate values
                 alert("업로드할 파일에 같은 파일이 있습니다.");
@@ -151,19 +153,14 @@
 
             //빈란 삭제
             $('input[type="file"]').each(function () {
+
                 if ($(this).val() == '') {
                     $(this).remove();
                 }
+
             });
 
-            if ($('#submitType').val() == "S") {
 
-                if (!confirm('작성한 내용을 저장 하시겠습니까?')) {
-                    return false;
-                }
-
-            }
-            
         });
     });
 
@@ -174,10 +171,61 @@
     };
 
     function goSubmit(submitType) {
-        $('#submitType').val(submitType);
-        console.log("1 :" + $('#submitType').val());
-        $('#submit_form').submit();
-        console.log("2 :" + $('#submitType').val());
+
+        var checkCompSn = $('#checkCompSn').val();
+        console.log(checkCompSn + "CompSn");
+
+        var returnValue = true;
+
+        $.ajax({
+            url: '@Url.Action("CheckReport", "Report")',
+            type: "post",
+            dataType: "json",
+            data: { CompSn: checkCompSn },
+            async: false,
+            success: function (result) {
+
+                if (result == "F") {
+
+                    alert("기초경영역량보고서가 작성되지않았습니다.");
+                    returnValue = false;
+                    return returnValue;
+
+                } else {
+
+                    returnValue = true;
+
+                    $('#submitType').val(submitType);
+
+                    if ($('#submitType').val() == "S") {
+
+                        if (!confirm('작성한 내용을 저장 하시겠습니까?')) {
+                            return false;
+                        }
+
+                    }
+
+                    console.log("1 :" + $('#submitType').val());
+                    $('#submit_form').submit();
+                    console.log("2 :" + $('#submitType').val());
+
+                    return returnValue;
+                }
+
+            }
+        });
+
+
+
+    }
+
+    // 기초보고서 작성 유무 판단
+    function check(checkCompSn) {
+
+        alert(checkCompSn + "start");
+
+
+
     }
 
 </script>
@@ -192,6 +240,7 @@
 
         @using (Html.BeginForm("RegDeepenReport", "Report", FormMethod.Post, new { area = "Mentor", id = "submit_form", role = "form", enctype = "multipart/form-data" }))
         {
+
             @Html.AntiForgeryToken()
             @Html.ValidationSummary(true, "", new { @class = "text-danger" })
 
@@ -200,9 +249,9 @@
             @Html.HiddenFor(model => model.SubNumSn, new { @id = "submit_form" })
             @Html.HiddenFor(model => model.CompSn, new { @id = "submit_form" })
             @Html.HiddenFor(model => model.TotalReportSn, new { @id = "submit_form" })
-
             @Html.HiddenFor(model => model.SubmitType, new { @id = "submitType" })
 
+            @Html.HiddenFor(model => model.CompSn, new { @id = "checkCompSn" })
 
             @Html.Hidden("deleteFileSns", "", new { @id = "deleteFileSns", @name = "deleteFileSns" })
             <div calss="tablewrap">
@@ -333,7 +382,11 @@
                     <div id="btnwrap_sub">
                         <a href="@Url.Action("DeepenReportList", "Report", new { area = "Mentor"})" class="btn_a gray left list_btn" value="목록">목록</a>
                         <button type="button" class="btn_big gray right margin_top10" value="취소" onclick="if (confirm('지금까지 작성된 내용을 취소하시겠습니까?')) location.href='@Url.Action("DeepenReportList", "Report")'">취소</button>
-                        <button type="submit" class="btn_big red right rightmargin" onclick="goSubmit('S')">저장</button>
+                        <button type="button" class="btn_big red right rightmargin" onclick="goSubmit('S');">저장</button>
+
+                        @*onclick="if (confirm('최종제출을하면 수정이 불가능합니다. 그래도 제출 하시겠습니까?')) goSubmit('C');"*@
+                        @*if(check(Model.CompSn) == true)*@
+
                     </div><!--btnwrap//-->
 
                 }
@@ -360,6 +413,10 @@
                             </td>
                         </tr>
 
+                        @*<tr>
+                                <th>월 기수 선택</th>
+                                <td>@Html.DropDownList("SubNumSn", ViewBag.SelectSubNumList as SelectList, new { @class = "w100p", @id = "BizManager" })</td>
+                            </tr>*@
                         <tr>
                             <th>제출일</th>
                             <td class="form">
@@ -609,7 +666,10 @@
 
                 }
 
+
+
             </div><!--tablewrap//-->
+
 
             @section Scripts {
                 @Scripts.Render("~/bundles/jqueryval")
