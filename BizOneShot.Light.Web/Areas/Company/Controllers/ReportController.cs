@@ -2746,7 +2746,6 @@ namespace BizOneShot.Light.Web.Areas.Company.Controllers
                 quesMaster.Status = "C";                                                    // 문진표 status를 C로 만들고
                 await _quesMasterService.SaveDbContextAsync();                              // 저장
 
-
                 num = await makeNumSn(quesMaster.BasicYear ?? default(int));                // 필요한 numSn 구하기 성공
 
                 var vcCompInfo = await _vcCompInfoService.getVcCompInfoByKey(int.Parse(Session[Global.LoginID].ToString())); // tcmsLoginKey로 기업정보 조회
@@ -2795,6 +2794,34 @@ namespace BizOneShot.Light.Web.Areas.Company.Controllers
             }
 
             return RedirectToAction("BasicSurvey", "Report", new { area = "Company" });
+        }
+
+        // 문진표 작성 완료 전, 매핑된 멘토 확인
+        [HttpPost]
+        public async Task<JsonResult> mentorMappedExist(string questionSn)
+        {
+            int iQuestionSn = int.Parse(questionSn);
+
+            string status = "F";
+            string num = "";
+
+            if (iQuestionSn > 0)
+            {
+                var quesMaster = await _quesMasterService.GetQuesMasterAsync(iQuestionSn);   // 데이터를 넣을 문진표Master객체 할당
+
+                num = await makeNumSn(quesMaster.BasicYear ?? default(int));                // 필요한 numSn 구하기 성공
+
+                var vcCompInfo = await _vcCompInfoService.getVcCompInfoByKey(int.Parse(Session[Global.LoginID].ToString())); // tcmsLoginKey로 기업정보 조회
+
+                var vcMentorMapping = await vcMentorMappingService.getVcMentorMappingSingleByCompSn(vcCompInfo.CompSn.ToString(), num); // compsn, WriteYn="Y"를 통하여 vcMentorMapping 객체 조회 +) numSn도 마찬가지
+
+                if (vcMentorMapping != null)
+                {
+                    status = "S";
+                }
+            }
+
+            return Json(status);
         }
 
         //// 문진표 수정 액션

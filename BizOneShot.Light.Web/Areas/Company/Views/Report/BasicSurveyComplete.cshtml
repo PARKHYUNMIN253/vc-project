@@ -26,7 +26,32 @@
             if (!confirm('작성완료 하시겠습니까?')) {
                 return false;
             }
+            return mentorMapped(); // 작성 완료시 mentor 확인 function
         });
+
+        function mentorMapped() {
+            var flag = false;
+            var questionSn = $('#QuestionSn').val();
+
+            $.ajax({
+                url: '@Url.Action("mentorMappedExist","Report")',
+                type: "post",
+                dataType: "json",
+                data: { questionSn: questionSn },
+                async: false,
+                success: function (status) {
+                    if (status == 'S') {
+                        flag = true;
+                    }
+                }
+            });
+
+            if (flag == false) {
+                alert('현재 매핑된 보고서 담당멘토가 존재하지 않습니다.\n확인 후 다시 완료해주세요')    
+            }
+
+            return flag;
+        }
 
     });
 
