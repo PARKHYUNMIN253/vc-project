@@ -38,6 +38,12 @@ namespace BizOneShot.Light.Models.WebModels
         public DateTime? REG_DT { get; set; }
         public String CON_STATUS { get; set; }
         public Int32? TOTAL_REPORT_SN { get; set; }
+        public String CHECK01 { get; set; }
+        public String CHECK02 { get; set; }
+        public String CHECK03 { get; set; }
+        public String CHECK04 { get; set; }
+        public String TEXT01 { get; set; }
+        public String TEXT02 { get; set; }
         public String COMP_NM { get; set; }
         public Int32 BA_LOGIN_KEY { get; set; }
         public DateTime? SUBMIT_DT { get; set; }

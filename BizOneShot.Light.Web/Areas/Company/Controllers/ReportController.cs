@@ -3682,6 +3682,12 @@ namespace BizOneShot.Light.Web.Areas.Company.Controllers
                 _VcSatCheckService.SaveDbContext(); // saveDbContext
 
                 lastReportObj.SatisfactionGrade = calcSatisfaction(insertObj);
+                lastReportObj.Check01 = vsModel.Check21;
+                lastReportObj.Check02 = vsModel.Check22;
+                lastReportObj.Check03 = vsModel.Check23;
+                lastReportObj.Check04 = vsModel.Check24;
+                lastReportObj.Text01 = vsModel.Text01;
+                lastReportObj.Text02 = vsModel.Text02;
 
                 _VcLastReportNSatService.SaveDbContext(); // Save
             }
