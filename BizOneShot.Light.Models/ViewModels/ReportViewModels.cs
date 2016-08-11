@@ -112,6 +112,8 @@ namespace BizOneShot.Light.Models.ViewModels
         public string Check20 { get; set; } // CHECK20
         public string Check21 { get; set; } // CHECK21
         public string Check22 { get; set; } // CHECK22
+        public string Check23 { get; set; }
+        public string Check24 { get; set; }
         public string Text01 { get; set; } // TEXT01
         public string Text02 { get; set; } // TEXT02
         public string CompSn { get; set; } // COMP_SN

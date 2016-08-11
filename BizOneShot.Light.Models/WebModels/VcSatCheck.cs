@@ -50,6 +50,8 @@ namespace BizOneShot.Light.Models.WebModels
         public string Check22 { get; set; } // CHECK22
         public string Text01 { get; set; } // TEXT01
         public string Text02 { get; set; } // TEXT02
+        public string Check23 { get; set; } // CHECK23
+        public string Check24 { get; set; } // CHECK24
     }
 
 }

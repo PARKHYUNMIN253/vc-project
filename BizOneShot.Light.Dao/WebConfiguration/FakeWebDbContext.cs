@@ -67,7 +67,6 @@ namespace BizOneShot.Light.Dao.WebConfiguration
         public DbSet<ScReqDocFile> ScReqDocFiles { get; set; }
         public DbSet<ScUsrResume> ScUsrResumes { get; set; }
         public DbSet<SyDareDbInfo> SyDareDbInfoes { get; set; }
-        public DbSet<sys_DatabaseFirewallRule> sys_DatabaseFirewallRules { get; set; }
         public DbSet<TcmsCompStatusSelectView> TcmsCompStatusSelectViews { get; set; }
         public DbSet<VcBaInfo> VcBaInfoes { get; set; }
         public DbSet<VcBaTypeInfo> VcBaTypeInfoes { get; set; }
@@ -132,7 +131,6 @@ namespace BizOneShot.Light.Dao.WebConfiguration
             ScReqDocFiles = new FakeDbSet<ScReqDocFile>();
             ScUsrResumes = new FakeDbSet<ScUsrResume>();
             SyDareDbInfoes = new FakeDbSet<SyDareDbInfo>();
-            sys_DatabaseFirewallRules = new FakeDbSet<sys_DatabaseFirewallRule>();
             TcmsCompStatusSelectViews = new FakeDbSet<TcmsCompStatusSelectView>();
             VcBaInfoes = new FakeDbSet<VcBaInfo>();
             VcBaTypeInfoes = new FakeDbSet<VcBaTypeInfo>();

@@ -66,7 +66,6 @@ namespace BizOneShot.Light.Dao.WebConfiguration
         public DbSet<ScReqDocFile> ScReqDocFiles { get; set; } // SC_REQ_DOC_FILE
         public DbSet<ScUsrResume> ScUsrResumes { get; set; } // SC_USR_RESUME
         public DbSet<SyDareDbInfo> SyDareDbInfoes { get; set; } // SY_DARE_DB_INFO
-        public DbSet<sys_DatabaseFirewallRule> sys_DatabaseFirewallRules { get; set; } // database_firewall_rules
         public DbSet<TcmsCompStatusSelectView> TcmsCompStatusSelectViews { get; set; } // TCMS_COMP_STATUS_SELECT_VIEW
         public DbSet<VcBaInfo> VcBaInfoes { get; set; } // VC_BA_INFO
         public DbSet<VcBaTypeInfo> VcBaTypeInfoes { get; set; } // VC_BA_TYPE_INFO
@@ -159,7 +158,6 @@ namespace BizOneShot.Light.Dao.WebConfiguration
             modelBuilder.Configurations.Add(new ScReqDocFileConfiguration());
             modelBuilder.Configurations.Add(new ScUsrResumeConfiguration());
             modelBuilder.Configurations.Add(new SyDareDbInfoConfiguration());
-            modelBuilder.Configurations.Add(new sys_DatabaseFirewallRuleConfiguration());
             modelBuilder.Configurations.Add(new TcmsCompStatusSelectViewConfiguration());
             modelBuilder.Configurations.Add(new VcBaInfoConfiguration());
             modelBuilder.Configurations.Add(new VcBaTypeInfoConfiguration());
@@ -227,7 +225,6 @@ namespace BizOneShot.Light.Dao.WebConfiguration
             modelBuilder.Configurations.Add(new ScReqDocFileConfiguration(schema));
             modelBuilder.Configurations.Add(new ScUsrResumeConfiguration(schema));
             modelBuilder.Configurations.Add(new SyDareDbInfoConfiguration(schema));
-            modelBuilder.Configurations.Add(new sys_DatabaseFirewallRuleConfiguration(schema));
             modelBuilder.Configurations.Add(new TcmsCompStatusSelectViewConfiguration(schema));
             modelBuilder.Configurations.Add(new VcBaInfoConfiguration(schema));
             modelBuilder.Configurations.Add(new VcBaTypeInfoConfiguration(schema));

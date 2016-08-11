@@ -64,6 +64,8 @@ namespace BizOneShot.Light.Dao.WebConfiguration
             Property(x => x.Check22).HasColumnName("CHECK22").IsOptional().IsFixedLength().IsUnicode(false).HasColumnType("char").HasMaxLength(1);
             Property(x => x.Text01).HasColumnName("TEXT01").IsOptional().HasColumnType("nvarchar").HasMaxLength(150);
             Property(x => x.Text02).HasColumnName("TEXT02").IsOptional().HasColumnType("nvarchar").HasMaxLength(150);
+            Property(x => x.Check23).HasColumnName("CHECK23").IsOptional().IsFixedLength().IsUnicode(false).HasColumnType("char").HasMaxLength(1);
+            Property(x => x.Check24).HasColumnName("CHECK24").IsOptional().IsFixedLength().IsUnicode(false).HasColumnType("char").HasMaxLength(1);
             InitializePartial();
         }
         partial void InitializePartial();

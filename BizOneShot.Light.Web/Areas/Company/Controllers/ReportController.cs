@@ -3672,6 +3672,8 @@ namespace BizOneShot.Light.Web.Areas.Company.Controllers
                 insertObj.Check20 = vsModel.Check20;
                 insertObj.Check21 = vsModel.Check21;
                 insertObj.Check22 = vsModel.Check22;
+                insertObj.Check23 = vsModel.Check23;
+                insertObj.Check24 = vsModel.Check24;
                 insertObj.Text01 = vsModel.Text01;
                 insertObj.Text02 = vsModel.Text02;
                 insertObj.RegDt = DateTime.Now;
