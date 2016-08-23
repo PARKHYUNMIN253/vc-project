@@ -3694,9 +3694,9 @@ namespace BizOneShot.Light.Web.Areas.Company.Controllers
 
             }
 
-            ViewBag.SatSn = paramModel.SatSn;
-            ViewBag.CompSn = paramModel.CompSn;
-            ViewBag.SubNumSn = paramModel.SubNumSn;
+            ViewBag.SatSn = paramModel.SatSn; 
+            ViewBag.CompSn = paramModel.CompSn; 
+            ViewBag.SubNumSn = paramModel.SubNumSn; 
 
             return RedirectToAction("DeepenReportList", "Report");
 

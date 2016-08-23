@@ -667,23 +667,28 @@ namespace BizOneShot.Light.Web.Areas.BizManager.Controllers
             // 해당 기업의 매핑이 처음인지 아닌지 확인
             // 해당 BA가 WRITE_YN을 가지고 있을 때 Y에 대한 권한을 주는 과정
             var checkMapping = await vcMentorMappingService.getCheckMapping(compSn, baSn, numSn);
-            var checkBaWriter = await vcCompInfoService.checkBaWriter(compSn, baSn, numSn, mentorMapping.ConCode);
+            var checkBaWriterList = await vcCompInfoService.checkBaWriterList(compSn, baSn, numSn);
+            var checkBaWiret = checkBaWriterList.Where(bw => bw.WriteYn == "Y").ToList();
 
-            if (checkBaWriter.WriteYn == "Y")
+            if(checkBaWiret.Count != 0)
             {
-                if (checkMapping.Count == 0 )
+                // BA가 작성 권한이 있다는 이야기
+                if(checkMapping.Count == 0)
                 {
+                    // 작성 권한이 있는 BA가 첫번째로 할당해주는 멘토에게 작성 권한 부여
                     mentorMapping.WriteYn = "Y";
                 }
                 else
                 {
                     mentorMapping.WriteYn = "N";
                 }
+
             }
             else
             {
                 mentorMapping.WriteYn = "N";
             }
+
 
             vcMentorMappingService.insertMentorMapping(mentorMapping);
 

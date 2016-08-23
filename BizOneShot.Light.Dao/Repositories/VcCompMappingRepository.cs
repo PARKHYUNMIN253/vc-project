@@ -30,6 +30,10 @@ namespace BizOneShot.Light.Dao.Repositories
         // Ba와 매핑된 기업 & 멘토 가져오기 
         Task<IList<VcCompMapping>> baGetCompMentorMappingList(int baSn);
 
+        // BA 보고서 작성자 List 확인
+        Task<IList<VcCompMapping>> checkBaWriterList(int compSn, int baSn, string numSn);
+
+
     }
 
     public class VcCompMappingRepository : RepositoryBase<VcCompMapping>, IVcCompMappingRepository
@@ -94,6 +98,17 @@ namespace BizOneShot.Light.Dao.Repositories
         {
             return await DbContext.VcCompMappings.Where(bw => bw.BaSn == baSn).ToListAsync();
         }
+
+        public async Task<IList<VcCompMapping>> checkBaWriterList(int compSn, int baSn, string numSn)
+        {
+            return await DbContext.VcCompMappings
+                .Where(bw => bw.CompSn == compSn)
+                .Where(bw => bw.BaSn == baSn)
+                .Where(bw => bw.NumSn == numSn)
+                .ToListAsync();
+        }
+
+
 
     }
 

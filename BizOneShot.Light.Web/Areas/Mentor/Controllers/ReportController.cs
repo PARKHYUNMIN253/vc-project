@@ -630,7 +630,7 @@ namespace BizOneShot.Light.Web.Areas.Mentor.Controllers
                     // 최종 제출을 확인하기 전 이미 최종 제출을 한 보고서가 있는지 확인
                     //ScriptManager.RegisterClientScriptBlock(this, this.GetType(), "alertMessage", "alert('Record Inserted Successfully')", true);
                     var compSns = TotalReportInfo.CompSn ?? default(int);
-                    var baSns = mentorInfo2.BaSn; 
+                    var baSns = mentorInfo2.BaSn;
                     var mentorSn = mentorInfo2.MentorSn;
                     var numSns = TotalReportInfo.NumSn;
                     var subNumSns = TotalReportInfo.SubNumSn;

@@ -43,6 +43,9 @@ namespace BizOneShot.Light.Services
         // BA에 매핑된 기업& 멘토 List 가져오기 
         Task<IList<VcCompMapping>> baGetCompMentorMappingList(int baSn);
 
+        // ba 보고서 작성자 확인 List
+        Task<IList<VcCompMapping>> checkBaWriterList(int compSn, int baSn, string numSn);
+
     }
 
 
@@ -140,6 +143,11 @@ namespace BizOneShot.Light.Services
         public async Task<IList<VcCompMapping>> baGetCompMentorMappingList(int baSn)
         {
             return await vcCompMappingRepository.baGetCompMentorMappingList(baSn);
+        }
+
+        public async Task<IList<VcCompMapping>> checkBaWriterList(int compSn, int baSn, string numSn)
+        {
+            return await vcCompMappingRepository.checkBaWriterList(compSn, baSn, numSn);
         }
 
 
