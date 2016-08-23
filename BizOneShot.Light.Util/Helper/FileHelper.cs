@@ -59,7 +59,9 @@ namespace BizOneShot.Light.Util.Helper
                 {
                     response.TransmitFile(Path.Combine(rootFilePath, files[0].FilePath));
                 }
+
                 response.Flush();
+
             }
 
             response.End();

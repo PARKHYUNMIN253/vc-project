@@ -3649,6 +3649,7 @@ namespace BizOneShot.Light.Web.Areas.Company.Controllers
 
             if (satObj == null) // 해당 테이블에 값이 없으므로 데이터 Insert
             {
+
                 insertObj.SatSn = vsModel.SatSn;
                 insertObj.Check01 = vsModel.Check01;
                 insertObj.Check02 = vsModel.Check02;
@@ -3679,7 +3680,7 @@ namespace BizOneShot.Light.Web.Areas.Company.Controllers
                 insertObj.RegDt = DateTime.Now;
 
                 _VcSatCheckService.Insert(insertObj);   // add
-                _VcSatCheckService.SaveDbContext(); // saveDbContext
+                _VcSatCheckService.SaveDbContext();     // saveDbContext
 
                 lastReportObj.SatisfactionGrade = calcSatisfaction(insertObj);
                 lastReportObj.Check01 = vsModel.Check21;
@@ -3690,6 +3691,7 @@ namespace BizOneShot.Light.Web.Areas.Company.Controllers
                 lastReportObj.Text02 = vsModel.Text02;
 
                 _VcLastReportNSatService.SaveDbContext(); // Save
+
             }
 
             ViewBag.SatSn = paramModel.SatSn;
@@ -3697,6 +3699,7 @@ namespace BizOneShot.Light.Web.Areas.Company.Controllers
             ViewBag.SubNumSn = paramModel.SubNumSn;
 
             return RedirectToAction("DeepenReportList", "Report");
+
         }
 
 

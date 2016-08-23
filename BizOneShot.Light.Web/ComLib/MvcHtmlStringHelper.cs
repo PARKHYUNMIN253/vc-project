@@ -39,8 +39,7 @@ namespace BizOneShot.Light.Web.ComLib
                 sb.Append("<li><input type=\"button\" class=\"pre\" value=\"이전 페이지\" ></li>");
             }
 
-            int setSize = 10;   //페이지 내비사이즈
-
+            int setSize = 100;   //페이지 내비사이즈
             int startPage = (pageNumber / setSize) * setSize + 1;       //시작페이지
 
             for (int i = startPage; i < setSize + startPage; i++)

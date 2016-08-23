@@ -3610,6 +3610,7 @@ namespace BizOneShot.Light.Web.Controllers
             {
                 return RedirectToAction("ProductivityRelation2", "BasicSurveyReport", new { NumSn = paramModel.NumSn, CompSn = paramModel.CompSn, BizWorkYear = paramModel.BizWorkYear, Status = paramModel.Status, QuestionSn = paramModel.QuestionSn });
             }
+
         }
 
         // p22 2.상품화 역량 -  역량별 검토결과 - 제품생산.판매 관계망검토
@@ -3663,10 +3664,12 @@ namespace BizOneShot.Light.Web.Controllers
             foreach (var item in viewModel.CommentList)
             {
                 var comment = listRptMentorComment.SingleOrDefault(i => i.DetailCd == item.DetailCd);
+
                 if (comment == null)
                 {
                     rptMentorCommentService.Insert(ReportHelper.MakeRptMentorcomment(item, paramModel));
                 }
+
                 else
                 {
                     comment.Comment = item.Comment;
@@ -5030,7 +5033,6 @@ namespace BizOneShot.Light.Web.Controllers
         //                        nCheckArray[pages[j]] = "Y";
         //                        i++;
         //                    }
-
         //                }
         //            }
         //            else

@@ -1066,6 +1066,7 @@ namespace BizOneShot.Light.Web.Controllers
             //return Redirect("http://tcms.or.kr");
             return RedirectToAction("LoginError", "Error");
             // 만약 cookie에 값이 존재한다면
+
         }
 
 
@@ -1119,6 +1120,8 @@ namespace BizOneShot.Light.Web.Controllers
             }
             return RedirectToAction("Error500", "Error");
         }
+
+        // TCMS로 보내는 API
 
     }
 }

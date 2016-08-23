@@ -460,6 +460,33 @@ namespace BizOneShot.Light.Web.Areas.Mentor.Controllers
 
                     TotalReportInfo.FinalSubmitYn = "Y";
                     await _scMentoringTotalReportService.SaveDbContextAsync();
+                    
+
+                    if(files != null)
+                    {
+                        // 심화보고서 다운로드 파일 URL로 받기
+                        var fileNameList = files.Select(bw => bw.FileName);
+
+                        string fileNm = Request.QueryString["FileNm"];
+                        string filePath = Request.QueryString["FilePath"];
+
+                        var rootFilePath = ConfigurationManager.AppSettings["RootFilePath"];
+
+                        string archiveName = fileNm;
+
+                        var urlFiles = new List<FileContent>();
+
+                        var file = new FileContent
+                        {
+                            FileNm = fileNm,
+                            FilePath = filePath
+                        };
+
+                        urlFiles.Add(file);
+
+                        var fileUrl = rootFilePath + "//" + fileNameList;
+                    }
+                    
 
                     #region
                     // 중복 최종제출 확인
@@ -568,6 +595,9 @@ namespace BizOneShot.Light.Web.Areas.Mentor.Controllers
 
                             scMentoringTotalReport.ScMentoringTrFileInfoes.Add(scMentoringTrFileInfo);
 
+                            var rootFilePath = ConfigurationManager.AppSettings["RootFilePath"];
+                            var directoryPath = Path.Combine(rootFilePath, subDirectoryPath);
+                            var testFilePath = directoryPath + "//" + savedFileName;
 
                             await fileHelper.UploadFile(file, subDirectoryPath, savedFileName);
 
@@ -624,6 +654,39 @@ namespace BizOneShot.Light.Web.Areas.Mentor.Controllers
                     TotalReportInfo.FinalSubmitYn = "Y";
                     await _scMentoringTotalReportService.SaveDbContextAsync();
 
+                    // 심화보고서 파일 Url로 확인
+                    //foreach (var asdf in files)
+                    //{
+                    //    var fileNames = asdf.
+
+                    //}
+
+                    if(files != null)
+                    {
+
+                        var fileNameList = files.Select(bw => bw.FileName);
+
+                        string fileNm = Request.QueryString["FileNm"];
+                        string filePath = Request.QueryString["FilePath"];
+
+                        var rootFilePath = ConfigurationManager.AppSettings["RootFilePath"];
+
+                        string archiveName = fileNm;
+
+                        var urlFiles = new List<FileContent>();
+
+                        var file = new FileContent
+                        {
+                            FileNm = fileNm,
+                            FilePath = filePath
+                        };
+
+                        urlFiles.Add(file);
+
+                        var fileUrl = rootFilePath + "//" + fileNameList;
+
+                    }
+
                     #region
                     // 중복 최종제출 확인
                     // var checkSubmit = await vcLastReportNSatService.checkDeepenSubmitByMentor(compSn, baSn, numSn, subNumSn, conCode[0].ConCode);
@@ -667,10 +730,7 @@ namespace BizOneShot.Light.Web.Areas.Mentor.Controllers
 
             }
 
-       
-
         }
-
 
 
         [HttpPost]
@@ -848,13 +908,23 @@ namespace BizOneShot.Light.Web.Areas.Mentor.Controllers
 
             var listscFileInfo2 = scMentoringTotalReport.ScMentoringTrFileInfoes.Select(mtfi => mtfi.ScFileInfo).Where(fi => fi.Status == "N");
 
+            var rootFilePath = ConfigurationManager.AppSettings["RootFilePath"];
+
             var listFileContent2 =
                Mapper.Map<List<FileContent>>(listscFileInfo2);
+
+            // 다운로드 가능한 링크
+            var fullPath = rootFilePath + listFileContent2[0].FilePath;
+
+            var fileFullPath = listFileContent2[0].FileFullPath;
+
+            var testPath = scMentoringTotalReport.ScMentoringTrFileInfoes.Select(mtfi => mtfi.ScFileInfo);
 
             var totalReportViewModel2 =
                Mapper.Map<MentoringTotalReportViewModel>(scMentoringTotalReport2);
 
             return View(totalReportViewModel);
+
         }
 
 
@@ -874,6 +944,7 @@ namespace BizOneShot.Light.Web.Areas.Mentor.Controllers
                 FilePath = filePath
             };
             files.Add(file);
+
 
             new FileHelper().DownloadFile(files, archiveName);
         }

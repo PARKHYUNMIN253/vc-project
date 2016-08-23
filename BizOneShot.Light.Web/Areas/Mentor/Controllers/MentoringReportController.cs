@@ -642,7 +642,6 @@ namespace BizOneShot.Light.Web.Areas.Mentor.Controllers
             new FileHelper().DownloadFile(files, archiveName);
         }
 
-
         public async Task DownloadTRReportFileMulti(string totalReportSn)
         {
 
@@ -719,7 +718,5 @@ namespace BizOneShot.Light.Web.Areas.Mentor.Controllers
             return Json(request);
 
         }
-
-
     }
 }
