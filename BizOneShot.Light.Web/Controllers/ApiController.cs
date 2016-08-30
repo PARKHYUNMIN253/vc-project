@@ -1,8 +1,10 @@
 ﻿using AutoMapper;
 using BizOneShot.Light.Models.CustomModels;
+using BizOneShot.Light.Models.ViewModels;
 using BizOneShot.Light.Models.WebModels;
 using BizOneShot.Light.Services;
 using BizOneShot.Light.Web.ComLib;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -1122,6 +1124,74 @@ namespace BizOneShot.Light.Web.Controllers
         }
 
         // TCMS로 보내는 API
+
+        public string sendSatisfaction(/*VcSatCheckViewModel vsModel*/)
+        {
+            string result = "";
+
+            VcSatCheckViewModel vsModel = new VcSatCheckViewModel();
+            // 모델이 추가됐을 때 필요한 것
+            // 해당 ba, mentor, comp가 어떤 tcmsLoginKey를 가지고 있는지 알아야 한다
+
+            var httpWebRequest = (HttpWebRequest)WebRequest.Create("http://tcms.igarim.com/Api/tcms_if_survey.php");
+            httpWebRequest.ContentType = "application/json charset=utf-8";
+            httpWebRequest.Method = "POST";
+
+            using (var streamWriter = new StreamWriter(httpWebRequest.GetRequestStream()))
+            {
+                string json = "{\"InfId\" : \"VOUCHER_IF_01000\","+
+                    "\"CompLoginKey\" : \"111\","+
+                    "\"BaLoginKey\" : \"222\"," +
+                    "\"MentorLoginKey\" : \"333\"," +
+                    "\"NumSn\" : \"001\"," +
+                    "\"SubNumSn\" : \"01\"," +
+                    "\"ConCode\" : \"TT01\"," +
+                    "\"SatisfationScore\" : \"65\"," +
+                    "\"Check01\" : \"1\"," +
+                    "\"Check02\" : \"2\"," +
+                    "\"Check03\" : \"3\"," +
+                    "\"Check04\" : \"4\"," +
+                    "\"Check05\" : \"5\"," +
+                    "\"Check06\" : \"1\"," +
+                    "\"Check07\" : \"2\"," +
+                    "\"Check08\" : \"3\"," +
+                    "\"Check09\" : \"4\"," +
+                    "\"Check10\" : \"5\"," +
+                    "\"Check11\" : \"1\"," +
+                    "\"Check12\" : \"2\"," +
+                    "\"Check13\" : \"3\"," +
+                    "\"Check14\" : \"4\"," +
+                    "\"Check15\" : \"5\"," +
+                    "\"Check16\" : \"1\"," +
+                    "\"Check17\" : \"2\"," +
+                    "\"Check18\" : \"3\"," +
+                    "\"Check19\" : \"4\"," +
+                    "\"Check20\" : \"5\"," +
+                    "\"Check21\" : \"1\"," +
+                    "\"Check22\" : \"2\"," +
+                    "\"Check23\" : \"3\"," +
+                    "\"Check24\" : \"4\"," +
+                    "\"Text01\" : \"텍스트01\"," +
+                    "\"Text02\" : \"텍스트02\"," +
+                    "\"InfDt\" : \"2016-06-28 00:00:00\"}";
+
+
+                var rst = Content(json);
+
+                streamWriter.Write(rst);
+                streamWriter.Flush();
+                streamWriter.Close();
+            }
+
+            var httpResponse = (HttpWebResponse)httpWebRequest.GetResponse();
+
+            using (var streamReader = new StreamReader(httpResponse.GetResponseStream()))
+            {
+                result = streamReader.ReadToEnd();
+            }
+
+            return result;
+        }
 
     }
 }

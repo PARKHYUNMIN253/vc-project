@@ -12,6 +12,8 @@ using BizOneShot.Light.Web.ComLib;
 using System.Data.SqlClient;
 using System.Configuration;
 using BizOneShot.Light.Util.Helper;
+using System.Net;
+using System.IO;
 
 namespace BizOneShot.Light.Web.Areas.Company.Controllers
 {
@@ -3619,6 +3621,8 @@ namespace BizOneShot.Light.Web.Areas.Company.Controllers
         //기업 만족도 조사 Page
         public ActionResult SatisFaction(VcLastReportNSatViewModel paramModel)
         {
+            // ?? satisfaction 재진입시 다시 볼 수 있도록 필요??
+
             ViewBag.naviLeftMenu = Global.Report;
 
             VcSatCheckViewModel viewModel = new VcSatCheckViewModel();
@@ -3713,7 +3717,6 @@ namespace BizOneShot.Light.Web.Areas.Company.Controllers
 
             return sum;
         }
-
 
         public async Task<ActionResult> DeepenReportDetail(int totalReportSn)
         {
