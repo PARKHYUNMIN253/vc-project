@@ -1127,6 +1127,7 @@ namespace BizOneShot.Light.Web.Controllers
 
         public string sendSatisfaction(/*VcSatCheckViewModel vsModel*/)
         {
+            HttpContext.Response.AppendHeader("Access-Control-Allow-Origin", "*");
             string result = "";
 
             VcSatCheckViewModel vsModel = new VcSatCheckViewModel();
@@ -1139,51 +1140,91 @@ namespace BizOneShot.Light.Web.Controllers
 
             using (var streamWriter = new StreamWriter(httpWebRequest.GetRequestStream()))
             {
-                string json = "{\"InfId\" : \"VOUCHER_IF_01000\","+
-                    "\"CompLoginKey\" : \"111\","+
-                    "\"BaLoginKey\" : \"222\"," +
-                    "\"MentorLoginKey\" : \"333\"," +
-                    "\"NumSn\" : \"001\"," +
-                    "\"SubNumSn\" : \"01\"," +
-                    "\"ConCode\" : \"TT01\"," +
-                    "\"SatisfationScore\" : \"65\"," +
-                    "\"Check01\" : \"1\"," +
-                    "\"Check02\" : \"2\"," +
-                    "\"Check03\" : \"3\"," +
-                    "\"Check04\" : \"4\"," +
-                    "\"Check05\" : \"5\"," +
-                    "\"Check06\" : \"1\"," +
-                    "\"Check07\" : \"2\"," +
-                    "\"Check08\" : \"3\"," +
-                    "\"Check09\" : \"4\"," +
-                    "\"Check10\" : \"5\"," +
-                    "\"Check11\" : \"1\"," +
-                    "\"Check12\" : \"2\"," +
-                    "\"Check13\" : \"3\"," +
-                    "\"Check14\" : \"4\"," +
-                    "\"Check15\" : \"5\"," +
-                    "\"Check16\" : \"1\"," +
-                    "\"Check17\" : \"2\"," +
-                    "\"Check18\" : \"3\"," +
-                    "\"Check19\" : \"4\"," +
-                    "\"Check20\" : \"5\"," +
-                    "\"Check21\" : \"1\"," +
-                    "\"Check22\" : \"2\"," +
-                    "\"Check23\" : \"3\"," +
-                    "\"Check24\" : \"4\"," +
-                    "\"Text01\" : \"텍스트01\"," +
-                    "\"Text02\" : \"텍스트02\"," +
-                    "\"InfDt\" : \"2016-06-28 00:00:00\"}";
+                string jsont = new JavaScriptSerializer().Serialize(new
+                {
+                    InfId = "VOUCHER_IF_09999",
+                    CompLoginKey = "147",
+                    BaLoginKey = "350",
+                    MentorLoginKey = "344",
+                    NumSn = "001",
+                    SubNumSn = "01",
+                    ConCode = "RD02",
+                    SatisfactionGrade = "65",
+                    Check01 = "1",
+                    Check02 = "1",
+                    Check03 = "1",
+                    Check04 = "1",
+                    Check05 = "1",
+                    Check06 = "1",
+                    Check07 = "1",
+                    Check08 = "1",
+                    Check09 = "1",
+                    Check10 = "1",
+                    Check11 = "1",
+                    Check12 = "1",
+                    Check13 = "1",
+                    Check14 = "1",
+                    Check15 = "1",
+                    Check16 = "1",
+                    Check17 = "1",
+                    Check18 = "1",
+                    Check19 = "1",
+                    Check20 = "1",
+                    Check21 = "1",
+                    Check22 = "2",
+                    Check23 = "3",
+                    Check24 = "5",
+                    Text01 = "텍스트01",
+                    Text02 = "텍스트02",
+                    InfDt = DateTime.Today.ToString()
+                });
 
-                var rst = Content(json);
 
-                streamWriter.Write(rst);
-                streamWriter.Flush();
-                streamWriter.Close();
+                //string json = "{\"InfId\" : \"VOUCHER_IF_01000\","+
+                //    "\"CompLoginKey\" : \"111\","+
+                //    "\"BaLoginKey\" : \"222\"," +
+                //    "\"MentorLoginKey\" : \"333\"," +
+                //    "\"NumSn\" : \"001\"," +
+                //    "\"SubNumSn\" : \"01\"," +
+                //    "\"ConCode\" : \"TT01\"," +
+                //    "\"SatisfationScore\" : \"65\"," +
+                //    "\"Check01\" : \"1\"," +
+                //    "\"Check02\" : \"2\"," +
+                //    "\"Check03\" : \"3\"," +
+                //    "\"Check04\" : \"4\"," +
+                //    "\"Check05\" : \"5\"," +
+                //    "\"Check06\" : \"1\"," +
+                //    "\"Check07\" : \"2\"," +
+                //    "\"Check08\" : \"3\"," +
+                //    "\"Check09\" : \"4\"," +
+                //    "\"Check10\" : \"5\"," +
+                //    "\"Check11\" : \"1\"," +
+                //    "\"Check12\" : \"2\"," +
+                //    "\"Check13\" : \"3\"," +
+                //    "\"Check14\" : \"4\"," +
+                //    "\"Check15\" : \"5\"," +
+                //    "\"Check16\" : \"1\"," +
+                //    "\"Check17\" : \"2\"," +
+                //    "\"Check18\" : \"3\"," +
+                //    "\"Check19\" : \"4\"," +
+                //    "\"Check20\" : \"5\"," +
+                //    "\"Check21\" : \"1\"," +
+                //    "\"Check22\" : \"2\"," +
+                //    "\"Check23\" : \"3\"," +
+                //    "\"Check24\" : \"4\"," +
+                //    "\"Text01\" : \"텍스트01\"," +
+                //    "\"Text02\" : \"텍스트02\"," +
+                //    "\"InfDt\" : \"2016-06-28 00:00:00\"}";
+
+                //var rst = Content(json);
+
+                //streamWriter.Write(rst);
+                //streamWriter.Flush();
+                //streamWriter.Close();
+                streamWriter.Write(jsont);
             }
 
             var httpResponse = (HttpWebResponse)httpWebRequest.GetResponse();
-
             using (var streamReader = new StreamReader(httpResponse.GetResponseStream()))
             {
                 result = streamReader.ReadToEnd();
