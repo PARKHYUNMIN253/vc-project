@@ -13,6 +13,7 @@ namespace BizOneShot.Light.Dao.Repositories
     public interface IVcBaInfoRepository : IRepository<VcBaInfo>
     {
         Task<VcBaInfo> getVcBaInfoById(Expression<Func<VcBaInfo, bool>> where);
+        Task<VcBaInfo> getVcBaInfoByBaSn(Expression<Func<VcBaInfo, bool>> where);
         VcBaInfo Insert(VcBaInfo vcBaInfo);
         Task<VcBaInfo> insertToAsync(VcBaInfo vcBainfo);
         // ADD LOY 0627
@@ -44,6 +45,11 @@ namespace BizOneShot.Light.Dao.Repositories
         public async Task<VcBaInfo> insertToAsync(VcBaInfo vcBainfo)
         {
             return await Task.Run(() => DbContext.VcBaInfoes.Add(vcBainfo));
+        }
+
+        public async Task<VcBaInfo> getVcBaInfoByBaSn(Expression<Func<VcBaInfo, bool>> where)
+        {
+            return await DbContext.VcBaInfoes.Where(where).SingleOrDefaultAsync();
         }
     }
 }

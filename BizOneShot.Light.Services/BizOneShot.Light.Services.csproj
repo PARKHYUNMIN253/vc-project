@@ -103,6 +103,7 @@
     <Compile Include="ScMentoringTotalReportService.cs" />
     <Compile Include="VcIfTableService.cs" />
     <Compile Include="VcLastReportNSatService.cs" />
+    <Compile Include="VcMentorInfoService.cs" />
     <Compile Include="VcMentorMappingService.cs" />
     <Compile Include="VcSatCheckService.cs" />
     <Compile Include="VcUsrService.cs" />

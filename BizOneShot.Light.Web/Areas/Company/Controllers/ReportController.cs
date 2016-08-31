@@ -43,6 +43,7 @@ namespace BizOneShot.Light.Web.Areas.Company.Controllers
         private readonly IScMentoringFileInfoService _scMentoringFileInfoService;
         private readonly IScMentoringTrFileInfoService _scMentoringTrFileInfoService;
         private readonly ITcmsIfSurveyService _tcmsIfSurveyService;
+        private readonly IVcMentorInfoSerivce _vcMentorInfoService;
 
         public ReportController(IQuesMasterService _quesMasterService, 
             IQuesCompInfoService _quesCompInfoService, 
@@ -65,7 +66,8 @@ namespace BizOneShot.Light.Web.Areas.Company.Controllers
             IScMentoringTotalReportService _scMentoringTotalReportService,
             IScMentoringFileInfoService _scMentoringFileInfoService,
             IScMentoringTrFileInfoService _scMentoringTrFileInfoService,
-            ITcmsIfSurveyService _tcmsIfSurveyService)
+            ITcmsIfSurveyService _tcmsIfSurveyService,
+            IVcMentorInfoSerivce _vcMentorInfoService)
         {
             this._quesMasterService = _quesMasterService;
             this._scUsrService = _scUsrService;
@@ -88,6 +90,7 @@ namespace BizOneShot.Light.Web.Areas.Company.Controllers
             this._scMentoringTrFileInfoService = _scMentoringTrFileInfoService;
             this.vcMentorMappingService = vcMentorMappingService;
             this._tcmsIfSurveyService = _tcmsIfSurveyService;
+            this._vcMentorInfoService = _vcMentorInfoService;
         }
 
         // GET: Company/Report
@@ -3647,8 +3650,6 @@ namespace BizOneShot.Light.Web.Areas.Company.Controllers
             var obj = vsModel;
             VcSatCheck insertObj = new VcSatCheck();    // vcsatcheck의 값을 채워넣을 빈 객체 생성
 
-            string x = await satiNumGenerator();
-
             var lastReportObj = await _VcLastReportNSatService.getSatSn(vsModel.CompSn, vsModel.SubNumSn, vsModel.MentorSn, int.Parse(vsModel.TotalReportSn));
 
             if (lastReportObj == null)  // 객체 오류 처리
@@ -3702,14 +3703,68 @@ namespace BizOneShot.Light.Web.Areas.Company.Controllers
 
                 _VcLastReportNSatService.SaveDbContext(); // Save
 
+                TcmsIfSurvey tcmsIfSurvey = new TcmsIfSurvey(); // 인터페이스 테이블 데이터 넣을 객체
+
+                tcmsIfSurvey.InfId = await satiNumGenerator();
+
+                var compObj = await _vcCompInfoService.getVcCompInfoByCompSn(lastReportObj.CompSn);
+                tcmsIfSurvey.CompLoginKey = compObj.TcmsLoginKey;
+
+                var baObj = await _vcBaInfoService.getVcBaInfoByBaSn(lastReportObj.BaSn);
+                tcmsIfSurvey.BaLoginKey = baObj.TcmsLoginKey;
+
+                var mentorObj = await _vcMentorInfoService.getVcMentorInfoByMentorSn(lastReportObj.MentorSn+"");
+                tcmsIfSurvey.MentorLoginKey = mentorObj.TcmsLoginKey;
+
+                tcmsIfSurvey.NumSn = lastReportObj.NumSn;
+                tcmsIfSurvey.SubNumSn = lastReportObj.SubNumSn;
+                tcmsIfSurvey.ConCode = lastReportObj.ConCode;
+
+                tcmsIfSurvey.SatisfactionScore = calcSatisfaction(insertObj); // 계산필요
+
+                tcmsIfSurvey.Check01 = vsModel.Check01;
+                tcmsIfSurvey.Check02 = vsModel.Check02;
+                tcmsIfSurvey.Check03 = vsModel.Check03;
+                tcmsIfSurvey.Check04 = vsModel.Check04;
+                tcmsIfSurvey.Check05 = vsModel.Check05;
+                tcmsIfSurvey.Check06 = vsModel.Check06;
+                tcmsIfSurvey.Check07 = vsModel.Check07;
+                tcmsIfSurvey.Check08 = vsModel.Check08;
+                tcmsIfSurvey.Check09 = vsModel.Check09;
+                tcmsIfSurvey.Check10 = vsModel.Check10;
+                tcmsIfSurvey.Check11 = vsModel.Check11;
+                tcmsIfSurvey.Check12 = vsModel.Check12;
+                tcmsIfSurvey.Check13 = vsModel.Check13;
+                tcmsIfSurvey.Check14 = vsModel.Check14;
+                tcmsIfSurvey.Check15 = vsModel.Check15;
+                tcmsIfSurvey.Check16 = vsModel.Check16;
+                tcmsIfSurvey.Check17 = vsModel.Check17;
+                tcmsIfSurvey.Check18 = vsModel.Check18;
+                tcmsIfSurvey.Check19 = vsModel.Check19;
+                tcmsIfSurvey.Check20 = vsModel.Check20;
+                tcmsIfSurvey.Check21 = vsModel.Check21;
+                tcmsIfSurvey.Check22 = vsModel.Check22;
+                tcmsIfSurvey.Check23 = vsModel.Check23;
+                tcmsIfSurvey.Check24 = vsModel.Check24;
+
+                tcmsIfSurvey.Text01 = vsModel.Text01;
+                tcmsIfSurvey.Text02 = vsModel.Text02;
+
+                tcmsIfSurvey.InfDt = DateTime.Today;
+
+                _tcmsIfSurveyService.Insert(tcmsIfSurvey);
+                _tcmsIfSurveyService.SaveDbContext();
+                //... if 테이블 넣기 종료
+
             }
+            //... 본테이블 종료
+            // 넣고 나서 전송부도 여기에 둔다
 
-            ViewBag.SatSn = paramModel.SatSn; 
-            ViewBag.CompSn = paramModel.CompSn; 
-            ViewBag.SubNumSn = paramModel.SubNumSn; 
-
+            ViewBag.SatSn = lastReportObj.SatSn; 
+            ViewBag.CompSn = lastReportObj.CompSn; 
+            ViewBag.SubNumSn = lastReportObj.SubNumSn; 
+            
             return RedirectToAction("DeepenReportList", "Report");
-
         }
 
 
@@ -3732,7 +3787,7 @@ namespace BizOneShot.Light.Web.Areas.Company.Controllers
 
             var tcmsIfSurveyList = await _tcmsIfSurveyService.getTcmsIfSurvey();
 
-            if (tcmsIfSurveyList == null)
+            if (tcmsIfSurveyList.Count == 0)
             {
                 infId = "00001";
                 rst = infPrefix + infId;

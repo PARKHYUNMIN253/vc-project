@@ -18,6 +18,7 @@ namespace BizOneShot.Light.Services
         void insertVcBaInfo(VcBaInfo vcBaInfo);
         // loy 0627
         Task<IList<VcBaInfo>> getVcBaInfoByLoginKey(int tcmsLoginKey);
+        Task<VcBaInfo> getVcBaInfoByBaSn(int baSn);
     }
 
     public class VcBaInfoService : IVcBaInfoService
@@ -63,6 +64,11 @@ namespace BizOneShot.Light.Services
             return await vcBaInfoRepository.getVcBaInfoById(vb => vb.TcmsLoginKey == TcmsKey);
         }
 
+        public async Task<VcBaInfo> getVcBaInfoByBaSn(int baSn)
+        {
+            return await vcBaInfoRepository.getVcBaInfoByBaSn(vb => vb.BaSn == baSn);
+        }
+
         public void UpdateBaInfo(VcBaInfo vcBaInfo)
         {
             vcBaInfoRepository.Update(vcBaInfo);
@@ -73,5 +79,7 @@ namespace BizOneShot.Light.Services
             vcBaInfoRepository.Add(vcBaInfo);
             SaveDbContext();
         }
+
+        
     }
 }

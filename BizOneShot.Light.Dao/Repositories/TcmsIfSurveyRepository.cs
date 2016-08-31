@@ -12,6 +12,8 @@ namespace BizOneShot.Light.Dao.Repositories
     public interface ITcmsIfSurveyRepository : IRepository<TcmsIfSurvey>
     {
         Task<IList<TcmsIfSurvey>> getTcmsIfSurvey();
+        void Insert(TcmsIfSurvey tcmsIfSurvey);
+        Task<TcmsIfSurvey> getTcmsIfSurveyByInfId(string infId);
     }
 
 
@@ -26,6 +28,16 @@ namespace BizOneShot.Light.Dao.Repositories
         public async Task<IList<TcmsIfSurvey>> getTcmsIfSurvey()
         {
             return await DbContext.TcmsIfSurveys.ToListAsync();
+        }
+
+        public async Task<TcmsIfSurvey> getTcmsIfSurveyByInfId(string infId)
+        {
+            return await DbContext.TcmsIfSurveys.Where(tis => tis.InfId == infId).SingleOrDefaultAsync();
+        }
+
+        public void Insert(TcmsIfSurvey tcmsIfSurvey)
+        {
+            DbContext.TcmsIfSurveys.Add(tcmsIfSurvey);
         }
     }
 }

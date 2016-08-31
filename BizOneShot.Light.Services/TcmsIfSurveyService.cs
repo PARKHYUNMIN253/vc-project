@@ -12,6 +12,8 @@ namespace BizOneShot.Light.Services
     public interface ITcmsIfSurveyService : IBaseService
     {
         Task<IList<TcmsIfSurvey>> getTcmsIfSurvey();
+        Task<TcmsIfSurvey> getTcmsIfSurveyByInfId(string infId);
+        void Insert(TcmsIfSurvey tcmsIfSurvey);
     }
 
 
@@ -31,14 +33,24 @@ namespace BizOneShot.Light.Services
             return await tcmsIfSurveyRepository.getTcmsIfSurvey();
         }
 
-        public void SaveDbContext()
+        public async Task<TcmsIfSurvey> getTcmsIfSurveyByInfId(string infId)
         {
-            throw new NotImplementedException();
+            return await tcmsIfSurveyRepository.getTcmsIfSurveyByInfId(infId);
         }
 
-        public Task<int> SaveDbContextAsync()
+        public void Insert(TcmsIfSurvey tcmsIfSurvey)
         {
-            throw new NotImplementedException();
+            tcmsIfSurveyRepository.Insert(tcmsIfSurvey);
+        }
+
+        public void SaveDbContext()
+        {
+            unitOfWork.Commit();
+        }
+
+        public async Task<int> SaveDbContextAsync()
+        {
+            return await unitOfWork.CommitAsync();
         }
     }
 }
