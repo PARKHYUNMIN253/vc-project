@@ -1175,7 +1175,6 @@ namespace BizOneShot.Light.Web.Controllers
                     "\"Text02\" : \"텍스트02\"," +
                     "\"InfDt\" : \"2016-06-28 00:00:00\"}";
 
-
                 var rst = Content(json);
 
                 streamWriter.Write(rst);

@@ -42,6 +42,7 @@ namespace BizOneShot.Light.Web.Areas.Company.Controllers
         private readonly IScMentoringTotalReportService _scMentoringTotalReportService;
         private readonly IScMentoringFileInfoService _scMentoringFileInfoService;
         private readonly IScMentoringTrFileInfoService _scMentoringTrFileInfoService;
+        private readonly ITcmsIfSurveyService _tcmsIfSurveyService;
 
         public ReportController(IQuesMasterService _quesMasterService, 
             IQuesCompInfoService _quesCompInfoService, 
@@ -63,7 +64,8 @@ namespace BizOneShot.Light.Web.Areas.Company.Controllers
             IProcMngService _procMngService,
             IScMentoringTotalReportService _scMentoringTotalReportService,
             IScMentoringFileInfoService _scMentoringFileInfoService,
-            IScMentoringTrFileInfoService _scMentoringTrFileInfoService)
+            IScMentoringTrFileInfoService _scMentoringTrFileInfoService,
+            ITcmsIfSurveyService _tcmsIfSurveyService)
         {
             this._quesMasterService = _quesMasterService;
             this._scUsrService = _scUsrService;
@@ -85,6 +87,7 @@ namespace BizOneShot.Light.Web.Areas.Company.Controllers
             this._scMentoringFileInfoService = _scMentoringFileInfoService;
             this._scMentoringTrFileInfoService = _scMentoringTrFileInfoService;
             this.vcMentorMappingService = vcMentorMappingService;
+            this._tcmsIfSurveyService = _tcmsIfSurveyService;
         }
 
         // GET: Company/Report
@@ -3644,6 +3647,8 @@ namespace BizOneShot.Light.Web.Areas.Company.Controllers
             var obj = vsModel;
             VcSatCheck insertObj = new VcSatCheck();    // vcsatcheck의 값을 채워넣을 빈 객체 생성
 
+            string x = await satiNumGenerator();
+
             var lastReportObj = await _VcLastReportNSatService.getSatSn(vsModel.CompSn, vsModel.SubNumSn, vsModel.MentorSn, int.Parse(vsModel.TotalReportSn));
 
             if (lastReportObj == null)  // 객체 오류 처리
@@ -3654,7 +3659,7 @@ namespace BizOneShot.Light.Web.Areas.Company.Controllers
             if (satObj == null) // 해당 테이블에 값이 없으므로 데이터 Insert
             {
 
-                insertObj.SatSn = vsModel.SatSn;
+                insertObj.SatSn = vsModel.SatSn;        // SatSn이 존재이유
                 insertObj.Check01 = vsModel.Check01;
                 insertObj.Check02 = vsModel.Check02;
                 insertObj.Check03 = vsModel.Check03;
@@ -3687,6 +3692,7 @@ namespace BizOneShot.Light.Web.Areas.Company.Controllers
                 _VcSatCheckService.SaveDbContext();     // saveDbContext
 
                 lastReportObj.SatisfactionGrade = calcSatisfaction(insertObj);
+                /* 아래 줄 들은 존재가치 없음 */
                 lastReportObj.Check01 = vsModel.Check21;
                 lastReportObj.Check02 = vsModel.Check22;
                 lastReportObj.Check03 = vsModel.Check23;
@@ -3716,6 +3722,51 @@ namespace BizOneShot.Light.Web.Areas.Company.Controllers
                 + int.Parse(vsc.Check16) + int.Parse(vsc.Check17) + int.Parse(vsc.Check18) + int.Parse(vsc.Check19) + int.Parse(vsc.Check20);
 
             return sum;
+        }
+
+        public async Task<string> satiNumGenerator()
+        {
+            string infId = "";
+            string infPrefix = "TCMS_";
+            string rst = "";
+
+            var tcmsIfSurveyList = await _tcmsIfSurveyService.getTcmsIfSurvey();
+
+            if (tcmsIfSurveyList == null)
+            {
+                infId = "00001";
+                rst = infPrefix + infId;
+            }
+            else
+            {
+                var maxVal = tcmsIfSurveyList.Max(x => x.InfId); // 최대값 식별
+                string[] maxValResult = maxVal.Split('_');
+                int itemp = int.Parse(maxValResult[1]);
+                string temp = ++itemp +"";
+
+                if (temp.Length == 1)
+                {
+                    rst = infPrefix + "0000" + temp;
+                }
+                else if (temp.Length == 2)
+                {
+                    rst = infPrefix + "000" + temp;
+                }
+                else if (temp.Length == 3)
+                {
+                    rst = infPrefix + "00" + temp;
+                }
+                else if (temp.Length == 4)
+                {
+                    rst = infPrefix + "0" + temp;
+                }
+                else
+                {
+                    rst = infPrefix + temp;
+                }
+            }
+
+            return rst;
         }
 
         public async Task<ActionResult> DeepenReportDetail(int totalReportSn)

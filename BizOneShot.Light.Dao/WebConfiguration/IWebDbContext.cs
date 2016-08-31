@@ -67,6 +67,7 @@ namespace BizOneShot.Light.Dao.WebConfiguration
         DbSet<ScUsrResume> ScUsrResumes { get; set; } // SC_USR_RESUME
         DbSet<SyDareDbInfo> SyDareDbInfoes { get; set; } // SY_DARE_DB_INFO
         DbSet<TcmsCompStatusSelectView> TcmsCompStatusSelectViews { get; set; } // TCMS_COMP_STATUS_SELECT_VIEW
+        DbSet<TcmsIfSurvey> TcmsIfSurveys { get; set; } // TCMS_IF_SURVEY
         DbSet<VcBaInfo> VcBaInfoes { get; set; } // VC_BA_INFO
         DbSet<VcBaTypeInfo> VcBaTypeInfoes { get; set; } // VC_BA_TYPE_INFO
         DbSet<VcBizWork> VcBizWorks { get; set; } // VC_BIZ_WORK

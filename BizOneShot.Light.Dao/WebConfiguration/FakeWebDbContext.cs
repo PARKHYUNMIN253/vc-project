@@ -68,6 +68,7 @@ namespace BizOneShot.Light.Dao.WebConfiguration
         public DbSet<ScUsrResume> ScUsrResumes { get; set; }
         public DbSet<SyDareDbInfo> SyDareDbInfoes { get; set; }
         public DbSet<TcmsCompStatusSelectView> TcmsCompStatusSelectViews { get; set; }
+        public DbSet<TcmsIfSurvey> TcmsIfSurveys { get; set; }
         public DbSet<VcBaInfo> VcBaInfoes { get; set; }
         public DbSet<VcBaTypeInfo> VcBaTypeInfoes { get; set; }
         public DbSet<VcBizWork> VcBizWorks { get; set; }
@@ -132,6 +133,7 @@ namespace BizOneShot.Light.Dao.WebConfiguration
             ScUsrResumes = new FakeDbSet<ScUsrResume>();
             SyDareDbInfoes = new FakeDbSet<SyDareDbInfo>();
             TcmsCompStatusSelectViews = new FakeDbSet<TcmsCompStatusSelectView>();
+            TcmsIfSurveys = new FakeDbSet<TcmsIfSurvey>();
             VcBaInfoes = new FakeDbSet<VcBaInfo>();
             VcBaTypeInfoes = new FakeDbSet<VcBaTypeInfo>();
             VcBizWorks = new FakeDbSet<VcBizWork>();
