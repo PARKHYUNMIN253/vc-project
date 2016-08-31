@@ -67,6 +67,7 @@ namespace BizOneShot.Light.Dao.WebConfiguration
         public DbSet<ScUsrResume> ScUsrResumes { get; set; } // SC_USR_RESUME
         public DbSet<SyDareDbInfo> SyDareDbInfoes { get; set; } // SY_DARE_DB_INFO
         public DbSet<TcmsCompStatusSelectView> TcmsCompStatusSelectViews { get; set; } // TCMS_COMP_STATUS_SELECT_VIEW
+        public DbSet<TcmsIfLastReport> TcmsIfLastReports { get; set; } // TCMS_IF_LAST_REPORT
         public DbSet<TcmsIfSurvey> TcmsIfSurveys { get; set; } // TCMS_IF_SURVEY
         public DbSet<VcBaInfo> VcBaInfoes { get; set; } // VC_BA_INFO
         public DbSet<VcBaTypeInfo> VcBaTypeInfoes { get; set; } // VC_BA_TYPE_INFO
@@ -160,6 +161,7 @@ namespace BizOneShot.Light.Dao.WebConfiguration
             modelBuilder.Configurations.Add(new ScUsrResumeConfiguration());
             modelBuilder.Configurations.Add(new SyDareDbInfoConfiguration());
             modelBuilder.Configurations.Add(new TcmsCompStatusSelectViewConfiguration());
+            modelBuilder.Configurations.Add(new TcmsIfLastReportConfiguration());
             modelBuilder.Configurations.Add(new TcmsIfSurveyConfiguration());
             modelBuilder.Configurations.Add(new VcBaInfoConfiguration());
             modelBuilder.Configurations.Add(new VcBaTypeInfoConfiguration());
@@ -228,6 +230,7 @@ namespace BizOneShot.Light.Dao.WebConfiguration
             modelBuilder.Configurations.Add(new ScUsrResumeConfiguration(schema));
             modelBuilder.Configurations.Add(new SyDareDbInfoConfiguration(schema));
             modelBuilder.Configurations.Add(new TcmsCompStatusSelectViewConfiguration(schema));
+            modelBuilder.Configurations.Add(new TcmsIfLastReportConfiguration(schema));
             modelBuilder.Configurations.Add(new TcmsIfSurveyConfiguration(schema));
             modelBuilder.Configurations.Add(new VcBaInfoConfiguration(schema));
             modelBuilder.Configurations.Add(new VcBaTypeInfoConfiguration(schema));

@@ -75,6 +75,7 @@
     <Compile Include="RptMentorCommentService.cs" />
     <Compile Include="SboFinancialIndexTService.cs" />
     <Compile Include="TcmsCompStatusSelectViewService.cs" />
+    <Compile Include="TcmsIfLastReportService.cs" />
     <Compile Include="TcmsIfSurveyService.cs" />
     <Compile Include="VcBaInfoService.cs" />
     <Compile Include="VcBizWorkService.cs" />

@@ -150,6 +150,7 @@
     <Compile Include="Infrastructure\RepositoryBase.cs" />
     <Compile Include="Infrastructure\UnitOfWork.cs" />
     <Compile Include="Repositories\TcmsCompStatusSelectViewRepository.cs" />
+    <Compile Include="Repositories\TcmsIfLastReportRepository.cs" />
     <Compile Include="Repositories\TcmsIfSurveyRepository.cs" />
     <Compile Include="Repositories\VcBaInfoRepository.cs" />
     <Compile Include="Repositories\VcCompInfoRepository.cs" />
@@ -303,6 +304,9 @@
       <DependentUpon>Database.tt</DependentUpon>
     </Compile>
     <Compile Include="WebConfiguration\TcmsCompStatusSelectViewConfiguration.cs">
+      <DependentUpon>Database.tt</DependentUpon>
+    </Compile>
+    <Compile Include="WebConfiguration\TcmsIfLastReportConfiguration.cs">
       <DependentUpon>Database.tt</DependentUpon>
     </Compile>
     <Compile Include="WebConfiguration\TcmsIfSurveyConfiguration.cs">
