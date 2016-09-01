@@ -1135,8 +1135,22 @@ namespace BizOneShot.Light.Web.Controllers
             // 해당 ba, mentor, comp가 어떤 tcmsLoginKey를 가지고 있는지 알아야 한다
 
             var httpWebRequest = (HttpWebRequest)WebRequest.Create("http://tcms.igarim.com/Api/tcms_if_survey.php");
-            httpWebRequest.ContentType = "application/json charset=utf-8";
+            httpWebRequest.ContentType = "application/jsonp";
             httpWebRequest.Method = "POST";
+            httpWebRequest.CookieContainer = new CookieContainer();
+            HttpCookieCollection cookies = Request.Cookies;
+            for (int i = 0; i < cookies.Count; i++)
+            {
+                HttpCookie httpCookie = cookies.Get(i);
+                Cookie cookie = new Cookie();
+                cookie.Domain = httpWebRequest.RequestUri.Host;
+                cookie.Expires = httpCookie.Expires;
+                cookie.Name = httpCookie.Name;
+                cookie.Path = httpCookie.Path;
+                cookie.Secure = httpCookie.Secure;
+                cookie.Value = httpCookie.Value;
+                httpWebRequest.CookieContainer.Add(cookie);
+            }
 
             using (var streamWriter = new StreamWriter(httpWebRequest.GetRequestStream()))
             {
@@ -1178,7 +1192,6 @@ namespace BizOneShot.Light.Web.Controllers
                     Text02 = "텍스트02",
                     InfDt = DateTime.Today.ToString()
                 });
-
 
                 //string json = "{\"InfId\" : \"VOUCHER_IF_01000\","+
                 //    "\"CompLoginKey\" : \"111\","+
@@ -1223,13 +1236,11 @@ namespace BizOneShot.Light.Web.Controllers
                 //streamWriter.Close();
                 streamWriter.Write(jsont);
             }
-
             var httpResponse = (HttpWebResponse)httpWebRequest.GetResponse();
             using (var streamReader = new StreamReader(httpResponse.GetResponseStream()))
             {
                 result = streamReader.ReadToEnd();
             }
-
             return result;
         }
 
