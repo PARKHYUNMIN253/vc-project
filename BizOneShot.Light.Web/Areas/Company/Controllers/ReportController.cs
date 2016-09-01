@@ -14,6 +14,7 @@ using System.Configuration;
 using BizOneShot.Light.Util.Helper;
 using System.Net;
 using System.IO;
+using System.Web.Script.Serialization;
 
 namespace BizOneShot.Light.Web.Areas.Company.Controllers
 {
@@ -3756,6 +3757,7 @@ namespace BizOneShot.Light.Web.Areas.Company.Controllers
                 _tcmsIfSurveyService.SaveDbContext();
                 //... if 테이블 넣기 종료
 
+                sendSatisfaction(tcmsIfSurvey); // 데이터 전송
             }
             //... 본테이블 종료
             // 넣고 나서 전송부도 여기에 둔다
@@ -3822,6 +3824,79 @@ namespace BizOneShot.Light.Web.Areas.Company.Controllers
             }
 
             return rst;
+        }
+
+        public string sendSatisfaction(TcmsIfSurvey tcmsIfSurvey)
+        {
+            HttpContext.Response.AppendHeader("Access-Control-Allow-Origin", "*");
+            string result = "";
+
+            var httpWebRequest = (HttpWebRequest)WebRequest.Create("http://tcms.igarim.com/Api/tcms_if_survey.php");
+            httpWebRequest.ContentType = "application/jsonp";
+            httpWebRequest.Method = "POST";
+            httpWebRequest.CookieContainer = new CookieContainer();
+            HttpCookieCollection cookies = Request.Cookies;
+            for (int i = 0; i < cookies.Count; i++)
+            {
+                HttpCookie httpCookie = cookies.Get(i);
+                Cookie cookie = new Cookie();
+                cookie.Domain = httpWebRequest.RequestUri.Host;
+                cookie.Expires = httpCookie.Expires;
+                cookie.Name = httpCookie.Name;
+                cookie.Path = httpCookie.Path;
+                cookie.Secure = httpCookie.Secure;
+                cookie.Value = httpCookie.Value;
+                httpWebRequest.CookieContainer.Add(cookie);
+            }
+
+            using (var streamWriter = new StreamWriter(httpWebRequest.GetRequestStream()))
+            {
+                string jsont = new JavaScriptSerializer().Serialize(new
+                {
+                    InfId = tcmsIfSurvey.InfId,
+                    CompLoginKey = tcmsIfSurvey.CompLoginKey,
+                    BaLoginKey = tcmsIfSurvey.BaLoginKey,
+                    MentorLoginKey = tcmsIfSurvey.MentorLoginKey,
+                    NumSn = tcmsIfSurvey.NumSn,
+                    SubNumSn = tcmsIfSurvey.SubNumSn,
+                    ConCode = tcmsIfSurvey.ConCode,
+                    SatisfactionGrade = tcmsIfSurvey.SatisfactionScore,
+                    Check01 = tcmsIfSurvey.Check01,
+                    Check02 = tcmsIfSurvey.Check02,
+                    Check03 = tcmsIfSurvey.Check03,
+                    Check04 = tcmsIfSurvey.Check04,
+                    Check05 = tcmsIfSurvey.Check05,
+                    Check06 = tcmsIfSurvey.Check06,
+                    Check07 = tcmsIfSurvey.Check07,
+                    Check08 = tcmsIfSurvey.Check08,
+                    Check09 = tcmsIfSurvey.Check09,
+                    Check10 = tcmsIfSurvey.Check10,
+                    Check11 = tcmsIfSurvey.Check11,
+                    Check12 = tcmsIfSurvey.Check12,
+                    Check13 = tcmsIfSurvey.Check13,
+                    Check14 = tcmsIfSurvey.Check14,
+                    Check15 = tcmsIfSurvey.Check15,
+                    Check16 = tcmsIfSurvey.Check16,
+                    Check17 = tcmsIfSurvey.Check17,
+                    Check18 = tcmsIfSurvey.Check18,
+                    Check19 = tcmsIfSurvey.Check19,
+                    Check20 = tcmsIfSurvey.Check20,
+                    Check21 = tcmsIfSurvey.Check21,
+                    Check22 = tcmsIfSurvey.Check22,
+                    Check23 = tcmsIfSurvey.Check23,
+                    Check24 = tcmsIfSurvey.Check24,
+                    Text01 = tcmsIfSurvey.Text01,
+                    Text02 = tcmsIfSurvey.Text02,
+                    InfDt = tcmsIfSurvey.InfDt
+                });
+                streamWriter.Write(jsont);
+            }
+            var httpResponse = (HttpWebResponse)httpWebRequest.GetResponse();
+            using (var streamReader = new StreamReader(httpResponse.GetResponseStream()))
+            {
+                result = streamReader.ReadToEnd();
+            }
+            return result;
         }
 
         public async Task<ActionResult> DeepenReportDetail(int totalReportSn)
