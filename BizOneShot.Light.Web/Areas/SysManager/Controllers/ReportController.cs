@@ -161,7 +161,6 @@ namespace BizOneShot.Light.Web.Areas.SysManager.Controllers
 
             }
 
-
             return View(new StaticPagedList<BasicSurveyReportViewModel>(resultViews.ToPagedList(int.Parse(curPage), pagingSize), int.Parse(curPage), pagingSize, resultViews.Count));
         }
 

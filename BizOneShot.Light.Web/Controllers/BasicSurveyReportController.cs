@@ -4883,6 +4883,7 @@ namespace BizOneShot.Light.Web.Controllers
         //reportcover
         public async Task<ActionResult> ReportCover(BasicSurveyReportViewModel paramModel)
         {
+
             ViewBag.naviLeftMenu = Global.Report;
             ViewBag.paramModel = paramModel;
 
@@ -4898,7 +4899,15 @@ namespace BizOneShot.Light.Web.Controllers
             //var scCompMapping = await scCompMappingService.GetCompMappingAsync(paramModel.NumSn, paramModel.CompSn);
 
             //paramModel.CompNm = scCompMapping.ScCompInfo.CompNm;
-            //paramModel.BizWorkNm = scCompMapping.ScBizWork.BizWorkNm;
+            //paramModel.BizWorkNm = scCompMapping.ScBizWork.BizWorkNm;'
+
+            ViewBag.CompNm = paramModel.CompNm;
+            ViewBag.paramModel = paramModel;
+            ViewBag.NumSn = paramModel.NumSn;
+            ViewBag.CompSn = paramModel.CompSn;
+            ViewBag.BizWorkYear = paramModel.BizWorkYear;
+            ViewBag.Status = paramModel.Status;
+            ViewBag.QuestionSn = paramModel.QuestionSn;
 
             return View(paramModel);
 

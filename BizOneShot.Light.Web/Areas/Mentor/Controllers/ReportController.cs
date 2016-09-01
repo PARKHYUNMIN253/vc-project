@@ -15,6 +15,8 @@ using System.Data.SqlClient;
 using BizOneShot.Light.Util.Helper;
 using System.IO;
 using System.Web.UI;
+using System.Web.Script.Serialization;
+using System.Net;
 
 namespace BizOneShot.Light.Web.Areas.Mentor.Controllers
 {
@@ -531,11 +533,20 @@ namespace BizOneShot.Light.Web.Areas.Mentor.Controllers
                     //}
                     #endregion
 
-                    // 심화보고서 최종 제출 시 if테이블에 url 담기는 것
                     int cnt = 0;
 
                     if (files != null)
                     {
+
+                        // if 테이블에 insert
+                        TcmsIfLastReport tcmsIfLastReport = new TcmsIfLastReport();
+
+                        // update하기 위한
+                        var compObj = await vcCompInfoService.getVcCompInfoByCompSn(deepenReport.CompSn);
+                        var baObj = await vcBaInfoService.getVcBaInfoByBaSn(baSns);
+                        var mentorObj = await vcMentorInfoService.getVcMentorInfoByMentorSn(Convert.ToString(mentorSn));
+
+                        var tcmsIfLastReportObj = await tcmsIfLastReportService.getTcmsIfLastReportInfo(compObj.TcmsLoginKey, baObj.TcmsLoginKey, mentorObj.TcmsLoginKey, conCodes[0].ConCode);
 
                         foreach (var file in files)
                         {
@@ -551,12 +562,7 @@ namespace BizOneShot.Light.Web.Areas.Mentor.Controllers
                             var directoryPath = Path.Combine(rootFilePath, subDirectoryPath);
                             var absFilePath = directoryPath + "//" + savedFileName;                // 심화보고서 최종 제출 URL
 
-                            // if 테이블에 insert
-                            TcmsIfLastReport tcmsIfLastReport = new TcmsIfLastReport();
 
-                            var compObj = await vcCompInfoService.getVcCompInfoByCompSn(deepenReport.CompSn);
-                            var baObj = await vcBaInfoService.getVcBaInfoByBaSn(baSns);
-                            var mentorObj = await vcMentorInfoService.getVcMentorInfoByMentorSn(Convert.ToString(mentorSn));
 
                             // 기본적인 정보는 한번 담고 
                             if (cnt == 0)
@@ -583,7 +589,7 @@ namespace BizOneShot.Light.Web.Areas.Mentor.Controllers
 
                                 // update 해야 함
                                 // compSn, baSn, mentorSn, conCode을 이용하여 조회 해서 file 2부터 update
-                                var tcmsIfLastReportObj = await tcmsIfLastReportService.getTcmsIfLastReportInfo(compObj.TcmsLoginKey, baObj.TcmsLoginKey, mentorObj.TcmsLoginKey, conCodes[0].ConCode);
+
 
                                 if (cnt == 1)
                                 {
@@ -606,12 +612,30 @@ namespace BizOneShot.Light.Web.Areas.Mentor.Controllers
                                     tcmsIfLastReportService.SaveDbContext();
 
                                 }
+                                else if (cnt == 4)
+                                {
+
+                                    tcmsIfLastReportObj.File5 = absFilePath;
+                                    tcmsIfLastReportService.SaveDbContext();
+
+                                }
 
                             }
 
                             cnt++;
 
                         }
+
+                        // 데이터 전송
+                        if (cnt == 0)
+                        {
+                            sendLastReport(tcmsIfLastReport);
+                        }
+                        else
+                        {
+                            sendLastReport(tcmsIfLastReportObj);
+                        }
+
 
                         #region
 
@@ -790,7 +814,17 @@ namespace BizOneShot.Light.Web.Areas.Mentor.Controllers
                     if(files != null)
                     {
 
-                        foreach(var file in files)
+                        // if 테이블에 insert
+                        TcmsIfLastReport tcmsIfLastReport = new TcmsIfLastReport();
+
+                        // update하기 위한
+                        var compObj = await vcCompInfoService.getVcCompInfoByCompSn(deepenReport.CompSn);
+                        var baObj = await vcBaInfoService.getVcBaInfoByBaSn(baSns);
+                        var mentorObj = await vcMentorInfoService.getVcMentorInfoByMentorSn(Convert.ToString(mentorSn));
+
+                        var tcmsIfLastReportObj = await tcmsIfLastReportService.getTcmsIfLastReportInfo(compObj.TcmsLoginKey, baObj.TcmsLoginKey, mentorObj.TcmsLoginKey, conCode);
+
+                        foreach (var file in files)
                         {
 
                             var fileHelper = new FileHelper();
@@ -804,12 +838,7 @@ namespace BizOneShot.Light.Web.Areas.Mentor.Controllers
                             var directoryPath = Path.Combine(rootFilePath, subDirectoryPath);
                             var absFilePath = directoryPath + "//" + savedFileName;                // 심화보고서 최종 제출 URL
 
-                            // if 테이블에 insert
-                            TcmsIfLastReport tcmsIfLastReport = new TcmsIfLastReport();
-
-                            var compObj = await vcCompInfoService.getVcCompInfoByCompSn(deepenReport.CompSn);
-                            var baObj = await vcBaInfoService.getVcBaInfoByBaSn(baSns);
-                            var mentorObj = await vcMentorInfoService.getVcMentorInfoByMentorSn(Convert.ToString(mentorSn));
+                            
 
                             // 기본적인 정보는 한번 담고 
                             if (cnt == 0)
@@ -836,7 +865,7 @@ namespace BizOneShot.Light.Web.Areas.Mentor.Controllers
 
                                 // update 해야 함
                                 // compSn, baSn, mentorSn, conCode을 이용하여 조회 해서 file 2부터 update
-                                var tcmsIfLastReportObj = await tcmsIfLastReportService.getTcmsIfLastReportInfo(compObj.TcmsLoginKey, baObj.TcmsLoginKey, mentorObj.TcmsLoginKey, conCode);
+                                
 
                                 if(cnt == 1)
                                 {
@@ -859,12 +888,29 @@ namespace BizOneShot.Light.Web.Areas.Mentor.Controllers
                                     tcmsIfLastReportService.SaveDbContext();
 
                                 }
+                                else if(cnt == 4)
+                                {
+
+                                    tcmsIfLastReportObj.File5 = absFilePath;
+                                    tcmsIfLastReportService.SaveDbContext();
+
+                                }
 
                             }
 
                             cnt++;
 
                         }
+
+                        // 데이터 전송
+                        if (cnt == 0)
+                        {
+                            sendLastReport(tcmsIfLastReport);
+                        }else
+                        {
+                            sendLastReport(tcmsIfLastReportObj); 
+                        }
+                        
 
                         #region
 
@@ -984,6 +1030,69 @@ namespace BizOneShot.Light.Web.Areas.Mentor.Controllers
 
             return rst;
         }
+
+        public string sendLastReport(TcmsIfLastReport tcmsIfLastReport)
+        {
+            HttpContext.Response.AppendHeader("Access-Control-Allow-Origin", "*");
+            string result = "";
+
+            var httpWebRequest = (HttpWebRequest)WebRequest.Create("http://tcms.igarim.com/Api/tcms_if_last_report.php");
+            httpWebRequest.ContentType = "application/jsonp";
+            httpWebRequest.Method = "POST";
+            httpWebRequest.CookieContainer = new CookieContainer();
+            HttpCookieCollection cookies = Request.Cookies;
+            for (int i = 0; i < cookies.Count; i++)
+            {
+                HttpCookie httpCookie = cookies.Get(i);
+                Cookie cookie = new Cookie();
+                cookie.Domain = httpWebRequest.RequestUri.Host;
+                cookie.Expires = httpCookie.Expires;
+                cookie.Name = httpCookie.Name;
+                cookie.Path = httpCookie.Path;
+                cookie.Secure = httpCookie.Secure;
+                cookie.Value = httpCookie.Value;
+                httpWebRequest.CookieContainer.Add(cookie);
+            }
+
+            using (var streamWriter = new StreamWriter(httpWebRequest.GetRequestStream()))
+            {
+                string jsont = new JavaScriptSerializer().Serialize(new
+                {
+
+                    InfId = tcmsIfLastReport.InfId,
+                    CompLoginKey = tcmsIfLastReport.CompLoginKey,
+                    BaLoginKey = tcmsIfLastReport.BaLoginKey,
+                    MentorLoginKey = tcmsIfLastReport.MentorLoginKey,
+                    NumSn = tcmsIfLastReport.NumSn,
+                    SubNumSn = tcmsIfLastReport.SubNumSn,
+                    ConCode = tcmsIfLastReport.ConCode,
+
+                    File1 = tcmsIfLastReport.File1,
+                    File2 = tcmsIfLastReport.File2,
+                    File3 = tcmsIfLastReport.File3,
+                    File4 = tcmsIfLastReport.File4,
+                    File5 = tcmsIfLastReport.File5,
+
+                    InfDt = tcmsIfLastReport.InfDt
+
+                });
+
+                streamWriter.Write(jsont);
+
+            }
+
+            var httpResponse = (HttpWebResponse)httpWebRequest.GetResponse();
+            using (var streamReader = new StreamReader(httpResponse.GetResponseStream()))
+            {
+
+                result = streamReader.ReadToEnd();
+
+            }
+
+            return result;
+
+        }
+
 
 
         [HttpPost]

@@ -231,7 +231,7 @@
                                 @if (item.Status == "C")
                                 {
                                     <td class="Status" rowspan="">
-                                        <a href="@Url.Action("ReportCover", "Report", new { area = "SysManager", Numsn = item.NumSn, CompSn = item.CompSn, BizWorkYear = item.BizWorkYear, Status = item.Status, QuestionSn = item.QuestionSn } )" class="btn_mid_a lightblue">보고서보기</a>
+                                        <a href="@Url.Action("ReportCover", "Report", new { area = "SysManager", NumSn = item.NumSn, CompSn = item.CompSn, BizWorkYear = item.BizWorkYear, Status = item.Status, QuestionSn = item.QuestionSn } )" class="btn_mid_a lightblue">보고서보기</a>
                                     </td>
                                 }
                                 else if (item.Status == "P")
