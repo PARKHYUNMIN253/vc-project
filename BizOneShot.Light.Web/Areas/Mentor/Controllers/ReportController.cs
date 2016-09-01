@@ -478,75 +478,26 @@ namespace BizOneShot.Light.Web.Areas.Mentor.Controllers
 
                     TotalReportInfo.FinalSubmitYn = "Y";
                     await _scMentoringTotalReportService.SaveDbContextAsync();
-                    
 
-                    if(files != null)
-                    {
-                        // 심화보고서 다운로드 파일 URL로 받기
-                        var fileNameList = files.Select(bw => bw.FileName);
-
-                        string fileNm = Request.QueryString["FileNm"];
-                        string filePath = Request.QueryString["FilePath"];
-
-                        var rootFilePath = ConfigurationManager.AppSettings["RootFilePath"];
-
-                        //string archiveName = fileNm;
-
-                        //var urlFiles = new List<FileContent>();
-
-                        //var file = new FileContent
-                        //{
-                        //    FileNm = fileNm,
-                        //    FilePath = filePath
-                        //};
-
-                        //urlFiles.Add(file);
-
-                        var fileUrl = rootFilePath + "//" + fileNameList;
-                    }
-
-                    #region
-                    // 중복 최종제출 확인
-                    // var checkSubmit = await vcLastReportNSatService.checkDeepenSubmitByMentor(compSn, baSn, numSn, subNumSn, conCode[0].ConCode);
-                    // var test1 = await _scMentoringTotalReportService.checkFinalSubmit(compSn, mentorId.LoginId, numSn, subNumSn, conCode[0].ConCode);
-
-                    //foreach(var item in test1)
-                    //{
-                    //    if(item.TotalReportSn == totalReportSn)
-                    //    {
-                    //        TotalReportInfo.FinalSubmitYn = "Y";
-
-                    //        await _scMentoringTotalReportService.SaveDbContextAsync();
-
-                    //    }
-                    //    else
-                    //    {
-                    //        TotalReportInfo.FinalSubmitYn = "D";
-
-                    //        await _scMentoringTotalReportService.SaveDbContextAsync();
-                    //    }
-                    //}
-
-                    //if(checkSubmit.Count > 0)
-                    //{
-                    //    TotalReportInfo.FinalSubmitYn = "D";
-                    //}
-                    #endregion
-
+                    // 심화보고서 최종 제출 시 if테이블에 url 담기는 것
                     int cnt = 0;
+
+                    // if 테이블에 insert
+                    await scMentorMappingService.SaveDbContextAsync();
+
+                    TcmsIfLastReport tcmsIfLastReport = new TcmsIfLastReport();
+
+                    // update하기 위한
+                    var compObj = await vcCompInfoService.getVcCompInfoByCompSn(deepenReport.CompSn);
+                    var baObj = await vcBaInfoService.getVcBaInfoByBaSn(baSns);
+                    var mentorObj = await vcMentorInfoService.getVcMentorInfoByMentorSn(Convert.ToString(mentorSn));
+
+                    var tcmsIfLastReportObj = await tcmsIfLastReportService.getTcmsIfLastReportInfo(compObj.TcmsLoginKey, baObj.TcmsLoginKey, mentorObj.TcmsLoginKey, conCodes[0].ConCode);
+
 
                     if (files != null)
                     {
 
-                        // if 테이블에 insert
-                        TcmsIfLastReport tcmsIfLastReport = new TcmsIfLastReport();
-
-                        // update하기 위한
-                        var compObj = await vcCompInfoService.getVcCompInfoByCompSn(deepenReport.CompSn);
-                        var baObj = await vcBaInfoService.getVcBaInfoByBaSn(baSns);
-                        var mentorObj = await vcMentorInfoService.getVcMentorInfoByMentorSn(Convert.ToString(mentorSn));
-
-                        var tcmsIfLastReportObj = await tcmsIfLastReportService.getTcmsIfLastReportInfo(compObj.TcmsLoginKey, baObj.TcmsLoginKey, mentorObj.TcmsLoginKey, conCodes[0].ConCode);
 
                         foreach (var file in files)
                         {
@@ -621,54 +572,57 @@ namespace BizOneShot.Light.Web.Areas.Mentor.Controllers
                                 }
 
                             }
-
                             cnt++;
-
                         }
 
-                        // 데이터 전송
-                        if (cnt == 0)
-                        {
-                            sendLastReport(tcmsIfLastReport);
-                        }
-                        else
-                        {
-                            sendLastReport(tcmsIfLastReportObj);
-                        }
+                    }
+                    else
+                    {
+                        // file 이 null 일경우 조회해서 insert
+                        var scMentoringTotalReport2 = await _scMentoringTotalReportService.GetMentoringTotalReportById(totalReportSn);
 
+                        var listscFileInfo2 = scMentoringTotalReport.ScMentoringTrFileInfoes.Select(mtfi => mtfi.ScFileInfo).Where(fi => fi.Status == "N");
 
-                        #region
+                        var rootFilePath = ConfigurationManager.AppSettings["RootFilePath"];
 
-                        //var fileNameList = files.Select(bw => bw.FileName);
+                        var listFileContent2 =
+                           Mapper.Map<List<FileContent>>(listscFileInfo2);
 
-                        //string fileNm = Request.QueryString["FileNm"];
-                        //string filePath = Request.QueryString["FilePath"];
+                        // 다운로드 가능한 링크
+                        var fullPath = rootFilePath + listFileContent2[0].FilePath;
 
-                        //var rootFilePath = ConfigurationM
+                        tcmsIfLastReport.InfId = await satiNumGenerator();
 
-                        ////string archiveName = fileNm;
+                        tcmsIfLastReport.CompLoginKey = compObj.TcmsLoginKey;
+                        tcmsIfLastReport.BaLoginKey = baObj.TcmsLoginKey;
+                        tcmsIfLastReport.MentorLoginKey = mentorObj.TcmsLoginKey;
 
-                        ////var urlFiles = new List<FileContent>();
+                        tcmsIfLastReport.NumSn = numSn;
+                        tcmsIfLastReport.SubNumSn = subNumSn;
 
-                        ////var file = new FileContent
-                        ////{
-                        ////    FileNm = fileNm,
-                        ////    FilePath = filePath
-                        ////};
+                        tcmsIfLastReport.ConCode = conCodes[0].ConCode;
+                        tcmsIfLastReport.File1 = fullPath;
 
-                        ////urlFiles.Add(file);
+                        tcmsIfLastReportService.Insert(tcmsIfLastReport);
+                        tcmsIfLastReportService.SaveDbContext();
 
-                        //var fileUrl = rootFilePath + "//" + fileNameList;
-                        #endregion
 
                     }
 
-                    await scMentorMappingService.SaveDbContextAsync();
+                    // 데이터 전송
+                    if (cnt == 0)
+                    {
+                        sendLastReport(tcmsIfLastReport);
+                    }
+                    else
+                    {
+                        sendLastReport(tcmsIfLastReportObj);
+                    }
 
                 }
-
                 return RedirectToAction("DeepenReportList", "Report");
             }
+
             else
             {
 
@@ -809,20 +763,25 @@ namespace BizOneShot.Light.Web.Areas.Mentor.Controllers
                     //}
 
                     // 심화보고서 최종 제출 시 if테이블에 url 담기는 것
+                    // 심화보고서 최종 제출 시 if테이블에 url 담기는 것
                     int cnt = 0;
 
-                    if(files != null)
+                    // if 테이블에 insert
+                    await scMentorMappingService.SaveDbContextAsync();
+
+                    TcmsIfLastReport tcmsIfLastReport = new TcmsIfLastReport();
+
+                    // update하기 위한
+                    var compObj = await vcCompInfoService.getVcCompInfoByCompSn(deepenReport.CompSn);
+                    var baObj = await vcBaInfoService.getVcBaInfoByBaSn(baSns);
+                    var mentorObj = await vcMentorInfoService.getVcMentorInfoByMentorSn(Convert.ToString(mentorSn));
+
+                    var tcmsIfLastReportObj = await tcmsIfLastReportService.getTcmsIfLastReportInfo(compObj.TcmsLoginKey, baObj.TcmsLoginKey, mentorObj.TcmsLoginKey, conCodes[0].ConCode);
+
+
+                    if (files != null)
                     {
 
-                        // if 테이블에 insert
-                        TcmsIfLastReport tcmsIfLastReport = new TcmsIfLastReport();
-
-                        // update하기 위한
-                        var compObj = await vcCompInfoService.getVcCompInfoByCompSn(deepenReport.CompSn);
-                        var baObj = await vcBaInfoService.getVcBaInfoByBaSn(baSns);
-                        var mentorObj = await vcMentorInfoService.getVcMentorInfoByMentorSn(Convert.ToString(mentorSn));
-
-                        var tcmsIfLastReportObj = await tcmsIfLastReportService.getTcmsIfLastReportInfo(compObj.TcmsLoginKey, baObj.TcmsLoginKey, mentorObj.TcmsLoginKey, conCode);
 
                         foreach (var file in files)
                         {
@@ -838,7 +797,7 @@ namespace BizOneShot.Light.Web.Areas.Mentor.Controllers
                             var directoryPath = Path.Combine(rootFilePath, subDirectoryPath);
                             var absFilePath = directoryPath + "//" + savedFileName;                // 심화보고서 최종 제출 URL
 
-                            
+
 
                             // 기본적인 정보는 한번 담고 
                             if (cnt == 0)
@@ -853,7 +812,7 @@ namespace BizOneShot.Light.Web.Areas.Mentor.Controllers
                                 tcmsIfLastReport.NumSn = numSn;
                                 tcmsIfLastReport.SubNumSn = subNumSn;
 
-                                tcmsIfLastReport.ConCode = conCode;
+                                tcmsIfLastReport.ConCode = conCodes[0].ConCode;
                                 tcmsIfLastReport.File1 = absFilePath;
 
                                 tcmsIfLastReportService.Insert(tcmsIfLastReport);
@@ -865,30 +824,30 @@ namespace BizOneShot.Light.Web.Areas.Mentor.Controllers
 
                                 // update 해야 함
                                 // compSn, baSn, mentorSn, conCode을 이용하여 조회 해서 file 2부터 update
-                                
 
-                                if(cnt == 1)
+
+                                if (cnt == 1)
                                 {
 
                                     tcmsIfLastReportObj.File2 = absFilePath;
                                     tcmsIfLastReportService.SaveDbContext();
 
                                 }
-                                else if(cnt == 2)
+                                else if (cnt == 2)
                                 {
 
                                     tcmsIfLastReportObj.File3 = absFilePath;
                                     tcmsIfLastReportService.SaveDbContext();
 
                                 }
-                                else if(cnt == 3)
+                                else if (cnt == 3)
                                 {
 
                                     tcmsIfLastReportObj.File4 = absFilePath;
                                     tcmsIfLastReportService.SaveDbContext();
 
                                 }
-                                else if(cnt == 4)
+                                else if (cnt == 4)
                                 {
 
                                     tcmsIfLastReportObj.File5 = absFilePath;
@@ -897,79 +856,54 @@ namespace BizOneShot.Light.Web.Areas.Mentor.Controllers
                                 }
 
                             }
-
                             cnt++;
-
                         }
 
-                        // 데이터 전송
-                        if (cnt == 0)
-                        {
-                            sendLastReport(tcmsIfLastReport);
-                        }else
-                        {
-                            sendLastReport(tcmsIfLastReportObj); 
-                        }
-                        
+                    }
+                    else
+                    {
+                        // file 이 null 일경우 조회해서 insert
+                        var scMentoringTotalReport2 = await _scMentoringTotalReportService.GetMentoringTotalReportById(totalReportSn);
 
-                        #region
+                        var listscFileInfo2 = scMentoringTotalReport.ScMentoringTrFileInfoes.Select(mtfi => mtfi.ScFileInfo).Where(fi => fi.Status == "N");
 
-                        //var fileNameList = files.Select(bw => bw.FileName);
+                        var rootFilePath = ConfigurationManager.AppSettings["RootFilePath"];
 
-                        //string fileNm = Request.QueryString["FileNm"];
-                        //string filePath = Request.QueryString["FilePath"];
+                        var listFileContent2 =
+                           Mapper.Map<List<FileContent>>(listscFileInfo2);
 
-                        //var rootFilePath = ConfigurationM
+                        // 다운로드 가능한 링크
+                        var fullPath = rootFilePath + listFileContent2[0].FilePath;
 
-                        ////string archiveName = fileNm;
+                        tcmsIfLastReport.InfId = await satiNumGenerator();
 
-                        ////var urlFiles = new List<FileContent>();
+                        tcmsIfLastReport.CompLoginKey = compObj.TcmsLoginKey;
+                        tcmsIfLastReport.BaLoginKey = baObj.TcmsLoginKey;
+                        tcmsIfLastReport.MentorLoginKey = mentorObj.TcmsLoginKey;
 
-                        ////var file = new FileContent
-                        ////{
-                        ////    FileNm = fileNm,
-                        ////    FilePath = filePath
-                        ////};
+                        tcmsIfLastReport.NumSn = numSn;
+                        tcmsIfLastReport.SubNumSn = subNumSn;
 
-                        ////urlFiles.Add(file);
+                        tcmsIfLastReport.ConCode = conCodes[0].ConCode;
+                        tcmsIfLastReport.File1 = fullPath;
 
-                        //var fileUrl = rootFilePath + "//" + fileNameList;
-                        #endregion
+                        tcmsIfLastReportService.Insert(tcmsIfLastReport);
+                        tcmsIfLastReportService.SaveDbContext();
+
 
                     }
 
-                    #region
-                    // 중복 최종제출 확인
-                    // var checkSubmit = await vcLastReportNSatService.checkDeepenSubmitByMentor(compSn, baSn, numSn, subNumSn, conCode[0].ConCode);
-                    // var test1 = await _scMentoringTotalReportService.checkFinalSubmit(compSn, mentorId.LoginId, numSn, subNumSn, conCode[0].ConCode);
-
-                    //foreach(var item in test1)
-                    //{
-                    //    if(item.TotalReportSn == totalReportSn)
-                    //    {
-                    //        TotalReportInfo.FinalSubmitYn = "Y";
-
-                    //        await _scMentoringTotalReportService.SaveDbContextAsync();
-
-                    //    }
-                    //    else
-                    //    {
-                    //        TotalReportInfo.FinalSubmitYn = "D";
-
-                    //        await _scMentoringTotalReportService.SaveDbContextAsync();
-                    //    }
-                    //}
-
-                    //if(checkSubmit.Count > 0)
-                    //{
-                    //    TotalReportInfo.FinalSubmitYn = "D";
-                    //}
-                    #endregion
-
-                    await scMentorMappingService.SaveDbContextAsync();
+                    // 데이터 전송
+                    if (cnt == 0)
+                    {
+                        sendLastReport(tcmsIfLastReport);
+                    }
+                    else
+                    {
+                        sendLastReport(tcmsIfLastReportObj);
+                    }
 
                 }
-
                 if (result != -1)
 
                     return RedirectToAction("DeepenReportList", "Report");
