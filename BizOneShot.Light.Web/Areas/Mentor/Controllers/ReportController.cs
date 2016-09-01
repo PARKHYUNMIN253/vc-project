@@ -503,10 +503,6 @@ namespace BizOneShot.Light.Web.Areas.Mentor.Controllers
                         var fileUrl = rootFilePath + "//" + fileNameList;
                     }
 
-
-
-
-
                     #region
                     // 중복 최종제출 확인
                     // var checkSubmit = await vcLastReportNSatService.checkDeepenSubmitByMentor(compSn, baSn, numSn, subNumSn, conCode[0].ConCode);
@@ -589,9 +585,34 @@ namespace BizOneShot.Light.Web.Areas.Mentor.Controllers
                                 // compSn, baSn, mentorSn, conCode을 이용하여 조회 해서 file 2부터 update
                                 var tcmsIfLastReportObj = await tcmsIfLastReportService.getTcmsIfLastReportInfo(compObj.TcmsLoginKey, baObj.TcmsLoginKey, mentorObj.TcmsLoginKey, conCodes[0].ConCode);
 
+                                if (cnt == 1)
+                                {
+
+                                    tcmsIfLastReportObj.File2 = absFilePath;
+                                    tcmsIfLastReportService.SaveDbContext();
+
+                                }
+                                else if (cnt == 2)
+                                {
+
+                                    tcmsIfLastReportObj.File3 = absFilePath;
+                                    tcmsIfLastReportService.SaveDbContext();
+
+                                }
+                                else if (cnt == 3)
+                                {
+
+                                    tcmsIfLastReportObj.File4 = absFilePath;
+                                    tcmsIfLastReportService.SaveDbContext();
+
+                                }
+
                             }
+
                             cnt++;
+
                         }
+
                         #region
 
                         //var fileNameList = files.Select(bw => bw.FileName);
@@ -599,7 +620,7 @@ namespace BizOneShot.Light.Web.Areas.Mentor.Controllers
                         //string fileNm = Request.QueryString["FileNm"];
                         //string filePath = Request.QueryString["FilePath"];
 
-                        //var rootFilePath = ConfigurationManager.AppSettings["RootFilePath"];
+                        //var rootFilePath = ConfigurationM
 
                         ////string archiveName = fileNm;
 
@@ -615,8 +636,8 @@ namespace BizOneShot.Light.Web.Areas.Mentor.Controllers
 
                         //var fileUrl = rootFilePath + "//" + fileNameList;
                         #endregion
-                    }
 
+                    }
 
                     await scMentorMappingService.SaveDbContextAsync();
 
@@ -817,9 +838,34 @@ namespace BizOneShot.Light.Web.Areas.Mentor.Controllers
                                 // compSn, baSn, mentorSn, conCode을 이용하여 조회 해서 file 2부터 update
                                 var tcmsIfLastReportObj = await tcmsIfLastReportService.getTcmsIfLastReportInfo(compObj.TcmsLoginKey, baObj.TcmsLoginKey, mentorObj.TcmsLoginKey, conCode);
 
+                                if(cnt == 1)
+                                {
+
+                                    tcmsIfLastReportObj.File2 = absFilePath;
+                                    tcmsIfLastReportService.SaveDbContext();
+
+                                }
+                                else if(cnt == 2)
+                                {
+
+                                    tcmsIfLastReportObj.File3 = absFilePath;
+                                    tcmsIfLastReportService.SaveDbContext();
+
+                                }
+                                else if(cnt == 3)
+                                {
+
+                                    tcmsIfLastReportObj.File4 = absFilePath;
+                                    tcmsIfLastReportService.SaveDbContext();
+
+                                }
+
                             }
+
                             cnt++;
+
                         }
+
                         #region
 
                         //var fileNameList = files.Select(bw => bw.FileName);
@@ -827,7 +873,7 @@ namespace BizOneShot.Light.Web.Areas.Mentor.Controllers
                         //string fileNm = Request.QueryString["FileNm"];
                         //string filePath = Request.QueryString["FilePath"];
 
-                        //var rootFilePath = ConfigurationManager.AppSettings["RootFilePath"];
+                        //var rootFilePath = ConfigurationM
 
                         ////string archiveName = fileNm;
 
@@ -843,6 +889,7 @@ namespace BizOneShot.Light.Web.Areas.Mentor.Controllers
 
                         //var fileUrl = rootFilePath + "//" + fileNameList;
                         #endregion
+
                     }
 
                     #region
@@ -874,6 +921,7 @@ namespace BizOneShot.Light.Web.Areas.Mentor.Controllers
                     #endregion
 
                     await scMentorMappingService.SaveDbContextAsync();
+
                 }
 
                 if (result != -1)
@@ -882,8 +930,10 @@ namespace BizOneShot.Light.Web.Areas.Mentor.Controllers
 
                 else
                 {
+
                     ModelState.AddModelError("", "자료요청 등록 실패.");
                     return View(dataRequestViewModel);
+
                 }
 
             }
