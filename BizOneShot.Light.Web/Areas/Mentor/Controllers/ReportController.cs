@@ -1379,7 +1379,15 @@ namespace BizOneShot.Light.Web.Areas.Mentor.Controllers
             }
             else
             {
-                result = "T";
+                if(checkReport.Status == "C")
+                {
+                    result = "T";
+                }
+                else
+                {
+                    result = "F";
+                }
+                
             }
 
             return Json(result);
