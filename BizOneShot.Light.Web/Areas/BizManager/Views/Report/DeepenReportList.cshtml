@@ -122,7 +122,7 @@
 <div class="tcms">
     <div class="main_top">
         <div class="list_icon"></div>
-        <div class="sub_title">심화 보고서 조회</div>
+        <div class="sub_title">결과 보고서 조회</div>
         @RenderPage("~/Areas/BizManager/Views/Shared/_MainTopMenuPartial.cshtml")
     </div>
     @using (Html.BeginForm("DeepenReportList", "Report", FormMethod.Post, new { area = "Mentor", id = "searchForm" }))
@@ -140,7 +140,7 @@
         <div class="tablewrap">
             <!--목록-->
             <table class="admin_list">
-                <caption>심화 보고서 조회</caption>
+                <caption>결과 보고서 조회</caption>
                 <colgroup>
                     <col width="30%">
                     <col width="30%">
@@ -150,7 +150,7 @@
                 <tr>
                     <th class="topcen">기업명</th>
                     <th class="topcen">제출일</th>
-                    <th class="topcen">심화 보고서 조회</th>
+                    <th class="topcen">결과 보고서 조회</th>
                 </tr>
 
                 @if (Model == null || Model.TotalItemCount == 0)

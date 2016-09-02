@@ -513,8 +513,6 @@ namespace BizOneShot.Light.Web.Areas.Mentor.Controllers
                             var directoryPath = Path.Combine(rootFilePath, subDirectoryPath);
                             var absFilePath = directoryPath + "//" + savedFileName;                // 심화보고서 최종 제출 URL
 
-
-
                             // 기본적인 정보는 한번 담고 
                             if (cnt == 0)
                             {
@@ -605,8 +603,7 @@ namespace BizOneShot.Light.Web.Areas.Mentor.Controllers
 
                         tcmsIfLastReportService.Insert(tcmsIfLastReport);
                         tcmsIfLastReportService.SaveDbContext();
-
-
+                        
                     }
 
                     // 데이터 전송
@@ -1026,8 +1023,6 @@ namespace BizOneShot.Light.Web.Areas.Mentor.Controllers
             return result;
 
         }
-
-
 
         [HttpPost]
         public async Task<JsonResult> GetCompanyNm(int BizWorkSn, int Year)
