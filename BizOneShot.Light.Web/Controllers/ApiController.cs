@@ -1135,7 +1135,8 @@ namespace BizOneShot.Light.Web.Controllers
             // 해당 ba, mentor, comp가 어떤 tcmsLoginKey를 가지고 있는지 알아야 한다
 
             var httpWebRequest = (HttpWebRequest)WebRequest.Create("http://tcms.igarim.com/Api/tcms_if_survey.php");
-            httpWebRequest.ContentType = "application/jsonp";
+            httpWebRequest.Accept = "application/json";
+            httpWebRequest.ContentType = "application/json";
             httpWebRequest.Method = "POST";
             httpWebRequest.CookieContainer = new CookieContainer();
             HttpCookieCollection cookies = Request.Cookies;
@@ -1156,7 +1157,7 @@ namespace BizOneShot.Light.Web.Controllers
             {
                 string jsont = new JavaScriptSerializer().Serialize(new
                 {
-                    InfId = "VOUCHER_IF_09999",
+                    InfId = "VOUCHER_IF_07000",
                     CompLoginKey = "147",
                     BaLoginKey = "350",
                     MentorLoginKey = "344",
@@ -1234,6 +1235,8 @@ namespace BizOneShot.Light.Web.Controllers
                 //streamWriter.Write(rst);
                 //streamWriter.Flush();
                 //streamWriter.Close();
+                JavaScriptSerializer serializer = new JavaScriptSerializer();
+                var tempJson = serializer.Deserialize<Dictionary<string, object>>(jsont);
                 streamWriter.Write(jsont);
             }
             var httpResponse = (HttpWebResponse)httpWebRequest.GetResponse();
