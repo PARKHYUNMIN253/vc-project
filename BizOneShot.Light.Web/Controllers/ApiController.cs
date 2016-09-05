@@ -37,7 +37,7 @@ namespace BizOneShot.Light.Web.Controllers
 
         // Constructor...
         public ApiController
-        ( IVcIfTableService _vcIfTableService,
+        (IVcIfTableService _vcIfTableService,
           IScUsrService _scUsrService,
           IVcCompInfoService _vcCompInfoService,
           IQuesMasterService _quesMasterService,
@@ -211,7 +211,7 @@ namespace BizOneShot.Light.Web.Controllers
                     data = "{\"status\":\"" + status + "\"}";
                     return Json(data);
                 }
-                else 
+                else
                 {
                     var SelectComp = await _vcCompInfoService.getVcCompInfoByKey(vcIfCompInfo.TcmsLoginKey);
                     var SelectCompId = await _scUsrService.selectScUsrByTcms(Convert.ToString(vcIfCompInfo.TcmsLoginKey));
@@ -706,7 +706,7 @@ namespace BizOneShot.Light.Web.Controllers
                     var baLoginKey = vcIfCompMapping.BaLoginKey;
                     var baSn = await _vcBaInfoService.getVcBaInfoByLoginKey(baLoginKey);
 
-                    var cpMpCodeCheck = Convert.ToString(compSn[0].CompSn) + Convert.ToString(baSn[0].BaSn) + vcIfCompMapping.NumSn+ vcIfCompMapping.SubNumSn + vcIfCompMapping.ConCode;
+                    var cpMpCodeCheck = Convert.ToString(compSn[0].CompSn) + Convert.ToString(baSn[0].BaSn) + vcIfCompMapping.NumSn + vcIfCompMapping.SubNumSn + vcIfCompMapping.ConCode;
                     var checkCompMapping = await _vcCompInfoService.getCompMappingByCpMpCode(cpMpCodeCheck);
 
                     if (checkCompMapping == null)
@@ -1126,17 +1126,100 @@ namespace BizOneShot.Light.Web.Controllers
 
         // TCMS로 보내는 API
 
-        public string sendSatisfaction(/*VcSatCheckViewModel vsModel*/)
+        //public string sendSatisfaction()
+        //{
+        //    HttpContext.Response.AppendHeader("Access-Control-Allow-Origin", "*");
+        //    string result = "";
+
+        //    VcSatCheckViewModel vsModel = new VcSatCheckViewModel();
+        //    // 모델이 추가됐을 때 필요한 것
+        //    // 해당 ba, mentor, comp가 어떤 tcmsLoginKey를 가지고 있는지 알아야 한다
+        //    StatusModel statusModel = new StatusModel();
+
+        //    var httpWebRequest = (HttpWebRequest)WebRequest.Create("http://tcms.igarim.com/Api/tcms_if_survey.php");
+        //    //httpWebRequest.Accept = "application/json";
+        //    httpWebRequest.ContentType = "application/x-www-form-urlencoded";
+        //    httpWebRequest.Method = "POST";
+        //    httpWebRequest.CookieContainer = new CookieContainer();
+        //    HttpCookieCollection cookies = Request.Cookies;
+        //    for (int i = 0; i < cookies.Count; i++)
+        //    {
+        //        HttpCookie httpCookie = cookies.Get(i);
+        //        Cookie cookie = new Cookie();
+        //        cookie.Domain = httpWebRequest.RequestUri.Host;
+        //        cookie.Expires = httpCookie.Expires;
+        //        cookie.Name = httpCookie.Name;
+        //        cookie.Path = httpCookie.Path;
+        //        cookie.Secure = httpCookie.Secure;
+        //        cookie.Value = httpCookie.Value;
+        //        httpWebRequest.CookieContainer.Add(cookie);
+        //    }
+
+        //    using (var requestStream = httpWebRequest.GetRequestStream())
+        //    {
+        //        string jsont = new JavaScriptSerializer().Serialize(new
+        //        {
+        //            infid = "voucher_if_07000",
+        //            comploginkey = "147",
+        //            baloginkey = "350",
+        //            mentorloginkey = "344",
+        //            numsn = "001",
+        //            subnumsn = "01",
+        //            concode = "rd02",
+        //            satisfactiongrade = "65",
+        //            check01 = "1",
+        //            check02 = "1",
+        //            check03 = "1",
+        //            check04 = "1",
+        //            check05 = "1",
+        //            check06 = "1",
+        //            check07 = "1",
+        //            check08 = "1",
+        //            check09 = "1",
+        //            check10 = "1",
+        //            check11 = "1",
+        //            check12 = "1",
+        //            check13 = "1",
+        //            check14 = "1",
+        //            check15 = "1",
+        //            check16 = "1",
+        //            check17 = "1",
+        //            check18 = "1",
+        //            check19 = "1",
+        //            check20 = "1",
+        //            check21 = "1",
+        //            check22 = "2",
+        //            check23 = "3",
+        //            check24 = "5",
+        //            text01 = "텍스트01",
+        //            text02 = "텍스트02",
+        //            infdt = DateTime.Today.ToString()
+        //        });
+
+        //        byte[] ba = Encoding.UTF8.GetBytes("json=" + jsont);
+
+        //        requestStream.Write(ba, 0, ba.Length);
+        //        requestStream.Flush();
+        //        requestStream.Close();
+        //    }
+        //    var httpResponse = (HttpWebResponse)httpWebRequest.GetResponse();
+        //    using (var streamReader = new StreamReader(httpResponse.GetResponseStream()))
+        //    {
+        //        JavaScriptSerializer js = new JavaScriptSerializer();
+        //        result = streamReader.ReadToEnd();
+        //        statusModel = (StatusModel)js.Deserialize(result, typeof(StatusModel));
+        //    }
+        //    return statusModel.status;
+        //}
+
+        public string sendLastReport()
         {
             HttpContext.Response.AppendHeader("Access-Control-Allow-Origin", "*");
             string result = "";
 
-            VcSatCheckViewModel vsModel = new VcSatCheckViewModel();
-            // 모델이 추가됐을 때 필요한 것
-            // 해당 ba, mentor, comp가 어떤 tcmsLoginKey를 가지고 있는지 알아야 한다
             StatusModel statusModel = new StatusModel();
 
-            var httpWebRequest = (HttpWebRequest)WebRequest.Create("http://tcms.igarim.com/Api/tcms_if_survey.php");
+            var httpWebRequest = (HttpWebRequest)WebRequest.Create("http://tcms.igarim.com/Api/tcms_if_last_report.php");
             //httpWebRequest.Accept = "application/json";
             httpWebRequest.ContentType = "application/x-www-form-urlencoded";
             httpWebRequest.Method = "POST";
@@ -1166,39 +1249,17 @@ namespace BizOneShot.Light.Web.Controllers
                     numsn = "001",
                     subnumsn = "01",
                     concode = "rd02",
-                    satisfactiongrade = "65",
-                    check01 = "1",
-                    check02 = "1",
-                    check03 = "1",
-                    check04 = "1",
-                    check05 = "1",
-                    check06 = "1",
-                    check07 = "1",
-                    check08 = "1",
-                    check09 = "1",
-                    check10 = "1",
-                    check11 = "1",
-                    check12 = "1",
-                    check13 = "1",
-                    check14 = "1",
-                    check15 = "1",
-                    check16 = "1",
-                    check17 = "1",
-                    check18 = "1",
-                    check19 = "1",
-                    check20 = "1",
-                    check21 = "1",
-                    check22 = "2",
-                    check23 = "3",
-                    check24 = "5",
-                    text01 = "텍스트01",
-                    text02 = "텍스트02",
-                    infdt = DateTime.Today.ToString()
+                    File1 = "http://voucher.tcms.or.kr/Company/Report/CompanyInfo01?QuestionSn=23",
+                    File2 = "http://voucher.tcms.or.kr/Company/Report/CompanyInfo01?QuestionSn=23",
+                    File3 = "http://voucher.tcms.or.kr/Company/Report/CompanyInfo01?QuestionSn=23",
+                    File4 = "http://voucher.tcms.or.kr/Company/Report/CompanyInfo01?QuestionSn=23",
+                    File5 = "http://voucher.tcms.or.kr/Company/Report/CompanyInfo01?QuestionSn=23",
+                    InfDt = DateTime.Today.ToString()
                 });
-                
+
                 byte[] ba = Encoding.UTF8.GetBytes("json=" + jsont);
 
-                requestStream.Write(ba,0,ba.Length);
+                requestStream.Write(ba, 0, ba.Length);
                 requestStream.Flush();
                 requestStream.Close();
             }
