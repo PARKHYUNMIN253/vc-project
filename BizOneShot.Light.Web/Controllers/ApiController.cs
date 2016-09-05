@@ -10,6 +10,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Net;
+using System.Text;
 using System.Threading.Tasks;
 using System.Web;
 using System.Web.Mvc;
@@ -1135,8 +1136,8 @@ namespace BizOneShot.Light.Web.Controllers
             // 해당 ba, mentor, comp가 어떤 tcmsLoginKey를 가지고 있는지 알아야 한다
 
             var httpWebRequest = (HttpWebRequest)WebRequest.Create("http://tcms.igarim.com/Api/tcms_if_survey.php");
-            httpWebRequest.Accept = "application/json";
-            httpWebRequest.ContentType = "application/json";
+            //httpWebRequest.Accept = "application/json";
+            httpWebRequest.ContentType = "application/x-www-form-urlencoded";
             httpWebRequest.Method = "POST";
             httpWebRequest.CookieContainer = new CookieContainer();
             HttpCookieCollection cookies = Request.Cookies;
@@ -1153,49 +1154,49 @@ namespace BizOneShot.Light.Web.Controllers
                 httpWebRequest.CookieContainer.Add(cookie);
             }
 
-            using (var streamWriter = new StreamWriter(httpWebRequest.GetRequestStream()))
+            using (var requestStream = httpWebRequest.GetRequestStream())
             {
                 string jsont = new JavaScriptSerializer().Serialize(new
                 {
-                    InfId = "VOUCHER_IF_07000",
-                    CompLoginKey = "147",
-                    BaLoginKey = "350",
-                    MentorLoginKey = "344",
-                    NumSn = "001",
-                    SubNumSn = "01",
-                    ConCode = "RD02",
-                    SatisfactionGrade = "65",
-                    Check01 = "1",
-                    Check02 = "1",
-                    Check03 = "1",
-                    Check04 = "1",
-                    Check05 = "1",
-                    Check06 = "1",
-                    Check07 = "1",
-                    Check08 = "1",
-                    Check09 = "1",
-                    Check10 = "1",
-                    Check11 = "1",
-                    Check12 = "1",
-                    Check13 = "1",
-                    Check14 = "1",
-                    Check15 = "1",
-                    Check16 = "1",
-                    Check17 = "1",
-                    Check18 = "1",
-                    Check19 = "1",
-                    Check20 = "1",
-                    Check21 = "1",
-                    Check22 = "2",
-                    Check23 = "3",
-                    Check24 = "5",
-                    Text01 = "텍스트01",
-                    Text02 = "텍스트02",
-                    InfDt = DateTime.Today.ToString()
+                    infid = "voucher_if_07000",
+                    comploginkey = "147",
+                    baloginkey = "350",
+                    mentorloginkey = "344",
+                    numsn = "001",
+                    subnumsn = "01",
+                    concode = "rd02",
+                    satisfactiongrade = "65",
+                    check01 = "1",
+                    check02 = "1",
+                    check03 = "1",
+                    check04 = "1",
+                    check05 = "1",
+                    check06 = "1",
+                    check07 = "1",
+                    check08 = "1",
+                    check09 = "1",
+                    check10 = "1",
+                    check11 = "1",
+                    check12 = "1",
+                    check13 = "1",
+                    check14 = "1",
+                    check15 = "1",
+                    check16 = "1",
+                    check17 = "1",
+                    check18 = "1",
+                    check19 = "1",
+                    check20 = "1",
+                    check21 = "1",
+                    check22 = "2",
+                    check23 = "3",
+                    check24 = "5",
+                    text01 = "텍스트01",
+                    text02 = "텍스트02",
+                    infdt = DateTime.Today.ToString()
                 });
 
-                //string json = "{\"InfId\" : \"VOUCHER_IF_01000\","+
-                //    "\"CompLoginKey\" : \"111\","+
+                //string json = "{\"InfId\" : \"VOUCHER_IF_01000\"," +
+                //    "\"CompLoginKey\" : \"111\"," +
                 //    "\"BaLoginKey\" : \"222\"," +
                 //    "\"MentorLoginKey\" : \"333\"," +
                 //    "\"NumSn\" : \"001\"," +
@@ -1232,12 +1233,17 @@ namespace BizOneShot.Light.Web.Controllers
 
                 //var rst = Content(json);
 
-                //streamWriter.Write(rst);
+                //streamWriter.Write(json);
                 //streamWriter.Flush();
                 //streamWriter.Close();
-                JavaScriptSerializer serializer = new JavaScriptSerializer();
-                var tempJson = serializer.Deserialize<Dictionary<string, object>>(jsont);
-                streamWriter.Write(jsont);
+                //JavaScriptSerializer serializer = new JavaScriptSerializer();
+                //var tempJson = serializer.Deserialize<Dictionary<string, object>>(jsont);
+                byte[] ba = Encoding.UTF8.GetBytes("json=" + jsont);
+
+                //streamWriter.Write("json=" + jsont);
+                requestStream.Write(ba,0,ba.Length);
+                requestStream.Flush();
+                requestStream.Close();
             }
             var httpResponse = (HttpWebResponse)httpWebRequest.GetResponse();
             using (var streamReader = new StreamReader(httpResponse.GetResponseStream()))
