@@ -1098,31 +1098,31 @@ namespace BizOneShot.Light.Web.Controllers
         }
 
         // testLogin
-        public async Task<ActionResult> testLogin(string tcmsLoginKey)
-        {
-            VcUsrInfo scUsr = await _scUsrService.SelectScUsr(tcmsLoginKey);
+        //public async Task<ActionResult> testLogin(string tcmsLoginKey)
+        //{
+        //    VcUsrInfo scUsr = await _scUsrService.SelectScUsr(tcmsLoginKey);
 
-            if (scUsr != null)
-            {
-                base.LogOn(scUsr);
-                switch (scUsr.UsrType)
-                {
-                    case Global.Company: //기업
-                        return RedirectToAction("index", "Company/Main");
-                    case Global.Mentor: //멘토
-                        return RedirectToAction("index", "Mentor/Main");
-                    case Global.Expert: //전문가
-                        return RedirectToAction("index", "Expert/Main");
-                    case Global.SysManager: //SCP
-                        return RedirectToAction("index", "SysManager/Main");
-                    case Global.BizManager: //사업관리자
-                        return RedirectToAction("index", "BizManager/Main");
-                    default:
-                        return RedirectToAction("Error500", "Error");
-                }
-            }
-            return RedirectToAction("Error500", "Error");
-        }
+        //    if (scUsr != null)
+        //    {
+        //        base.LogOn(scUsr);
+        //        switch (scUsr.UsrType)
+        //        {
+        //            case Global.Company: //기업
+        //                return RedirectToAction("index", "Company/Main");
+        //            case Global.Mentor: //멘토
+        //                return RedirectToAction("index", "Mentor/Main");
+        //            case Global.Expert: //전문가
+        //                return RedirectToAction("index", "Expert/Main");
+        //            case Global.SysManager: //SCP
+        //                return RedirectToAction("index", "SysManager/Main");
+        //            case Global.BizManager: //사업관리자
+        //                return RedirectToAction("index", "BizManager/Main");
+        //            default:
+        //                return RedirectToAction("Error500", "Error");
+        //        }
+        //    }
+        //    return RedirectToAction("Error500", "Error");
+        //}
 
         // TCMS로 보내는 API
 

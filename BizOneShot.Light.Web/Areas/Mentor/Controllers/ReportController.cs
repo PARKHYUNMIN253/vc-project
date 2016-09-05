@@ -17,6 +17,8 @@ using System.IO;
 using System.Web.UI;
 using System.Web.Script.Serialization;
 using System.Net;
+using BizOneShot.Light.Models.CustomModels;
+using System.Text;
 
 namespace BizOneShot.Light.Web.Areas.Mentor.Controllers
 {
@@ -609,11 +611,35 @@ namespace BizOneShot.Light.Web.Areas.Mentor.Controllers
                     // 데이터 전송
                     if (cnt == 0)
                     {
-                        sendLastReport(tcmsIfLastReport);
+                        var status = sendLastReport(tcmsIfLastReport);
+
+                        if (status == "S")
+                        {
+                            tcmsIfLastReport.InsertYn = "S";
+                            tcmsIfLastReportService.SaveDbContext();
+                        }
+                        else
+                        {
+                            tcmsIfLastReport.InsertYn = "E";
+                            tcmsIfLastReportService.SaveDbContext();
+                        }
+
                     }
                     else
                     {
-                        sendLastReport(tcmsIfLastReportObj);
+                        var status = sendLastReport(tcmsIfLastReportObj);
+
+                        if (status == "S")
+                        {
+                            tcmsIfLastReportObj.InsertYn = "S";
+                            tcmsIfLastReportService.SaveDbContext();
+                        }
+                        else
+                        {
+                            tcmsIfLastReportObj.InsertYn = "E";
+                            tcmsIfLastReportService.SaveDbContext();
+                        }
+
                     }
 
                 }
@@ -893,11 +919,35 @@ namespace BizOneShot.Light.Web.Areas.Mentor.Controllers
                     // 데이터 전송
                     if (cnt == 0)
                     {
-                        sendLastReport(tcmsIfLastReport);
+                        var status = sendLastReport(tcmsIfLastReport);
+
+                        if(status == "S")
+                        {
+                            tcmsIfLastReport.InsertYn = "S";
+                            tcmsIfLastReportService.SaveDbContext();
+                        }
+                        else
+                        {
+                            tcmsIfLastReport.InsertYn = "E";
+                            tcmsIfLastReportService.SaveDbContext();
+                        }
+                        
                     }
                     else
                     {
-                        sendLastReport(tcmsIfLastReportObj);
+                        var status = sendLastReport(tcmsIfLastReportObj);
+
+                        if (status == "S")
+                        {
+                            tcmsIfLastReportObj.InsertYn = "S";
+                            tcmsIfLastReportService.SaveDbContext();
+                        }
+                        else
+                        {
+                            tcmsIfLastReportObj.InsertYn = "E";
+                            tcmsIfLastReportService.SaveDbContext();
+                        }
+
                     }
 
                 }
@@ -962,13 +1012,79 @@ namespace BizOneShot.Light.Web.Areas.Mentor.Controllers
             return rst;
         }
 
+        #region
+        //public string sendLastReport(TcmsIfLastReport tcmsIfLastReport)
+        //{
+        //    HttpContext.Response.AppendHeader("Access-Control-Allow-Origin", "*");
+        //    string result = "";
+
+        //    var httpWebRequest = (HttpWebRequest)WebRequest.Create("http://tcms.igarim.com/Api/tcms_if_last_report.php");
+        //    httpWebRequest.ContentType = "application/jsonp";
+        //    httpWebRequest.Method = "POST";
+        //    httpWebRequest.CookieContainer = new CookieContainer();
+        //    HttpCookieCollection cookies = Request.Cookies;
+        //    for (int i = 0; i < cookies.Count; i++)
+        //    {
+        //        HttpCookie httpCookie = cookies.Get(i);
+        //        Cookie cookie = new Cookie();
+        //        cookie.Domain = httpWebRequest.RequestUri.Host;
+        //        cookie.Expires = httpCookie.Expires;
+        //        cookie.Name = httpCookie.Name;
+        //        cookie.Path = httpCookie.Path;
+        //        cookie.Secure = httpCookie.Secure;
+        //        cookie.Value = httpCookie.Value;
+        //        httpWebRequest.CookieContainer.Add(cookie);
+        //    }
+
+        //    using (var streamWriter = new StreamWriter(httpWebRequest.GetRequestStream()))
+        //    {
+        //        string jsont = new JavaScriptSerializer().Serialize(new
+        //        {
+
+        //            InfId = tcmsIfLastReport.InfId,
+        //            CompLoginKey = tcmsIfLastReport.CompLoginKey,
+        //            BaLoginKey = tcmsIfLastReport.BaLoginKey,
+        //            MentorLoginKey = tcmsIfLastReport.MentorLoginKey,
+        //            NumSn = tcmsIfLastReport.NumSn,
+        //            SubNumSn = tcmsIfLastReport.SubNumSn,
+        //            ConCode = tcmsIfLastReport.ConCode,
+
+        //            File1 = tcmsIfLastReport.File1,
+        //            File2 = tcmsIfLastReport.File2,
+        //            File3 = tcmsIfLastReport.File3,
+        //            File4 = tcmsIfLastReport.File4,
+        //            File5 = tcmsIfLastReport.File5,
+
+        //            InfDt = tcmsIfLastReport.InfDt
+
+        //        });
+
+        //        streamWriter.Write(jsont);
+
+        //    }
+
+        //    var httpResponse = (HttpWebResponse)httpWebRequest.GetResponse();
+        //    using (var streamReader = new StreamReader(httpResponse.GetResponseStream()))
+        //    {
+
+        //        result = streamReader.ReadToEnd();
+
+        //    }
+
+        //    return result;
+
+        //}
+        #endregion
         public string sendLastReport(TcmsIfLastReport tcmsIfLastReport)
         {
             HttpContext.Response.AppendHeader("Access-Control-Allow-Origin", "*");
             string result = "";
 
+            StatusModel statusModel = new StatusModel();
+
             var httpWebRequest = (HttpWebRequest)WebRequest.Create("http://tcms.igarim.com/Api/tcms_if_last_report.php");
-            httpWebRequest.ContentType = "application/jsonp";
+            //httpWebRequest.Accept = "application/json";
+            httpWebRequest.ContentType = "application/x-www-form-urlencoded";
             httpWebRequest.Method = "POST";
             httpWebRequest.CookieContainer = new CookieContainer();
             HttpCookieCollection cookies = Request.Cookies;
@@ -985,11 +1101,10 @@ namespace BizOneShot.Light.Web.Areas.Mentor.Controllers
                 httpWebRequest.CookieContainer.Add(cookie);
             }
 
-            using (var streamWriter = new StreamWriter(httpWebRequest.GetRequestStream()))
+            using (var requestStream = httpWebRequest.GetRequestStream())
             {
                 string jsont = new JavaScriptSerializer().Serialize(new
                 {
-
                     InfId = tcmsIfLastReport.InfId,
                     CompLoginKey = tcmsIfLastReport.CompLoginKey,
                     BaLoginKey = tcmsIfLastReport.BaLoginKey,
@@ -1005,24 +1120,24 @@ namespace BizOneShot.Light.Web.Areas.Mentor.Controllers
                     File5 = tcmsIfLastReport.File5,
 
                     InfDt = tcmsIfLastReport.InfDt
-
                 });
 
-                streamWriter.Write(jsont);
+                byte[] ba = Encoding.UTF8.GetBytes("json=" + jsont);
 
+                requestStream.Write(ba, 0, ba.Length);
+                requestStream.Flush();
+                requestStream.Close();
             }
-
             var httpResponse = (HttpWebResponse)httpWebRequest.GetResponse();
             using (var streamReader = new StreamReader(httpResponse.GetResponseStream()))
             {
-
+                JavaScriptSerializer js = new JavaScriptSerializer();
                 result = streamReader.ReadToEnd();
-
+                statusModel = (StatusModel)js.Deserialize(result, typeof(StatusModel));
             }
-
-            return result;
-
+            return statusModel.status;
         }
+
 
         [HttpPost]
         public async Task<JsonResult> GetCompanyNm(int BizWorkSn, int Year)
