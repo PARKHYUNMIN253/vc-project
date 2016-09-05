@@ -15,6 +15,8 @@ using BizOneShot.Light.Util.Helper;
 using System.Net;
 using System.IO;
 using System.Web.Script.Serialization;
+using System.Text;
+using BizOneShot.Light.Models.CustomModels;
 
 namespace BizOneShot.Light.Web.Areas.Company.Controllers
 {
@@ -3660,7 +3662,6 @@ namespace BizOneShot.Light.Web.Areas.Company.Controllers
 
             if (satObj == null) // 해당 테이블에 값이 없으므로 데이터 Insert
             {
-
                 insertObj.SatSn = vsModel.SatSn;        // SatSn이 존재이유
                 insertObj.Check01 = vsModel.Check01;
                 insertObj.Check02 = vsModel.Check02;
@@ -3757,7 +3758,20 @@ namespace BizOneShot.Light.Web.Areas.Company.Controllers
                 _tcmsIfSurveyService.SaveDbContext();
                 //... if 테이블 넣기 종료
 
-                sendSatisfaction(tcmsIfSurvey); // 데이터 전송
+                var status = sendSatisfaction(tcmsIfSurvey); // 데이터 전송
+
+                if (status == "S")  // 데이터 결과 값
+                {
+                    var sTcmsIfSurvey = await _tcmsIfSurveyService.getTcmsIfSurveyByInfId(tcmsIfSurvey.InfId);
+                    sTcmsIfSurvey.InsertYn = "S";
+                    _tcmsIfSurveyService.SaveDbContext();
+                }
+                else
+                {
+                    var eTcmsIfSurvey = await _tcmsIfSurveyService.getTcmsIfSurveyByInfId(tcmsIfSurvey.InfId);
+                    eTcmsIfSurvey.InsertYn = "E";
+                    _tcmsIfSurveyService.SaveDbContext();
+                }
             }
             //... 본테이블 종료
             // 넣고 나서 전송부도 여기에 둔다
@@ -3831,8 +3845,11 @@ namespace BizOneShot.Light.Web.Areas.Company.Controllers
             HttpContext.Response.AppendHeader("Access-Control-Allow-Origin", "*");
             string result = "";
 
+            StatusModel statusModel = new StatusModel();
+
             var httpWebRequest = (HttpWebRequest)WebRequest.Create("http://tcms.igarim.com/Api/tcms_if_survey.php");
-            httpWebRequest.ContentType = "application/jsonp";
+            //httpWebRequest.Accept = "application/json";
+            httpWebRequest.ContentType = "application/x-www-form-urlencoded";
             httpWebRequest.Method = "POST";
             httpWebRequest.CookieContainer = new CookieContainer();
             HttpCookieCollection cookies = Request.Cookies;
@@ -3849,7 +3866,7 @@ namespace BizOneShot.Light.Web.Areas.Company.Controllers
                 httpWebRequest.CookieContainer.Add(cookie);
             }
 
-            using (var streamWriter = new StreamWriter(httpWebRequest.GetRequestStream()))
+            using (var requestStream = httpWebRequest.GetRequestStream())
             {
                 string jsont = new JavaScriptSerializer().Serialize(new
                 {
@@ -3889,14 +3906,21 @@ namespace BizOneShot.Light.Web.Areas.Company.Controllers
                     Text02 = tcmsIfSurvey.Text02,
                     InfDt = tcmsIfSurvey.InfDt
                 });
-                streamWriter.Write(jsont);
+
+                byte[] ba = Encoding.UTF8.GetBytes("json=" + jsont);
+
+                requestStream.Write(ba, 0, ba.Length);
+                requestStream.Flush();
+                requestStream.Close();
             }
             var httpResponse = (HttpWebResponse)httpWebRequest.GetResponse();
             using (var streamReader = new StreamReader(httpResponse.GetResponseStream()))
             {
+                JavaScriptSerializer js = new JavaScriptSerializer();
                 result = streamReader.ReadToEnd();
+                statusModel = (StatusModel)js.Deserialize(result, typeof(StatusModel));
             }
-            return result;
+            return statusModel.status;
         }
 
         public async Task<ActionResult> DeepenReportDetail(int totalReportSn)

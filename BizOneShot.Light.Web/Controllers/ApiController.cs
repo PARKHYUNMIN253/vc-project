@@ -1134,6 +1134,7 @@ namespace BizOneShot.Light.Web.Controllers
             VcSatCheckViewModel vsModel = new VcSatCheckViewModel();
             // 모델이 추가됐을 때 필요한 것
             // 해당 ba, mentor, comp가 어떤 tcmsLoginKey를 가지고 있는지 알아야 한다
+            StatusModel statusModel = new StatusModel();
 
             var httpWebRequest = (HttpWebRequest)WebRequest.Create("http://tcms.igarim.com/Api/tcms_if_survey.php");
             //httpWebRequest.Accept = "application/json";
@@ -1194,53 +1195,9 @@ namespace BizOneShot.Light.Web.Controllers
                     text02 = "텍스트02",
                     infdt = DateTime.Today.ToString()
                 });
-
-                //string json = "{\"InfId\" : \"VOUCHER_IF_01000\"," +
-                //    "\"CompLoginKey\" : \"111\"," +
-                //    "\"BaLoginKey\" : \"222\"," +
-                //    "\"MentorLoginKey\" : \"333\"," +
-                //    "\"NumSn\" : \"001\"," +
-                //    "\"SubNumSn\" : \"01\"," +
-                //    "\"ConCode\" : \"TT01\"," +
-                //    "\"SatisfationScore\" : \"65\"," +
-                //    "\"Check01\" : \"1\"," +
-                //    "\"Check02\" : \"2\"," +
-                //    "\"Check03\" : \"3\"," +
-                //    "\"Check04\" : \"4\"," +
-                //    "\"Check05\" : \"5\"," +
-                //    "\"Check06\" : \"1\"," +
-                //    "\"Check07\" : \"2\"," +
-                //    "\"Check08\" : \"3\"," +
-                //    "\"Check09\" : \"4\"," +
-                //    "\"Check10\" : \"5\"," +
-                //    "\"Check11\" : \"1\"," +
-                //    "\"Check12\" : \"2\"," +
-                //    "\"Check13\" : \"3\"," +
-                //    "\"Check14\" : \"4\"," +
-                //    "\"Check15\" : \"5\"," +
-                //    "\"Check16\" : \"1\"," +
-                //    "\"Check17\" : \"2\"," +
-                //    "\"Check18\" : \"3\"," +
-                //    "\"Check19\" : \"4\"," +
-                //    "\"Check20\" : \"5\"," +
-                //    "\"Check21\" : \"1\"," +
-                //    "\"Check22\" : \"2\"," +
-                //    "\"Check23\" : \"3\"," +
-                //    "\"Check24\" : \"4\"," +
-                //    "\"Text01\" : \"텍스트01\"," +
-                //    "\"Text02\" : \"텍스트02\"," +
-                //    "\"InfDt\" : \"2016-06-28 00:00:00\"}";
-
-                //var rst = Content(json);
-
-                //streamWriter.Write(json);
-                //streamWriter.Flush();
-                //streamWriter.Close();
-                //JavaScriptSerializer serializer = new JavaScriptSerializer();
-                //var tempJson = serializer.Deserialize<Dictionary<string, object>>(jsont);
+                
                 byte[] ba = Encoding.UTF8.GetBytes("json=" + jsont);
 
-                //streamWriter.Write("json=" + jsont);
                 requestStream.Write(ba,0,ba.Length);
                 requestStream.Flush();
                 requestStream.Close();
@@ -1248,9 +1205,11 @@ namespace BizOneShot.Light.Web.Controllers
             var httpResponse = (HttpWebResponse)httpWebRequest.GetResponse();
             using (var streamReader = new StreamReader(httpResponse.GetResponseStream()))
             {
+                JavaScriptSerializer js = new JavaScriptSerializer();
                 result = streamReader.ReadToEnd();
+                statusModel = (StatusModel)js.Deserialize(result, typeof(StatusModel));
             }
-            return result;
+            return statusModel.status;
         }
 
     }

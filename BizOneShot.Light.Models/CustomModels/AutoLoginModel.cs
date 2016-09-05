@@ -12,4 +12,9 @@ namespace BizOneShot.Light.Models.CustomModels
         public string TcmsLoginKey { get; set; }
         public string UsrType { get; set; }
     }
+
+    public class StatusModel
+    {
+        public string status { get; set; }
+    }
 }

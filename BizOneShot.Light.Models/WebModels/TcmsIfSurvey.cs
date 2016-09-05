@@ -58,6 +58,7 @@ namespace BizOneShot.Light.Models.WebModels
         public string Text01 { get; set; } // TEXT01
         public string Text02 { get; set; } // TEXT02
         public DateTime? InfDt { get; set; } // INF_DT
+        public string InsertYn { get; set; } // INSERT_YN
     }
 
 }

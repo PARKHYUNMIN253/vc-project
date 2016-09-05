@@ -37,6 +37,7 @@ namespace BizOneShot.Light.Models.WebModels
         public DateTime? RegDt { get; set; } // REG_DT
         public DateTime? InfDt { get; set; } // INF_DT
         public string File5 { get; set; } // FILE_5
+        public string InsertYn { get; set; } // INSERT_YN
     }
 
 }
