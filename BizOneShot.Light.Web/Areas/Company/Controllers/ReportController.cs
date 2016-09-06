@@ -3848,7 +3848,6 @@ namespace BizOneShot.Light.Web.Areas.Company.Controllers
             StatusModel statusModel = new StatusModel();
 
             var httpWebRequest = (HttpWebRequest)WebRequest.Create("http://tcms.igarim.com/Api/tcms_if_survey.php");
-            //httpWebRequest.Accept = "application/json";
             httpWebRequest.ContentType = "application/x-www-form-urlencoded";
             httpWebRequest.Method = "POST";
             httpWebRequest.CookieContainer = new CookieContainer();
@@ -3918,7 +3917,8 @@ namespace BizOneShot.Light.Web.Areas.Company.Controllers
             {
                 JavaScriptSerializer js = new JavaScriptSerializer();
                 result = streamReader.ReadToEnd();
-                statusModel = (StatusModel)js.Deserialize(result, typeof(StatusModel));
+                string[] rptSplit = result.Split('\n');
+                statusModel = (StatusModel)js.Deserialize(rptSplit[1], typeof(StatusModel));
             }
             return statusModel.status;
         }
