@@ -520,6 +520,7 @@ namespace BizOneShot.Light.Web.Areas.Mentor.Controllers
                             {
 
                                 tcmsIfLastReport.InfId = await satiNumGenerator();
+                                tcmsIfLastReport.InfDt = DateTime.Today;
 
                                 tcmsIfLastReport.CompLoginKey = compObj.TcmsLoginKey;
                                 tcmsIfLastReport.BaLoginKey = baObj.TcmsLoginKey;
@@ -592,6 +593,8 @@ namespace BizOneShot.Light.Web.Areas.Mentor.Controllers
                         var fullPath = rootFilePath + listFileContent2[0].FilePath;
 
                         tcmsIfLastReport.InfId = await satiNumGenerator();
+                        tcmsIfLastReport.RegDt = scMentoringTotalReport2.RegDt;
+                        tcmsIfLastReport.InfDt = DateTime.Today;
 
                         tcmsIfLastReport.CompLoginKey = compObj.TcmsLoginKey;
                         tcmsIfLastReport.BaLoginKey = baObj.TcmsLoginKey;
@@ -827,6 +830,7 @@ namespace BizOneShot.Light.Web.Areas.Mentor.Controllers
                             {
 
                                 tcmsIfLastReport.InfId = await satiNumGenerator();
+                                tcmsIfLastReport.InfDt = DateTime.Today;
 
                                 tcmsIfLastReport.CompLoginKey = compObj.TcmsLoginKey;
                                 tcmsIfLastReport.BaLoginKey = baObj.TcmsLoginKey;
@@ -899,6 +903,7 @@ namespace BizOneShot.Light.Web.Areas.Mentor.Controllers
                         var fullPath = rootFilePath + listFileContent2[0].FilePath;
 
                         tcmsIfLastReport.InfId = await satiNumGenerator();
+                        tcmsIfLastReport.RegDt = scMentoringTotalReport2.RegDt;
 
                         tcmsIfLastReport.CompLoginKey = compObj.TcmsLoginKey;
                         tcmsIfLastReport.BaLoginKey = baObj.TcmsLoginKey;
@@ -909,6 +914,7 @@ namespace BizOneShot.Light.Web.Areas.Mentor.Controllers
 
                         tcmsIfLastReport.ConCode = conCodes[0].ConCode;
                         tcmsIfLastReport.File1 = fullPath;
+                        tcmsIfLastReport.InfDt = DateTime.Today;
 
                         tcmsIfLastReportService.Insert(tcmsIfLastReport);
                         tcmsIfLastReportService.SaveDbContext();
@@ -1119,7 +1125,8 @@ namespace BizOneShot.Light.Web.Areas.Mentor.Controllers
                     File4 = tcmsIfLastReport.File4,
                     File5 = tcmsIfLastReport.File5,
 
-                    InfDt = tcmsIfLastReport.InfDt
+                    regDt = tcmsIfLastReport.RegDt.ToString(),
+                    InfDt = tcmsIfLastReport.InfDt.ToString()
                 });
 
                 byte[] ba = Encoding.UTF8.GetBytes("json=" + jsont);

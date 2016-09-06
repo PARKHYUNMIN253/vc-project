@@ -3907,7 +3907,7 @@ namespace BizOneShot.Light.Web.Areas.Company.Controllers
                     Check24 = tcmsIfSurvey.Check24,
                     Text01 = tcmsIfSurvey.Text01,
                     Text02 = tcmsIfSurvey.Text02,
-                    InfDt = tcmsIfSurvey.InfDt
+                    InfDt = tcmsIfSurvey.InfDt.ToString()
                 });
 
                 byte[] ba = Encoding.UTF8.GetBytes("json=" + jsont);
