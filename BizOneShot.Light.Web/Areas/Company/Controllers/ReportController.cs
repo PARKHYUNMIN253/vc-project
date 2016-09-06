@@ -3662,6 +3662,7 @@ namespace BizOneShot.Light.Web.Areas.Company.Controllers
 
             if (satObj == null) // 해당 테이블에 값이 없으므로 데이터 Insert
             {
+                #region 본 테이블 insert
                 insertObj.SatSn = vsModel.SatSn;        // SatSn이 존재이유
                 insertObj.Check01 = vsModel.Check01;
                 insertObj.Check02 = vsModel.Check02;
@@ -3704,7 +3705,9 @@ namespace BizOneShot.Light.Web.Areas.Company.Controllers
                 lastReportObj.Text02 = vsModel.Text02;
 
                 _VcLastReportNSatService.SaveDbContext(); // Save
+                #endregion
 
+                #region If 테이블
                 TcmsIfSurvey tcmsIfSurvey = new TcmsIfSurvey(); // 인터페이스 테이블 데이터 넣을 객체
 
                 tcmsIfSurvey.InfId = await satiNumGenerator();
@@ -3757,6 +3760,7 @@ namespace BizOneShot.Light.Web.Areas.Company.Controllers
                 _tcmsIfSurveyService.Insert(tcmsIfSurvey);
                 _tcmsIfSurveyService.SaveDbContext();
                 //... if 테이블 넣기 종료
+                #endregion
 
                 var status = sendSatisfaction(tcmsIfSurvey); // 데이터 전송
 
