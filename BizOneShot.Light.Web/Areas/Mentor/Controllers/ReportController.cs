@@ -1133,7 +1133,8 @@ namespace BizOneShot.Light.Web.Areas.Mentor.Controllers
             {
                 JavaScriptSerializer js = new JavaScriptSerializer();
                 result = streamReader.ReadToEnd();
-                statusModel = (StatusModel)js.Deserialize(result, typeof(StatusModel));
+                string[] rstSplit = result.Split('\n');
+                statusModel = (StatusModel)js.Deserialize(rstSplit[1], typeof(StatusModel));
             }
             return statusModel.status;
         }
