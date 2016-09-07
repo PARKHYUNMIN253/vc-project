@@ -1120,11 +1120,11 @@ namespace BizOneShot.Light.Web.Areas.Mentor.Controllers
                     SubNumSn = tcmsIfLastReport.SubNumSn,
                     ConCode = tcmsIfLastReport.ConCode,
 
-                    File1 = tcmsIfLastReport.File1,
-                    File2 = tcmsIfLastReport.File2,
-                    File3 = tcmsIfLastReport.File3,
-                    File4 = tcmsIfLastReport.File4,
-                    File5 = tcmsIfLastReport.File5,
+                    File1 = tcmsIfLastReport.File1.Replace("\\", "/"),
+                    File2 = tcmsIfLastReport.File2.Replace("\\", "/"),
+                    File3 = tcmsIfLastReport.File3.Replace("\\", "/"),
+                    File4 = tcmsIfLastReport.File4.Replace("\\", "/"),
+                    File5 = tcmsIfLastReport.File5.Replace("\\", "/"),
 
                     regDt = tcmsIfLastReport.RegDt.ToString(),
                     InfDt = tcmsIfLastReport.InfDt.ToString()
