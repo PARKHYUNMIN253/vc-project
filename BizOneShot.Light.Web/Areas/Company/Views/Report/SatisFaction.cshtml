@@ -28,6 +28,22 @@
         $('.vc_iconSB_02').addClass('on01'); // 보고서 icon
         $('.vc_title_01').addClass('on');    // 보고서 label
         $('.a_label03').addClass('on');      // 보고서 내부 메뉴 label (기초경영역량 문진표)
+
+        $('#mainForm').bind('submit', function() {
+            $("input:radio").each(function () {
+                var name = $(this).attr("id");
+                if($("[id="+name+"]:checked").length != 1) {
+                    alert("선택항목이 누락되었습니다.\n 모두 선택하고 완료해주세요");
+                    return false;
+                }
+
+                if(!$('#Text01').val() || !$('#Text02').val())
+                {
+                    alert("문항 A 또는 B에 답변해주세요");
+                    return false;
+                }
+            });
+        });
     });
 </script>
 
