@@ -1130,7 +1130,7 @@ namespace BizOneShot.Light.Web.Areas.Mentor.Controllers
                     InfDt = tcmsIfLastReport.InfDt.ToString()
                 });
                 backSlash = jsont.Replace("\\", "");
-                byte[] ba = Encoding.UTF8.GetBytes(backSlash);
+                byte[] ba = Encoding.UTF8.GetBytes("json="+backSlash);
 
                 requestStream.Write(ba, 0, ba.Length);
                 requestStream.Flush();
