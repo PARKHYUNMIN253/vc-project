@@ -12,6 +12,7 @@ using System.IO;
 using System.Linq;
 using System.Net;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Web;
 using System.Web.Mvc;
@@ -1259,11 +1260,13 @@ namespace BizOneShot.Light.Web.Controllers
                     File5 = "http://voucher.tcms.or.kr/Company/Report/CompanyInfo01?QuestionSn=23",
                     InfDt = DateTime.Today.ToString()
                 });
-                backSlash = jsont.Replace("\"", "");
+                backSlash = jsont.Replace("\\", "");
+                var withoutback = Regex.Unescape(jsont);
                 string postData = "json=" + HttpUtility.UrlEncode(backSlash);
                 byte[] byteArray = Encoding.UTF8.GetBytes(postData);
 
-                byte[] ba = Encoding.UTF8.GetBytes("json=" + backSlash); // 한글 같은 경우 인코딩이 되어 들어와야 하는데
+                byte[] ba = Encoding.UTF8.GetBytes(backSlash);
+
 
                 byte[] huArray = HttpUtility.UrlEncodeToBytes("json=" + backSlash, Encoding.UTF8);
                 //byte[] ba64 = Convert.FromBase64String("json=" + backSlash);
@@ -1298,63 +1301,66 @@ namespace BizOneShot.Light.Web.Controllers
         }
 
 
-        public string sendLastReport2()
-        {
-            HttpContext.Response.AppendHeader("Access-Control-Allow-Origin", "*");
-            string result = "";
+        //public string sendLastReport2()
+        //{
+        //    HttpContext.Response.AppendHeader("Access-Control-Allow-Origin", "*");
+        //    string result = "";
 
-            StatusModel statusModel = new StatusModel();
+        //    StatusModel statusModel = new StatusModel();
 
-            var httpWebRequest = (HttpWebRequest)WebRequest.Create("http://tcms.igarim.com/Api/tcms_if_last_report.php");
-            //httpWebRequest.Accept = "application/json";
-            httpWebRequest.ContentType = "application/json";
-            httpWebRequest.Method = "POST";
+        //    var httpWebRequest = (HttpWebRequest)WebRequest.Create("http://tcms.igarim.com/Api/tcms_if_last_report.php");
+        //    //httpWebRequest.Accept = "application/json";
+        //    httpWebRequest.ContentType = "application/json";
+        //    httpWebRequest.Method = "POST";
 
-            httpWebRequest.CookieContainer = new CookieContainer();
-            HttpCookieCollection cookies = Request.Cookies;
-            for (int i = 0; i < cookies.Count; i++)
-            {
-                HttpCookie httpCookie = cookies.Get(i);
-                Cookie cookie = new Cookie();
-                cookie.Domain = httpWebRequest.RequestUri.Host;
-                cookie.Expires = httpCookie.Expires;
-                cookie.Name = httpCookie.Name;
-                cookie.Path = httpCookie.Path;
-                cookie.Secure = httpCookie.Secure;
-                cookie.Value = httpCookie.Value;
-                httpWebRequest.CookieContainer.Add(cookie);
-            }
+        //    httpWebRequest.CookieContainer = new CookieContainer();
+        //    HttpCookieCollection cookies = Request.Cookies;
+        //    for (int i = 0; i < cookies.Count; i++)
+        //    {
+        //        HttpCookie httpCookie = cookies.Get(i);
+        //        Cookie cookie = new Cookie();
+        //        cookie.Domain = httpWebRequest.RequestUri.Host;
+        //        cookie.Expires = httpCookie.Expires;
+        //        cookie.Name = httpCookie.Name;
+        //        cookie.Path = httpCookie.Path;
+        //        cookie.Secure = httpCookie.Secure;
+        //        cookie.Value = httpCookie.Value;
+        //        httpWebRequest.CookieContainer.Add(cookie);
+        //    }
 
-            using (var streamWriter = new StreamWriter(httpWebRequest.GetRequestStream()))
-            {
-                string json = new JavaScriptSerializer().Serialize(new
-                {
-                    infid = "voucher_if_11111",
-                    comploginkey = "147",
-                    baloginkey = "350",
-                    mentorloginkey = "344",
-                    numsn = "001",
-                    subnumsn = "01",
-                    concode = "rd02",
-                    File1 = "파일1",
-                    File2 = "파일2",
-                    File3 = "http://voucher.tcms.or.kr/Company/Report/CompanyInfo01?QuestionSn=23",
-                    File4 = "http://voucher.tcms.or.kr/Company/Report/CompanyInfo01?QuestionSn=23",
-                    File5 = "http://voucher.tcms.or.kr/Company/Report/CompanyInfo01?QuestionSn=23",
-                    InfDt = DateTime.Today.ToString()
-                });
-
-                streamWriter.Write(json);
-            }
-            var httpResponse = (HttpWebResponse)httpWebRequest.GetResponse();
-            using (var streamReader = new StreamReader(httpResponse.GetResponseStream()))
-            {
-                JavaScriptSerializer js = new JavaScriptSerializer();
-                result = streamReader.ReadToEnd();
-                string[] rstSplit = result.Split('\n');
-                statusModel = (StatusModel)js.Deserialize(rstSplit[1], typeof(StatusModel));
-            }
-            return statusModel.status;
-        }
+        //    using (var streamWriter = new StreamWriter(httpWebRequest.GetRequestStream()))
+        //    {
+        //        JsonResult jr = new JsonResult();
+        //        string json = new JavaScriptSerializer().Serialize(new
+        //        {
+        //            infid = "voucher_if_11111",
+        //            comploginkey = "147",
+        //            baloginkey = "350",
+        //            mentorloginkey = "344",
+        //            numsn = "001",
+        //            subnumsn = "01",
+        //            concode = "rd02",
+        //            File1 = "파일1",
+        //            File2 = "파일2",
+        //            File3 = "http://voucher.tcms.or.kr/Company/Report/CompanyInfo01?QuestionSn=23",
+        //            File4 = "http://voucher.tcms.or.kr/Company/Report/CompanyInfo01?QuestionSn=23",
+        //            File5 = "http://voucher.tcms.or.kr/Company/Report/CompanyInfo01?QuestionSn=23",
+        //            InfDt = DateTime.Today.ToString()
+        //        });
+        //        var toStringJson = json.ToString();
+        //        streamWriter.Write(json);
+        //        streamWriter.Flush();
+        //        streamWriter.Close();
+        //    }
+        //    var httpResponse = (HttpWebResponse)httpWebRequest.GetResponse();
+        //    using (var streamReader = new StreamReader(httpResponse.GetResponseStream()))
+        //    {
+        //        JavaScriptSerializer js = new JavaScriptSerializer();
+        //        result = streamReader.ReadToEnd();
+        //        string[] rstSplit = result.Split('\n');
+        //        statusModel = (StatusModel)js.Deserialize(rstSplit[1], typeof(StatusModel));
+        //    }
+        //    return statusModel.status;
+        //}
     }
 }

@@ -3871,6 +3871,7 @@ namespace BizOneShot.Light.Web.Areas.Company.Controllers
 
             using (var requestStream = httpWebRequest.GetRequestStream())
             {
+                string backSlash = "";
                 string jsont = new JavaScriptSerializer().Serialize(new
                 {
                     InfId = tcmsIfSurvey.InfId,
@@ -3909,8 +3910,8 @@ namespace BizOneShot.Light.Web.Areas.Company.Controllers
                     Text02 = tcmsIfSurvey.Text02,
                     InfDt = tcmsIfSurvey.InfDt.ToString()
                 });
-
-                byte[] ba = Encoding.UTF8.GetBytes("json=" + jsont);
+                backSlash = jsont.Replace("\\", "");
+                byte[] ba = Encoding.UTF8.GetBytes(backSlash);
 
                 requestStream.Write(ba, 0, ba.Length);
                 requestStream.Flush();

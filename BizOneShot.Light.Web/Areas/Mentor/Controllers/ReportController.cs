@@ -1085,6 +1085,7 @@ namespace BizOneShot.Light.Web.Areas.Mentor.Controllers
         {
             HttpContext.Response.AppendHeader("Access-Control-Allow-Origin", "*");
             string result = "";
+            string backSlash = "";
 
             StatusModel statusModel = new StatusModel();
 
@@ -1128,8 +1129,8 @@ namespace BizOneShot.Light.Web.Areas.Mentor.Controllers
                     regDt = tcmsIfLastReport.RegDt.ToString(),
                     InfDt = tcmsIfLastReport.InfDt.ToString()
                 });
-
-                byte[] ba = Encoding.UTF8.GetBytes("json=" + jsont);
+                backSlash = jsont.Replace("\\", "");
+                byte[] ba = Encoding.UTF8.GetBytes(backSlash);
 
                 requestStream.Write(ba, 0, ba.Length);
                 requestStream.Flush();
