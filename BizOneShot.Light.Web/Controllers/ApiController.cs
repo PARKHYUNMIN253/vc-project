@@ -5,6 +5,7 @@ using BizOneShot.Light.Models.WebModels;
 using BizOneShot.Light.Services;
 using BizOneShot.Light.Web.ComLib;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -1241,28 +1242,49 @@ namespace BizOneShot.Light.Web.Controllers
 
             using (var requestStream = httpWebRequest.GetRequestStream())
             {
+                string backSlash = "";
                 string jsont = new JavaScriptSerializer().Serialize(new
                 {
-                    infid = "voucher_if_07000",
+                    infid = "voucher_if_33333",
                     comploginkey = "147",
                     baloginkey = "350",
                     mentorloginkey = "344",
                     numsn = "001",
                     subnumsn = "01",
                     concode = "rd02",
-                    File1 = "http://voucher.tcms.or.kr/Company/Report/CompanyInfo01?QuestionSn=23",
-                    File2 = "http://voucher.tcms.or.kr/Company/Report/CompanyInfo01?QuestionSn=23",
+                    File1 = "파일1",
+                    File2 = "파일2",
                     File3 = "http://voucher.tcms.or.kr/Company/Report/CompanyInfo01?QuestionSn=23",
                     File4 = "http://voucher.tcms.or.kr/Company/Report/CompanyInfo01?QuestionSn=23",
                     File5 = "http://voucher.tcms.or.kr/Company/Report/CompanyInfo01?QuestionSn=23",
                     InfDt = DateTime.Today.ToString()
                 });
+                backSlash = jsont.Replace("\"", "");
+                string postData = "json=" + HttpUtility.UrlEncode(backSlash);
+                byte[] byteArray = Encoding.UTF8.GetBytes(postData);
 
-                byte[] ba = Encoding.UTF8.GetBytes("json=" + jsont);
+                byte[] ba = Encoding.UTF8.GetBytes("json=" + backSlash); // 한글 같은 경우 인코딩이 되어 들어와야 하는데
+
+                byte[] huArray = HttpUtility.UrlEncodeToBytes("json=" + backSlash, Encoding.UTF8);
+                //byte[] ba64 = Convert.FromBase64String("json=" + backSlash);
+                var encoded = HttpUtility.UrlEncode("json=" + backSlash);
+                //byte[] enba = Encoding.UTF8.GetBytes("json=" + backSlash);
 
                 requestStream.Write(ba, 0, ba.Length);
                 requestStream.Flush();
                 requestStream.Close();
+
+                try
+                {
+                    using (FileStream fileStream = new FileStream("E:/Voucher/voucher_sati_sending/newFile/log.txt", FileMode.Create))
+                    {
+                        fileStream.Write(byteArray, 0, byteArray.Length);
+                    }
+                }
+                catch (Exception e)
+                {
+                    //Exception...
+                }
             }
             var httpResponse = (HttpWebResponse)httpWebRequest.GetResponse();
             using (var streamReader = new StreamReader(httpResponse.GetResponseStream()))
@@ -1275,5 +1297,64 @@ namespace BizOneShot.Light.Web.Controllers
             return statusModel.status;
         }
 
+
+        public string sendLastReport2()
+        {
+            HttpContext.Response.AppendHeader("Access-Control-Allow-Origin", "*");
+            string result = "";
+
+            StatusModel statusModel = new StatusModel();
+
+            var httpWebRequest = (HttpWebRequest)WebRequest.Create("http://tcms.igarim.com/Api/tcms_if_last_report.php");
+            //httpWebRequest.Accept = "application/json";
+            httpWebRequest.ContentType = "application/json";
+            httpWebRequest.Method = "POST";
+
+            httpWebRequest.CookieContainer = new CookieContainer();
+            HttpCookieCollection cookies = Request.Cookies;
+            for (int i = 0; i < cookies.Count; i++)
+            {
+                HttpCookie httpCookie = cookies.Get(i);
+                Cookie cookie = new Cookie();
+                cookie.Domain = httpWebRequest.RequestUri.Host;
+                cookie.Expires = httpCookie.Expires;
+                cookie.Name = httpCookie.Name;
+                cookie.Path = httpCookie.Path;
+                cookie.Secure = httpCookie.Secure;
+                cookie.Value = httpCookie.Value;
+                httpWebRequest.CookieContainer.Add(cookie);
+            }
+
+            using (var streamWriter = new StreamWriter(httpWebRequest.GetRequestStream()))
+            {
+                string json = new JavaScriptSerializer().Serialize(new
+                {
+                    infid = "voucher_if_11111",
+                    comploginkey = "147",
+                    baloginkey = "350",
+                    mentorloginkey = "344",
+                    numsn = "001",
+                    subnumsn = "01",
+                    concode = "rd02",
+                    File1 = "파일1",
+                    File2 = "파일2",
+                    File3 = "http://voucher.tcms.or.kr/Company/Report/CompanyInfo01?QuestionSn=23",
+                    File4 = "http://voucher.tcms.or.kr/Company/Report/CompanyInfo01?QuestionSn=23",
+                    File5 = "http://voucher.tcms.or.kr/Company/Report/CompanyInfo01?QuestionSn=23",
+                    InfDt = DateTime.Today.ToString()
+                });
+
+                streamWriter.Write(json);
+            }
+            var httpResponse = (HttpWebResponse)httpWebRequest.GetResponse();
+            using (var streamReader = new StreamReader(httpResponse.GetResponseStream()))
+            {
+                JavaScriptSerializer js = new JavaScriptSerializer();
+                result = streamReader.ReadToEnd();
+                string[] rstSplit = result.Split('\n');
+                statusModel = (StatusModel)js.Deserialize(rstSplit[1], typeof(StatusModel));
+            }
+            return statusModel.status;
+        }
     }
 }
