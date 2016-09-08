@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Data.Entity;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -17,7 +18,7 @@ namespace BizOneShot.Light.Dao.Repositories
         Task<VcIfNumInfo> getVcIfNumInfoByInfId(string infId);
 
         // getVcIfNumInfoByInfId
-
+        VcIfNumInfo getTest(Expression<Func<VcIfNumInfo, bool>> where);
     }
 
     public class VcIfNumInfoRepository : RepositoryBase<VcIfNumInfo>, IVcIfNumInfoRepository
@@ -45,6 +46,13 @@ namespace BizOneShot.Light.Dao.Repositories
         public async Task<VcIfNumInfo> getVcIfNumInfoByInfId(string infId)
         {
             return await DbContext.VcIfNumInfoes.Where(bw => bw.InfId == infId).SingleOrDefaultAsync();
+        }
+
+        public VcIfNumInfo getTest(Expression<Func<VcIfNumInfo, bool>> where)
+        {
+
+            return DbContext.VcIfNumInfoes.Where(where).SingleOrDefault();
+
         }
     }
 }
