@@ -3878,6 +3878,8 @@ namespace BizOneShot.Light.Web.Areas.Company.Controllers
             using (var requestStream = httpWebRequest.GetRequestStream())
             {
                 string backSlash = "";
+                var dt = DateTime.Today;
+                string dtc = String.Format("{0:yyyy-MM-dd ss:ss:ss", dt);
                 string jsont = new JavaScriptSerializer().Serialize(new
                 {
                     InfId = tcmsIfSurvey.InfId,
@@ -3914,7 +3916,7 @@ namespace BizOneShot.Light.Web.Areas.Company.Controllers
                     Check24 = tcmsIfSurvey.Check24,
                     Text01 = tcmsIfSurvey.Text01,
                     Text02 = tcmsIfSurvey.Text02,
-                    InfDt = tcmsIfSurvey.InfDt.ToString()
+                    InfDt = dtc
                 });
                 backSlash = jsont.Replace("\\", "");
                 byte[] ba = Encoding.UTF8.GetBytes("json=" + backSlash);

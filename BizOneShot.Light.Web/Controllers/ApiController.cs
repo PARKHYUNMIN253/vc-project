@@ -1245,6 +1245,8 @@ namespace BizOneShot.Light.Web.Controllers
             using (var requestStream = httpWebRequest.GetRequestStream())
             {
                 string backSlash = "";
+                var dt = DateTime.Today;
+                string dtc = String.Format("{0:yyyy-MM-dd ss:ss:ss}", dt);
                 string jsont = new JavaScriptSerializer().Serialize(new
                 {
                     infid = "voucher_if_33333",
@@ -1259,7 +1261,7 @@ namespace BizOneShot.Light.Web.Controllers
                     File3 = "http://voucher.tcms.or.kr/Company/Report/CompanyInfo01?QuestionSn=23",
                     File4 = "http://voucher.tcms.or.kr/Company/Report/CompanyInfo01?QuestionSn=23",
                     File5 = "http://voucher.tcms.or.kr/Company/Report/CompanyInfo01?QuestionSn=23",
-                    InfDt = DateTime.Today.ToString()
+                    InfDt = dtc
                 });
                 backSlash = jsont.Replace("\\", "");
                 var withoutback = Regex.Unescape(jsont);

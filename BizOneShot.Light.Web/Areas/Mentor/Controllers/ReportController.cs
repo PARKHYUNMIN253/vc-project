@@ -1084,11 +1084,12 @@ namespace BizOneShot.Light.Web.Areas.Mentor.Controllers
         #endregion
         public string sendLastReport(TcmsIfLastReport tcmsIfLastReport)
         {
-
             HttpContext.Response.AppendHeader("Access-Control-Allow-Origin", "*");
             string result = "";
             string backSlash = "";
 
+            string rdt = string.Format("{0:yyyy-MM-dd ss:ss:ss", tcmsIfLastReport.RegDt);
+            string idt = string.Format("{0:yyyy-MM-dd ss:ss:ss", tcmsIfLastReport.InfDt);
             StatusModel statusModel = new StatusModel();
 
             var httpWebRequest = (HttpWebRequest)WebRequest.Create("http://tcms.igarim.com/Api/tcms_if_last_report.php");
@@ -1128,8 +1129,8 @@ namespace BizOneShot.Light.Web.Areas.Mentor.Controllers
                     File4 = tcmsIfLastReport.File4.Replace("\\", "/"),
                     File5 = tcmsIfLastReport.File5.Replace("\\", "/"),
 
-                    regDt = tcmsIfLastReport.RegDt.ToString(),
-                    InfDt = tcmsIfLastReport.InfDt.ToString()
+                    regDt = rdt,
+                    InfDt = idt
                 });
                 backSlash = jsont.Replace("\\", "");
                 byte[] ba = Encoding.UTF8.GetBytes("json="+backSlash);
