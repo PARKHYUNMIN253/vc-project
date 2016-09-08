@@ -459,7 +459,8 @@ namespace BizOneShot.Light.Web.Areas.Mentor.Controllers
                     var mentorInfo2 = await vcUsrService.getMentorInfoById(mentorLoginKeys);
 
                     //var conCode = await vcMentorMappingService.getMentorMappingInfo(mentorInfo.MentorSn);
-                    var conCodes = await vcMentorMappingService.getMentorMappingInfoList(Convert.ToString(TotalReportInfo.CompSn), Convert.ToString(mentorInfo2.MentorSn));
+                    //var conCodes = await vcMentorMappingService.getMentorMappingInfoList(Convert.ToString(TotalReportInfo.CompSn), Convert.ToString(mentorInfo2.MentorSn));
+                    var conCodes = dataRequestViewModel.ConCode;
 
                     // 최종 제출을 확인하기 전 이미 최종 제출을 한 보고서가 있는지 확인
                     //ScriptManager.RegisterClientScriptBlock(this, this.GetType(), "alertMessage", "alert('Record Inserted Successfully')", true);
@@ -476,7 +477,7 @@ namespace BizOneShot.Light.Web.Areas.Mentor.Controllers
                     deepenReport.MentorSn = mentorSn;
                     deepenReport.NumSn = numSns;
                     deepenReport.SubNumSn = subNumSns;
-                    deepenReport.ConCode = conCodes[0].ConCode;
+                    deepenReport.ConCode = conCodes;
                     deepenReport.ConStatus = "P";
 
                     var a = Mapper.Map<VcLastReportNSat>(deepenReport);
@@ -501,7 +502,7 @@ namespace BizOneShot.Light.Web.Areas.Mentor.Controllers
                     var baObj = await vcBaInfoService.getVcBaInfoByBaSn(baSns);
                     var mentorObj = await vcMentorInfoService.getVcMentorInfoByMentorSn(Convert.ToString(mentorSn));
 
-                    var tcmsIfLastReportObj = await tcmsIfLastReportService.getTcmsIfLastReportInfo(compObj.TcmsLoginKey, baObj.TcmsLoginKey, mentorObj.TcmsLoginKey, conCodes[0].ConCode);
+                    var tcmsIfLastReportObj = await tcmsIfLastReportService.getTcmsIfLastReportInfo(compObj.TcmsLoginKey, baObj.TcmsLoginKey, mentorObj.TcmsLoginKey, conCodes);
 
 
                     if (files != null)
@@ -536,7 +537,7 @@ namespace BizOneShot.Light.Web.Areas.Mentor.Controllers
                                 tcmsIfLastReport.NumSn = numSn;
                                 tcmsIfLastReport.SubNumSn = subNumSn;
 
-                                tcmsIfLastReport.ConCode = conCodes[0].ConCode;
+                                tcmsIfLastReport.ConCode = conCodes;
                                 tcmsIfLastReport.File1 = absFilePath;
 
                                 tcmsIfLastReportService.Insert(tcmsIfLastReport);
@@ -549,35 +550,41 @@ namespace BizOneShot.Light.Web.Areas.Mentor.Controllers
                                 // update 해야 함
                                 // compSn, baSn, mentorSn, conCode을 이용하여 조회 해서 file 2부터 update
 
-
-                                if (cnt == 1)
+                                if(tcmsIfLastReportObj.Count > 0)
                                 {
 
-                                    tcmsIfLastReportObj[0].File2 = absFilePath;
-                                    tcmsIfLastReportService.SaveDbContext();
+                                    if (cnt == 1)
+                                    {
+
+                                        tcmsIfLastReportObj[0].File2 = absFilePath;
+                                        tcmsIfLastReportService.SaveDbContext();
+
+                                    }
+                                    else if (cnt == 2)
+                                    {
+
+                                        tcmsIfLastReportObj[0].File3 = absFilePath;
+                                        tcmsIfLastReportService.SaveDbContext();
+
+                                    }
+                                    else if (cnt == 3)
+                                    {
+
+                                        tcmsIfLastReportObj[0].File4 = absFilePath;
+                                        tcmsIfLastReportService.SaveDbContext();
+
+                                    }
+                                    else if (cnt == 4)
+                                    {
+
+                                        tcmsIfLastReportObj[0].File5 = absFilePath;
+                                        tcmsIfLastReportService.SaveDbContext();
+
+                                    }
 
                                 }
-                                else if (cnt == 2)
-                                {
 
-                                    tcmsIfLastReportObj[0].File3 = absFilePath;
-                                    tcmsIfLastReportService.SaveDbContext();
-
-                                }
-                                else if (cnt == 3)
-                                {
-
-                                    tcmsIfLastReportObj[0].File4 = absFilePath;
-                                    tcmsIfLastReportService.SaveDbContext();
-
-                                }
-                                else if (cnt == 4)
-                                {
-
-                                    tcmsIfLastReportObj[0].File5 = absFilePath;
-                                    tcmsIfLastReportService.SaveDbContext();
-
-                                }
+                                
 
                             }
                             cnt++;
@@ -610,7 +617,7 @@ namespace BizOneShot.Light.Web.Areas.Mentor.Controllers
                         tcmsIfLastReport.NumSn = numSn;
                         tcmsIfLastReport.SubNumSn = subNumSn;
 
-                        tcmsIfLastReport.ConCode = conCodes[0].ConCode;
+                        tcmsIfLastReport.ConCode = conCodes;
                         tcmsIfLastReport.File1 = fullPath;
 
                         tcmsIfLastReportService.Insert(tcmsIfLastReport);
@@ -759,7 +766,8 @@ namespace BizOneShot.Light.Web.Areas.Mentor.Controllers
                     var mentorInfo2 = await vcUsrService.getMentorInfoById(mentorLoginKeys);
 
                     //var conCode = await vcMentorMappingService.getMentorMappingInfo(mentorInfo.MentorSn);
-                    var conCodes = await vcMentorMappingService.getMentorMappingInfoList(Convert.ToString(TotalReportInfo.CompSn), Convert.ToString(mentorInfo2.MentorSn));
+                    // var conCodes = await vcMentorMappingService.getMentorMappingInfoList(Convert.ToString(TotalReportInfo.CompSn), Convert.ToString(mentorInfo2.MentorSn));
+                    var conCodes = dataRequestViewModel.ConCode;
 
                     // 최종 제출을 확인하기 전 이미 최종 제출을 한 보고서가 있는지 확인
                     //ScriptManager.RegisterClientScriptBlock(this, this.GetType(), "alertMessage", "alert('Record Inserted Successfully')", true);
@@ -776,7 +784,7 @@ namespace BizOneShot.Light.Web.Areas.Mentor.Controllers
                     deepenReport.MentorSn = mentorSn;
                     deepenReport.NumSn = numSns;
                     deepenReport.SubNumSn = subNumSns;
-                    deepenReport.ConCode = conCodes[0].ConCode;
+                    deepenReport.ConCode = conCodes;
                     deepenReport.ConStatus = "P";
 
                     var a = Mapper.Map<VcLastReportNSat>(deepenReport);
@@ -809,7 +817,7 @@ namespace BizOneShot.Light.Web.Areas.Mentor.Controllers
                     var baObj = await vcBaInfoService.getVcBaInfoByBaSn(baSns);
                     var mentorObj = await vcMentorInfoService.getVcMentorInfoByMentorSn(Convert.ToString(mentorSn));
 
-                    var tcmsIfLastReportObj = await tcmsIfLastReportService.getTcmsIfLastReportInfo(compObj.TcmsLoginKey, baObj.TcmsLoginKey, mentorObj.TcmsLoginKey, conCodes[0].ConCode);
+                    var tcmsIfLastReportObj = await tcmsIfLastReportService.getTcmsIfLastReportInfo(compObj.TcmsLoginKey, baObj.TcmsLoginKey, mentorObj.TcmsLoginKey, conCodes);
 
 
                     if (files != null)
@@ -846,7 +854,7 @@ namespace BizOneShot.Light.Web.Areas.Mentor.Controllers
                                 tcmsIfLastReport.NumSn = numSn;
                                 tcmsIfLastReport.SubNumSn = subNumSn;
 
-                                tcmsIfLastReport.ConCode = conCodes[0].ConCode;
+                                tcmsIfLastReport.ConCode = conCodes;
                                 tcmsIfLastReport.File1 = absFilePath;
 
                                 tcmsIfLastReportService.Insert(tcmsIfLastReport);
@@ -860,32 +868,37 @@ namespace BizOneShot.Light.Web.Areas.Mentor.Controllers
                                 // compSn, baSn, mentorSn, conCode을 이용하여 조회 해서 file 2부터 update
 
 
-                                if (cnt == 1)
+                               if(tcmsIfLastReportObj.Count > 0)
                                 {
 
-                                    tcmsIfLastReportObj[0].File2 = absFilePath;
-                                    tcmsIfLastReportService.SaveDbContext();
+                                    if (cnt == 1)
+                                    {
 
-                                }
-                                else if (cnt == 2)
-                                {
+                                        tcmsIfLastReportObj[0].File2 = absFilePath;
+                                        tcmsIfLastReportService.SaveDbContext();
 
-                                    tcmsIfLastReportObj[0].File3 = absFilePath;
-                                    tcmsIfLastReportService.SaveDbContext();
+                                    }
+                                    else if (cnt == 2)
+                                    {
 
-                                }
-                                else if (cnt == 3)
-                                {
+                                        tcmsIfLastReportObj[0].File3 = absFilePath;
+                                        tcmsIfLastReportService.SaveDbContext();
 
-                                    tcmsIfLastReportObj[0].File4 = absFilePath;
-                                    tcmsIfLastReportService.SaveDbContext();
+                                    }
+                                    else if (cnt == 3)
+                                    {
 
-                                }
-                                else if (cnt == 4)
-                                {
+                                        tcmsIfLastReportObj[0].File4 = absFilePath;
+                                        tcmsIfLastReportService.SaveDbContext();
 
-                                    tcmsIfLastReportObj[0].File5 = absFilePath;
-                                    tcmsIfLastReportService.SaveDbContext();
+                                    }
+                                    else if (cnt == 4)
+                                    {
+
+                                        tcmsIfLastReportObj[0].File5 = absFilePath;
+                                        tcmsIfLastReportService.SaveDbContext();
+
+                                    }
 
                                 }
 
@@ -919,7 +932,7 @@ namespace BizOneShot.Light.Web.Areas.Mentor.Controllers
                         tcmsIfLastReport.NumSn = numSn;
                         tcmsIfLastReport.SubNumSn = subNumSn;
 
-                        tcmsIfLastReport.ConCode = conCodes[0].ConCode;
+                        tcmsIfLastReport.ConCode = conCodes;
                         tcmsIfLastReport.File1 = fullPath;
                         tcmsIfLastReport.InfDt = DateTime.Today;
 
@@ -1094,9 +1107,12 @@ namespace BizOneShot.Light.Web.Areas.Mentor.Controllers
             string result = "";
             string backSlash = "";
 
-            string rdt = string.Format("{0:yyyy-MM-dd ss:ss:ss", tcmsIfLastReport.RegDt);
-            string idt = string.Format("{0:yyyy-MM-dd ss:ss:ss", tcmsIfLastReport.InfDt);
+            string rdt = String.Format("{0:yyyy-MM-dd hh:mm:ss}", tcmsIfLastReport.RegDt);
+            string idt = String.Format("{0:yyyy-MM-dd hh:mm:ss}", tcmsIfLastReport.InfDt);
             StatusModel statusModel = new StatusModel();
+
+            var a = tcmsIfLastReport.RegDt;
+            var b = tcmsIfLastReport.InfDt;
 
             var httpWebRequest = (HttpWebRequest)WebRequest.Create("http://tcms.igarim.com/Api/tcms_if_last_report.php");
             //httpWebRequest.Accept = "application/json";
@@ -1117,6 +1133,49 @@ namespace BizOneShot.Light.Web.Areas.Mentor.Controllers
                 httpWebRequest.CookieContainer.Add(cookie);
             }
 
+            var file1 = tcmsIfLastReport.File1;
+            var file2 = tcmsIfLastReport.File2;
+            var file3 = tcmsIfLastReport.File3;
+            var file4 = tcmsIfLastReport.File4;
+            var file5 = tcmsIfLastReport.File5;
+
+
+            if (tcmsIfLastReport.File1 != null)
+            {
+
+                file1 = tcmsIfLastReport.File1.Replace("\\", "/");
+
+            }
+
+            if (tcmsIfLastReport.File2 != null)
+            {
+
+                file2 = tcmsIfLastReport.File2.Replace("\\", "/");
+
+            }
+
+            if (tcmsIfLastReport.File3 != null)
+            {
+
+                file3 = tcmsIfLastReport.File3.Replace("\\", "/");
+
+            }
+
+            if (tcmsIfLastReport.File4 != null)
+            {
+
+                file4 = tcmsIfLastReport.File4.Replace("\\", "/");
+
+            }
+
+            if(tcmsIfLastReport.File5 != null)
+            {
+
+                file5 = tcmsIfLastReport.File5.Replace("\\", "/");
+
+            }
+          
+
             using (var requestStream = httpWebRequest.GetRequestStream())
             {
                 string jsont = new JavaScriptSerializer().Serialize(new
@@ -1129,11 +1188,11 @@ namespace BizOneShot.Light.Web.Areas.Mentor.Controllers
                     SubNumSn = tcmsIfLastReport.SubNumSn,
                     ConCode = tcmsIfLastReport.ConCode,
 
-                    File1 = tcmsIfLastReport.File1.Replace("\\", "/"),
-                    File2 = tcmsIfLastReport.File2.Replace("\\", "/"),
-                    File3 = tcmsIfLastReport.File3.Replace("\\", "/"),
-                    File4 = tcmsIfLastReport.File4.Replace("\\", "/"),
-                    File5 = tcmsIfLastReport.File5.Replace("\\", "/"),
+                    File1 = file1,
+                    File2 = file2,
+                    File3 = file3,
+                    File4 = file4,
+                    File5 = file5,
 
                     regDt = rdt,
                     InfDt = idt

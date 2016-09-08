@@ -3879,7 +3879,7 @@ namespace BizOneShot.Light.Web.Areas.Company.Controllers
             {
                 string backSlash = "";
                 var dt = DateTime.Today;
-                string dtc = String.Format("{0:yyyy-MM-dd ss:ss:ss", dt);
+                string dtc = String.Format("{0:yyyy-MM-dd ss:ss:ss}", dt);
                 string jsont = new JavaScriptSerializer().Serialize(new
                 {
                     InfId = tcmsIfSurvey.InfId,
