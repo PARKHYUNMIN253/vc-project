@@ -3770,10 +3770,16 @@ namespace BizOneShot.Light.Web.Areas.Company.Controllers
                     sTcmsIfSurvey.InsertYn = "S";
                     _tcmsIfSurveyService.SaveDbContext();
                 }
-                else
+                else if (status == "E")
                 {
                     var eTcmsIfSurvey = await _tcmsIfSurveyService.getTcmsIfSurveyByInfId(tcmsIfSurvey.InfId);
                     eTcmsIfSurvey.InsertYn = "E";
+                    _tcmsIfSurveyService.SaveDbContext();
+                }
+                else
+                {
+                    var eTcmsIfSurvey = await _tcmsIfSurveyService.getTcmsIfSurveyByInfId(tcmsIfSurvey.InfId);
+                    eTcmsIfSurvey.InsertYn = "D";
                     _tcmsIfSurveyService.SaveDbContext();
                 }
             }
@@ -3917,15 +3923,23 @@ namespace BizOneShot.Light.Web.Areas.Company.Controllers
                 requestStream.Flush();
                 requestStream.Close();
             }
-            var httpResponse = (HttpWebResponse)httpWebRequest.GetResponse();
-            using (var streamReader = new StreamReader(httpResponse.GetResponseStream()))
+            try
             {
-                JavaScriptSerializer js = new JavaScriptSerializer();
-                result = streamReader.ReadToEnd();
-                string[] rptSplit = result.Split('\n');
-                statusModel = (StatusModel)js.Deserialize(rptSplit[1], typeof(StatusModel));
+                var httpResponse = (HttpWebResponse)httpWebRequest.GetResponse();
+                using (var streamReader = new StreamReader(httpResponse.GetResponseStream()))
+                {
+                    JavaScriptSerializer js = new JavaScriptSerializer();
+                    result = streamReader.ReadToEnd();
+                    string[] rptSplit = result.Split('\n');
+                    statusModel = (StatusModel)js.Deserialize(rptSplit[1], typeof(StatusModel));
+                }
+                return statusModel.status;
             }
-            return statusModel.status;
+            catch (Exception e)
+            {
+                return "D";
+            }
+            
         }
 
         public async Task<ActionResult> DeepenReportDetail(int totalReportSn)

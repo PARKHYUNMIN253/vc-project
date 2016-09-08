@@ -1216,6 +1216,7 @@ namespace BizOneShot.Light.Web.Controllers
         //}
 
         public string sendLastReport()
+
         {
             HttpContext.Response.AppendHeader("Access-Control-Allow-Origin", "*");
             string result = "";
@@ -1289,15 +1290,23 @@ namespace BizOneShot.Light.Web.Controllers
                     //Exception...
                 }
             }
-            var httpResponse = (HttpWebResponse)httpWebRequest.GetResponse();
-            using (var streamReader = new StreamReader(httpResponse.GetResponseStream()))
+            try
             {
-                JavaScriptSerializer js = new JavaScriptSerializer();
-                result = streamReader.ReadToEnd();
-                string[] rstSplit = result.Split('\n');
-                statusModel = (StatusModel)js.Deserialize(rstSplit[1], typeof(StatusModel));
+                var httpResponse = (HttpWebResponse)httpWebRequest.GetResponse();
+                using (var streamReader = new StreamReader(httpResponse.GetResponseStream()))
+                {
+                    JavaScriptSerializer js = new JavaScriptSerializer();
+                    result = streamReader.ReadToEnd();
+                    string[] rstSplit = result.Split('\n');
+                    statusModel = (StatusModel)js.Deserialize(rstSplit[1], typeof(StatusModel));
+                }
+                return statusModel.status;
             }
-            return statusModel.status;
+            catch (Exception e)
+            {
+                return "D";
+            }
+            
         }
 
 
