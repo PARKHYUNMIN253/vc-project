@@ -19,6 +19,7 @@ using System.Web.Script.Serialization;
 using System.Net;
 using BizOneShot.Light.Models.CustomModels;
 using System.Text;
+using System.Threading;
 
 namespace BizOneShot.Light.Web.Areas.Mentor.Controllers
 {
@@ -1083,6 +1084,7 @@ namespace BizOneShot.Light.Web.Areas.Mentor.Controllers
         #endregion
         public string sendLastReport(TcmsIfLastReport tcmsIfLastReport)
         {
+
             HttpContext.Response.AppendHeader("Access-Control-Allow-Origin", "*");
             string result = "";
             string backSlash = "";
@@ -1515,6 +1517,69 @@ namespace BizOneShot.Light.Web.Areas.Mentor.Controllers
             }
 
             return Json(result);
+
+        }
+
+        // 반복적으로 Thread가 돌면서 메소드를 실행
+        public void runMethod()
+        {
+            while (true)
+            {
+
+                var beginTime = DateTime.Now;
+
+                // 실행 시킬 메소드 
+                reSendingData();
+
+                var duration = DateTime.Now.Subtract(beginTime);
+
+                var sleepDuration = (int)(25 - duration.TotalHours);
+
+                if( 0 < sleepDuration )
+                {
+                    Thread.Sleep(sleepDuration);
+                }
+
+            }
+        }
+
+        // TCMS_IF_LAST_REPORT에서 INSERT_YN이 E 이거나 NULL인 값들만 체크해서 재연계 하는 METHOD 구현
+        public void reSendingData()
+        {
+
+            // TCMS_IF_LAST_REPORT테이블에서 객체 가져오는 부분
+            var tcmsIfLastReportObj = tcmsIfLastReportService.unAsyncGetTcmsIfLastReportInfo();
+
+            // STATUS가 E or NULL일 경우 재전송 하는 부분
+            foreach(var obj in tcmsIfLastReportObj)
+            {
+
+                // 재전송 하는 조건
+                if(obj.InsertYn == null || obj.InsertYn == "E")
+                {
+
+                    // 동일한 데이터의 재전송 횟수 count check
+                    var resendCnt = tcmsIfLastReportService.getResendObj(obj.CompLoginKey ?? default(int), 
+                                                                         obj.BaLoginKey ?? default(int), 
+                                                                         obj.MentorLoginKey ?? default(int), 
+                                                                         obj.NumSn, 
+                                                                         obj.SubNumSn, 
+                                                                         obj.ConCode);
+
+                    // count가 3번까지만 연계 그후로는 넣지 않는다
+                    if(resendCnt.Count < 4)
+                    {
+                        sendLastReport(obj);
+                    }
+
+
+                }
+
+            }
+
+
+            // 재전송 횟수 3회까지만 CHECK 이상일 경우는 제외
+
 
         }
 
