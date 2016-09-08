@@ -20,6 +20,7 @@ using System.Net;
 using BizOneShot.Light.Models.CustomModels;
 using System.Text;
 using System.Threading;
+using System.Diagnostics;
 
 namespace BizOneShot.Light.Web.Areas.Mentor.Controllers
 {
@@ -47,6 +48,8 @@ namespace BizOneShot.Light.Web.Areas.Mentor.Controllers
         private readonly IVcBaInfoService vcBaInfoService;
         private readonly IVcMentorInfoSerivce vcMentorInfoService;
 
+        private readonly IVcIfTableService vcIfTableService;
+
         public ReportController(
             IScCompMappingService scCompMappingService,
             IScMentorMappingService scMentorMappingService,
@@ -62,7 +65,9 @@ namespace BizOneShot.Light.Web.Areas.Mentor.Controllers
 
             ITcmsIfLastReportService tcmsIfLastReportService,
             IVcBaInfoService vcBaInfoService,
-            IVcMentorInfoSerivce vcMentorInfoService
+            IVcMentorInfoSerivce vcMentorInfoService,
+
+            IVcIfTableService vcIfTableService
             )
 
         {
@@ -82,6 +87,7 @@ namespace BizOneShot.Light.Web.Areas.Mentor.Controllers
             this.vcBaInfoService = vcBaInfoService;
             this.vcMentorInfoService = vcMentorInfoService;
 
+            this.vcIfTableService = vcIfTableService;
         }
 
         // GET: Mentor/Report
@@ -547,28 +553,28 @@ namespace BizOneShot.Light.Web.Areas.Mentor.Controllers
                                 if (cnt == 1)
                                 {
 
-                                    tcmsIfLastReportObj.File2 = absFilePath;
+                                    tcmsIfLastReportObj[0].File2 = absFilePath;
                                     tcmsIfLastReportService.SaveDbContext();
 
                                 }
                                 else if (cnt == 2)
                                 {
 
-                                    tcmsIfLastReportObj.File3 = absFilePath;
+                                    tcmsIfLastReportObj[0].File3 = absFilePath;
                                     tcmsIfLastReportService.SaveDbContext();
 
                                 }
                                 else if (cnt == 3)
                                 {
 
-                                    tcmsIfLastReportObj.File4 = absFilePath;
+                                    tcmsIfLastReportObj[0].File4 = absFilePath;
                                     tcmsIfLastReportService.SaveDbContext();
 
                                 }
                                 else if (cnt == 4)
                                 {
 
-                                    tcmsIfLastReportObj.File5 = absFilePath;
+                                    tcmsIfLastReportObj[0].File5 = absFilePath;
                                     tcmsIfLastReportService.SaveDbContext();
 
                                 }
@@ -631,16 +637,16 @@ namespace BizOneShot.Light.Web.Areas.Mentor.Controllers
                     }
                     else
                     {
-                        var status = sendLastReport(tcmsIfLastReportObj);
+                        var status = sendLastReport(tcmsIfLastReportObj[0]);
 
                         if (status == "S")
                         {
-                            tcmsIfLastReportObj.InsertYn = "S";
+                            tcmsIfLastReportObj[0].InsertYn = "S";
                             tcmsIfLastReportService.SaveDbContext();
                         }
                         else
                         {
-                            tcmsIfLastReportObj.InsertYn = "E";
+                            tcmsIfLastReportObj[0].InsertYn = "E";
                             tcmsIfLastReportService.SaveDbContext();
                         }
 
@@ -857,28 +863,28 @@ namespace BizOneShot.Light.Web.Areas.Mentor.Controllers
                                 if (cnt == 1)
                                 {
 
-                                    tcmsIfLastReportObj.File2 = absFilePath;
+                                    tcmsIfLastReportObj[0].File2 = absFilePath;
                                     tcmsIfLastReportService.SaveDbContext();
 
                                 }
                                 else if (cnt == 2)
                                 {
 
-                                    tcmsIfLastReportObj.File3 = absFilePath;
+                                    tcmsIfLastReportObj[0].File3 = absFilePath;
                                     tcmsIfLastReportService.SaveDbContext();
 
                                 }
                                 else if (cnt == 3)
                                 {
 
-                                    tcmsIfLastReportObj.File4 = absFilePath;
+                                    tcmsIfLastReportObj[0].File4 = absFilePath;
                                     tcmsIfLastReportService.SaveDbContext();
 
                                 }
                                 else if (cnt == 4)
                                 {
 
-                                    tcmsIfLastReportObj.File5 = absFilePath;
+                                    tcmsIfLastReportObj[0].File5 = absFilePath;
                                     tcmsIfLastReportService.SaveDbContext();
 
                                 }
@@ -942,16 +948,16 @@ namespace BizOneShot.Light.Web.Areas.Mentor.Controllers
                     }
                     else
                     {
-                        var status = sendLastReport(tcmsIfLastReportObj);
+                        var status = sendLastReport(tcmsIfLastReportObj[0]);
 
                         if (status == "S")
                         {
-                            tcmsIfLastReportObj.InsertYn = "S";
+                            tcmsIfLastReportObj[0].InsertYn = "S";
                             tcmsIfLastReportService.SaveDbContext();
                         }
                         else
                         {
-                            tcmsIfLastReportObj.InsertYn = "E";
+                            tcmsIfLastReportObj[0].InsertYn = "E";
                             tcmsIfLastReportService.SaveDbContext();
                         }
 
@@ -1523,6 +1529,7 @@ namespace BizOneShot.Light.Web.Areas.Mentor.Controllers
         // 반복적으로 Thread가 돌면서 메소드를 실행
         public void runMethod()
         {
+            
             while (true)
             {
 
@@ -1541,6 +1548,7 @@ namespace BizOneShot.Light.Web.Areas.Mentor.Controllers
                 }
 
             }
+
         }
 
         // TCMS_IF_LAST_REPORT에서 INSERT_YN이 E 이거나 NULL인 값들만 체크해서 재연계 하는 METHOD 구현
@@ -1550,35 +1558,36 @@ namespace BizOneShot.Light.Web.Areas.Mentor.Controllers
             // TCMS_IF_LAST_REPORT테이블에서 객체 가져오는 부분
             var tcmsIfLastReportObj = tcmsIfLastReportService.unAsyncGetTcmsIfLastReportInfo();
 
+            // 연계 횟수를 count
+            int cnt = 0;
+
             // STATUS가 E or NULL일 경우 재전송 하는 부분
-            foreach(var obj in tcmsIfLastReportObj)
+            foreach (var obj in tcmsIfLastReportObj)
             {
 
                 // 재전송 하는 조건
-                if(obj.InsertYn == null || obj.InsertYn == "E")
+                if (obj.InsertYn == null || obj.InsertYn == "E")
                 {
 
                     // 동일한 데이터의 재전송 횟수 count check
-                    var resendCnt = tcmsIfLastReportService.getResendObj(obj.CompLoginKey ?? default(int), 
-                                                                         obj.BaLoginKey ?? default(int), 
-                                                                         obj.MentorLoginKey ?? default(int), 
-                                                                         obj.NumSn, 
-                                                                         obj.SubNumSn, 
+                    var resendCnt = tcmsIfLastReportService.getResendObj(obj.CompLoginKey ?? default(int),
+                                                                         obj.BaLoginKey ?? default(int),
+                                                                         obj.MentorLoginKey ?? default(int),
+                                                                         obj.NumSn,
+                                                                         obj.SubNumSn,
                                                                          obj.ConCode);
 
                     // count가 3번까지만 연계 그후로는 넣지 않는다
-                    if(resendCnt.Count < 4)
+                    if(cnt > 3)
                     {
                         sendLastReport(obj);
                     }
 
+                    cnt++;
 
                 }
 
             }
-
-
-            // 재전송 횟수 3회까지만 CHECK 이상일 경우는 제외
 
 
         }

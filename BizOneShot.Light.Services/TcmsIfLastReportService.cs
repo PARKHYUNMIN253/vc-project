@@ -15,7 +15,7 @@ namespace BizOneShot.Light.Services
         Task<TcmsIfLastReport> getTcmsIfSurveyByInfId(string infId);
         void Insert(TcmsIfLastReport tcmsIfLastReport);
 
-        Task<TcmsIfLastReport> getTcmsIfLastReportInfo(int compKey, int baKey, int mentorKey, string conCode);
+        Task<IList<TcmsIfLastReport>> getTcmsIfLastReportInfo(int compKey, int baKey, int mentorKey, string conCode);
 
         // 동기식으로 TcmsIfLastReport 부분 모두 가져오는 부분
         IList<TcmsIfLastReport> unAsyncGetTcmsIfLastReportInfo();
@@ -50,7 +50,7 @@ namespace BizOneShot.Light.Services
             tcmsIfLastReportRepository.Insert(tcmsIfLastReport);
         }
 
-        public async Task<TcmsIfLastReport> getTcmsIfLastReportInfo(int compKey, int baKey, int mentorKey, string conCode)
+        public async Task<IList<TcmsIfLastReport>> getTcmsIfLastReportInfo(int compKey, int baKey, int mentorKey, string conCode)
         {
 
             return await tcmsIfLastReportRepository.getTcmsIfLastReportInfo(compKey, baKey, mentorKey, conCode);

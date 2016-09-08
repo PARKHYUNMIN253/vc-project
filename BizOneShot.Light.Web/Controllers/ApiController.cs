@@ -31,6 +31,9 @@ namespace BizOneShot.Light.Web.Controllers
         // add Loy
         private readonly IQuesCompInfoService _quesCompInfoService;
 
+        // reSending 
+        private readonly ITcmsIfLastReportService _tcmsIfLastReportService;
+
         // GET: Api
         public ActionResult Index()
         {
@@ -44,7 +47,9 @@ namespace BizOneShot.Light.Web.Controllers
           IVcCompInfoService _vcCompInfoService,
           IQuesMasterService _quesMasterService,
           IVcBaInfoService _vcBaInfoService,
-          IQuesCompInfoService _quesCompInfoService
+          IQuesCompInfoService _quesCompInfoService,
+
+          ITcmsIfLastReportService _tcmsIfLastReportService
         )
         {
             this._vcIfTableService = _vcIfTableService;
@@ -53,6 +58,8 @@ namespace BizOneShot.Light.Web.Controllers
             this._quesMasterService = _quesMasterService;
             this._vcBaInfoService = _vcBaInfoService;
             this._quesCompInfoService = _quesCompInfoService;
+
+            this._tcmsIfLastReportService = _tcmsIfLastReportService;
         }
 
         // 데이터 넣기 전에 DB정립 필요
@@ -1371,5 +1378,113 @@ namespace BizOneShot.Light.Web.Controllers
         //    }
         //    return statusModel.status;
         //}
+
+
+        // TCMS_IF_LAST_REPORT에서 INSERT_YN이 E 이거나 NULL인 값들만 체크해서 재연계 하는 METHOD 구현
+        public void reSendingData()
+        {
+
+            // TCMS_IF_LAST_REPORT테이블에서 객체 가져오는 부분
+            var tcmsIfLastReportObj = _tcmsIfLastReportService.unAsyncGetTcmsIfLastReportInfo();
+
+            // 연계 횟수를 count
+            int cnt = 0;
+
+            // STATUS가 E or NULL일 경우 재전송 하는 부분
+            foreach (var obj in tcmsIfLastReportObj)
+            {
+
+                // 재전송 하는 조건
+                if (obj.InsertYn == null || obj.InsertYn == "E")
+                {
+
+                    // 동일한 데이터의 재전송 횟수 count check
+                    var resendCnt = _tcmsIfLastReportService.getResendObj(obj.CompLoginKey ?? default(int),
+                                                                         obj.BaLoginKey ?? default(int),
+                                                                         obj.MentorLoginKey ?? default(int),
+                                                                         obj.NumSn,
+                                                                         obj.SubNumSn,
+                                                                         obj.ConCode);
+
+                    // count가 3번까지만 연계 그후로는 넣지 않는다
+                    if (cnt > 3)
+                    {
+                        reSendLastReport(obj);
+                    }
+
+                    cnt++;
+
+                }
+
+            }
+        }
+
+        public string reSendLastReport(TcmsIfLastReport tcmsIfLastReport)
+        {
+
+            HttpContext.Response.AppendHeader("Access-Control-Allow-Origin", "*");
+            string result = "";
+            string backSlash = "";
+
+            StatusModel statusModel = new StatusModel();
+
+            var httpWebRequest = (HttpWebRequest)WebRequest.Create("http://tcms.igarim.com/Api/tcms_if_last_report.php");
+            //httpWebRequest.Accept = "application/json";
+            httpWebRequest.ContentType = "application/x-www-form-urlencoded";
+            httpWebRequest.Method = "POST";
+            httpWebRequest.CookieContainer = new CookieContainer();
+            HttpCookieCollection cookies = Request.Cookies;
+            for (int i = 0; i < cookies.Count; i++)
+            {
+                HttpCookie httpCookie = cookies.Get(i);
+                Cookie cookie = new Cookie();
+                cookie.Domain = httpWebRequest.RequestUri.Host;
+                cookie.Expires = httpCookie.Expires;
+                cookie.Name = httpCookie.Name;
+                cookie.Path = httpCookie.Path;
+                cookie.Secure = httpCookie.Secure;
+                cookie.Value = httpCookie.Value;
+                httpWebRequest.CookieContainer.Add(cookie);
+            }
+
+            using (var requestStream = httpWebRequest.GetRequestStream())
+            {
+                string jsont = new JavaScriptSerializer().Serialize(new
+                {
+                    InfId = tcmsIfLastReport.InfId,
+                    CompLoginKey = tcmsIfLastReport.CompLoginKey,
+                    BaLoginKey = tcmsIfLastReport.BaLoginKey,
+                    MentorLoginKey = tcmsIfLastReport.MentorLoginKey,
+                    NumSn = tcmsIfLastReport.NumSn,
+                    SubNumSn = tcmsIfLastReport.SubNumSn,
+                    ConCode = tcmsIfLastReport.ConCode,
+
+                    File1 = tcmsIfLastReport.File1.Replace("\\", "/"),
+                    File2 = tcmsIfLastReport.File2.Replace("\\", "/"),
+                    File3 = tcmsIfLastReport.File3.Replace("\\", "/"),
+                    File4 = tcmsIfLastReport.File4.Replace("\\", "/"),
+                    File5 = tcmsIfLastReport.File5.Replace("\\", "/"),
+
+                    regDt = tcmsIfLastReport.RegDt.ToString(),
+                    InfDt = tcmsIfLastReport.InfDt.ToString()
+                });
+                backSlash = jsont.Replace("\\", "");
+                byte[] ba = Encoding.UTF8.GetBytes("json=" + backSlash);
+
+                requestStream.Write(ba, 0, ba.Length);
+                requestStream.Flush();
+                requestStream.Close();
+            }
+            var httpResponse = (HttpWebResponse)httpWebRequest.GetResponse();
+            using (var streamReader = new StreamReader(httpResponse.GetResponseStream()))
+            {
+                JavaScriptSerializer js = new JavaScriptSerializer();
+                result = streamReader.ReadToEnd();
+                string[] rstSplit = result.Split('\n');
+                statusModel = (StatusModel)js.Deserialize(rstSplit[1], typeof(StatusModel));
+            }
+            return statusModel.status;
+        }
+
     }
 }

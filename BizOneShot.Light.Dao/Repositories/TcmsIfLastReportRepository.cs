@@ -18,7 +18,7 @@ namespace BizOneShot.Light.Dao.Repositories
         Task<TcmsIfLastReport> getTcmsIfSurveyByInfId(string infId);
 
         // file들의 절대경로를 update 하기 위해서 조회
-        Task<TcmsIfLastReport> getTcmsIfLastReportInfo(int compKey, int baKey, int mentorKey, string conCode);
+        Task<IList<TcmsIfLastReport>> getTcmsIfLastReportInfo(int compKey, int baKey, int mentorKey, string conCode);
 
         // 동기식으로 모든 tcmsIfLastReport 구현
         IList<TcmsIfLastReport> unAsyncGetTcmsIfLastReportInfo(Expression<Func<TcmsIfLastReport, bool>> where);
@@ -49,7 +49,7 @@ namespace BizOneShot.Light.Dao.Repositories
             DbContext.TcmsIfLastReports.Add(tcmsIfLastReport);
         }
 
-        public async Task<TcmsIfLastReport> getTcmsIfLastReportInfo(int compKey, int baKey, int mentorKey, string conCode)
+        public async Task<IList<TcmsIfLastReport>> getTcmsIfLastReportInfo(int compKey, int baKey, int mentorKey, string conCode)
         {
 
             return await DbContext.TcmsIfLastReports
@@ -57,7 +57,7 @@ namespace BizOneShot.Light.Dao.Repositories
                 .Where(tis => tis.BaLoginKey == baKey)
                 .Where(tis => tis.MentorLoginKey == mentorKey)
                 .Where(tis => tis.ConCode == conCode)
-                .SingleOrDefaultAsync();
+                .OrderByDescending(tis => tis.InfId).ToListAsync();
 
         }
 

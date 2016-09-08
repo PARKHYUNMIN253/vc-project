@@ -39,6 +39,9 @@ namespace BizOneShot.Light.Services
         Task<VcIfBaInfo> getVcIfBaInfoInfId(string InfId);
         Task<VcIfMentorInfo> getVcIfMentorInfId(string InfId);
         Task<VcIfQuesCompInfo> getVcIfQuesCompInfoByInfId(string infId); // 8번
+
+        // TEST 동기식
+        VcIfNumInfo getTest(string infId);
     }
 
     public class VcIfTableService : IVcIfTableService
@@ -206,6 +209,11 @@ namespace BizOneShot.Light.Services
             return await _vcIfQuesCompInfoRepository.getVcIfQuesCompInfoByInfId(infId);
         }
 
+
+        public VcIfNumInfo getTest(string infId)
+        {
+            return _vcIfNumInfoRepository.getTest(bw => bw.InfId == infId);
+        }
 
 
 
