@@ -16,6 +16,11 @@ namespace BizOneShot.Light.Services
         void Insert(TcmsIfLastReport tcmsIfLastReport);
 
         Task<TcmsIfLastReport> getTcmsIfLastReportInfo(int compKey, int baKey, int mentorKey, string conCode);
+
+        // 동기식으로 TcmsIfLastReport 부분 모두 가져오는 부분
+        IList<TcmsIfLastReport> unAsyncGetTcmsIfLastReportInfo();
+
+        IList<TcmsIfLastReport> getResendObj(int compKey, int baKey, int mentorKey, string numSn, string subNumSn, string conCode);
     }
 
 
@@ -50,6 +55,27 @@ namespace BizOneShot.Light.Services
 
             return await tcmsIfLastReportRepository.getTcmsIfLastReportInfo(compKey, baKey, mentorKey, conCode);
 
+        }
+
+        public IList<TcmsIfLastReport> unAsyncGetTcmsIfLastReportInfo()
+        {
+
+            var listTcmsIfLastReport = tcmsIfLastReportRepository.unAsyncGetTcmsIfLastReportInfo(bw => bw.InfId != null);
+
+            return listTcmsIfLastReport.OrderByDescending(bw => bw.InfId).ToList();
+
+        }
+
+        public IList<TcmsIfLastReport> getResendObj(int compKey, int baKey, int mentorKey, string numSn, string subNumSn, string conCode)
+        {
+            var resendObj = tcmsIfLastReportRepository.getResendObj(bw => bw.CompLoginKey == compKey 
+            && bw.BaLoginKey == baKey 
+            && bw.MentorLoginKey == mentorKey 
+            && bw.NumSn == numSn 
+            && bw.SubNumSn == subNumSn 
+            && bw.ConCode == conCode);
+
+            return resendObj.OrderByDescending(bw => bw.InfId).ToList();
         }
 
         public void SaveDbContext()

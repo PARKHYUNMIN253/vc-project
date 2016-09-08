@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.Data.Entity;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -18,6 +19,11 @@ namespace BizOneShot.Light.Dao.Repositories
 
         // file들의 절대경로를 update 하기 위해서 조회
         Task<TcmsIfLastReport> getTcmsIfLastReportInfo(int compKey, int baKey, int mentorKey, string conCode);
+
+        // 동기식으로 모든 tcmsIfLastReport 구현
+        IList<TcmsIfLastReport> unAsyncGetTcmsIfLastReportInfo(Expression<Func<TcmsIfLastReport, bool>> where);
+
+        IList<TcmsIfLastReport> getResendObj(Expression<Func<TcmsIfLastReport, bool>> where);
     }
     public class TcmsIfLastReportRepository : RepositoryBase<TcmsIfLastReport>, ITcmsIfLastReportRepository
     {
@@ -53,6 +59,16 @@ namespace BizOneShot.Light.Dao.Repositories
                 .Where(tis => tis.ConCode == conCode)
                 .SingleOrDefaultAsync();
 
+        }
+
+        public IList<TcmsIfLastReport> unAsyncGetTcmsIfLastReportInfo(Expression<Func<TcmsIfLastReport, bool>> where)
+        {
+            return DbContext.TcmsIfLastReports.Where(where).ToList();
+        }
+
+        public IList<TcmsIfLastReport> getResendObj(Expression<Func<TcmsIfLastReport, bool>> where)
+        {
+            return DbContext.TcmsIfLastReports.Where(where).ToList();
         }
 
     }
