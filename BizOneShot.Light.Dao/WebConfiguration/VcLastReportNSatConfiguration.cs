@@ -51,7 +51,7 @@ namespace BizOneShot.Light.Dao.WebConfiguration
             Property(x => x.File4).HasColumnName("FILE_4").IsOptional().HasColumnType("nvarchar").HasMaxLength(255);
             Property(x => x.File5).HasColumnName("FILE_5").IsOptional().HasColumnType("nvarchar").HasMaxLength(255);
             Property(x => x.RegDt).HasColumnName("REG_DT").IsOptional().HasColumnType("datetime");
-            Property(x => x.ConStatus).HasColumnName("CON_STATUS").IsRequired().IsFixedLength().IsUnicode(false).HasColumnType("char").HasMaxLength(1);
+            Property(x => x.ConStatus).HasColumnName("CON_STATUS").IsOptional().IsFixedLength().IsUnicode(false).HasColumnType("char").HasMaxLength(1);
             Property(x => x.TotalReportSn).HasColumnName("TOTAL_REPORT_SN").IsOptional().HasColumnType("int");
             Property(x => x.Check01).HasColumnName("CHECK01").IsOptional().IsFixedLength().IsUnicode(false).HasColumnType("char").HasMaxLength(1);
             Property(x => x.Check02).HasColumnName("CHECK02").IsOptional().IsFixedLength().IsUnicode(false).HasColumnType("char").HasMaxLength(1);

@@ -319,7 +319,7 @@ namespace BizOneShot.Light.Web.Areas.Mentor.Controllers
                    Mapper.Map<MentoringTotalReportViewModel>(scMentoringTotalReport);
 
                 compListInfo.DeepenContents = totalReportViewModel.DeepenContents;
-                compListInfo.SubmitDt = totalReportViewModel.SubmitDt.Value;
+                compListInfo.SubmitDt = totalReportViewModel.SubmitDt;
                 compListInfo.FileContents = listFileContent;
                 compListInfo.FileNm = totalReportViewModel.FileContents[0].FileNm;
                 compListInfo.TotalReportSn = totalReportSn;
@@ -635,9 +635,14 @@ namespace BizOneShot.Light.Web.Areas.Mentor.Controllers
                             tcmsIfLastReport.InsertYn = "S";
                             tcmsIfLastReportService.SaveDbContext();
                         }
-                        else
+                        else if(status == "E")
                         {
                             tcmsIfLastReport.InsertYn = "E";
+                            tcmsIfLastReportService.SaveDbContext();
+                        }
+                        else
+                        {
+                            tcmsIfLastReport.InsertYn = "D";
                             tcmsIfLastReportService.SaveDbContext();
                         }
 
@@ -651,9 +656,14 @@ namespace BizOneShot.Light.Web.Areas.Mentor.Controllers
                             tcmsIfLastReportObj[0].InsertYn = "S";
                             tcmsIfLastReportService.SaveDbContext();
                         }
-                        else
+                        else if(status == "E")
                         {
                             tcmsIfLastReportObj[0].InsertYn = "E";
+                            tcmsIfLastReportService.SaveDbContext();
+                        }
+                        else
+                        {
+                            tcmsIfLastReport.InsertYn = "D";
                             tcmsIfLastReportService.SaveDbContext();
                         }
 
@@ -952,9 +962,14 @@ namespace BizOneShot.Light.Web.Areas.Mentor.Controllers
                             tcmsIfLastReport.InsertYn = "S";
                             tcmsIfLastReportService.SaveDbContext();
                         }
-                        else
+                        else if(status =="E")
                         {
                             tcmsIfLastReport.InsertYn = "E";
+                            tcmsIfLastReportService.SaveDbContext();
+                        }
+                        else
+                        {
+                            tcmsIfLastReport.InsertYn = "D";
                             tcmsIfLastReportService.SaveDbContext();
                         }
                         
@@ -968,9 +983,13 @@ namespace BizOneShot.Light.Web.Areas.Mentor.Controllers
                             tcmsIfLastReportObj[0].InsertYn = "S";
                             tcmsIfLastReportService.SaveDbContext();
                         }
-                        else
+                        else if(status == "E")
                         {
                             tcmsIfLastReportObj[0].InsertYn = "E";
+                            tcmsIfLastReportService.SaveDbContext();
+                        }  else
+                        {
+                            tcmsIfLastReport.InsertYn = "D";
                             tcmsIfLastReportService.SaveDbContext();
                         }
 
@@ -1204,15 +1223,22 @@ namespace BizOneShot.Light.Web.Areas.Mentor.Controllers
                 requestStream.Flush();
                 requestStream.Close();
             }
-            var httpResponse = (HttpWebResponse)httpWebRequest.GetResponse();
-            using (var streamReader = new StreamReader(httpResponse.GetResponseStream()))
+            try
             {
-                JavaScriptSerializer js = new JavaScriptSerializer();
-                result = streamReader.ReadToEnd();
-                string[] rstSplit = result.Split('\n');
-                statusModel = (StatusModel)js.Deserialize(rstSplit[1], typeof(StatusModel));
+                var httpResponse = (HttpWebResponse)httpWebRequest.GetResponse();
+                using (var streamReader = new StreamReader(httpResponse.GetResponseStream()))
+                {
+                    JavaScriptSerializer js = new JavaScriptSerializer();
+                    result = streamReader.ReadToEnd();
+                    string[] rptSplit = result.Split('\n');
+                    statusModel = (StatusModel)js.Deserialize(rptSplit[1], typeof(StatusModel));
+                }
+                return statusModel.status;
             }
-            return statusModel.status;
+            catch (Exception e)
+            {
+                return "D";
+            }
         }
 
 

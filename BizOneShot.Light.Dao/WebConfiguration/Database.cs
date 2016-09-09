@@ -5,7 +5,7 @@
 // 
 // The following connection settings were used to generate this file
 // 
-//     Configuration file:     "BizOneShot.Light.Dao\App.config"
+//     Configuration file:     "BizOneShot.Light.Web\Web.config"
 //     Connection String Name: "WebDbContext"
 //     Connection String:      "Data Source=172.101.201.35;password=**zapped**;"
 
