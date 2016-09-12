@@ -3776,45 +3776,6 @@ namespace BizOneShot.Light.Web.Areas.Company.Controllers
                     eTcmsIfSurvey.InsertYn = "E";
                     _tcmsIfSurveyService.SaveDbContext();
                 }
-                else if (status == "D")
-                {
-                    // D면 재전송 proc, 추후 재귀 function으로 교체가 필요하다 
-                    var onceStatus = sendSatisfaction(tcmsIfSurvey);
-                    if (onceStatus == "S")
-                    {
-                        var oTcmsIfSurvey = await _tcmsIfSurveyService.getTcmsIfSurveyByInfId(tcmsIfSurvey.InfId);
-                        oTcmsIfSurvey.InsertYn = "S";
-                        _tcmsIfSurveyService.SaveDbContext();
-                    }
-                    else if (status == "E")
-                    {
-                        var oTcmsIfSurvey = await _tcmsIfSurveyService.getTcmsIfSurveyByInfId(tcmsIfSurvey.InfId);
-                        oTcmsIfSurvey.InsertYn = "E";
-                        _tcmsIfSurveyService.SaveDbContext();
-                    }
-                    else if (status == "D")
-                    {
-                        var secondStatus = sendSatisfaction(tcmsIfSurvey);
-                        if (secondStatus == "S")
-                        {
-                            var tTcmsIfSurvey = await _tcmsIfSurveyService.getTcmsIfSurveyByInfId(tcmsIfSurvey.InfId);
-                            tTcmsIfSurvey.InsertYn = "S";
-                            _tcmsIfSurveyService.SaveDbContext();
-                        }
-                        else if (secondStatus == "E")
-                        {
-                            var tTcmsIfSurvey = await _tcmsIfSurveyService.getTcmsIfSurveyByInfId(tcmsIfSurvey.InfId);
-                            tTcmsIfSurvey.InsertYn = "E";
-                            _tcmsIfSurveyService.SaveDbContext();
-                        }
-                        else if (secondStatus == "D")
-                        {
-                            var tTcmsIfSurvey = await _tcmsIfSurveyService.getTcmsIfSurveyByInfId(tcmsIfSurvey.InfId);
-                            tTcmsIfSurvey.InsertYn = "D";
-                            _tcmsIfSurveyService.SaveDbContext();
-                        }
-                    }
-                }
             }
             //... 본테이블 종료
             // 넣고 나서 전송부도 여기에 둔다
@@ -3972,7 +3933,7 @@ namespace BizOneShot.Light.Web.Areas.Company.Controllers
             }
             catch (Exception e)
             {
-                return "D";
+                return "E";
             }
             
         }
