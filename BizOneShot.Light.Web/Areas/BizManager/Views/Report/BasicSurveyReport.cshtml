@@ -164,7 +164,7 @@
                             else if (item.Status == "C")
                             {
                                 <td>
-                                    <a href="@Url.Action("ReportCover", "Report", new { area ="BizManager", NumSn = item.NumSn, CompSn = item.CompSn, BizWorkYear = item.BizWorkYear, Status = item.Status, QuestionSn = item.QuestionSn } )" class="btn_mid_a lightblue">보고서보기</a>
+                                    <a href="@Url.Action("ReportCover", "BasicSurveyReport", new { area ="", NumSn = item.NumSn, CompSn = item.CompSn, BizWorkYear = item.BizWorkYear, Status = item.Status, QuestionSn = item.QuestionSn } )" class="btn_mid_a lightblue">보고서보기</a>
                                 </td>
                             }
                             else if (item.Status == "T")

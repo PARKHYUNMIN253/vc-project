@@ -276,6 +276,12 @@ namespace BizOneShot.Light.Web.Controllers
 
                         await _vcIfTableService.SaveDbContextAsync();
 
+                        // quesMaster
+                        quesMaster.RegistrationNo = vcIfCompInfo.RegistrationSn;
+                        quesMaster.BasicYear = DateTime.Now.Year;
+                        quesMaster.SaveStatus = 1;
+                        quesMaster.Status = "P";
+
                         _vcCompInfoService.SaveDbContext();
 
                         ifObj.InsertStatus = "S";
@@ -1389,12 +1395,14 @@ namespace BizOneShot.Light.Web.Controllers
             // TCMS_IF_LAST_REPORT테이블에서 객체 가져오는 부분
             var tcmsIfLastReportObj = _tcmsIfLastReportService.unAsyncGetTcmsIfLastReportInfo();
 
-            // 연계 횟수를 count
-            int cnt = 0;
+            
 
             // STATUS가 E or NULL일 경우 재전송 하는 부분
             foreach (var obj in tcmsIfLastReportObj)
             {
+
+                // 연계 횟수를 count
+                int cnt = 0;
 
                 // 재전송 하는 조건
                 if (obj.InsertYn == null || obj.InsertYn == "E")
@@ -1407,6 +1415,61 @@ namespace BizOneShot.Light.Web.Controllers
                                                                          obj.NumSn,
                                                                          obj.SubNumSn,
                                                                          obj.ConCode);
+
+                    // status check 후 재연계 
+                    var statusCheck = reSendLastReport(obj);
+
+                    if (statusCheck == "D")
+                    {
+                        // 두번째 재연계
+                        var reStatus = reSendLastReport(obj);
+
+                        if (reStatus == "S")
+                        {
+                            // 재연계 성공시
+                            obj.InsertYn = "S";
+                            _tcmsIfLastReportService.SaveDbContext();
+
+                        }else if (reStatus == "E")
+                        {
+                            obj.InsertYn = "E";
+                            _tcmsIfLastReportService.SaveDbContext();
+                        }else if (reStatus == "D")
+                        {
+
+                            var reStatusSec = reSendLastReport(obj);
+                            if(reStatusSec == "S")
+                            {
+                                // 두번째 재연계 성공시
+                                obj.InsertYn = "S";
+                                _tcmsIfLastReportService.SaveDbContext();
+                            }else if(reStatusSec == "E")
+                            {
+                                obj.InsertYn = "E";
+                                _tcmsIfLastReportService.SaveDbContext();
+                            }else if(reStatusSec == "D")
+                            {
+                                obj.InsertYn = "D";
+                                _tcmsIfLastReportService.SaveDbContext();
+                            }
+
+                        }
+
+                    }
+                    else if (statusCheck == "S")
+                    {
+
+                        // 재전송 실패 하여 1회 다시 재전송 시도
+                        obj.InsertYn = "S";
+                        _tcmsIfLastReportService.SaveDbContext();
+
+                    }
+
+
+
+                    
+
+
 
                     // count가 3번까지만 연계 그후로는 넣지 않는다
                     if (cnt > 3)
@@ -1486,6 +1549,340 @@ namespace BizOneShot.Light.Web.Controllers
                 statusModel = (StatusModel)js.Deserialize(rstSplit[1], typeof(StatusModel));
             }
             return statusModel.status;
+        }
+
+
+        public string testSendLastReport()
+        {
+            HttpContext.Response.AppendHeader("Access-Control-Allow-Origin", "*");
+            string result = "";
+            string backSlash = "";
+            var dt = DateTime.Today;
+                string dtc = String.Format("{0:yyyy-MM-dd ss:ss:ss}", dt);
+
+            StatusModel statusModel = new StatusModel();
+
+            var httpWebRequest = (HttpWebRequest)WebRequest.Create("http://tcms.igarim.com/Api/tcms_if_last_report.php");
+            //httpWebRequest.Accept = "application/json";
+            httpWebRequest.ContentType = "application/x-www-form-urlencoded";
+            httpWebRequest.Method = "POST";
+            httpWebRequest.CookieContainer = new CookieContainer();
+            HttpCookieCollection cookies = Request.Cookies;
+            for (int i = 0; i < cookies.Count; i++)
+            {
+                HttpCookie httpCookie = cookies.Get(i);
+                Cookie cookie = new Cookie();
+                cookie.Domain = httpWebRequest.RequestUri.Host;
+                cookie.Expires = httpCookie.Expires;
+                cookie.Name = httpCookie.Name;
+                cookie.Path = httpCookie.Path;
+                cookie.Secure = httpCookie.Secure;
+                cookie.Value = httpCookie.Value;
+                httpWebRequest.CookieContainer.Add(cookie);
+            }
+
+            using (var requestStream = httpWebRequest.GetRequestStream())
+            {
+                string jsont = new JavaScriptSerializer().Serialize(new
+                {
+                    infid = "voucher_if_33333",
+                    comploginkey = "147",
+                    baloginkey = "350",
+                    mentorloginkey = "344",
+                    numsn = "001",
+                    subnumsn = "01",
+                    concode = "rd02",
+                    File1 = "파일1",
+                    File2 = "파일2",
+                    File3 = "http://voucher.tcms.or.kr/Company/Report/CompanyInfo01?QuestionSn=23",
+                    File4 = "http://voucher.tcms.or.kr/Company/Report/CompanyInfo01?QuestionSn=24",
+                    File5 = "http://voucher.tcms.or.kr/Company/Report/CompanyInfo01?QuestionSn=26",
+                    InfDt = dtc
+                });
+                backSlash = jsont.Replace("\\", "");
+                byte[] ba = Encoding.UTF8.GetBytes("json=" + backSlash);
+
+                requestStream.Write(ba, 0, ba.Length);
+                requestStream.Flush();
+                requestStream.Close();
+            }
+            try
+            {
+                var httpResponse = (HttpWebResponse)httpWebRequest.GetResponse();
+                using (var streamReader = new StreamReader(httpResponse.GetResponseStream()))
+                {
+                    JavaScriptSerializer js = new JavaScriptSerializer();
+                    result = streamReader.ReadToEnd();
+                    string[] rptSplit = result.Split('\n');
+                    statusModel = (StatusModel)js.Deserialize(rptSplit[1], typeof(StatusModel));
+                }
+                return statusModel.status;
+            }
+            catch (Exception e)
+            {
+                return "D";
+            }
+        }
+
+        public string testSendLastReport2()
+        {
+            HttpContext.Response.AppendHeader("Access-Control-Allow-Origin", "*");
+            string result = "";
+            string backSlash = "";
+            var dt = DateTime.Today;
+            string dtc = String.Format("{0:yyyy-MM-dd ss:ss:ss}", dt);
+
+            StatusModel statusModel = new StatusModel();
+
+            var httpWebRequest = (HttpWebRequest)WebRequest.Create("http://tcms.igarim.com/Api/tcms_if_last_report.php");
+            //httpWebRequest.Accept = "application/json";
+            httpWebRequest.ContentType = "application/x-www-form-urlencoded";
+            httpWebRequest.Method = "POST";
+            httpWebRequest.CookieContainer = new CookieContainer();
+            HttpCookieCollection cookies = Request.Cookies;
+            for (int i = 0; i < cookies.Count; i++)
+            {
+                HttpCookie httpCookie = cookies.Get(i);
+                Cookie cookie = new Cookie();
+                cookie.Domain = httpWebRequest.RequestUri.Host;
+                cookie.Expires = httpCookie.Expires;
+                cookie.Name = httpCookie.Name;
+                cookie.Path = httpCookie.Path;
+                cookie.Secure = httpCookie.Secure;
+                cookie.Value = httpCookie.Value;
+                httpWebRequest.CookieContainer.Add(cookie);
+            }
+
+            using (var requestStream = httpWebRequest.GetRequestStream())
+            {
+                string jsont = new JavaScriptSerializer().Serialize(new
+                {
+                    infid = "voucher_if_44444",
+                    comploginkey = "168",
+                    baloginkey = "362",
+                    mentorloginkey = "362",
+                    numsn = "001",
+                    subnumsn = "01",
+                    concode = "BC02",
+                    File1 = "http://voucher.tcms.or.kr/Company/Report/CompanyInfo01?QuestionSn=23",
+                    File2 = "파일2",
+                    File3 = "파일1",
+                    File4 = "http://voucher.tcms.or.kr/Company/Report/CompanyInfo01?QuestionSn=23",
+                    File5 = "http://voucher.tcms.or.kr/Company/Report/CompanyInfo01?QuestionSn=23",
+                    InfDt = dtc
+                });
+                backSlash = jsont.Replace("\\", "");
+                byte[] ba = Encoding.UTF8.GetBytes("json=" + backSlash);
+
+                requestStream.Write(ba, 0, ba.Length);
+                requestStream.Flush();
+                requestStream.Close();
+            }
+            try
+            {
+                var httpResponse = (HttpWebResponse)httpWebRequest.GetResponse();
+                using (var streamReader = new StreamReader(httpResponse.GetResponseStream()))
+                {
+                    JavaScriptSerializer js = new JavaScriptSerializer();
+                    result = streamReader.ReadToEnd();
+                    string[] rptSplit = result.Split('\n');
+                    statusModel = (StatusModel)js.Deserialize(rptSplit[1], typeof(StatusModel));
+                }
+                return statusModel.status;
+            }
+            catch (Exception e)
+            {
+                return "D";
+            }
+        }
+
+        public string sendSatisfaction2()
+        {
+            HttpContext.Response.AppendHeader("Access-Control-Allow-Origin", "*");
+            string result = "";
+
+            StatusModel statusModel = new StatusModel();
+
+            var httpWebRequest = (HttpWebRequest)WebRequest.Create("http://tcms.igarim.com/Api/tcms_if_survey.php");
+            httpWebRequest.ContentType = "application/x-www-form-urlencoded";
+            httpWebRequest.Method = "POST";
+            httpWebRequest.CookieContainer = new CookieContainer();
+            HttpCookieCollection cookies = Request.Cookies;
+            for (int i = 0; i < cookies.Count; i++)
+            {
+                HttpCookie httpCookie = cookies.Get(i);
+                Cookie cookie = new Cookie();
+                cookie.Domain = httpWebRequest.RequestUri.Host;
+                cookie.Expires = httpCookie.Expires;
+                cookie.Name = httpCookie.Name;
+                cookie.Path = httpCookie.Path;
+                cookie.Secure = httpCookie.Secure;
+                cookie.Value = httpCookie.Value;
+                httpWebRequest.CookieContainer.Add(cookie);
+            }
+
+            using (var requestStream = httpWebRequest.GetRequestStream())
+            {
+                string backSlash = "";
+                var dt = DateTime.Today;
+                string dtc = String.Format("{0:yyyy-MM-dd ss:ss:ss}", dt);
+                string jsont = new JavaScriptSerializer().Serialize(new
+                {
+                    infid = "voucher_if_07070",
+                    comploginkey = "147",
+                    baloginkey = "350",
+                    mentorloginkey = "344",
+                    numsn = "001",
+                    subnumsn = "01",
+                    concode = "rd02",
+                    satisfactiongrade = "65",
+                    check01 = "1",
+                    check02 = "1",
+                    check03 = "1",
+                    check04 = "1",
+                    check05 = "1",
+                    check06 = "1",
+                    check07 = "1",
+                    check08 = "1",
+                    check09 = "1",
+                    check10 = "1",
+                    check11 = "1",
+                    check12 = "1",
+                    check13 = "1",
+                    check14 = "1",
+                    check15 = "1",
+                    check16 = "1",
+                    check17 = "1",
+                    check18 = "1",
+                    check19 = "1",
+                    check20 = "1",
+                    check21 = "1",
+                    check22 = "2",
+                    check23 = "3",
+                    check24 = "5",
+                    text01 = "5000만원 5개월",
+                    text02 = "사업과 관련된 좋은 컨설팅이였습니다.",
+                    infdt = "dtc"
+                });
+                backSlash = jsont.Replace("\\", "");
+                byte[] ba = Encoding.UTF8.GetBytes("json=" + backSlash);
+
+                requestStream.Write(ba, 0, ba.Length);
+                requestStream.Flush();
+                requestStream.Close();
+            }
+            try
+            {
+                var httpResponse = (HttpWebResponse)httpWebRequest.GetResponse();
+                using (var streamReader = new StreamReader(httpResponse.GetResponseStream()))
+                {
+                    JavaScriptSerializer js = new JavaScriptSerializer();
+                    result = streamReader.ReadToEnd();
+                    string[] rptSplit = result.Split('\n');
+                    statusModel = (StatusModel)js.Deserialize(rptSplit[1], typeof(StatusModel));
+                }
+                return statusModel.status;
+            }
+            catch (Exception e)
+            {
+                return "D";
+            }
+
+        }
+
+
+        public string sendSatisfaction3()
+        {
+            HttpContext.Response.AppendHeader("Access-Control-Allow-Origin", "*");
+            string result = "";
+
+            StatusModel statusModel = new StatusModel();
+
+            var httpWebRequest = (HttpWebRequest)WebRequest.Create("http://tcms.igarim.com/Api/tcms_if_survey.php");
+            httpWebRequest.ContentType = "application/x-www-form-urlencoded";
+            httpWebRequest.Method = "POST";
+            httpWebRequest.CookieContainer = new CookieContainer();
+            HttpCookieCollection cookies = Request.Cookies;
+            for (int i = 0; i < cookies.Count; i++)
+            {
+                HttpCookie httpCookie = cookies.Get(i);
+                Cookie cookie = new Cookie();
+                cookie.Domain = httpWebRequest.RequestUri.Host;
+                cookie.Expires = httpCookie.Expires;
+                cookie.Name = httpCookie.Name;
+                cookie.Path = httpCookie.Path;
+                cookie.Secure = httpCookie.Secure;
+                cookie.Value = httpCookie.Value;
+                httpWebRequest.CookieContainer.Add(cookie);
+            }
+
+            using (var requestStream = httpWebRequest.GetRequestStream())
+            {
+                string backSlash = "";
+                var dt = DateTime.Today;
+                string dtc = String.Format("{0:yyyy-MM-dd ss:ss:ss}", dt);
+                string jsont = new JavaScriptSerializer().Serialize(new
+                {
+                    infid = "voucher_if_03518",
+                    comploginkey = "165",
+                    baloginkey = "362",
+                    mentorloginkey = "346",
+                    numsn = "001",
+                    subnumsn = "01",
+                    concode = "CA02",
+                    satisfactiongrade = "67",
+                    check01 = "1",
+                    check02 = "2",
+                    check03 = "1",
+                    check04 = "1",
+                    check05 = "3",
+                    check06 = "1",
+                    check07 = "1",
+                    check08 = "4",
+                    check09 = "1",
+                    check10 = "4",
+                    check11 = "1",
+                    check12 = "3",
+                    check13 = "1",
+                    check14 = "1",
+                    check15 = "2",
+                    check16 = "1",
+                    check17 = "1",
+                    check18 = "2",
+                    check19 = "1",
+                    check20 = "2",
+                    check21 = "2",
+                    check22 = "2",
+                    check23 = "3",
+                    check24 = "5",
+                    text01 = "4000만원 6개월",
+                    text02 = "사업과 관련된 좋은 컨설팅이였습니다.",
+                    infdt = "dtc"
+                });
+                backSlash = jsont.Replace("\\", "");
+                byte[] ba = Encoding.UTF8.GetBytes("json=" + backSlash);
+
+                requestStream.Write(ba, 0, ba.Length);
+                requestStream.Flush();
+                requestStream.Close();
+            }
+            try
+            {
+                var httpResponse = (HttpWebResponse)httpWebRequest.GetResponse();
+                using (var streamReader = new StreamReader(httpResponse.GetResponseStream()))
+                {
+                    JavaScriptSerializer js = new JavaScriptSerializer();
+                    result = streamReader.ReadToEnd();
+                    string[] rptSplit = result.Split('\n');
+                    statusModel = (StatusModel)js.Deserialize(rptSplit[1], typeof(StatusModel));
+                }
+                return statusModel.status;
+            }
+            catch (Exception e)
+            {
+                return "D";
+            }
+
         }
 
     }
