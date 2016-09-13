@@ -36,10 +36,11 @@
                 return false;
             }
 
-            if ($('#ConCode').val() == "0") {
+            if ($('#ConCode').val() == "0" || $('#ConCode').val() == "분야 코드 선택") {
                 alert("컨설팅 코드를 선택하지 않았습니다.");
                 return false;
             }
+            
 
             var checkCompSn = $('#CompSn').val();
             var checkConCode = $('#ConCode').val();
