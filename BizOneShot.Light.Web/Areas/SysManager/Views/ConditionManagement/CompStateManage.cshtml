@@ -157,7 +157,7 @@
                     }
                 </table>
             </div><!--tablewrap//-->
-            @if (Model != null && Model.TotalItemCount != 0)
+            @if (Model != null && Model.TotalItemCount != 0) 
             {
                 @Html.Pagination("goPage", Model.PageNumber, Model.PageCount, Model.HasPreviousPage, Model.HasNextPage)
             }
