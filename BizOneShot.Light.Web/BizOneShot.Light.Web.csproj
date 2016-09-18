@@ -308,6 +308,7 @@
     <Compile Include="Controllers\ErrorController.cs" />
     <Compile Include="Controllers\FinanceReportController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
+    <Compile Include="Controllers\ResendController.cs" />
     <Compile Include="GlimpseSecurityPolicy.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
@@ -1221,6 +1222,7 @@
   <ItemGroup>
     <Folder Include="App_Data\" />
     <Folder Include="Views\Api\" />
+    <Folder Include="Views\Resend\" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="packages.config" />
