@@ -549,35 +549,36 @@ namespace BizOneShot.Light.Web.Areas.Mentor.Controllers
 
                                 // update 해야 함
                                 // compSn, baSn, mentorSn, conCode을 이용하여 조회 해서 file 2부터 update
+                                var tcmsIfLastReportObjAfr = await tcmsIfLastReportService.getTcmsIfLastReportInfo(compObj.TcmsLoginKey, baObj.TcmsLoginKey, mentorObj.TcmsLoginKey, conCodes);
 
-                                if(tcmsIfLastReportObj.Count > 0)
+                                if (tcmsIfLastReportObj.Count > 0)
                                 {
 
                                     if (cnt == 1)
                                     {
 
-                                        tcmsIfLastReportObj[0].File2 = absFilePath;
+                                        tcmsIfLastReportObjAfr[0].File2 = absFilePath;
                                         tcmsIfLastReportService.SaveDbContext();
 
                                     }
                                     else if (cnt == 2)
                                     {
 
-                                        tcmsIfLastReportObj[0].File3 = absFilePath;
+                                        tcmsIfLastReportObjAfr[0].File3 = absFilePath;
                                         tcmsIfLastReportService.SaveDbContext();
 
                                     }
                                     else if (cnt == 3)
                                     {
 
-                                        tcmsIfLastReportObj[0].File4 = absFilePath;
+                                        tcmsIfLastReportObjAfr[0].File4 = absFilePath;
                                         tcmsIfLastReportService.SaveDbContext();
 
                                     }
                                     else if (cnt == 4)
                                     {
 
-                                        tcmsIfLastReportObj[0].File5 = absFilePath;
+                                        tcmsIfLastReportObjAfr[0].File5 = absFilePath;
                                         tcmsIfLastReportService.SaveDbContext();
 
                                     }
@@ -620,10 +621,40 @@ namespace BizOneShot.Light.Web.Areas.Mentor.Controllers
                         tcmsIfLastReport.ConCode = conCodes;
                         tcmsIfLastReport.File1 = fullPath;
 
+                        if(listFileContent2.Count == 2)
+                        {
+
+                            var fullPath2 = rootFilePath + listFileContent2[1].FilePath;
+                            tcmsIfLastReport.File2 = fullPath2;
+
+                        }else if(listFileContent2.Count == 3)
+                        {
+
+                            var fullPath3 = rootFilePath + listFileContent2[2].FilePath;
+                            tcmsIfLastReport.File3 = fullPath3;
+
+                        }
+                        else if (listFileContent2.Count == 4)
+                        {
+
+                            var fullPath4 = rootFilePath + listFileContent2[3].FilePath;
+                            tcmsIfLastReport.File4 = fullPath4;
+
+                        }
+                        else if (listFileContent2.Count == 5)
+                        {
+
+                            var fullPath5 = rootFilePath + listFileContent2[4].FilePath;
+                            tcmsIfLastReport.File5 = fullPath5;
+
+                        }
+
                         tcmsIfLastReportService.Insert(tcmsIfLastReport);
                         tcmsIfLastReportService.SaveDbContext();
                         
                     }
+
+                    var tcmsIfLastReportObjAfr2 = await tcmsIfLastReportService.getTcmsIfLastReportInfo(compObj.TcmsLoginKey, baObj.TcmsLoginKey, mentorObj.TcmsLoginKey, conCodes);
 
                     // 데이터 전송
                     if (cnt == 0)
@@ -649,16 +680,16 @@ namespace BizOneShot.Light.Web.Areas.Mentor.Controllers
                     }
                     else
                     {
-                        var status = sendLastReport(tcmsIfLastReportObj[0]);
+                        var status = sendLastReport(tcmsIfLastReportObjAfr2[0]);
 
                         if (status == "S")
                         {
-                            tcmsIfLastReportObj[0].InsertYn = "S";
+                            tcmsIfLastReportObjAfr2[0].InsertYn = "S";
                             tcmsIfLastReportService.SaveDbContext();
                         }
                         else if(status == "E")
                         {
-                            tcmsIfLastReportObj[0].InsertYn = "E";
+                            tcmsIfLastReportObjAfr2[0].InsertYn = "E";
                             tcmsIfLastReportService.SaveDbContext();
                         }
                         else
@@ -1237,7 +1268,7 @@ namespace BizOneShot.Light.Web.Areas.Mentor.Controllers
             }
             catch (Exception e)
             {
-                return "D";
+                return "E";
             }
 
         }
