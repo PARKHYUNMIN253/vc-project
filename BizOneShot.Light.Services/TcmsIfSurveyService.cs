@@ -14,6 +14,8 @@ namespace BizOneShot.Light.Services
         Task<IList<TcmsIfSurvey>> getTcmsIfSurvey();
         Task<TcmsIfSurvey> getTcmsIfSurveyByInfId(string infId);
         void Insert(TcmsIfSurvey tcmsIfSurvey);
+
+        IList<TcmsIfSurvey> unAsyncGetTcmsIfSurvey();
     }
 
 
@@ -41,6 +43,11 @@ namespace BizOneShot.Light.Services
         public void Insert(TcmsIfSurvey tcmsIfSurvey)
         {
             tcmsIfSurveyRepository.Insert(tcmsIfSurvey);
+        }
+
+        public IList<TcmsIfSurvey> unAsyncGetTcmsIfSurvey()
+        {
+            return tcmsIfSurveyRepository.unAsyncGetTcmsIfSurvey();
         }
 
         public void SaveDbContext()
