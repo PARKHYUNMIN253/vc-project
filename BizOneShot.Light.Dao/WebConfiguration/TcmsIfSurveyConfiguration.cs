@@ -72,7 +72,7 @@ namespace BizOneShot.Light.Dao.WebConfiguration
             Property(x => x.Text01).HasColumnName("TEXT01").IsOptional().HasColumnType("nvarchar").HasMaxLength(150);
             Property(x => x.Text02).HasColumnName("TEXT02").IsOptional().HasColumnType("nvarchar").HasMaxLength(150);
             Property(x => x.InfDt).HasColumnName("INF_DT").IsOptional().HasColumnType("datetime");
-            Property(x => x.InsertYn).HasColumnName("INSERT_YN").IsOptional().IsFixedLength().IsUnicode(false).HasColumnType("char").HasMaxLength(1);
+            Property(x => x.InsertYn).HasColumnName("INSERT_YN").IsOptional().IsFixedLength().IsUnicode(false).HasColumnType("char").HasMaxLength(2);
             InitializePartial();
         }
         partial void InitializePartial();

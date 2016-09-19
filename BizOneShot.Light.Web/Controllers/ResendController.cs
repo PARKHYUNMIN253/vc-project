@@ -40,7 +40,7 @@ namespace BizOneShot.Light.Web.Controllers
 
             foreach (var obj in tcmsIfLastReportObj)
             {
-                if (obj.InsertYn == null || obj.InsertYn == "E" || obj.InsertYn == "E2" || obj.InsertYn == "E3")
+                if (obj.InsertYn == null || obj.InsertYn == "E" || obj.InsertYn == "T" || obj.InsertYn == "H")
                 {
                     var status = sendingLastReport(obj);
 
@@ -48,13 +48,20 @@ namespace BizOneShot.Light.Web.Controllers
                     {
                         if (obj.InsertYn == "E")
                         {
-                            obj.InsertYn = "E2";
+                            obj.InsertYn = "T";
                         }
-                        else if (obj.InsertYn == "E2")
+                        else if (obj.InsertYn == "T")
                         {
-                            obj.InsertYn = "E3";
+                            obj.InsertYn = "H";
+                        }else if(obj.InsertYn == null)
+                        {
+                            obj.InsertYn = "T";
                         }
+                    }else if(status == "S")
+                    {
+                        obj.InsertYn = "S";
                     }
+
                     _tcmsIfLastReportService.SaveDbContext();
                 }
             }
@@ -71,6 +78,9 @@ namespace BizOneShot.Light.Web.Controllers
             HttpContext.Response.AppendHeader("Access-Control-Allow-Origin", "*");
             string result = "";
             string backSlash = "";
+
+            string rdt = String.Format("{0:yyyy-MM-dd hh:mm:ss}", tcmsIfLastReport.RegDt);
+            string idt = String.Format("{0:yyyy-MM-dd hh:mm:ss}", tcmsIfLastReport.InfDt);
 
             StatusModel statusModel = new StatusModel();
 
@@ -93,6 +103,49 @@ namespace BizOneShot.Light.Web.Controllers
                 httpWebRequest.CookieContainer.Add(cookie);
             }
 
+            var file1 = tcmsIfLastReport.File1;
+            var file2 = tcmsIfLastReport.File2;
+            var file3 = tcmsIfLastReport.File3;
+            var file4 = tcmsIfLastReport.File4;
+            var file5 = tcmsIfLastReport.File5;
+
+
+            if (tcmsIfLastReport.File1 != null)
+            {
+
+                file1 = tcmsIfLastReport.File1.Replace("\\", "/");
+
+            }
+
+            if (tcmsIfLastReport.File2 != null)
+            {
+
+                file2 = tcmsIfLastReport.File2.Replace("\\", "/");
+
+            }
+
+            if (tcmsIfLastReport.File3 != null)
+            {
+
+                file3 = tcmsIfLastReport.File3.Replace("\\", "/");
+
+            }
+
+            if (tcmsIfLastReport.File4 != null)
+            {
+
+                file4 = tcmsIfLastReport.File4.Replace("\\", "/");
+
+            }
+
+            if (tcmsIfLastReport.File5 != null)
+            {
+
+                file5 = tcmsIfLastReport.File5.Replace("\\", "/");
+
+            }
+
+
             using (var requestStream = httpWebRequest.GetRequestStream())
             {
                 string jsont = new JavaScriptSerializer().Serialize(new
@@ -105,14 +158,14 @@ namespace BizOneShot.Light.Web.Controllers
                     SubNumSn = tcmsIfLastReport.SubNumSn,
                     ConCode = tcmsIfLastReport.ConCode,
 
-                    File1 = tcmsIfLastReport.File1.Replace("\\", "/"),
-                    File2 = tcmsIfLastReport.File2.Replace("\\", "/"),
-                    File3 = tcmsIfLastReport.File3.Replace("\\", "/"),
-                    File4 = tcmsIfLastReport.File4.Replace("\\", "/"),
-                    File5 = tcmsIfLastReport.File5.Replace("\\", "/"),
+                    File1 = file1,
+                    File2 = file2,
+                    File3 = file3,
+                    File4 = file4,
+                    File5 = file5,
 
-                    regDt = tcmsIfLastReport.RegDt.ToString(),
-                    InfDt = tcmsIfLastReport.InfDt.ToString()
+                    regDt = rdt,
+                    InfDt = idt
                 });
                 backSlash = jsont.Replace("\\", "");
                 byte[] ba = Encoding.UTF8.GetBytes("json=" + backSlash);
@@ -121,15 +174,26 @@ namespace BizOneShot.Light.Web.Controllers
                 requestStream.Flush();
                 requestStream.Close();
             }
-            var httpResponse = (HttpWebResponse)httpWebRequest.GetResponse();
-            using (var streamReader = new StreamReader(httpResponse.GetResponseStream()))
+
+            try
             {
-                JavaScriptSerializer js = new JavaScriptSerializer();
-                result = streamReader.ReadToEnd();
-                string[] rstSplit = result.Split('\n');
-                statusModel = (StatusModel)js.Deserialize(rstSplit[1], typeof(StatusModel));
+
+                var httpResponse = (HttpWebResponse)httpWebRequest.GetResponse();
+                using (var streamReader = new StreamReader(httpResponse.GetResponseStream()))
+                {
+                    JavaScriptSerializer js = new JavaScriptSerializer();
+                    result = streamReader.ReadToEnd();
+                    string[] rstSplit = result.Split('\n');
+                    statusModel = (StatusModel)js.Deserialize(rstSplit[1], typeof(StatusModel));
+                }
+                return statusModel.status;
+
             }
-            return statusModel.status;
+            catch (Exception e)
+            {
+                return "E";
+            }
+            
         }
     }
 }
