@@ -40,8 +40,8 @@ namespace BizOneShot.Light.Dao.WebConfiguration
             Property(x => x.CompSn).HasColumnName("COMP_SN").IsRequired().HasColumnType("int").HasDatabaseGeneratedOption(DatabaseGeneratedOption.Identity);
             Property(x => x.RegistrationNo).HasColumnName("REGISTRATION_NO").IsOptional().IsUnicode(false).HasColumnType("varchar").HasMaxLength(10);
             Property(x => x.CompNm).HasColumnName("COMP_NM").IsOptional().HasColumnType("nvarchar").HasMaxLength(70);
-            Property(x => x.OwnEmail).HasColumnName("OWN_EMAIL").IsOptional().IsUnicode(false).HasColumnType("varchar").HasMaxLength(40);
-            Property(x => x.OwnTelNo).HasColumnName("OWN_TEL_NO").IsOptional().IsUnicode(false).HasColumnType("varchar").HasMaxLength(30);
+            Property(x => x.OwnEmail).HasColumnName("OWN_EMAIL").IsOptional().IsUnicode(false).HasColumnType("varchar").HasMaxLength(70);
+            Property(x => x.OwnTelNo).HasColumnName("OWN_TEL_NO").IsOptional().IsUnicode(false).HasColumnType("varchar").HasMaxLength(20);
             Property(x => x.OwnNm).HasColumnName("OWN_NM").IsOptional().IsUnicode(false).HasColumnType("varchar").HasMaxLength(50);
             Property(x => x.RegDt).HasColumnName("REG_DT").IsOptional().HasColumnType("datetime");
             Property(x => x.UpdDt).HasColumnName("UPD_DT").IsOptional().HasColumnType("datetime");

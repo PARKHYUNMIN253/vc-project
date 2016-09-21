@@ -35,13 +35,13 @@ namespace BizOneShot.Light.Dao.WebConfiguration
         public VcCompMappingConfiguration(string schema)
         {
             ToTable(schema + ".VC_COMP_MAPPING");
-            HasKey(x => new { x.CpMpCode, x.CompSn, x.BaSn, x.NumSn });
+            HasKey(x => new { x.CpMpCode, x.CompSn, x.BaSn, x.NumSn, x.SubNumSn });
 
             Property(x => x.CpMpCode).HasColumnName("CP_MP_CODE").IsRequired().HasColumnType("nvarchar").HasMaxLength(26);
             Property(x => x.CompSn).HasColumnName("COMP_SN").IsRequired().HasColumnType("int");
             Property(x => x.BaSn).HasColumnName("BA_SN").IsRequired().HasColumnType("int");
             Property(x => x.NumSn).HasColumnName("NUM_SN").IsRequired().HasColumnType("nvarchar").HasMaxLength(3);
-            Property(x => x.SubNumSn).HasColumnName("SUB_NUM_SN").IsOptional().HasColumnType("nvarchar").HasMaxLength(2);
+            Property(x => x.SubNumSn).HasColumnName("SUB_NUM_SN").IsRequired().HasColumnType("nvarchar").HasMaxLength(2);
             Property(x => x.ConCode).HasColumnName("CON_CODE").IsOptional().HasColumnType("nvarchar").HasMaxLength(5);
             Property(x => x.TypeYn).HasColumnName("TYPE_YN").IsOptional().IsFixedLength().IsUnicode(false).HasColumnType("char").HasMaxLength(1);
             Property(x => x.WriteYn).HasColumnName("WRITE_YN").IsOptional().IsFixedLength().IsUnicode(false).HasColumnType("char").HasMaxLength(1);

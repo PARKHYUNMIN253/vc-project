@@ -53,12 +53,7 @@ namespace BizOneShot.Light.Dao.WebConfiguration
             Property(x => x.RegDt).HasColumnName("REG_DT").IsOptional().HasColumnType("datetime");
             Property(x => x.ConStatus).HasColumnName("CON_STATUS").IsOptional().IsFixedLength().IsUnicode(false).HasColumnType("char").HasMaxLength(1);
             Property(x => x.TotalReportSn).HasColumnName("TOTAL_REPORT_SN").IsOptional().HasColumnType("int");
-            Property(x => x.Check01).HasColumnName("CHECK01").IsOptional().IsFixedLength().IsUnicode(false).HasColumnType("char").HasMaxLength(1);
-            Property(x => x.Check02).HasColumnName("CHECK02").IsOptional().IsFixedLength().IsUnicode(false).HasColumnType("char").HasMaxLength(1);
-            Property(x => x.Check03).HasColumnName("CHECK03").IsOptional().IsFixedLength().IsUnicode(false).HasColumnType("char").HasMaxLength(1);
-            Property(x => x.Check04).HasColumnName("CHECK04").IsOptional().IsFixedLength().IsUnicode(false).HasColumnType("char").HasMaxLength(1);
-            Property(x => x.Text01).HasColumnName("TEXT01").IsOptional().HasColumnType("nvarchar").HasMaxLength(150);
-            Property(x => x.Text02).HasColumnName("TEXT02").IsOptional().HasColumnType("nvarchar").HasMaxLength(150);
+            Property(x => x.UpdDt).HasColumnName("UPD_DT").IsOptional().HasColumnType("datetime");
             InitializePartial();
         }
         partial void InitializePartial();

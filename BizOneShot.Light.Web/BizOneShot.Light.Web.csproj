@@ -630,6 +630,7 @@
     <Content Include="Areas\Company\Views\BAMng\MentorDetail.cshtml" />
     <Content Include="Areas\Company\Views\Main\CompanyAgreement.cshtml" />
     <Content Include="Areas\BizManager\Views\Main\BaAgreement.cshtml" />
+    <None Include="Properties\PublishProfiles\RND_STARTUP.pubxml" />
     <None Include="Properties\PublishProfiles\VOUCHER.pubxml" />
     <None Include="Properties\PublishProfiles\Demo BizOneShot Lite.pubxml" />
     <None Include="Properties\PublishProfiles\deploy_file.pubxml" />

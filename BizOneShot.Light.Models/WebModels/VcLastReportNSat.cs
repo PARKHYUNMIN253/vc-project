@@ -39,12 +39,7 @@ namespace BizOneShot.Light.Models.WebModels
         public DateTime? RegDt { get; set; } // REG_DT
         public string ConStatus { get; set; } // CON_STATUS
         public int? TotalReportSn { get; set; } // TOTAL_REPORT_SN
-        public string Check01 { get; set; } // CHECK01
-        public string Check02 { get; set; } // CHECK02
-        public string Check03 { get; set; } // CHECK03
-        public string Check04 { get; set; } // CHECK04
-        public string Text01 { get; set; } // TEXT01
-        public string Text02 { get; set; } // TEXT02
+        public DateTime? UpdDt { get; set; } // UPD_DT
     }
 
 }

@@ -25,7 +25,7 @@ namespace BizOneShot.Light.Models.WebModels
     {
         public int QuestionSn { get; set; } // QUESTION_SN (Primary key)
         public string CompNm { get; set; } // COMP_NM
-        public string Name { get; set; } // Name
+        public string Name { get; set; } // NAME
         public string DeptNm { get; set; } // DEPT_NM
         public string Position { get; set; } // POSITION
         public string TelNo { get; set; } // TEL_NO

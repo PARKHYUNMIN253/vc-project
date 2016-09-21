@@ -43,7 +43,7 @@ namespace BizOneShot.Light.Dao.WebConfiguration
             Property(x => x.CompNm).HasColumnName("COMP_NM").IsOptional().HasColumnType("nvarchar").HasMaxLength(70);
             Property(x => x.OwnNm).HasColumnName("OWN_NM").IsOptional().HasColumnType("nvarchar").HasMaxLength(50);
             Property(x => x.OwnEmail).HasColumnName("OWN_EMAIL").IsOptional().IsUnicode(false).HasColumnType("varchar").HasMaxLength(70);
-            Property(x => x.OwnTelNo).HasColumnName("OWN_TEL_NO").IsOptional().IsUnicode(false).HasColumnType("varchar").HasMaxLength(30);
+            Property(x => x.OwnTelNo).HasColumnName("OWN_TEL_NO").IsOptional().IsUnicode(false).HasColumnType("varchar").HasMaxLength(20);
             Property(x => x.InfDt).HasColumnName("INF_DT").IsOptional().HasColumnType("datetime");
             Property(x => x.InsertYn).HasColumnName("INSERT_YN").IsOptional().IsFixedLength().IsUnicode(false).HasColumnType("char").HasMaxLength(1);
             Property(x => x.InsertStatus).HasColumnName("INSERT_STATUS").IsOptional().IsFixedLength().IsUnicode(false).HasColumnType("char").HasMaxLength(1);
