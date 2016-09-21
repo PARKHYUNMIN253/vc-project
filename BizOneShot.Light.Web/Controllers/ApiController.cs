@@ -166,7 +166,7 @@ namespace BizOneShot.Light.Web.Controllers
 
                         // interface table 식별자들 변경 후 저장
                         ifObj.InsertYn = "Y";
-                        ifObj.InsertStatus = "S";
+                        ifObj.InsertStatus = "U";           // status update
                         await _vcIfTableService.SaveDbContextAsync();
 
                         // 성공된 값을 json 데이터로 전송
@@ -284,7 +284,7 @@ namespace BizOneShot.Light.Web.Controllers
 
                         _vcCompInfoService.SaveDbContext();
 
-                        ifObj.InsertStatus = "S";
+                        ifObj.InsertStatus = "U";       // status update
                         await _vcIfTableService.SaveDbContextAsync();
 
                         status = "S";
@@ -377,7 +377,7 @@ namespace BizOneShot.Light.Web.Controllers
 
                         _vcBaInfoService.SaveDbContext();
 
-                        ifObj.InsertStatus = "S";
+                        ifObj.InsertStatus = "U";       // status update
                         await _vcIfTableService.SaveDbContextAsync();
                         // 성공된 값을 json 데이터로 전송
                         status = "S";
@@ -466,7 +466,7 @@ namespace BizOneShot.Light.Web.Controllers
 
                         _scUsrService.SaveDbContext();
 
-                        ifObj.InsertStatus = "S";
+                        ifObj.InsertStatus = "U";       // status update
                         await _vcIfTableService.SaveDbContextAsync();
 
                         // 성공된 값을 json 데이터로 전송
@@ -563,7 +563,7 @@ namespace BizOneShot.Light.Web.Controllers
 
                         // interface table 식별자들 변경 후 저장
                         ifObj.InsertYn = "Y";
-                        ifObj.InsertStatus = "S";
+                        ifObj.InsertStatus = "U";       // status update
                         await _vcIfTableService.SaveDbContextAsync();
 
                         // 해당 데이터 전송의 결과 값을 response로 리턴
@@ -656,7 +656,7 @@ namespace BizOneShot.Light.Web.Controllers
 
                         // interface table 식별자들 변경 후 저장
                         ifObj.InsertYn = "Y";
-                        ifObj.InsertStatus = "S";
+                        ifObj.InsertStatus = "U";       // status update
                         await _vcIfTableService.SaveDbContextAsync();
 
                         // 성공된 값을 json 데이터로 전송
@@ -778,7 +778,7 @@ namespace BizOneShot.Light.Web.Controllers
 
                         // interface table 식별자들 변경 후 저장
                         ifObj.InsertYn = "Y";
-                        ifObj.InsertStatus = "S";
+                        ifObj.InsertStatus = "U";       // status update
                         await _vcIfTableService.SaveDbContextAsync();
 
                         // 성공된 값을 json 데이터로 전송
@@ -1019,7 +1019,7 @@ namespace BizOneShot.Light.Web.Controllers
 
                         // interface table 식별자들 변경 후 저장
                         ifObj.InsertYn = "Y";
-                        ifObj.InsertStatus = "S";
+                        ifObj.InsertStatus = "U";       // status update
                         await _vcIfTableService.SaveDbContextAsync();
 
                         // 성공된 값을 json 데이터로 전송
