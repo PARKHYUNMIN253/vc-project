@@ -173,8 +173,7 @@ namespace BizOneShot.Light.Web.Areas.Mentor.Controllers
                 var compSnList = await procMngService.getMentoringReport(parameters2);
                 var mentoringList = compSnList.Where(bw => bw.CLASSIFY == "A");
 
-                var listTotalReportView =
-              Mapper.Map<List<MentoringReportViewModel>>(mentoringList);
+                var listTotalReportView = Mapper.Map<List<MentoringReportViewModel>>(mentoringList);
 
                 //검색조건을 유지하기 위한+
                 ViewBag.SelectParam = param;

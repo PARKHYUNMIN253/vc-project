@@ -734,7 +734,7 @@ namespace BizOneShot.Light.Web.Controllers
                         vcCompMapping.ConCode = vcIfCompMapping.ConCode;
                         vcCompMapping.WriteYn = vcIfCompMapping.WriteYn;
                         vcCompMapping.RegDt = DateTime.Now;
-                        //vcCompMapping.TypeYn = "Y";
+                        vcCompMapping.TypeYn = "Y";
                         //checkCompMapping.TypeYn = "Y";
 
                         var cpMpCode = Convert.ToString(compSn[0].CompSn) + Convert.ToString(baSn[0].BaSn) + vcIfCompMapping.NumSn + vcIfCompMapping.SubNumSn + vcIfCompMapping.ConCode;
