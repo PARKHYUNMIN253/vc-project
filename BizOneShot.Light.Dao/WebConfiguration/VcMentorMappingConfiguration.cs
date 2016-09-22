@@ -35,14 +35,14 @@ namespace BizOneShot.Light.Dao.WebConfiguration
         public VcMentorMappingConfiguration(string schema)
         {
             ToTable(schema + ".VC_MENTOR_MAPPING");
-            HasKey(x => new { x.Id, x.CompSn, x.BaSn, x.MentorSn, x.NumSn, x.SubNumSn });
+            HasKey(x => new { x.Id, x.CompSn, x.BaSn, x.MentorSn });
 
             Property(x => x.Id).HasColumnName("ID").IsRequired().HasColumnType("int").HasDatabaseGeneratedOption(DatabaseGeneratedOption.Identity);
             Property(x => x.CompSn).HasColumnName("COMP_SN").IsRequired().HasColumnType("int");
             Property(x => x.BaSn).HasColumnName("BA_SN").IsRequired().HasColumnType("int");
             Property(x => x.MentorSn).HasColumnName("MENTOR_SN").IsRequired().HasColumnType("int");
-            Property(x => x.NumSn).HasColumnName("NUM_SN").IsRequired().HasColumnType("nvarchar").HasMaxLength(3);
-            Property(x => x.SubNumSn).HasColumnName("SUB_NUM_SN").IsRequired().HasColumnType("nvarchar").HasMaxLength(2);
+            Property(x => x.NumSn).HasColumnName("NUM_SN").IsOptional().HasColumnType("nvarchar").HasMaxLength(3);
+            Property(x => x.SubNumSn).HasColumnName("SUB_NUM_SN").IsOptional().HasColumnType("nvarchar").HasMaxLength(2);
             Property(x => x.ConCode).HasColumnName("CON_CODE").IsOptional().HasColumnType("nvarchar").HasMaxLength(5);
             Property(x => x.WriteYn).HasColumnName("WRITE_YN").IsOptional().IsFixedLength().IsUnicode(false).HasColumnType("char").HasMaxLength(1);
             Property(x => x.RegDt).HasColumnName("REG_DT").IsOptional().HasColumnType("datetime");

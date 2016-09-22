@@ -1,17 +1,3 @@
-﻿
-
-// This file was automatically generated.
-// Do not make changes directly to this file - edit the template instead.
-// 
-// The following connection settings were used to generate this file
-// 
-//     Configuration file:     "BizOneShot.Light.Dao\App.config"
-//     Connection String Name: "WebDbContext"
-//     Connection String:      "Data Source=voucherdb.database.windows.net;password=**zapped**;"
-
-// Database Edition: SQL Azure
-// Database Engine Edition: Azure
-
 // ReSharper disable RedundantUsingDirective
 // ReSharper disable DoNotCallOverridableMethodsInConstructor
 // ReSharper disable InconsistentNaming
@@ -34,5 +20,15 @@ using System.Threading;
 
 namespace BizOneShot.Light.Models.WebModels
 {
-}
+    // database_firewall_rules
+    public class sys_DatabaseFirewallRule
+    {
+        public int Id { get; set; } // id
+        public string Name { get; set; } // name
+        public string StartIpAddress { get; set; } // start_ip_address
+        public string EndIpAddress { get; set; } // end_ip_address
+        public DateTime CreateDate { get; set; } // create_date
+        public DateTime ModifyDate { get; set; } // modify_date
+    }
 
+}

@@ -48,10 +48,10 @@ namespace BizOneShot.Light.Dao.WebConfiguration
             Property(x => x.File2).HasColumnName("FILE_2").IsOptional().HasColumnType("nvarchar").HasMaxLength(255);
             Property(x => x.File3).HasColumnName("FILE_3").IsOptional().HasColumnType("nvarchar").HasMaxLength(255);
             Property(x => x.File4).HasColumnName("FILE_4").IsOptional().HasColumnType("nvarchar").HasMaxLength(255);
-            Property(x => x.File5).HasColumnName("FILE_5").IsOptional().HasColumnType("nvarchar").HasMaxLength(255);
             Property(x => x.RegDt).HasColumnName("REG_DT").IsOptional().HasColumnType("datetime");
             Property(x => x.InfDt).HasColumnName("INF_DT").IsOptional().HasColumnType("datetime");
-            Property(x => x.InsertYn).HasColumnName("INSERT_YN").IsOptional().IsFixedLength().IsUnicode(false).HasColumnType("char").HasMaxLength(2);
+            Property(x => x.File5).HasColumnName("FILE_5").IsOptional().HasColumnType("nvarchar").HasMaxLength(255);
+            Property(x => x.InsertYn).HasColumnName("INSERT_YN").IsOptional().IsFixedLength().IsUnicode(false).HasColumnType("char").HasMaxLength(1);
             InitializePartial();
         }
         partial void InitializePartial();

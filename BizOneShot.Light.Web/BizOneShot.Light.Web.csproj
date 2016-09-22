@@ -630,11 +630,11 @@
     <Content Include="Areas\Company\Views\BAMng\MentorDetail.cshtml" />
     <Content Include="Areas\Company\Views\Main\CompanyAgreement.cshtml" />
     <Content Include="Areas\BizManager\Views\Main\BaAgreement.cshtml" />
-    <None Include="Properties\PublishProfiles\RND_STARTUP.pubxml" />
     <None Include="Properties\PublishProfiles\VOUCHER.pubxml" />
     <None Include="Properties\PublishProfiles\Demo BizOneShot Lite.pubxml" />
     <None Include="Properties\PublishProfiles\deploy_file.pubxml" />
     <None Include="Properties\PublishProfiles\SBO BizOneShot Lite.pubxml" />
+    <None Include="Properties\PublishProfiles\VOUCHER_20160922_01_RELEASE.pubxml" />
     <None Include="Properties\PublishProfiles\voucher_re.pubxml" />
     <None Include="Scripts\jquery-1.10.2.intellisense.js" />
     <Content Include="Scripts\jquery-1.10.2.js" />

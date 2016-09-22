@@ -24,9 +24,9 @@ namespace BizOneShot.Light.Models.WebModels
     public class TcmsIfSurvey
     {
         public string InfId { get; set; } // INF_ID (Primary key)
-        public int CompLoginKey { get; set; } // COMP_LOGIN_KEY
-        public int BaLoginKey { get; set; } // BA_LOGIN_KEY
-        public int MentorLoginKey { get; set; } // MENTOR_LOGIN_KEY
+        public int? CompLoginKey { get; set; } // COMP_LOGIN_KEY
+        public int? BaLoginKey { get; set; } // BA_LOGIN_KEY
+        public int? MentorLoginKey { get; set; } // MENTOR_LOGIN_KEY
         public string NumSn { get; set; } // NUM_SN
         public string SubNumSn { get; set; } // SUB_NUM_SN
         public string ConCode { get; set; } // CON_CODE

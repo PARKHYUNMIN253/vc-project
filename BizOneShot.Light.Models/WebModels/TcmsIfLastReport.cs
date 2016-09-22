@@ -34,9 +34,9 @@ namespace BizOneShot.Light.Models.WebModels
         public string File2 { get; set; } // FILE_2
         public string File3 { get; set; } // FILE_3
         public string File4 { get; set; } // FILE_4
-        public string File5 { get; set; } // FILE_5
         public DateTime? RegDt { get; set; } // REG_DT
         public DateTime? InfDt { get; set; } // INF_DT
+        public string File5 { get; set; } // FILE_5
         public string InsertYn { get; set; } // INSERT_YN
     }
 

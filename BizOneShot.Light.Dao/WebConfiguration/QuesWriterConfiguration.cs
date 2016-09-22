@@ -39,7 +39,7 @@ namespace BizOneShot.Light.Dao.WebConfiguration
 
             Property(x => x.QuestionSn).HasColumnName("QUESTION_SN").IsRequired().HasColumnType("int").HasDatabaseGeneratedOption(DatabaseGeneratedOption.None);
             Property(x => x.CompNm).HasColumnName("COMP_NM").IsOptional().HasColumnType("nvarchar").HasMaxLength(70);
-            Property(x => x.Name).HasColumnName("NAME").IsOptional().IsUnicode(false).HasColumnType("varchar").HasMaxLength(50);
+            Property(x => x.Name).HasColumnName("Name").IsOptional().IsUnicode(false).HasColumnType("varchar").HasMaxLength(50);
             Property(x => x.DeptNm).HasColumnName("DEPT_NM").IsOptional().HasColumnType("nvarchar").HasMaxLength(50);
             Property(x => x.Position).HasColumnName("POSITION").IsOptional().HasColumnType("nvarchar").HasMaxLength(50);
             Property(x => x.TelNo).HasColumnName("TEL_NO").IsOptional().IsUnicode(false).HasColumnType("varchar").HasMaxLength(30);
