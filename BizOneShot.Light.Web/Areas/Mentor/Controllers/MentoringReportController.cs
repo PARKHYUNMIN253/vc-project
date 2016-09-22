@@ -165,15 +165,30 @@ namespace BizOneShot.Light.Web.Areas.Mentor.Controllers
             // 매핑 되어있지 않은 Mentor는 compSn이 없기때문에 우선은 단순 View만 보여줌
             if(compList.Count > 0)
             {
+                List<ProcMentorGetMentoringReportReturnModel> ieList = new List<ProcMentorGetMentoringReportReturnModel>();
+                foreach (var compEach in compList)
+                {
+                    SqlParameter loginId2 = new SqlParameter("LOGIN_ID", Session[Global.LoginID].ToString());
+                    SqlParameter compSn = new SqlParameter("COMP_SN", compEach.COMP_SN);
+                    object[] parameters2 = new object[] { loginId2, compSn };
+                    var compSnList = await procMngService.getMentoringReport(parameters2);
+                    foreach (var obj in compSnList)
+                    { 
+                        ieList.Add(obj);
+                    }
+                }
 
-                // MENTOR_ID, COMP_SN을 추출하여 해당 파일 LIST 조회
-                SqlParameter loginId2 = new SqlParameter("LOGIN_ID", Session[Global.LoginID].ToString());
-                SqlParameter compSn = new SqlParameter("COMP_SN", compList[0].COMP_SN);
-                object[] parameters2 = new object[] { loginId2, compSn };
-                var compSnList = await procMngService.getMentoringReport(parameters2);
-                var mentoringList = compSnList.Where(bw => bw.CLASSIFY == "A");
+                var mentoringList = ieList.Where(bw => bw.CLASSIFY == "A");
 
                 var listTotalReportView = Mapper.Map<List<MentoringReportViewModel>>(mentoringList);
+                // MENTOR_ID, COMP_SN을 추출하여 해당 파일 LIST 조회
+                //SqlParameter loginId2 = new SqlParameter("LOGIN_ID", Session[Global.LoginID].ToString());
+                //SqlParameter compSn = new SqlParameter("COMP_SN", compList[0].COMP_SN);
+                //object[] parameters2 = new object[] { loginId2, compSn };
+                //var compSnList = await procMngService.getMentoringReport(parameters2);
+                //var mentoringList = compSnList.Where(bw => bw.CLASSIFY == "A");
+
+                //var listTotalReportView = Mapper.Map<List<MentoringReportViewModel>>(mentoringList);
 
                 //검색조건을 유지하기 위한+
                 ViewBag.SelectParam = param;
