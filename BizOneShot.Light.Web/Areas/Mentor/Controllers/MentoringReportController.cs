@@ -143,68 +143,96 @@ namespace BizOneShot.Light.Web.Areas.Mentor.Controllers
 
             ViewBag.naviLeftMenu = Global.MentoringReport;
 
-            var mentorId = Session[Global.LoginID].ToString();
+            var mentorLoginKey = Session[Global.LoginID].ToString(); // 로그인 키다
 
-            SqlParameter loginId = new SqlParameter("LOGIN_ID", Session[Global.LoginID].ToString());
-            object[] parameters = new object[] { loginId };
-            var compList = await procMngService.getCompMapping(parameters);
+            var mentorIdObj = await _vcUsrService.getUsrInfoByTcmsKey(int.Parse(mentorLoginKey));
+            var mentorId = mentorIdObj.LoginId;
+            // 추가...
+            var scMentoringReportObj = await _scMentoringReportService.getMentoringReportListById(mentorId);
 
-            // 기업명 List
-            var compDropDown = Mapper.Map<List<MentoringReportViewModel>>(compList);
-
-            MentoringReportViewModel title = new MentoringReportViewModel();
-            title.CompSn = 0;
-            title.CompNm = "기업 선택";
-            compDropDown.Insert(0, title);
-
-            SelectList compListSelect = new SelectList(compDropDown, "CompSn", "CompNm");
-
-            ViewBag.SelectCompList = compListSelect;
-            
-
-            // 매핑 되어있지 않은 Mentor는 compSn이 없기때문에 우선은 단순 View만 보여줌
-            if(compList.Count > 0)
+            if (scMentoringReportObj.Count > 0)
             {
-                List<ProcMentorGetMentoringReportReturnModel> ieList = new List<ProcMentorGetMentoringReportReturnModel>();
-                foreach (var compEach in compList)
+                var viewObj = Mapper.Map<List<MentoringReportViewModel>>(scMentoringReportObj);
+
+                foreach (var vObj in viewObj)
                 {
-                    SqlParameter loginId2 = new SqlParameter("LOGIN_ID", Session[Global.LoginID].ToString());
-                    SqlParameter compSn = new SqlParameter("COMP_SN", compEach.COMP_SN);
-                    object[] parameters2 = new object[] { loginId2, compSn };
-                    var compSnList = await procMngService.getMentoringReport(parameters2);
-                    foreach (var obj in compSnList)
-                    { 
-                        ieList.Add(obj);
-                    }
+                    var compNmObj = await _vcCompInfoService.getVcCompInfoByCompSn(vObj.CompSn);
+                    vObj.CompNm = compNmObj.CompNm;
                 }
 
-                var mentoringList = ieList.Where(bw => bw.CLASSIFY == "A");
-
-                var listTotalReportView = Mapper.Map<List<MentoringReportViewModel>>(mentoringList);
-                // MENTOR_ID, COMP_SN을 추출하여 해당 파일 LIST 조회
-                //SqlParameter loginId2 = new SqlParameter("LOGIN_ID", Session[Global.LoginID].ToString());
-                //SqlParameter compSn = new SqlParameter("COMP_SN", compList[0].COMP_SN);
-                //object[] parameters2 = new object[] { loginId2, compSn };
-                //var compSnList = await procMngService.getMentoringReport(parameters2);
-                //var mentoringList = compSnList.Where(bw => bw.CLASSIFY == "A");
-
-                //var listTotalReportView = Mapper.Map<List<MentoringReportViewModel>>(mentoringList);
-
-                //검색조건을 유지하기 위한+
                 ViewBag.SelectParam = param;
 
                 //맨토링 일지 정보 조회
                 int pagingSize = int.Parse(ConfigurationManager.AppSettings["PagingSize"]);
                 //var pagedListscMentoringReport = await _scMentoringReportService.GetPagedListMentoringReportAsync(int.Parse(curPage ?? "1"), pagingSize, mentorId, param.BizWorkYear, param.BizWorkSn, param.CompSn);
 
-                return View(new StaticPagedList<MentoringReportViewModel>(listTotalReportView, int.Parse(curPage ?? "1"), pagingSize, listTotalReportView.Count));
-
+                return View(new StaticPagedList<MentoringReportViewModel>(viewObj, int.Parse(curPage ?? "1"), pagingSize, viewObj.Count));
             }
             else
             {
                 return View();
-            }
+            }                
+            
+            //// 추가 블록 끝...
+            //SqlParameter loginId = new SqlParameter("LOGIN_ID", Session[Global.LoginID].ToString());
+            //object[] parameters = new object[] { loginId };
+            //var compList = await procMngService.getCompMapping(parameters);
 
+            //// 기업명 List
+            //var compDropDown = Mapper.Map<List<MentoringReportViewModel>>(compList);
+
+            //MentoringReportViewModel title = new MentoringReportViewModel();
+            //title.CompSn = 0;
+            //title.CompNm = "기업 선택";
+            //compDropDown.Insert(0, title);
+
+            //SelectList compListSelect = new SelectList(compDropDown, "CompSn", "CompNm");
+
+            //ViewBag.SelectCompList = compListSelect;
+            
+
+            //// 매핑 되어있지 않은 Mentor는 compSn이 없기때문에 우선은 단순 View만 보여줌
+            //if(compList.Count > 0)
+            //{
+            //    List<ProcMentorGetMentoringReportReturnModel> ieList = new List<ProcMentorGetMentoringReportReturnModel>();
+            //    foreach (var compEach in compList)
+            //    {
+            //        SqlParameter loginId2 = new SqlParameter("LOGIN_ID", Session[Global.LoginID].ToString());
+            //        SqlParameter compSn = new SqlParameter("COMP_SN", compEach.COMP_SN);
+            //        object[] parameters2 = new object[] { loginId2, compSn };
+            //        var compSnList = await procMngService.getMentoringReport(parameters2);
+            //        foreach (var obj in compSnList)
+            //        { 
+            //            ieList.Add(obj);
+            //        }
+            //    }
+
+            //    var mentoringList = ieList;
+
+            //    var listTotalReportView = Mapper.Map<List<MentoringReportViewModel>>(mentoringList);
+            //    // MENTOR_ID, COMP_SN을 추출하여 해당 파일 LIST 조회
+            //    //SqlParameter loginId2 = new SqlParameter("LOGIN_ID", Session[Global.LoginID].ToString());
+            //    //SqlParameter compSn = new SqlParameter("COMP_SN", compList[0].COMP_SN);
+            //    //object[] parameters2 = new object[] { loginId2, compSn };
+            //    //var compSnList = await procMngService.getMentoringReport(parameters2);
+            //    //var mentoringList = compSnList.Where(bw => bw.CLASSIFY == "A");
+
+            //    //var listTotalReportView = Mapper.Map<List<MentoringReportViewModel>>(mentoringList);
+
+            //    //검색조건을 유지하기 위한+
+            //    ViewBag.SelectParam = param;
+
+            //    //맨토링 일지 정보 조회
+            //    int pagingSize = int.Parse(ConfigurationManager.AppSettings["PagingSize"]);
+            //    //var pagedListscMentoringReport = await _scMentoringReportService.GetPagedListMentoringReportAsync(int.Parse(curPage ?? "1"), pagingSize, mentorId, param.BizWorkYear, param.BizWorkSn, param.CompSn);
+
+            //    return View(new StaticPagedList<MentoringReportViewModel>(listTotalReportView, int.Parse(curPage ?? "1"), pagingSize, listTotalReportView.Count));
+
+            //}
+            //else
+            //{
+            //    return View();
+            //}
         }
 
         [HttpPost]

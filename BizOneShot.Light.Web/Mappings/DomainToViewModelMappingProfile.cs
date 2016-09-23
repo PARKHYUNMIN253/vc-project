@@ -590,7 +590,7 @@ namespace BizOneShot.Light.Web.Mappings
                 .ForMember(d => d.ConCode, map => map.MapFrom(s => s.CON_CODE))
                 .ForMember(d => d.SubNumSn, map => map.MapFrom(s => s.NUM_SN));
 
-            // 멘토링일지 List 확인 부분
+            // 멘토링일지 List 확인 부분 -- 프로시저 모델
             Mapper.CreateMap<ProcMentorGetMentoringReportReturnModel, MentoringReportViewModel>()
                 .ForMember(d => d.CompSn, map => map.MapFrom(s => s.COMP_SN))
                 .ForMember(d => d.CompNm, map => map.MapFrom(s => s.COMP_NM))
@@ -608,6 +608,13 @@ namespace BizOneShot.Light.Web.Mappings
                 .ForMember(d => d.FilePath, map => map.MapFrom(s => s.FILE_PATH))
                 .ForMember(d => d.ReportSn, map => map.MapFrom(s => s.REPORT_SN));
 
+            // 멘토링일지 List 확인 부분 -- 일반 모델
+            Mapper.CreateMap<ScMentoringReport, MentoringReportViewModel>()
+                .ForMember(d => d.CompSn, map => map.MapFrom(s => s.CompSn))
+                .ForMember(d => d.MentoringSubject, map => map.MapFrom(s => s.MentoringSubject))
+                .ForMember(d => d.MentoringDt, map => map.MapFrom(s => s.MentoringDt))
+                .ForMember(d => d.ReportSn, map => map.MapFrom(s => s.ReportSn))
+                .ForMember(d => d.MentorId, map => map.MapFrom(s => s.MentorId));
 
             // 심화보고서 조회
             Mapper.CreateMap<ProcMentorGetDeepenReportReturnModel, MentoringReportViewModel>()

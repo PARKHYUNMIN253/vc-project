@@ -38,6 +38,12 @@ namespace BizOneShot.Light.Web.Areas.BizManager.Controllers
         // BA의 WIRTE_YN 조회
         private readonly IScCompMappingService vcCompMappingService;
 
+        private readonly IVcMentorInfoSerivce vcMentorInfoService;
+
+        private readonly IScUsrService _vcUsrService;
+
+        private readonly IVcCompInfoService _vcCompInfoService;
+
         public MentorMngController(IScUsrService scUsrService,
             IScBizWorkService _scBizWorkService,
             IScMentorMappingService _scMentorMappingService,
@@ -48,7 +54,10 @@ namespace BizOneShot.Light.Web.Areas.BizManager.Controllers
             IScMentoringReportService scMentoringReportService,
             IVcCompInfoService vcCompInfoService,
             IVcLastReportNSatService vcLastReportNSatService,
-            IScCompMappingService vcCompMappingService)
+            IScCompMappingService vcCompMappingService,
+            IVcMentorInfoSerivce vcMentorInfoService,
+            IScUsrService _vcUsrService,
+            IVcCompInfoService _vcCompInfoService)
         {
             this._scUsrService = scUsrService;
             this._scBizWorkService = _scBizWorkService;
@@ -61,6 +70,9 @@ namespace BizOneShot.Light.Web.Areas.BizManager.Controllers
             this.vcCompInfoService = vcCompInfoService;
             this.vcLastReportNSatService = vcLastReportNSatService;
             this.vcCompMappingService = vcCompMappingService;
+            this.vcMentorInfoService = vcMentorInfoService;
+            this._vcUsrService = _vcUsrService;
+            this._vcCompInfoService = _vcCompInfoService;
         }
 
         // GET: BizManager/MentorMng
@@ -345,26 +357,76 @@ namespace BizOneShot.Light.Web.Areas.BizManager.Controllers
         {
             ViewBag.naviLeftMenu = Global.MentorMng;
 
-            var mentorId = Session[Global.LoginID].ToString();
+            // baLoginKey get
+            var baLoginKey = Session[Global.LoginID].ToString();
+            // baSn get
+            var baSnObj = await vcBaInfoService.getVcBaInfoByKey(int.Parse(baLoginKey));
+            // basn -> vcmentorinfo get
+            var mentorInfoList = await vcMentorInfoService.getVcMentorInfoListByBaSn(baSnObj.BaSn);
+            // foreach (mentor일지같이.. list에 add)
+            List<MentoringReportViewModel> mrList = new List<MentoringReportViewModel>();
+            if (mentorInfoList.Count > 0)
+            {
+                foreach (var miObj in mentorInfoList)
+                {
+                    var mentorIdObj = await _vcUsrService.getUsrInfoByTcmsKey(miObj.TcmsLoginKey);
+                    var mentorId = mentorIdObj.LoginId;
+                    // 추가...
+                    var scMentoringReportObj = await _scMentoringReportService.getMentoringReportListById(mentorId);
 
-            SqlParameter loginId = new SqlParameter("LOGIN_ID", Session[Global.LoginID].ToString());
-            object[] parameters = new object[] { loginId };
-            var listObj = await procMngService.getBaMentoringReport(parameters);
-            var reportList = listObj.Where(bw => bw.CLASSIFY == "A").ToList();
+                    if (scMentoringReportObj.Count > 0)
+                    {
+                        var viewObj = Mapper.Map<List<MentoringReportViewModel>>(scMentoringReportObj);
 
-            ViewBag.SelectCompInfoList = ReportHelper.MakeCompanyListByBa(listObj);                 // 기업명 dropdownlist
+                        foreach (var vObj in viewObj)
+                        {
+                            var compNmObj = await _vcCompInfoService.getVcCompInfoByCompSn(vObj.CompSn);
+                            vObj.CompNm = compNmObj.CompNm;
+                            var usrInfoObj = await _vcUsrService.getScUsrByLoginId(vObj.MentorId);
+                            vObj.MentorNm = usrInfoObj.Name;
+                            mrList.Add(vObj);
+                        }   
+                    }
+                }
+                //검색조건을 유지하기 위한
+                ViewBag.SelectParam = param;
 
-            //검색조건을 유지하기 위한
-            ViewBag.SelectParam = param;
+                //맨토링 일지 정보 조회
+                int pagingSize = int.Parse(ConfigurationManager.AppSettings["PagingSize"]);
+                //if (curPage == "")
+                //{
+                //    curPage = "1";
+                //}
+                //var pList = mrList.ToPagedList(int.Parse(curPage), pagingSize);
+                //return View(pList);
+                return View(new StaticPagedList<MentoringReportViewModel>(mrList, int.Parse(curPage ?? "1"), pagingSize, mrList.Count));
+            }
+            else
+            {
+                return View();
+            }
+            // 뷰 보이기
 
-            //맨토링 일지 정보 조회
-            int pagingSize = int.Parse(ConfigurationManager.AppSettings["PagingSize"]);
+            //var mentorId = Session[Global.LoginID].ToString();
 
-            //맨토링 일지 정보 to 뷰모델 매핑
-            var listTotalReportView =
-               Mapper.Map<List<MentoringReportViewModel>>(reportList);
+            //SqlParameter loginId = new SqlParameter("LOGIN_ID", Session[Global.LoginID].ToString());
+            //object[] parameters = new object[] { loginId };
+            //var listObj = await procMngService.getBaMentoringReport(parameters);
+            //var reportList = listObj;/*.Where(bw => bw.CLASSIFY == "A").ToList();*/
 
-            return View(new StaticPagedList<MentoringReportViewModel>(listTotalReportView, int.Parse(curPage ?? "1"), pagingSize, listTotalReportView.Count));
+            //ViewBag.SelectCompInfoList = ReportHelper.MakeCompanyListByBa(listObj);                 // 기업명 dropdownlist
+
+            ////검색조건을 유지하기 위한
+            //ViewBag.SelectParam = param;
+
+            ////맨토링 일지 정보 조회
+            //int pagingSize = int.Parse(ConfigurationManager.AppSettings["PagingSize"]);
+
+            ////맨토링 일지 정보 to 뷰모델 매핑
+            //var listTotalReportView =
+            //   Mapper.Map<List<MentoringReportViewModel>>(reportList);
+
+            //return View(new StaticPagedList<MentoringReportViewModel>(listTotalReportView, int.Parse(curPage ?? "1"), pagingSize, listTotalReportView.Count));
 
         }
 

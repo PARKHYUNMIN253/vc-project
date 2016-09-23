@@ -38,6 +38,8 @@ namespace BizOneShot.Light.Dao.Repositories
 
         Task<IList<MentoringStatsByAreaGroupModel>> GetMentoringReportGroupByArea(int bizWorkSn, int startYear,
             int startMonth, int endYear, int endMonth);
+
+        Task<IList<ScMentoringReport>> getScMentoringReportListById(string mentorId);
     }
 
 
@@ -260,6 +262,11 @@ namespace BizOneShot.Light.Dao.Repositories
                     MentoringAreaCd = g.Key.MentorAreaCd,
                     Count = g.Count()
                 }).AsNoTracking().ToListAsync();
+        }
+
+        public async Task<IList<ScMentoringReport>> getScMentoringReportListById(string mentorId)
+        {
+            return await DbContext.ScMentoringReports.Where(smr => smr.MentorId == mentorId).ToListAsync();
         }
 
         //MentoringStatsByMentorCompGroupModel

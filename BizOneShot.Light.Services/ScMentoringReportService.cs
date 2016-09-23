@@ -48,6 +48,8 @@ namespace BizOneShot.Light.Services
 
         Task<IList<MentoringStatsByAreaGroupModel>> GetMentoringReportGroupByArea(int bizWorkSn, int startYear,
             int startMonth, int endYear, int endMonth);
+
+        Task<IList<ScMentoringReport>> getMentoringReportListById(string mentorId);
     }
 
     public class ScMentoringReportService : IScMentoringReportService
@@ -298,6 +300,11 @@ namespace BizOneShot.Light.Services
         public async Task<int> SaveDbContextAsync()
         {
             return await unitOfWork.CommitAsync();
+        }
+
+        public async Task<IList<ScMentoringReport>> getMentoringReportListById(string mentorId)
+        {
+            return await scMentoringReportRepository.getScMentoringReportListById(mentorId);
         }
 
         //public Task<IList<ScMentoringTotalReport>> GetMentoringTotalReportAsync(string submitDate = null, int bizWorkSn = 0, int CompSn = 0)

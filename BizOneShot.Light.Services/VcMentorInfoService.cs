@@ -12,6 +12,7 @@ namespace BizOneShot.Light.Services
     public interface IVcMentorInfoSerivce : IBaseService
     {
         Task<VcMentorInfo> getVcMentorInfoByMentorSn(string mentorSn);
+        Task<IList<VcMentorInfo>> getVcMentorInfoListByBaSn(int baSn);
     }
 
     public class VcMentorInfoService : IVcMentorInfoSerivce
@@ -38,6 +39,11 @@ namespace BizOneShot.Light.Services
         public Task<int> SaveDbContextAsync()
         {
             throw new NotImplementedException();
+        }
+
+        public async Task<IList<VcMentorInfo>> getVcMentorInfoListByBaSn(int baSn)
+        {
+            return await _vcMentorInfoRepository.baGetMappingMentor(baSn);
         }
     }
 }

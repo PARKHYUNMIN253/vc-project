@@ -14,6 +14,7 @@ namespace BizOneShot.Light.Services
         //IEnumerable<FaqViewModel> GetFaqs(string searchType = null, string keyword = null);
 
         //Task<bool> ChkLoginId(string loginId);
+        Task<VcUsrInfo> getScUsrByLoginId(string loginId);
         Task<VcUsrInfo> SelectScUsr(string loginId);
 
         Task<VcUsrInfo> selectScUsrByTcms(string tcmsLoginKey);
@@ -438,6 +439,11 @@ namespace BizOneShot.Light.Services
         public async Task<VcNumMngInfo> getNumInfoOneAsync()
         {
             return await vcNumMngInfoRepository.getNumInfoOneAsync();
+        }
+
+        public async Task<VcUsrInfo> getScUsrByLoginId(string loginId)
+        {
+            return await scUsrRespository.getUsrInfo(loginId);
         }
     }
 }
