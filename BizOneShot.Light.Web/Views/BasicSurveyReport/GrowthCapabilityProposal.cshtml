@@ -105,7 +105,7 @@
         
     });
 
-    function goSubmit() {
+    function goSubmit(submitType) {
         var finish = $("a.list_gnb").hasClass("null");
 
           //if (!confirm('작성한 내용을 저장 하시겠습니까?')) {
@@ -352,7 +352,7 @@
                 <div class="rightwrap right">
                     @if (ViewBag.paramModel.Status != "C" && Session[Global.UserType].Equals(Global.Mentor))
                     {
-                        <button type="button" class="btn_big red" onclick="goSubmit();" value="작성완료">작성완료</button>
+                        <button type="button" class="btn_big red" onclick="goSubmit('C');" value="작성완료">작성완료</button>
                     }
                     else
                     {
