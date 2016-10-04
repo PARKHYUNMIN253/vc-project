@@ -1607,6 +1607,5 @@ namespace BizOneShot.Light.Web.Areas.BizManager.Controllers
 
             return View(totalReportViewModel);
         }
-
     }
 }

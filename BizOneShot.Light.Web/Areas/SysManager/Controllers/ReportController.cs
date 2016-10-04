@@ -34,6 +34,7 @@ namespace BizOneShot.Light.Web.Areas.SysManager.Controllers
         private readonly IScUsrService vcUsrInfoService;
         private readonly IVcLastReportNSatService _VcLastReportNSatService;
 
+        private readonly ITcmsMentoringReportSelectViewService tcmsMentoringReportSelectViewService;
 
         public ReportController(IScBizWorkService scBizWorkService
             , IRptMasterService rptMasterService
@@ -47,8 +48,7 @@ namespace BizOneShot.Light.Web.Areas.SysManager.Controllers
             , IScMentoringTotalReportService _scMentoringTotalReportService
             , IVcLastReportNSatService vcLastReportNSatService
             , IVcMentorMappingService vcMentorMappingService
-
-
+            , ITcmsMentoringReportSelectViewService tcmsMentoringReportSelectViewService
             )
         {
             this.scBizWorkService = scBizWorkService;
@@ -63,6 +63,7 @@ namespace BizOneShot.Light.Web.Areas.SysManager.Controllers
             this._scMentoringTotalReportService = _scMentoringTotalReportService;
             this._VcLastReportNSatService = vcLastReportNSatService;
             this.vcMentorMappingService = vcMentorMappingService;
+            this.tcmsMentoringReportSelectViewService = tcmsMentoringReportSelectViewService;
         }
 
         // GET: SysManager/Report
@@ -630,5 +631,27 @@ namespace BizOneShot.Light.Web.Areas.SysManager.Controllers
             new FileHelper().DownloadFile(files, archiveName);
         }
         #endregion
+
+        public async Task<ActionResult> MentoringReportList()
+        {
+            ViewBag.naviLeftMenu = Global.Report;
+
+            int pagingSize = int.Parse(ConfigurationManager.AppSettings["PagingSize"]);
+            int pageSize = int.Parse(ConfigurationManager.AppSettings["PagingSize"]);
+
+            var searchBy = new List<SelectListItem>(){
+                new SelectListItem { Value = "0", Text = "기업명", Selected = true },
+                new SelectListItem { Value = "1", Text = "전문기관(BA)명" },
+                new SelectListItem { Value = "2", Text = "멘토명" }
+            };
+
+
+            var allMentoringReport = await tcmsMentoringReportSelectViewService.getMentoringReportInfoes();
+
+            var viewModel = Mapper.Map<IList<TcmsMentoringReportViewModel>>(allMentoringReport);
+            // 뷰모델 매핑
+
+            return View(viewModel);
+        }
     }
 }

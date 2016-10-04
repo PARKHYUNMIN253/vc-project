@@ -152,6 +152,7 @@
     <Compile Include="Repositories\TcmsCompStatusSelectViewRepository.cs" />
     <Compile Include="Repositories\TcmsIfLastReportRepository.cs" />
     <Compile Include="Repositories\TcmsIfSurveyRepository.cs" />
+    <Compile Include="Repositories\TcmsMentoringReportSelectViewRepository.cs" />
     <Compile Include="Repositories\VcBaInfoRepository.cs" />
     <Compile Include="Repositories\VcCompInfoRepository.cs" />
     <Compile Include="Repositories\VcCompMappingRepository.cs" />
@@ -303,9 +304,6 @@
     <Compile Include="WebConfiguration\SyDareDbInfoConfiguration.cs">
       <DependentUpon>Database.tt</DependentUpon>
     </Compile>
-    <Compile Include="WebConfiguration\sys_DatabaseFirewallRuleConfiguration.cs">
-      <DependentUpon>Database.tt</DependentUpon>
-    </Compile>
     <Compile Include="WebConfiguration\TcmsCompStatusSelectViewConfiguration.cs">
       <DependentUpon>Database.tt</DependentUpon>
     </Compile>
@@ -313,6 +311,9 @@
       <DependentUpon>Database.tt</DependentUpon>
     </Compile>
     <Compile Include="WebConfiguration\TcmsIfSurveyConfiguration.cs">
+      <DependentUpon>Database.tt</DependentUpon>
+    </Compile>
+    <Compile Include="WebConfiguration\TcmsMentoringReportSelectViewConfiguration.cs">
       <DependentUpon>Database.tt</DependentUpon>
     </Compile>
     <Compile Include="WebConfiguration\VcBaInfoConfiguration.cs">

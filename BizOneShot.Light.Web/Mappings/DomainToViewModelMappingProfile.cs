@@ -246,6 +246,16 @@ namespace BizOneShot.Light.Web.Mappings
                     //.ForMember(d => d.MentorNm, map => map.MapFrom(s => s.ScUsr.Name))
                     .ForMember(d => d.FileContents, map => map.MapFrom(s => s.ScMentoringFileInfoes.Select(mtfi => mtfi.ScFileInfo)));
 
+            Mapper.CreateMap<TcmsMentoringReportSelectView, TcmsMentoringReportViewModel>()
+                    .ForMember(d => d.BaNm, map => map.MapFrom(s => s.BaNm))
+                    .ForMember(d => d.CompNm, map => map.MapFrom(s => s.CompNm))
+                    .ForMember(d => d.MentorName, map => map.MapFrom(s => s.MentorName))
+                    .ForMember(d => d.MentoringDt, map => map.MapFrom(s => s.MentoringDt))
+                    .ForMember(d => d.SubmitDt, map => map.MapFrom(s => s.SubmitDt))
+                    .ForMember(d => d.RegDt, map => map.MapFrom(s => s.RegDt))
+                    .ForMember(d => d.MentoringSubject, map => map.MapFrom(s => s.MentoringSubject))
+                    .ForMember(d => d.ReportSn, map => map.MapFrom(s => s.ReportSn));
+
             //기업 뷰 매핑
             Mapper.CreateMap<VcCompInfo, CompInfoDropDownModel>();
 

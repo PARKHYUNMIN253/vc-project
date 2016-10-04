@@ -77,6 +77,7 @@
     <Compile Include="TcmsCompStatusSelectViewService.cs" />
     <Compile Include="TcmsIfLastReportService.cs" />
     <Compile Include="TcmsIfSurveyService.cs" />
+    <Compile Include="TcmsMentoringReportSelectViewService.cs" />
     <Compile Include="VcBaInfoService.cs" />
     <Compile Include="VcBizWorkService.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

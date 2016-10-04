@@ -326,6 +326,18 @@ namespace BizOneShot.Light.Models.ViewModels
         public int TcmsLoginKey { get; set; }
     }
 
+    public class TcmsMentoringReportViewModel
+    {
+        public string BaNm { get; set; }
+        public string CompNm { get; set; }
+        public string MentorName { get; set; }
+        public DateTime? MentoringDt { get; set; }
+        public string MentoringSubject { get; set; }
+        public DateTime? SubmitDt { get; set; }
+        public DateTime? RegDt { get; set; }
+        public int ReportSn { get; set; }
+    }
+
 
     public class SelectedMentorTotalReportParmModel
     {
