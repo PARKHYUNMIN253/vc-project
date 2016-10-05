@@ -1,0 +1,144 @@
+﻿@model IPagedList<BizOneShot.Light.Models.ViewModels.TcmsMentoringReportViewModel>
+
+@{
+    Layout = "~/Areas/SysManager/Views/Shared/_MainDetailLayout.cshtml";
+}
+
+<script>
+    $(document).ready(function () {
+        //main left menu
+        $('.vc_iconSB_10 ').addClass('on01');
+        $('.vc_title_10 ').addClass('on');
+        $('.a_label03').addClass('on');
+
+        //mergeCell("CompListTable");
+    });
+
+    function goPage(page) {
+        $('#curPage').val(page);
+        $('#searchForm').submit();
+    }
+
+    
+</script>
+
+<div class="tcms">
+    <div class="main_top short">
+        <div class="list_icon"></div><div class="sub_title">멘토링 일지</div>
+        @RenderPage("~/Areas/SysManager/Views/Shared/_MainTopMenuPartial.cshtml")
+    </div>
+    @Html.Hidden("searchType", ViewBag.SelectList as string)
+    <div id="custom_search_box">
+        @using (Html.BeginForm("MentoringReportList", "Report", FormMethod.Post, new { id = "searchForm" }))
+        {
+            <span class="bold">SEARCH&nbsp;</span>
+
+            @Html.DropDownList("SelectList", null, new { @class = "select", @id = "searchType" })
+
+            <img src="~/Images/icon_lenz.png" class="lenz">@Html.TextBox("QUERY", null, new { @class = "search", @placeholder = "검색어를 입력하세요", @id = "QUERY" })
+            <input type="submit" id="search" class="btn_small gray1" value="검색" onclick="goPage('1')" ;>
+
+            @Html.Hidden("curPage", "1")
+        }
+    </div><!--custom_search_box//-->
+    <!--sub_inquiry_box//-->
+
+    <div class="main_mid">
+        <form method="" action="" name="" id="">
+            <div class="tablewrap">
+                <!--목록-->
+                <table class="admin_list" id="CompListTable">
+                    <colgroup>
+                        <col width="20%">
+                        <col width="20%">
+                        <col width="10%">
+                        <col width="20%">
+                        <col width="15%">
+                        <col width="15%">
+                    </colgroup>
+                    <tr>
+                        <th class="topcen">기업명</th>
+                        <th class="topcen">전문기관(BA)명</th>
+                        <th class="topcen">멘토명</th>
+                        <th class="topcen">멘토링 주제</th>
+                        <th class="topcen">멘토링 날짜</th>
+                        <th class="topcen">보고서보기</th>
+
+                    </tr>
+                    @if (Model == null || Model.TotalItemCount == 0)
+                    {
+                        <tr>
+                            <td colspan="5" style="text-align:center;">작성 완료된 보고서가 없습니다.</td>
+                        </tr>
+                    }
+                    else
+                    {
+                        foreach (var item in Model)
+                        {
+                            <tr>
+                                @if (item.CompNm == null)
+                                {
+                                    <td>-</td>
+                                }
+                                else
+                                {
+                                    <td class="center CompName" rowspan="">@item.CompNm</td>
+                                }
+                                
+                                @if (item.BaNm == null)
+                                {
+                                    <td rowspan="" class="unset">미정</td>
+                                }
+                                else
+                                {
+                                    <td rowspan="">@item.BaNm</td>
+                                }
+                                @if (item.MentorName == null)
+                                {
+                                    <td rowspan="" class="unset">미정</td>
+                                }
+                                else
+                                {
+                                    <td rowspan="">@item.MentorName</td>
+                                }
+                                @if (item.MentoringSubject == null)
+                                {
+                                    <td rowspan="" class="unset">-</td>
+                                }
+                                else
+                                {
+                                    <td rowspan="" >@item.MentoringSubject</td>
+                                }
+                                @if (item.MentoringDt == null)
+                                {
+                                    <td rowspan="" class="unset">-</td>
+                                }
+                                else
+                                {
+                                    <td rowspan="">@item.MentoringDt</td>
+                                }
+                                @if (item.ReportSn != 0)
+                                {
+                                    <td class="Status" rowspan="">
+                                        <a href="@Url.Action("DeepenReportDetail", "Report", new { area = "SysManager", TotalReportSn = item.ReportSn})" class="btn_mid_a lightblue">보고서보기</a>
+                                    </td>
+                                }
+                                else
+                                {
+                                    <td class="Status unset" rowspan="">미작성</td>
+                                }
+
+                            </tr>
+                        }
+                    }
+                </table>
+            </div><!--tablewrap//-->
+            @if (Model != null && Model.TotalItemCount != 0)
+            {
+                @Html.Pagination("goPage", Model.PageNumber, Model.PageCount, Model.HasPreviousPage, Model.HasNextPage)
+            }
+        </form>
+
+    </div><!--sub_rightwrap//-->
+</div>
+

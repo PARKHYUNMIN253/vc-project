@@ -12,6 +12,7 @@ namespace BizOneShot.Light.Services
     public interface ITcmsMentoringReportSelectViewService : IBaseService
     {
         Task<IList<TcmsMentoringReportSelectView>> getMentoringReportInfoes();
+        Task<IList<TcmsMentoringReportSelectView>> GetListViewsAsync(string searchType = null, string keyword = null);
     }
 
     public class TcmsMentoringReportSelectViewService : ITcmsMentoringReportSelectViewService
@@ -37,6 +38,36 @@ namespace BizOneShot.Light.Services
 
         public async Task<IList<TcmsMentoringReportSelectView>> getMentoringReportInfoes()
         {
+            return await tcmsMentoringReportSelectViewRepository.getMentoringReportInfoes();
+        }
+
+        public async Task<IList<TcmsMentoringReportSelectView>> GetListViewsAsync(string searchType = null, string keyword = null)
+        {
+            if (string.IsNullOrEmpty(searchType) || string.IsNullOrEmpty(keyword))
+            {
+                return await tcmsMentoringReportSelectViewRepository.getMentoringReportInfoes();
+            }
+            if (searchType.Equals("0")) // keyword가 포함된 기업명 검색 
+            {
+                return
+                    await
+                        tcmsMentoringReportSelectViewRepository.getSearchQuery(
+                            cm => cm.CompNm.Contains(keyword));
+            }
+            if (searchType.Equals("1")) // keyword가 포함된 BA명 검색 
+            {
+                return
+                    await
+                        tcmsMentoringReportSelectViewRepository.getSearchQuery(
+                            bm => bm.BaNm.Contains(keyword));
+            }
+            if (searchType.Equals("2")) // keyword가 포함된 멘토명 검색 
+            {
+                return
+                    await
+                        tcmsMentoringReportSelectViewRepository.getSearchQuery(
+                            bm => bm.MentorName.Contains(keyword));
+            }
             return await tcmsMentoringReportSelectViewRepository.getMentoringReportInfoes();
         }
     }

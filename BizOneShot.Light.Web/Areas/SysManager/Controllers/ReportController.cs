@@ -647,11 +647,35 @@ namespace BizOneShot.Light.Web.Areas.SysManager.Controllers
 
 
             var allMentoringReport = await tcmsMentoringReportSelectViewService.getMentoringReportInfoes();
-
-            var viewModel = Mapper.Map<IList<TcmsMentoringReportViewModel>>(allMentoringReport);
+            
             // 뷰모델 매핑
+            var viewModel = Mapper.Map<IList<TcmsMentoringReportViewModel>>(allMentoringReport);
+            
+            ViewBag.SelectList = searchBy;
+            return View(new StaticPagedList<TcmsMentoringReportViewModel>(viewModel.ToPagedList(1, pageSize), 1, pagingSize, viewModel.Count));
+        }
 
-            return View(viewModel);
+        [HttpPost]
+        public async Task<ActionResult> MentoringReportList(string SelectList, string Query, string curPage)
+        {
+            ViewBag.naviLeftMenu = Global.Report;
+
+            int pagingSize = int.Parse(ConfigurationManager.AppSettings["PagingSize"]);
+            int pageSize = int.Parse(ConfigurationManager.AppSettings["PagingSize"]);
+
+            var searchBy = new List<SelectListItem>(){
+                new SelectListItem { Value = "0", Text = "기업명", Selected = true },
+                new SelectListItem { Value = "1", Text = "전문기관(BA)명" },
+                new SelectListItem { Value = "2", Text = "멘토명" }
+            };
+            ViewBag.SelectList = searchBy;
+
+            var allMentoringReport = await tcmsMentoringReportSelectViewService.GetListViewsAsync(SelectList, Query);
+            
+            // 뷰모델 매핑
+            var viewModel = Mapper.Map<IList<TcmsMentoringReportViewModel>>(allMentoringReport);
+            
+            return View(new StaticPagedList<TcmsMentoringReportViewModel>(viewModel.ToPagedList(int.Parse(curPage), pagingSize), int.Parse(curPage), pagingSize, viewModel.Count));
         }
     }
 }
