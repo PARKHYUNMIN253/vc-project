@@ -68,7 +68,7 @@
                     @if (Model == null || Model.TotalItemCount == 0)
                     {
                         <tr>
-                            <td colspan="5" style="text-align:center;">작성 완료된 보고서가 없습니다.</td>
+                            <td colspan="6" style="text-align:center;">작성 완료된 보고서가 없습니다.</td>
                         </tr>
                     }
                     else
@@ -129,7 +129,7 @@
                                 @if (item.ReportSn != 0)
                                 {
                                     <td class="Status" rowspan="">
-                                        <a href="@Url.Action("MentoringReportDetail", "Report", new { area = "SysManager", TotalReportSn = item.ReportSn})" class="btn_mid_a lightblue">보고서보기</a>
+                                        <a href="@Url.Action("MentoringReportDetail","Report", new { area = "SysManager", ReportSn = item.ReportSn})" class="btn_mid_a lightblue">보고서보기</a>
                                     </td>
                                 }
                                 else

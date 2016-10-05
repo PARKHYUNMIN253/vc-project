@@ -13,6 +13,7 @@ namespace BizOneShot.Light.Services
     {
         Task<IList<TcmsMentoringReportSelectView>> getMentoringReportInfoes();
         Task<IList<TcmsMentoringReportSelectView>> GetListViewsAsync(string searchType = null, string keyword = null);
+        Task<TcmsMentoringReportSelectView> GetCompNmByReportSn(int reportSn);
     }
 
     public class TcmsMentoringReportSelectViewService : ITcmsMentoringReportSelectViewService
@@ -69,6 +70,11 @@ namespace BizOneShot.Light.Services
                             bm => bm.MentorName.Contains(keyword));
             }
             return await tcmsMentoringReportSelectViewRepository.getMentoringReportInfoes();
+        }
+
+        public async Task<TcmsMentoringReportSelectView> GetCompNmByReportSn(int reportSn)
+        {
+            return await tcmsMentoringReportSelectViewRepository.GetCompNmByReportSn(reportSn);
         }
     }
 }

@@ -16,6 +16,7 @@ namespace BizOneShot.Light.Dao.Repositories
     {
         Task<IList<TcmsMentoringReportSelectView>> getMentoringReportInfoes();
         Task<IList<TcmsMentoringReportSelectView>> getSearchQuery(Expression<Func<TcmsMentoringReportSelectView, bool>> where);
+        Task<TcmsMentoringReportSelectView> GetCompNmByReportSn(int reportSn);
     }
 
     public class TcmsMentoringReportSelectViewRepository : RepositoryBase<TcmsMentoringReportSelectView>, ITcmsMentoringReportSelectViewRepository
@@ -23,6 +24,11 @@ namespace BizOneShot.Light.Dao.Repositories
         public TcmsMentoringReportSelectViewRepository(IDbFactory dbFactory) : base(dbFactory)
         {
 
+        }
+
+        public async Task<TcmsMentoringReportSelectView> GetCompNmByReportSn(int reportSn)
+        {
+            return await DbContext.TcmsMentoringReportSelectViews.Where(rs => rs.ReportSn == reportSn).SingleOrDefaultAsync();
         }
 
         public async Task<IList<TcmsMentoringReportSelectView>> getMentoringReportInfoes()

@@ -33,7 +33,7 @@ namespace BizOneShot.Light.Web.Areas.SysManager.Controllers
         private readonly IScMentoringTotalReportService _scMentoringTotalReportService;
         private readonly IScUsrService vcUsrInfoService;
         private readonly IVcLastReportNSatService _VcLastReportNSatService;
-
+        private readonly IScMentoringReportService _scMentoringReportService;
         private readonly ITcmsMentoringReportSelectViewService tcmsMentoringReportSelectViewService;
 
         public ReportController(IScBizWorkService scBizWorkService
@@ -49,6 +49,7 @@ namespace BizOneShot.Light.Web.Areas.SysManager.Controllers
             , IVcLastReportNSatService vcLastReportNSatService
             , IVcMentorMappingService vcMentorMappingService
             , ITcmsMentoringReportSelectViewService tcmsMentoringReportSelectViewService
+            , IScMentoringReportService scMentoringReportService
             )
         {
             this.scBizWorkService = scBizWorkService;
@@ -64,6 +65,7 @@ namespace BizOneShot.Light.Web.Areas.SysManager.Controllers
             this._VcLastReportNSatService = vcLastReportNSatService;
             this.vcMentorMappingService = vcMentorMappingService;
             this.tcmsMentoringReportSelectViewService = tcmsMentoringReportSelectViewService;
+            this._scMentoringReportService = scMentoringReportService;
         }
 
         // GET: SysManager/Report
@@ -677,5 +679,52 @@ namespace BizOneShot.Light.Web.Areas.SysManager.Controllers
 
             return View(new StaticPagedList<TcmsMentoringReportViewModel>(viewModel.ToPagedList(int.Parse(curPage), pagingSize), int.Parse(curPage), pagingSize, viewModel.Count));
         }
+
+        public async Task<ActionResult> MentoringReportDetail(int reportSn, SelectedMentorReportParmModel selectParam, string searchType, string CompName)
+        {
+            ViewBag.naviLeftMenu = Global.Report;
+
+            var scMentoringReport = await _scMentoringReportService.GetMentoringReportById(reportSn);
+
+            //멘토링 사진
+            var listscMentoringImageInfo = scMentoringReport.ScMentoringFileInfoes.Where(mtfi => mtfi.Classify == "P").Select(mtfi => mtfi.ScFileInfo).Where(fi => fi.Status == "N");
+
+            //사진추가
+            var listMentoringPhotoView =
+              Mapper.Map<List<FileContent>>(listscMentoringImageInfo);
+
+            FileHelper fileHelper = new FileHelper();
+
+            foreach (var mentoringPhoto in listMentoringPhotoView)
+            {
+                mentoringPhoto.FileBase64String = await fileHelper.GetPhotoString(mentoringPhoto.FilePath);
+                // resize/
+                mentoringPhoto.FileFullPath = await fileHelper.GetPhotoStringFullsize(mentoringPhoto.FilePath);
+            }
+
+            //첨부파일
+            var listscFileInfo = scMentoringReport.ScMentoringFileInfoes.Where(mtfi => mtfi.Classify == "A").Select(mtfi => mtfi.ScFileInfo).Where(fi => fi.Status == "N");
+
+            var listFileContentView =
+               Mapper.Map<List<FileContent>>(listscFileInfo);
+
+            //멘토링 상세 매핑
+            var reportViewModel =
+               Mapper.Map<MentoringReportViewModel>(scMentoringReport);
+
+            //멘토링상세뷰에 파일정보 추가
+            reportViewModel.FileContents = listFileContentView;
+            reportViewModel.MentoringPhoto = listMentoringPhotoView;
+
+            //기업명 가져오기
+            var getCompNm = await tcmsMentoringReportSelectViewService.GetCompNmByReportSn(reportSn);
+            reportViewModel.CompNm = getCompNm.CompNm;
+
+            //검색조건 유지를 위해
+            ViewBag.SelectParam = selectParam;
+            ViewBag.SearchType = searchType;
+            return View(reportViewModel);
+        }
     }
+
 }

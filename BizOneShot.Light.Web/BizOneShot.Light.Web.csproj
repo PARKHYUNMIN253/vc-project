@@ -632,6 +632,7 @@
     <Content Include="Areas\BizManager\Views\Main\BaAgreement.cshtml" />
     <Content Include="Areas\BizManager\Views\Report\MentoringReportList.cshtml" />
     <Content Include="Areas\SysManager\Views\Report\MentoringReportList.cshtml" />
+    <Content Include="Areas\SysManager\Views\Report\MentoringReportDetail.cshtml" />
     <None Include="Properties\PublishProfiles\VOUCHER.pubxml" />
     <None Include="Properties\PublishProfiles\Demo BizOneShot Lite.pubxml" />
     <None Include="Properties\PublishProfiles\deploy_file.pubxml" />
