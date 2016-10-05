@@ -107,7 +107,16 @@
                                 }
                                 else
                                 {
-                                    <td rowspan="" >@item.MentoringSubject</td>
+                                    <td rowspan="" >
+                                        @if (item.MentoringSubject.Length > 15)
+                                        {
+                                            @(item.MentoringSubject.Substring(0, 12)+" ..");
+                                        }
+                                        else
+                                        {
+                                            @item.MentoringSubject.ToString();
+                                        }
+                                    </td>
                                 }
                                 @if (item.MentoringDt == null)
                                 {
@@ -115,12 +124,12 @@
                                 }
                                 else
                                 {
-                                    <td rowspan="">@item.MentoringDt</td>
+                                    <td rowspan="">@item.MentoringDt.Value.ToString("yyyy-MM-dd")</td>
                                 }
                                 @if (item.ReportSn != 0)
                                 {
                                     <td class="Status" rowspan="">
-                                        <a href="@Url.Action("DeepenReportDetail", "Report", new { area = "SysManager", TotalReportSn = item.ReportSn})" class="btn_mid_a lightblue">보고서보기</a>
+                                        <a href="@Url.Action("MentoringReportDetail", "Report", new { area = "SysManager", TotalReportSn = item.ReportSn})" class="btn_mid_a lightblue">보고서보기</a>
                                     </td>
                                 }
                                 else
