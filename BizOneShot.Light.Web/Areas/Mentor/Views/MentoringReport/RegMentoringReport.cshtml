@@ -265,7 +265,7 @@
                     <tr>
                         <th>멘토링 내용</th>
                         <td class="form">
-                            @Html.TextAreaFor(model => model.MentoringContents, new { @class = "border1" })
+                            @Html.TextAreaFor(model => model.MentoringContents, new { @class = "border1", @maxlength = "2000" })
                             @Html.ValidationMessageFor(model => model.MentoringContents, "")
                         </td>
 
