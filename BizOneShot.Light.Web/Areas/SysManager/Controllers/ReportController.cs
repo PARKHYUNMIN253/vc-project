@@ -650,8 +650,11 @@ namespace BizOneShot.Light.Web.Areas.SysManager.Controllers
 
             var viewModel = Mapper.Map<IList<TcmsMentoringReportViewModel>>(allMentoringReport);
             // 뷰모델 매핑
+            var pagedViewModel = new StaticPagedList<TcmsMentoringReportViewModel>(viewModel.ToPagedList(1, pageSize), 1, pageSize, viewModel.Count);
 
-            return View(viewModel);
+            //return View(new StaticPagedList<TcmsCompStatusSelectViewModel>(resultViews.ToPagedList(int.Parse(curPage), pagingSize), int.Parse(curPage), pagingSize, resultViews.Count));
+
+            return View(pagedViewModel);
         }
     }
 }

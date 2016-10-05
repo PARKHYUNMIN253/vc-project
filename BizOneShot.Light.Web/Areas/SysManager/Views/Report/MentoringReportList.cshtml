@@ -1,0 +1,76 @@
+﻿@model IPagedList<BizOneShot.Light.Models.ViewModels.TcmsMentoringReportViewModel>
+
+@{
+    Layout = "~/Areas/SysManager/Views/Shared/_MainDetailLayout.cshtml";
+}
+
+<div class="tcms">
+
+    <div class="main_top short">
+        <div class="list_icon"></div><div class="sub_title">멘토링일지</div>
+        @RenderPage("~/Areas/SysManager/Views/Shared/_MainTopMenuPartial.cshtml")
+    </div>
+
+    @Html.Hidden("searchType", ViewBag.SelectList as string)
+    <div id="custom_search_box">
+        @*@using (Html.BeginForm("BasicSurveyReport", "Report", FormMethod.Post, new { id = "searchForm" }))
+        {
+            <span class="bold">SEARCH&nbsp;</span>
+
+            @Html.DropDownList("SelectList", null, new { @class = "select", @id = "searchType" })
+
+            <img src="~/Images/icon_lenz.png" class="lenz">@Html.TextBox("QUERY", null, new { @class = "search", @placeholder = "검색어를 입력하세요", @id = "QUERY" })
+            <input type="submit" id="search" class="btn_small gray1" value="검색" onclick="goPage('1')" ;>
+
+            @Html.Hidden("curPage", "1")
+        }*@
+    </div>
+
+    <div class="main_mid">
+        <form method="" action="" name="" id="">
+            <div class="tablewrap">
+                <!--목록-->
+                <table class="admin_list" id="CompListTable">
+                    <colgroup>
+                        <col width="20%">
+                        <col width="20%">
+                        <col width="15%">
+                        <col width="15%">
+                        <col width="24%">
+                    </colgroup>
+                    <tr>
+                        <th class="topcen">기업</th>
+                        <th class="topcen">전문기관(BA)</th>
+                        <th class="topcen">멘토</th>
+                        <th class="topcen">멘토링일지 제목</th>
+                        <th class="topcen">멘토링 날짜</th>
+                    </tr>
+                    @if (Model == null || Model.TotalItemCount == 0)
+                    {
+                        <tr>
+                            <td colspan="6" style="text-align:center;">작성 완료된 보고서가 없습니다.</td>
+                        </tr>
+                    }
+                    else
+                    {
+                        foreach (var item in Model)
+                        {
+                            <tr>
+                                <td>@item.CompNm</td>
+                                <td>@item.BaNm</td>
+                                <td>@item.MentorName</td>
+                                <td>@item.MentoringSubject</td>
+                                <td>@item.MentoringDt</td>
+                            </tr>
+                        }
+                    }
+                </table>
+            </div><!--tablewrap//-->
+            @if (Model != null && Model.TotalItemCount != 0)
+            {
+                @Html.Pagination("goPage", Model.PageNumber, Model.PageCount, Model.HasPreviousPage, Model.HasNextPage)
+            }
+        </form>
+
+    </div><!--sub_rightwrap//-->
+</div>
