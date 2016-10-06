@@ -417,12 +417,9 @@ namespace BizOneShot.Light.Web.Areas.Mentor.Controllers
 
             foreach (var mentoringPhoto in listMentoringPhotoView)
             {
-
                 mentoringPhoto.FileBase64String = await fileHelper.GetPhotoString(mentoringPhoto.FilePath);
-
                 // resize/
                 mentoringPhoto.FileFullPath = await fileHelper.GetPhotoStringFullsize(mentoringPhoto.FilePath);
-
             }
 
             //첨부파일

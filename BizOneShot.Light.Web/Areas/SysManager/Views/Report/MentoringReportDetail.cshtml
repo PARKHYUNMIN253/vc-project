@@ -112,8 +112,12 @@
                         <td class="center file_photo" colspan="2"></td>
                     }
 
-                    else if (Model.MentoringPhoto.Count == 2)
+                    else if (Model.MentoringPhoto.Count > 1)
                     {
+                        <td class="center file_photo" colspan="2">
+                            <img src="@Model.MentoringPhoto[0].FileBase64String" title="클릭하시면 원본크기로 보실 수 있습니다."
+                                 style="cursor: pointer;" onclick="doImgPop('@Model.MentoringPhoto[0].FileFullPath')">
+                        </td>
                         <td class="center file_photo" colspan="2">
                             <img src="@Model.MentoringPhoto[1].FileBase64String" title="클릭하시면 원본크기로 보실 수 있습니다."
                                  style="cursor: pointer;" onclick="doImgPop('@Model.MentoringPhoto[1].FileFullPath')">
@@ -133,21 +137,23 @@
                     <th colspan="2" class="topcen">상기와 같이 자문을 실시 하였습니다</th>
                 </tr>
                 <tr>
-                    <th style="border-bottom:0">작성일</th>
-                    <td class="mentoring_detail" style="border-bottom:0">@Model.SubmitDt.Value.ToString("yyyy-MM-dd")</td>
+                    <th>작성일</th>
+                    <td class="bold mentoring_detail">@Model.SubmitDt.Value.ToString("yyyy-MM-dd")</td>
                 </tr>
             </table>
             <table>
+
                 @if (Model.FileContents.Count == 1)
-            {
+                {
                     <colgroup>
                         <col width="160px" />
                         <col width="590px" />
                     </colgroup>
+
                     <tr>
                         <!--첨부파일1개일때-->
-                        <th>첨부파일</th>
-                        <td colspan="4" class="nopad top_line">
+                        <th style="border-top:0">첨부파일</th>
+                        <td colspan="4" class="nopad">
                             <div id="file_downwrap">
                                 <ul>
                                     <li><span class="mentoring_detail_line">@Model.FileContents[0].FileNm</span><button type="button" class="btn_mid lightgray" onclick="location.href='@Url.Action("DownloadReportFile", Model.FileContents[0])';" value="다운로드">다운로드</button></li>
@@ -163,6 +169,7 @@
                         <col width="340px" />
                         <col width="150px" />
                     </colgroup>
+
                     <tr>
                         <!--첨부파일2개이상일때-->
                         <th>첨부파일</th>
@@ -171,12 +178,15 @@
                                 <ul>
                                     @foreach (var item in Model.FileContents)
                                     {
+                      
                                         <li><span>@item.FileNm</span><button type="button" class="btn_mid lightgray mentoring_detail_down" onclick="location.href='@Url.Action("DownloadReportFile", item)';" value="다운로드">다운로드</button></li>
+
                                     }
                                 </ul>
                             </div>
                         </td>
                         <td class="all"><button type="button" class="btn_mid gray" onclick="location.href='@Url.Action("DownloadReportFileMulti", new { reportSn = Model.ReportSn })';" value="전체 다운로드">전체 다운로드</button></td>
+
                     </tr><!--첨부파일2개이상일때 끝-->
                 }
             </table>
