@@ -117,12 +117,25 @@
                     <th class="topcen">멘토링 사진 2</th>
                 </tr>
                 <tr>
-                    <td class="center file_photo" colspan="2">
-                        <img src="@Model.MentoringPhoto[0].FileBase64String" title="클릭하시면 원본크기로 보실 수 있습니다."
-                             style="cursor: pointer;" onclick="doImgPop('@Model.MentoringPhoto[0].FileFullPath')">
-                    </td>
-                    <img src="@Model.MentoringPhoto[1].FileBase64String" title="클릭하시면 원본크기로 보실 수 있습니다."
-                         style="cursor: pointer;" onclick="doImgPop('@Model.MentoringPhoto[1].FileFullPath')"></td>
+                    @if (Model.MentoringPhoto.Count == 1)
+                    {
+                        <td class="center file_photo" colspan="2">
+                            <img src="@Model.MentoringPhoto[0].FileBase64String" title="클릭하시면 원본크기로 보실 수 있습니다."
+                                 style="cursor: pointer;" onclick="doImgPop('@Model.MentoringPhoto[0].FileFullPath')">
+                        </td>
+                        <td class="center file_photo" colspan="2"></td>
+                    }
+                    else if (Model.MentoringPhoto.Count == 2)
+                    {
+                        <td class="center file_photo" colspan="2">
+                            <img src="@Model.MentoringPhoto[0].FileBase64String" title="클릭하시면 원본크기로 보실 수 있습니다."
+                                 style="cursor: pointer;" onclick="doImgPop('@Model.MentoringPhoto[0].FileFullPath')">
+                        </td>
+                        <td class="center file_photo" colspan="2">
+                            <img src="@Model.MentoringPhoto[1].FileBase64String" title="클릭하시면 원본크기로 보실 수 있습니다."
+                                 style="cursor: pointer;" onclick="doImgPop('@Model.MentoringPhoto[1].FileFullPath')">
+                        </td>
+                    }
                 </tr>
             </table>
 

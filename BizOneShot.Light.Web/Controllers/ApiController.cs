@@ -3,6 +3,7 @@ using BizOneShot.Light.Models.CustomModels;
 using BizOneShot.Light.Models.ViewModels;
 using BizOneShot.Light.Models.WebModels;
 using BizOneShot.Light.Services;
+using BizOneShot.Light.Util.Helper;
 using BizOneShot.Light.Web.ComLib;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
@@ -2060,5 +2061,20 @@ namespace BizOneShot.Light.Web.Controllers
 
         }
 
+        public void DownloadExternReportFile(string fileNm, string filePath)
+        {
+            string archiveName = fileNm;
+
+            var files = new List<FileContent>();
+
+            var file = new FileContent
+            {
+                FileNm = fileNm,
+                FilePath = filePath
+            };
+            files.Add(file);
+
+            new FileHelper().DownloadFile(files, archiveName);
+        }
     }
 }

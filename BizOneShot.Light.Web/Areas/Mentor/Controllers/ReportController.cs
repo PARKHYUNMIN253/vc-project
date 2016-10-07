@@ -523,6 +523,11 @@ namespace BizOneShot.Light.Web.Areas.Mentor.Controllers
                             var directoryPath = Path.Combine(rootFilePath, subDirectoryPath);
                             var absFilePath = directoryPath + "//" + savedFileName;                // 심화보고서 최종 제출 URL
 
+                            string fileNm = savedFileName;
+                            string filePath = subDirectoryPath;
+
+                            var combinedPath = Global.VCURLDOWN + "fileNm=" + fileNm + "&filePath=" + Path.Combine(filePath, fileNm);
+
                             // 기본적인 정보는 한번 담고 
                             if (cnt == 0)
                             {
@@ -538,7 +543,8 @@ namespace BizOneShot.Light.Web.Areas.Mentor.Controllers
                                 tcmsIfLastReport.SubNumSn = subNumSn;
 
                                 tcmsIfLastReport.ConCode = conCodes;
-                                tcmsIfLastReport.File1 = absFilePath;
+                                //tcmsIfLastReport.File1 = absFilePath;
+                                tcmsIfLastReport.File1 = combinedPath;
 
                                 tcmsIfLastReportService.Insert(tcmsIfLastReport);
                                 tcmsIfLastReportService.SaveDbContext();
@@ -557,28 +563,30 @@ namespace BizOneShot.Light.Web.Areas.Mentor.Controllers
                                     if (cnt == 1)
                                     {
 
-                                        tcmsIfLastReportObjAfr[0].File2 = absFilePath;
+                                        tcmsIfLastReportObjAfr[0].File2 = combinedPath;
+                                        //tcmsIfLastReportObjAfr[0].File2 = absFilePath;
                                         tcmsIfLastReportService.SaveDbContext();
 
                                     }
                                     else if (cnt == 2)
                                     {
-
-                                        tcmsIfLastReportObjAfr[0].File3 = absFilePath;
+                                        tcmsIfLastReportObjAfr[0].File3 = combinedPath;
+                                        //tcmsIfLastReportObjAfr[0].File3 = absFilePath;
                                         tcmsIfLastReportService.SaveDbContext();
 
                                     }
                                     else if (cnt == 3)
                                     {
 
-                                        tcmsIfLastReportObjAfr[0].File4 = absFilePath;
+                                        tcmsIfLastReportObjAfr[0].File4 = combinedPath;
+                                        //tcmsIfLastReportObjAfr[0].File4 = absFilePath;
                                         tcmsIfLastReportService.SaveDbContext();
 
                                     }
                                     else if (cnt == 4)
                                     {
-
-                                        tcmsIfLastReportObjAfr[0].File5 = absFilePath;
+                                        tcmsIfLastReportObjAfr[0].File5 = combinedPath;
+                                        //tcmsIfLastReportObjAfr[0].File5 = absFilePath;
                                         tcmsIfLastReportService.SaveDbContext();
 
                                     }
@@ -607,6 +615,8 @@ namespace BizOneShot.Light.Web.Areas.Mentor.Controllers
                         // 다운로드 가능한 링크
                         var fullPath = rootFilePath + listFileContent2[0].FilePath;
 
+                        var combinedPath1 = Global.VCURLDOWN + "fileNm=" + listFileContent2[0].FileNm + "&filePath=" + listFileContent2[0].FilePath;
+
                         tcmsIfLastReport.InfId = await satiNumGenerator();
                         tcmsIfLastReport.RegDt = scMentoringTotalReport2.RegDt;
                         tcmsIfLastReport.InfDt = DateTime.Today;
@@ -619,33 +629,34 @@ namespace BizOneShot.Light.Web.Areas.Mentor.Controllers
                         tcmsIfLastReport.SubNumSn = subNumSn;
 
                         tcmsIfLastReport.ConCode = conCodes;
-                        tcmsIfLastReport.File1 = fullPath;
+                        //tcmsIfLastReport.File1 = fullPath;
+                        tcmsIfLastReport.File1 = combinedPath1;
 
-                        if(listFileContent2.Count == 2)
+                        if (listFileContent2.Count == 2)
                         {
-
-                            var fullPath2 = rootFilePath + listFileContent2[1].FilePath;
-                            tcmsIfLastReport.File2 = fullPath2;
+                            var combinedPath2 = Global.VCURLDOWN + "fileNm=" + listFileContent2[1].FileNm + "&filePath=" + listFileContent2[1].FilePath;
+                            //var fullPath2 = rootFilePath + listFileContent2[1].FilePath;
+                            tcmsIfLastReport.File2 = combinedPath2;
 
                         }else if(listFileContent2.Count == 3)
                         {
-
-                            var fullPath3 = rootFilePath + listFileContent2[2].FilePath;
-                            tcmsIfLastReport.File3 = fullPath3;
+                            var combinedPath3 = Global.VCURLDOWN + "fileNm=" + listFileContent2[2].FileNm + "&filePath=" + listFileContent2[2].FilePath;
+                            //var fullPath3 = rootFilePath + listFileContent2[2].FilePath;
+                            tcmsIfLastReport.File3 = combinedPath3;
 
                         }
                         else if (listFileContent2.Count == 4)
                         {
-
-                            var fullPath4 = rootFilePath + listFileContent2[3].FilePath;
-                            tcmsIfLastReport.File4 = fullPath4;
+                            var combinedPath4 = Global.VCURLDOWN + "fileNm=" + listFileContent2[3].FileNm + "&filePath=" + listFileContent2[3].FilePath;
+                            //var fullPath4 = rootFilePath + listFileContent2[3].FilePath;
+                            tcmsIfLastReport.File4 = combinedPath4;
 
                         }
                         else if (listFileContent2.Count == 5)
                         {
-
-                            var fullPath5 = rootFilePath + listFileContent2[4].FilePath;
-                            tcmsIfLastReport.File5 = fullPath5;
+                            var combinedPath5 = Global.VCURLDOWN + "fileNm=" + listFileContent2[4].FileNm + "&filePath=" + listFileContent2[4].FilePath;
+                            //var fullPath5 = rootFilePath + listFileContent2[4].FilePath;
+                            tcmsIfLastReport.File5 = combinedPath5;
 
                         }
 
