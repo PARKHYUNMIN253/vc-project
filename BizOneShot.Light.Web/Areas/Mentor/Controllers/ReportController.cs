@@ -504,19 +504,15 @@ namespace BizOneShot.Light.Web.Areas.Mentor.Controllers
 
                     var tcmsIfLastReportObj = await tcmsIfLastReportService.getTcmsIfLastReportInfo(compObj.TcmsLoginKey, baObj.TcmsLoginKey, mentorObj.TcmsLoginKey, conCodes);
 
-
                     if (files != null)
                     {
-
-
                         foreach (var file in files)
                         {
-
                             var fileHelper = new FileHelper();
 
                             var rootFilePath = ConfigurationManager.AppSettings["RootFilePath"];
                             var savedFileName = fileHelper.GetUploadFileName(file);
-
+                            
                             var folderNm = compInfo.ToString() + mentorKey.ToString() + numSn.ToString() + subNumSn.ToString() + conCodeBy.ToString();
                             var subDirectoryPath = Path.Combine(FileType.DeepenReport.ToString(), DateTime.Now.Year.ToString(), DateTime.Now.Month.ToString(), folderNm.ToString());
 
@@ -531,7 +527,6 @@ namespace BizOneShot.Light.Web.Areas.Mentor.Controllers
                             // 기본적인 정보는 한번 담고 
                             if (cnt == 0)
                             {
-
                                 tcmsIfLastReport.InfId = await satiNumGenerator();
                                 tcmsIfLastReport.InfDt = DateTime.Today;
 
@@ -548,53 +543,40 @@ namespace BizOneShot.Light.Web.Areas.Mentor.Controllers
 
                                 tcmsIfLastReportService.Insert(tcmsIfLastReport);
                                 tcmsIfLastReportService.SaveDbContext();
-
                             }
                             else
                             {
-
                                 // update 해야 함
                                 // compSn, baSn, mentorSn, conCode을 이용하여 조회 해서 file 2부터 update
                                 var tcmsIfLastReportObjAfr = await tcmsIfLastReportService.getTcmsIfLastReportInfo(compObj.TcmsLoginKey, baObj.TcmsLoginKey, mentorObj.TcmsLoginKey, conCodes);
 
                                 if (tcmsIfLastReportObj.Count > 0)
                                 {
-
                                     if (cnt == 1)
                                     {
-
                                         tcmsIfLastReportObjAfr[0].File2 = combinedPath;
                                         //tcmsIfLastReportObjAfr[0].File2 = absFilePath;
                                         tcmsIfLastReportService.SaveDbContext();
-
                                     }
                                     else if (cnt == 2)
                                     {
                                         tcmsIfLastReportObjAfr[0].File3 = combinedPath;
                                         //tcmsIfLastReportObjAfr[0].File3 = absFilePath;
                                         tcmsIfLastReportService.SaveDbContext();
-
                                     }
                                     else if (cnt == 3)
                                     {
-
                                         tcmsIfLastReportObjAfr[0].File4 = combinedPath;
                                         //tcmsIfLastReportObjAfr[0].File4 = absFilePath;
                                         tcmsIfLastReportService.SaveDbContext();
-
                                     }
                                     else if (cnt == 4)
                                     {
                                         tcmsIfLastReportObjAfr[0].File5 = combinedPath;
                                         //tcmsIfLastReportObjAfr[0].File5 = absFilePath;
                                         tcmsIfLastReportService.SaveDbContext();
-
                                     }
-
                                 }
-
-                                
-
                             }
                             cnt++;
                         }
@@ -638,8 +620,13 @@ namespace BizOneShot.Light.Web.Areas.Mentor.Controllers
                             //var fullPath2 = rootFilePath + listFileContent2[1].FilePath;
                             tcmsIfLastReport.File2 = combinedPath2;
 
-                        }else if(listFileContent2.Count == 3)
+                        }
+                        else if(listFileContent2.Count == 3)
                         {
+                            var combinedPath2 = Global.VCURLDOWN + "fileNm=" + listFileContent2[1].FileNm + "&filePath=" + listFileContent2[1].FilePath;
+                            //var fullPath2 = rootFilePath + listFileContent2[1].FilePath;
+                            tcmsIfLastReport.File2 = combinedPath2;
+
                             var combinedPath3 = Global.VCURLDOWN + "fileNm=" + listFileContent2[2].FileNm + "&filePath=" + listFileContent2[2].FilePath;
                             //var fullPath3 = rootFilePath + listFileContent2[2].FilePath;
                             tcmsIfLastReport.File3 = combinedPath3;
@@ -647,6 +634,14 @@ namespace BizOneShot.Light.Web.Areas.Mentor.Controllers
                         }
                         else if (listFileContent2.Count == 4)
                         {
+                            var combinedPath2 = Global.VCURLDOWN + "fileNm=" + listFileContent2[1].FileNm + "&filePath=" + listFileContent2[1].FilePath;
+                            //var fullPath2 = rootFilePath + listFileContent2[1].FilePath;
+                            tcmsIfLastReport.File2 = combinedPath2;
+
+                            var combinedPath3 = Global.VCURLDOWN + "fileNm=" + listFileContent2[2].FileNm + "&filePath=" + listFileContent2[2].FilePath;
+                            //var fullPath3 = rootFilePath + listFileContent2[2].FilePath;
+                            tcmsIfLastReport.File3 = combinedPath3;
+
                             var combinedPath4 = Global.VCURLDOWN + "fileNm=" + listFileContent2[3].FileNm + "&filePath=" + listFileContent2[3].FilePath;
                             //var fullPath4 = rootFilePath + listFileContent2[3].FilePath;
                             tcmsIfLastReport.File4 = combinedPath4;
@@ -654,15 +649,24 @@ namespace BizOneShot.Light.Web.Areas.Mentor.Controllers
                         }
                         else if (listFileContent2.Count == 5)
                         {
+                            var combinedPath2 = Global.VCURLDOWN + "fileNm=" + listFileContent2[1].FileNm + "&filePath=" + listFileContent2[1].FilePath;
+                            //var fullPath2 = rootFilePath + listFileContent2[1].FilePath;
+                            tcmsIfLastReport.File2 = combinedPath2;
+
+                            var combinedPath3 = Global.VCURLDOWN + "fileNm=" + listFileContent2[2].FileNm + "&filePath=" + listFileContent2[2].FilePath;
+                            //var fullPath3 = rootFilePath + listFileContent2[2].FilePath;
+                            tcmsIfLastReport.File3 = combinedPath3;
+
+                            var combinedPath4 = Global.VCURLDOWN + "fileNm=" + listFileContent2[3].FileNm + "&filePath=" + listFileContent2[3].FilePath;
+                            //var fullPath4 = rootFilePath + listFileContent2[3].FilePath;
+                            tcmsIfLastReport.File4 = combinedPath4;
+
                             var combinedPath5 = Global.VCURLDOWN + "fileNm=" + listFileContent2[4].FileNm + "&filePath=" + listFileContent2[4].FilePath;
                             //var fullPath5 = rootFilePath + listFileContent2[4].FilePath;
                             tcmsIfLastReport.File5 = combinedPath5;
-
                         }
-
                         tcmsIfLastReportService.Insert(tcmsIfLastReport);
                         tcmsIfLastReportService.SaveDbContext();
-                        
                     }
 
                     var tcmsIfLastReportObjAfr2 = await tcmsIfLastReportService.getTcmsIfLastReportInfo(compObj.TcmsLoginKey, baObj.TcmsLoginKey, mentorObj.TcmsLoginKey, conCodes);
@@ -714,7 +718,6 @@ namespace BizOneShot.Light.Web.Areas.Mentor.Controllers
                 }
                 return RedirectToAction("DeepenReportList", "Report");
             }
-
             else
             {
 
