@@ -10,7 +10,8 @@ namespace BizOneShot.Light.Web.ComLib
         //파일 다운로드시 필요한 url, 개발될 url에 맞춰 서브 도메인을 바꿔줄 필요가 있다.
         public static readonly string TESTURL = "http://221.144.139.21:26081/";
         public static readonly string VOUCHERURL = "http://voucher.tcms.or.kr/";
-        public static readonly string VCURLDOWN = VOUCHERURL + "Api/DownloadExternReportFile?";
+        public static readonly string LOCALURL = "http://localhost:38224/";
+        public static readonly string VCURLDOWN = LOCALURL + "Api/DownloadExternReportFile?";
 
         //세션상수
         public static readonly string LoginID = "LoginID";

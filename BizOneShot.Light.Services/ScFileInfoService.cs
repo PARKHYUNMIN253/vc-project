@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System;
+using System.Threading.Tasks;
 using BizOneShot.Light.Dao.Infrastructure;
 using BizOneShot.Light.Dao.Repositories;
 using BizOneShot.Light.Models.WebModels;
@@ -8,6 +9,7 @@ namespace BizOneShot.Light.Services
     public interface IScFileInfoService : IBaseService
     {
         void ModifyFileInfo(ScFileInfo scFileInfo);
+        Task<ScFileInfo> getFileInfoByFileSn(string fileSn);
     }
 
 
@@ -20,6 +22,11 @@ namespace BizOneShot.Light.Services
         {
             this.scFileInfoRepository = scFileInfoRepository;
             this.unitOfWork = unitOfWork;
+        }
+
+        public Task<ScFileInfo> getFileInfoByFileSn(string fileSn)
+        {
+            throw new NotImplementedException();
         }
 
         public void ModifyFileInfo(ScFileInfo scFileInfo)

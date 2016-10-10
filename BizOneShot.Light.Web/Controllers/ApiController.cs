@@ -2061,20 +2061,28 @@ namespace BizOneShot.Light.Web.Controllers
 
         }
 
-        public void DownloadExternReportFile(string fileNm, string filePath)
+        public void DownloadExternReportFile()
         {
-            string archiveName = fileNm;
+            string fileNm = Request.QueryString["FileNm"];
+            string filePath = Request.QueryString["FilePath"];
 
             var files = new List<FileContent>();
+            string archiveName = fileNm;
 
+            
             var file = new FileContent
             {
                 FileNm = fileNm,
                 FilePath = filePath
             };
             files.Add(file);
-
+            
             new FileHelper().DownloadFile(files, archiveName);
+        }
+
+        public void DownloadWithFileSn(string fileSn)
+        {
+             
         }
     }
 }

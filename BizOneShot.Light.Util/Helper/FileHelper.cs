@@ -40,7 +40,7 @@ namespace BizOneShot.Light.Util.Helper
                         if (File.Exists(Path.Combine(rootFilePath, file.FilePath)))
                         {
                             var temps = File.ReadAllBytes(Path.Combine(rootFilePath, file.FilePath));
-                         
+
                             zipFile.AddEntry(file.FileNm, temps);
                         }
                     }
@@ -48,7 +48,7 @@ namespace BizOneShot.Light.Util.Helper
                     {
                         zipFile.Save(response.OutputStream);
                     }
-                   
+
 
                     response.Flush();
                 }
@@ -66,6 +66,61 @@ namespace BizOneShot.Light.Util.Helper
 
             response.End();
         }
+
+        //public void DownloadFile(IList<FileContent> files, string archiveName)
+        //{
+        //    var rootFilePath = ConfigurationManager.AppSettings["RootFilePath"];
+
+        //    var response = HttpContext.Current.Response;
+
+        //    response.Clear();
+
+        //    response.BufferOutput = false;
+
+        //    response.ContentType = GetContentType(archiveName);
+        //    response.ContentEncoding = Encoding.UTF8;
+        //    //response.ContentType = "application / octet - stream";
+        //    string encodedFileName = HttpUtility.UrlEncode(archiveName, Encoding.UTF8).Replace("+", "%20");
+        //    //var encodedFileName = HttpContext.Current.Server.UrlEncode(archiveName, Encoding.UTF8).Replace("+", "%20");
+        //    //var encodedFileName = filename;
+        //    //response.AddHeader("Content-type", "application/octet-stream; encoding=utf8");
+        //    response.AddHeader("Content-Type", "application/octet-stream; encoding=UTF-8");
+        //    response.AddHeader("Content-Disposition", "attachment; filename=" + encodedFileName);
+        //    if (files.Count > 1)
+        //    {
+        //        using (var zipFile = new ZipFile(Encoding.UTF8))
+        //        {
+        //            foreach (var file in files)
+        //            {
+        //                if (File.Exists(Path.Combine(rootFilePath, file.FilePath)))
+        //                {
+        //                    var temps = File.ReadAllBytes(Path.Combine(rootFilePath, file.FilePath));
+                         
+        //                    zipFile.AddEntry(file.FileNm, temps);
+        //                }
+        //            }
+        //            if (zipFile.Count > 0)
+        //            {
+        //                zipFile.Save(response.OutputStream);
+        //            }
+                   
+
+        //            response.Flush();
+        //        }
+        //    }
+        //    else if (files.Count == 1)
+        //    {
+        //        if (File.Exists(Path.Combine(rootFilePath, files[0].FilePath)))
+        //        {
+        //            response.TransmitFile(Path.Combine(rootFilePath, files[0].FilePath));
+        //        }
+
+        //        response.Flush();
+
+        //    }
+
+        //    response.End();
+        //}
 
         #endregion
 

@@ -400,7 +400,7 @@ namespace BizOneShot.Light.Web.Areas.Mentor.Controllers
 
                             var fileHelper = new FileHelper();
 
-                            var savedFileName = fileHelper.GetUploadFileName(file);
+                            var savedFileName = (fileHelper.GetUploadFileName(file)).Replace("&","n"); // ----------------------------------------------------------------------------------------------
 
                             // folder 별로 묶이게
                             var folderNm = compInfo.ToString() + mentorKey.ToString() + numSn.ToString() + subNumSn.ToString() + conCodeBy.ToString();
@@ -511,8 +511,8 @@ namespace BizOneShot.Light.Web.Areas.Mentor.Controllers
                             var fileHelper = new FileHelper();
 
                             var rootFilePath = ConfigurationManager.AppSettings["RootFilePath"];
-                            var savedFileName = fileHelper.GetUploadFileName(file);
-                            
+                            var savedFileName = (fileHelper.GetUploadFileName(file)).Replace("&","n"); // ----------------------------------------------------------------------------------------------
+
                             var folderNm = compInfo.ToString() + mentorKey.ToString() + numSn.ToString() + subNumSn.ToString() + conCodeBy.ToString();
                             var subDirectoryPath = Path.Combine(FileType.DeepenReport.ToString(), DateTime.Now.Year.ToString(), DateTime.Now.Month.ToString(), folderNm.ToString());
 
@@ -521,8 +521,15 @@ namespace BizOneShot.Light.Web.Areas.Mentor.Controllers
 
                             string fileNm = savedFileName;
                             string filePath = subDirectoryPath;
+                            //fileNm = fileNm.Replace("&", "%26");                                   // & 문제 해결하기
+                            //filePath = filePath.Replace("&", "%26");
+                            //string fileNm2 = HttpUtility.UrlEncode(fileNm);
+                            //string filePath2 = HttpUtility.UrlEncode(filePath);
+                            fileNm = HttpUtility.UrlEncode(fileNm, Encoding.UTF8);
+                            filePath = HttpUtility.UrlEncode(filePath, Encoding.UTF8);
 
-                            var combinedPath = Global.VCURLDOWN + "fileNm=" + fileNm + "&filePath=" + Path.Combine(filePath, fileNm);
+                            var combinedPath = Global.VCURLDOWN + "fileNm=" + fileNm + "%26filePath=" + Path.Combine(filePath, fileNm);
+                            /*combinedPath = HttpUtility.UrlEncode(combinedPath.Replace("\\", "\\\\"), Encoding.UTF8);*/ // -- 팀장님 도움
 
                             // 기본적인 정보는 한번 담고 
                             if (cnt == 0)
@@ -596,8 +603,11 @@ namespace BizOneShot.Light.Web.Areas.Mentor.Controllers
 
                         // 다운로드 가능한 링크
                         var fullPath = rootFilePath + listFileContent2[0].FilePath;
+                        var fileNm1 = HttpUtility.UrlEncode(listFileContent2[0].FileNm, Encoding.UTF8);
+                        var filePath1 = HttpUtility.UrlEncode(listFileContent2[0].FilePath, Encoding.UTF8);
 
-                        var combinedPath1 = Global.VCURLDOWN + "fileNm=" + listFileContent2[0].FileNm + "&filePath=" + listFileContent2[0].FilePath;
+                        var combinedPath1 = Global.VCURLDOWN + "fileNm=" + fileNm1 + "%26filePath=" + filePath1;
+                        /*combinedPath1 = HttpUtility.UrlEncode(combinedPath1.Replace("\\", "\\\\"), Encoding.UTF8);*/ // -- 팀장님 도움
 
                         tcmsIfLastReport.InfId = await satiNumGenerator();
                         tcmsIfLastReport.RegDt = scMentoringTotalReport2.RegDt;
@@ -616,53 +626,94 @@ namespace BizOneShot.Light.Web.Areas.Mentor.Controllers
 
                         if (listFileContent2.Count == 2)
                         {
-                            var combinedPath2 = Global.VCURLDOWN + "fileNm=" + listFileContent2[1].FileNm + "&filePath=" + listFileContent2[1].FilePath;
+                            var fileNm2 = HttpUtility.UrlEncode(listFileContent2[1].FileNm, Encoding.UTF8);
+                            var filePath2 = HttpUtility.UrlEncode(listFileContent2[1].FilePath, Encoding.UTF8);
+
+                            var combinedPath2 = Global.VCURLDOWN + "fileNm=" + fileNm2 + "%26filePath=" + filePath2;
+                            //combinedPath2 = HttpUtility.UrlEncode(combinedPath2.Replace("\\", "\\\\"), Encoding.UTF8);
                             //var fullPath2 = rootFilePath + listFileContent2[1].FilePath;
                             tcmsIfLastReport.File2 = combinedPath2;
 
                         }
                         else if(listFileContent2.Count == 3)
                         {
-                            var combinedPath2 = Global.VCURLDOWN + "fileNm=" + listFileContent2[1].FileNm + "&filePath=" + listFileContent2[1].FilePath;
+                            var fileNm2 = HttpUtility.UrlEncode(listFileContent2[1].FileNm, Encoding.UTF8);
+                            var filePath2 = HttpUtility.UrlEncode(listFileContent2[1].FilePath, Encoding.UTF8);
+
+                            var fileNm3 = HttpUtility.UrlEncode(listFileContent2[2].FileNm, Encoding.UTF8);
+                            var filePath3 = HttpUtility.UrlEncode(listFileContent2[2].FilePath, Encoding.UTF8);
+
+                            var combinedPath2 = Global.VCURLDOWN + "fileNm=" + fileNm2 + "%26filePath=" + filePath2;
+                            //combinedPath2 = HttpUtility.UrlEncode(combinedPath2.Replace("\\", "\\\\"), Encoding.UTF8);
                             //var fullPath2 = rootFilePath + listFileContent2[1].FilePath;
                             tcmsIfLastReport.File2 = combinedPath2;
 
-                            var combinedPath3 = Global.VCURLDOWN + "fileNm=" + listFileContent2[2].FileNm + "&filePath=" + listFileContent2[2].FilePath;
+                            var combinedPath3 = Global.VCURLDOWN + "fileNm=" + fileNm3 + "%26filePath=" + filePath3;
+                            //combinedPath3 = HttpUtility.UrlEncode(combinedPath3.Replace("\\", "\\\\"), Encoding.UTF8);
                             //var fullPath3 = rootFilePath + listFileContent2[2].FilePath;
                             tcmsIfLastReport.File3 = combinedPath3;
 
                         }
                         else if (listFileContent2.Count == 4)
                         {
-                            var combinedPath2 = Global.VCURLDOWN + "fileNm=" + listFileContent2[1].FileNm + "&filePath=" + listFileContent2[1].FilePath;
+                            var fileNm2 = HttpUtility.UrlEncode(listFileContent2[1].FileNm, Encoding.UTF8);
+                            var filePath2 = HttpUtility.UrlEncode(listFileContent2[1].FilePath, Encoding.UTF8);
+
+                            var fileNm3 = HttpUtility.UrlEncode(listFileContent2[2].FileNm, Encoding.UTF8);
+                            var filePath3 = HttpUtility.UrlEncode(listFileContent2[2].FilePath, Encoding.UTF8);
+
+                            var fileNm4 = HttpUtility.UrlEncode(listFileContent2[3].FileNm, Encoding.UTF8);
+                            var filePath4 = HttpUtility.UrlEncode(listFileContent2[3].FilePath, Encoding.UTF8);
+
+                            var combinedPath2 = Global.VCURLDOWN + "fileNm=" + fileNm2 + "%26filePath=" + filePath2;
+                            //combinedPath2 = HttpUtility.UrlEncode(combinedPath2.Replace("\\", "\\\\"), Encoding.UTF8);
                             //var fullPath2 = rootFilePath + listFileContent2[1].FilePath;
                             tcmsIfLastReport.File2 = combinedPath2;
 
-                            var combinedPath3 = Global.VCURLDOWN + "fileNm=" + listFileContent2[2].FileNm + "&filePath=" + listFileContent2[2].FilePath;
+                            var combinedPath3 = Global.VCURLDOWN + "fileNm=" + fileNm3 + "%26filePath=" + filePath3;
+                            //combinedPath3 = HttpUtility.UrlEncode(combinedPath3.Replace("\\", "\\\\"), Encoding.UTF8);
                             //var fullPath3 = rootFilePath + listFileContent2[2].FilePath;
                             tcmsIfLastReport.File3 = combinedPath3;
 
-                            var combinedPath4 = Global.VCURLDOWN + "fileNm=" + listFileContent2[3].FileNm + "&filePath=" + listFileContent2[3].FilePath;
+                            var combinedPath4 = Global.VCURLDOWN + "fileNm=" + fileNm4 + "%26filePath=" + filePath4;
+                            //combinedPath4 = HttpUtility.UrlEncode(combinedPath4.Replace("\\", "\\\\"), Encoding.UTF8);
                             //var fullPath4 = rootFilePath + listFileContent2[3].FilePath;
                             tcmsIfLastReport.File4 = combinedPath4;
 
                         }
                         else if (listFileContent2.Count == 5)
                         {
-                            var combinedPath2 = Global.VCURLDOWN + "fileNm=" + listFileContent2[1].FileNm + "&filePath=" + listFileContent2[1].FilePath;
+                            var fileNm2 = HttpUtility.UrlEncode(listFileContent2[1].FileNm, Encoding.UTF8);
+                            var filePath2 = HttpUtility.UrlEncode(listFileContent2[1].FilePath, Encoding.UTF8);
+
+                            var fileNm3 = HttpUtility.UrlEncode(listFileContent2[2].FileNm, Encoding.UTF8);
+                            var filePath3 = HttpUtility.UrlEncode(listFileContent2[2].FilePath, Encoding.UTF8);
+
+                            var fileNm4 = HttpUtility.UrlEncode(listFileContent2[3].FileNm, Encoding.UTF8);
+                            var filePath4 = HttpUtility.UrlEncode(listFileContent2[3].FilePath, Encoding.UTF8);
+
+                            var fileNm5 = HttpUtility.UrlEncode(listFileContent2[4].FileNm, Encoding.UTF8);
+                            var filePath5 = HttpUtility.UrlEncode(listFileContent2[4].FilePath, Encoding.UTF8);
+
+
+                            var combinedPath2 = Global.VCURLDOWN + "fileNm=" + fileNm2 + "%26filePath=" + filePath2;
+                            //combinedPath2 = HttpUtility.UrlEncode(combinedPath2.Replace("\\", "\\\\"), Encoding.UTF8);
                             //var fullPath2 = rootFilePath + listFileContent2[1].FilePath;
                             tcmsIfLastReport.File2 = combinedPath2;
 
-                            var combinedPath3 = Global.VCURLDOWN + "fileNm=" + listFileContent2[2].FileNm + "&filePath=" + listFileContent2[2].FilePath;
+                            var combinedPath3 = Global.VCURLDOWN + "fileNm=" + fileNm3 + "%26filePath=" + filePath3;
+                            //combinedPath3 = HttpUtility.UrlEncode(combinedPath3.Replace("\\", "\\\\"), Encoding.UTF8);
                             //var fullPath3 = rootFilePath + listFileContent2[2].FilePath;
                             tcmsIfLastReport.File3 = combinedPath3;
 
-                            var combinedPath4 = Global.VCURLDOWN + "fileNm=" + listFileContent2[3].FileNm + "&filePath=" + listFileContent2[3].FilePath;
+                            var combinedPath4 = Global.VCURLDOWN + "fileNm=" + fileNm4 + "%26filePath=" + filePath4;
+                            //combinedPath4 = HttpUtility.UrlEncode(combinedPath4.Replace("\\", "\\\\"), Encoding.UTF8);
                             //var fullPath4 = rootFilePath + listFileContent2[3].FilePath;
                             tcmsIfLastReport.File4 = combinedPath4;
 
-                            var combinedPath5 = Global.VCURLDOWN + "fileNm=" + listFileContent2[4].FileNm + "&filePath=" + listFileContent2[4].FilePath;
-                            //var fullPath5 = rootFilePath + listFileContent2[4].FilePath;
+                            var combinedPath5 = Global.VCURLDOWN + "fileNm=" + fileNm5 + "%26filePath=" + filePath5;
+                            //combinedPath4 = HttpUtility.UrlEncode(combinedPath4.Replace("\\", "\\\\"), Encoding.UTF8);
+                            //var fullPath4 = rootFilePath + listFileContent2[3].FilePath;
                             tcmsIfLastReport.File5 = combinedPath5;
                         }
                         tcmsIfLastReportService.Insert(tcmsIfLastReport);
