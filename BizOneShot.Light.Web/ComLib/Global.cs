@@ -11,7 +11,10 @@ namespace BizOneShot.Light.Web.ComLib
         public static readonly string TESTURL = "http://221.144.139.21:26081/";
         public static readonly string VOUCHERURL = "http://voucher.tcms.or.kr/";
         public static readonly string LOCALURL = "http://localhost:38224/";
-        public static readonly string VCURLDOWN = LOCALURL + "Api/DownloadWithFileSn?";
+        public static readonly string VCURLDOWN = VOUCHERURL + "Api/DownloadWithFileSn?";
+
+        public static readonly string TCMSGATE = "http://tcms.or.kr/";
+        public static readonly string TCMSTESTGATE = "http://tcms.igarim.com/";
 
         //세션상수
         public static readonly string LoginID = "LoginID";

@@ -1263,7 +1263,7 @@ namespace BizOneShot.Light.Web.Areas.Mentor.Controllers
             var a = tcmsIfLastReport.RegDt;
             var b = tcmsIfLastReport.InfDt;
 
-            var httpWebRequest = (HttpWebRequest)WebRequest.Create("http://tcms.igarim.com/Api/tcms_if_last_report.php");
+            var httpWebRequest = (HttpWebRequest)WebRequest.Create(Global.TCMSGATE + "Api/tcms_if_last_reportffff.php");
             //httpWebRequest.Accept = "application/json";
             httpWebRequest.ContentType = "application/x-www-form-urlencoded";
             httpWebRequest.Method = "POST";
