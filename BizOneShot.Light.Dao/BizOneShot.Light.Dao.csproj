@@ -304,6 +304,9 @@
     <Compile Include="WebConfiguration\SyDareDbInfoConfiguration.cs">
       <DependentUpon>Database.tt</DependentUpon>
     </Compile>
+    <Compile Include="WebConfiguration\sys_DatabaseFirewallRuleConfiguration.cs">
+      <DependentUpon>Database.tt</DependentUpon>
+    </Compile>
     <Compile Include="WebConfiguration\TcmsCompStatusSelectViewConfiguration.cs">
       <DependentUpon>Database.tt</DependentUpon>
     </Compile>

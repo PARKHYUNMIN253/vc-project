@@ -7,10 +7,10 @@
 // 
 //     Configuration file:     "BizOneShot.Light.Dao\App.config"
 //     Connection String Name: "WebDbContext"
-//     Connection String:      "Data Source=172.101.201.35;password=**zapped**;"
+//     Connection String:      "Data Source=voucherdb.database.windows.net;password=**zapped**;"
 
-// Database Edition: Developer Edition (64-bit)
-// Database Engine Edition: Enterprise
+// Database Edition: SQL Azure
+// Database Engine Edition: Azure
 
 // ReSharper disable RedundantUsingDirective
 // ReSharper disable DoNotCallOverridableMethodsInConstructor
