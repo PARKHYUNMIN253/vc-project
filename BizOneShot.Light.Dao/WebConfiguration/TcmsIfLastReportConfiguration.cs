@@ -44,13 +44,13 @@ namespace BizOneShot.Light.Dao.WebConfiguration
             Property(x => x.NumSn).HasColumnName("NUM_SN").IsOptional().HasColumnType("nvarchar").HasMaxLength(3);
             Property(x => x.SubNumSn).HasColumnName("SUB_NUM_SN").IsOptional().HasColumnType("nvarchar").HasMaxLength(2);
             Property(x => x.ConCode).HasColumnName("CON_CODE").IsOptional().HasColumnType("nvarchar").HasMaxLength(5);
-            Property(x => x.File1).HasColumnName("FILE_1").IsOptional().HasColumnType("nvarchar").HasMaxLength(3000);
-            Property(x => x.File2).HasColumnName("FILE_2").IsOptional().HasColumnType("nvarchar").HasMaxLength(3000);
-            Property(x => x.File3).HasColumnName("FILE_3").IsOptional().HasColumnType("nvarchar").HasMaxLength(3000);
-            Property(x => x.File4).HasColumnName("FILE_4").IsOptional().HasColumnType("nvarchar").HasMaxLength(3000);
+            Property(x => x.File1).HasColumnName("FILE_1").IsOptional().HasColumnType("nvarchar").HasMaxLength(255);
+            Property(x => x.File2).HasColumnName("FILE_2").IsOptional().HasColumnType("nvarchar").HasMaxLength(255);
+            Property(x => x.File3).HasColumnName("FILE_3").IsOptional().HasColumnType("nvarchar").HasMaxLength(255);
+            Property(x => x.File4).HasColumnName("FILE_4").IsOptional().HasColumnType("nvarchar").HasMaxLength(255);
             Property(x => x.RegDt).HasColumnName("REG_DT").IsOptional().HasColumnType("datetime");
             Property(x => x.InfDt).HasColumnName("INF_DT").IsOptional().HasColumnType("datetime");
-            Property(x => x.File5).HasColumnName("FILE_5").IsOptional().HasColumnType("nvarchar").HasMaxLength(3000);
+            Property(x => x.File5).HasColumnName("FILE_5").IsOptional().HasColumnType("nvarchar").HasMaxLength(255);
             Property(x => x.InsertYn).HasColumnName("INSERT_YN").IsOptional().IsFixedLength().IsUnicode(false).HasColumnType("char").HasMaxLength(1);
             InitializePartial();
         }

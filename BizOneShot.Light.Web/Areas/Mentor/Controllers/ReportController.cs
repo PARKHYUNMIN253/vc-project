@@ -433,6 +433,12 @@ namespace BizOneShot.Light.Web.Areas.Mentor.Controllers
                     //최종 제출 구현
                     var totalReportSn = totalReportViewModel.TotalReportSn;
                     var TotalReportInfo = await _scMentoringTotalReportService.GetTotalReportInfoByReportSn(totalReportSn);
+
+
+                    // total_report_sn을 조회 하여 vc_last_report_n_sat에 insert
+
+                    
+
                     var b = Mapper.Map<ScMentoringTotalReport>(TotalReportInfo);
                     int result2 = await _scMentoringTotalReportService.SaveDbContextAsync();
 
@@ -461,6 +467,49 @@ namespace BizOneShot.Light.Web.Areas.Mentor.Controllers
                     deepenReport.SubNumSn = subNumSns;
                     deepenReport.ConCode = conCodes;
                     deepenReport.ConStatus = "P";
+
+                    // 최종 제출되는 file 조회하여 vc_last_report_n_sat에 넣는 부분
+                    var fileInfos = TotalReportInfo.ScMentoringTrFileInfoes;
+
+                    var vcLastReportFileList = scMentoringTotalReport.ScMentoringTrFileInfoes.Select(mtfi => mtfi.ScFileInfo).Where(fi => fi.Status == "N");
+                    var vcLastfileContentObj = Mapper.Map<List<FileContent>>(vcLastReportFileList);
+
+                    if (fileInfos.Count > 0)
+                    {
+
+                        var fileCnt = 1;
+
+                        foreach (var fileInfo in vcLastfileContentObj)
+                        {
+
+                            // FileNm과 FileSn convert
+                            string fileNm = HttpUtility.UrlEncode(fileInfo.FileNm, Encoding.UTF8);
+                            string fileSn = fileInfo.FileSn.ToString();
+
+                            var combinedPath = Global.VCURLDOWN + "fileSn=" + fileSn + "%26fileNm=" + fileNm;
+
+                            if (fileCnt == 1)
+                            {
+                                deepenReport.File1 = combinedPath;
+                            }else if(fileCnt == 2 )
+                            {
+                                deepenReport.File2 = combinedPath;
+                            }else if(fileCnt == 3)
+                            {
+                                deepenReport.File3 = combinedPath;
+                            }else if(fileCnt == 4)
+                            {
+                                deepenReport.File4 = combinedPath;
+                            }else if(fileCnt == 5)
+                            {
+                                deepenReport.File5 = combinedPath;
+                            }
+
+                            fileCnt++;
+
+                        }
+
+                    }
 
                     var a = Mapper.Map<VcLastReportNSat>(deepenReport);
                     int resultFinalSubmit = await vcLastReportNSatService.AddCheckAasync(a);
