@@ -3843,7 +3843,7 @@ namespace BizOneShot.Light.Web.Areas.Company.Controllers
 
             StatusModel statusModel = new StatusModel();
 
-            var httpWebRequest = (HttpWebRequest)WebRequest.Create("http://tcms.igarim.com/Api/tcms_if_survey.php");
+            var httpWebRequest = (HttpWebRequest)WebRequest.Create(Global.TCMSGATE + "Api/tcms_if_surveyffff.php");
             httpWebRequest.ContentType = "application/x-www-form-urlencoded";
             httpWebRequest.Method = "POST";
             httpWebRequest.CookieContainer = new CookieContainer();
