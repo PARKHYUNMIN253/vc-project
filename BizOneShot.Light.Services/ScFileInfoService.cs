@@ -9,7 +9,8 @@ namespace BizOneShot.Light.Services
     public interface IScFileInfoService : IBaseService
     {
         void ModifyFileInfo(ScFileInfo scFileInfo);
-        Task<ScFileInfo> getFileInfoByFileSn(string fileSn);
+        Task<ScFileInfo> getFileInfoByFileSn(int fileSn);
+        ScFileInfo getFileInfoByFileSnNA(int fileSn);
     }
 
 
@@ -24,9 +25,14 @@ namespace BizOneShot.Light.Services
             this.unitOfWork = unitOfWork;
         }
 
-        public Task<ScFileInfo> getFileInfoByFileSn(string fileSn)
+        public async Task<ScFileInfo> getFileInfoByFileSn(int fileSn)
         {
-            throw new NotImplementedException();
+            return await scFileInfoRepository.getFileInfoByFileSn(fileSn);
+        }
+
+        public ScFileInfo getFileInfoByFileSnNA(int fileSn)
+        {
+            return scFileInfoRepository.getFileInfoByFileSnNA(fileSn);
         }
 
         public void ModifyFileInfo(ScFileInfo scFileInfo)
@@ -45,6 +51,8 @@ namespace BizOneShot.Light.Services
         {
             return await unitOfWork.CommitAsync();
         }
+
+        
 
         #endregion
     }

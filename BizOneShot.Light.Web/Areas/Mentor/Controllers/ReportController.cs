@@ -381,7 +381,6 @@ namespace BizOneShot.Light.Web.Areas.Mentor.Controllers
                 scMentoringTotalReport.UpdDt = DateTime.Now;
 
                 //삭제파일 상태 업데이트
-
                 if (!string.IsNullOrEmpty(deleteFileSns.Trim()))
                 {
                     foreach (var deleteFileSn in deleteFileSns.Split(',').AsEnumerable())
@@ -389,17 +388,14 @@ namespace BizOneShot.Light.Web.Areas.Mentor.Controllers
                         scMentoringTotalReport.ScMentoringTrFileInfoes.Select(mtfi => mtfi.ScFileInfo).Where(fi => fi.FileSn == int.Parse(deleteFileSn)).FirstOrDefault().Status = "D";
                     }
                 }
-
-                //신규파일정보저장 및 파일업로드
+                //신규파일정보저장 및 파일업로드, 여기는 수정에서 새로운 파일을 올릴 때 걸리는 블록이다.
                 if (files != null)
                 {
                     foreach (var file in files)
                     {
                         if (file != null)
                         {
-
                             var fileHelper = new FileHelper();
-
                             var savedFileName = (fileHelper.GetUploadFileName(file)).Replace("&","n"); // ----------------------------------------------------------------------------------------------
 
                             // folder 별로 묶이게
@@ -412,34 +408,23 @@ namespace BizOneShot.Light.Web.Areas.Mentor.Controllers
                             var tcmsLoginKeyCon = int.Parse(tcmsLoginKey);
 
                             var mentorUsrInfo = await vcUsrService.getUsrInfoByTcmsKey(tcmsLoginKeyCon);
-
                             var mentorIdInfo = mentorUsrInfo.LoginId;
-
                             var scFileInfo = new ScFileInfo { FileNm = Path.GetFileName(file.FileName), FilePath = savedFilePath, Status = "N", RegId = mentorIdInfo, RegDt = DateTime.Now };
-
                             var scMentoringTrFileInfo = new ScMentoringTrFileInfo { ScFileInfo = scFileInfo };
-
                             scMentoringTrFileInfo.Classify = "A";
-
                             scMentoringTotalReport.RegId = mentorIdInfo;
                             scMentoringTotalReport.MentorId = mentorIdInfo;
                             scMentoringTotalReport.TotalReportSn = totalReportSnInfo;
-
                             scMentoringTotalReport.ScMentoringTrFileInfoes.Add(scMentoringTrFileInfo);
 
-
                             await fileHelper.UploadFile(file, subDirectoryPath, savedFileName);
-
                         }
                     }
                 }
 
-                await _scMentoringTotalReportService.ModifyDeepenReportAsync(scMentoringTotalReport);
-
+                await _scMentoringTotalReportService.ModifyDeepenReportAsync(scMentoringTotalReport); // 아무튼 scmentoringtotalreport를 갱신한다
                 var totalReportViewModel = Mapper.Map<MentoringTotalReportViewModel>(scMentoringTotalReport);
-
                 totalReportViewModel.FinalSubmitYn = "D";
-
                 scMentorMappingService.SaveDbContext();
 
                 // 심화보고서 최종 제출
@@ -447,11 +432,8 @@ namespace BizOneShot.Light.Web.Areas.Mentor.Controllers
                 {
                     //최종 제출 구현
                     var totalReportSn = totalReportViewModel.TotalReportSn;
-
                     var TotalReportInfo = await _scMentoringTotalReportService.GetTotalReportInfoByReportSn(totalReportSn);
-
                     var b = Mapper.Map<ScMentoringTotalReport>(TotalReportInfo);
-
                     int result2 = await _scMentoringTotalReportService.SaveDbContextAsync();
 
                     // 추출한 mentor_id를 이용하여 mentor_sn, Ba_sn을 추출
@@ -481,9 +463,7 @@ namespace BizOneShot.Light.Web.Areas.Mentor.Controllers
                     deepenReport.ConStatus = "P";
 
                     var a = Mapper.Map<VcLastReportNSat>(deepenReport);
-
                     int resultFinalSubmit = await vcLastReportNSatService.AddCheckAasync(a);
-
                     var mentorIdFinalSubmit = await vcUsrService.getUsrInfoByTcmsKey(int.Parse(mentorLoginKeys));
 
                     TotalReportInfo.FinalSubmitYn = "Y";
@@ -504,57 +484,36 @@ namespace BizOneShot.Light.Web.Areas.Mentor.Controllers
 
                     var tcmsIfLastReportObj = await tcmsIfLastReportService.getTcmsIfLastReportInfo(compObj.TcmsLoginKey, baObj.TcmsLoginKey, mentorObj.TcmsLoginKey, conCodes);
 
-                    if (files != null)
+                    // 저장 작업은 이미 위에서 종료
+                    if (files != null) 
                     {
-                        foreach (var file in files)
+                        var totalReportObj = await _scMentoringTotalReportService.GetMentoringTotalReportById(totalReportSnInfo);
+                        var scFileInfoList = scMentoringTotalReport.ScMentoringTrFileInfoes.Select(mtfi => mtfi.ScFileInfo).Where(fi => fi.Status == "N");
+                        var fileContentObj = Mapper.Map<List<FileContent>>(scFileInfoList);
+                        foreach (var file in fileContentObj)
                         {
-                            var fileHelper = new FileHelper();
+                            // 필요한 것은 filenm과 filesn
+                            string fileNm = HttpUtility.UrlEncode(file.FileNm, Encoding.UTF8);
+                            string fileSn = file.FileSn.ToString();
 
-                            var rootFilePath = ConfigurationManager.AppSettings["RootFilePath"];
-                            var savedFileName = (fileHelper.GetUploadFileName(file)).Replace("&","n"); // ----------------------------------------------------------------------------------------------
+                            var combinedPath = Global.VCURLDOWN + "fileSn=" + fileSn + "%26fileNm=" + fileNm;
 
-                            var folderNm = compInfo.ToString() + mentorKey.ToString() + numSn.ToString() + subNumSn.ToString() + conCodeBy.ToString();
-                            var subDirectoryPath = Path.Combine(FileType.DeepenReport.ToString(), DateTime.Now.Year.ToString(), DateTime.Now.Month.ToString(), folderNm.ToString());
-
-                            var directoryPath = Path.Combine(rootFilePath, subDirectoryPath);
-                            var absFilePath = directoryPath + "//" + savedFileName;                // 심화보고서 최종 제출 URL
-
-                            string fileNm = savedFileName;
-                            string filePath = subDirectoryPath;
-                            //fileNm = fileNm.Replace("&", "%26");                                   // & 문제 해결하기
-                            //filePath = filePath.Replace("&", "%26");
-                            //string fileNm2 = HttpUtility.UrlEncode(fileNm);
-                            //string filePath2 = HttpUtility.UrlEncode(filePath);
-                            fileNm = HttpUtility.UrlEncode(fileNm, Encoding.UTF8);
-                            filePath = HttpUtility.UrlEncode(filePath, Encoding.UTF8);
-
-                            var combinedPath = Global.VCURLDOWN + "fileNm=" + fileNm + "%26filePath=" + Path.Combine(filePath, fileNm);
-                            /*combinedPath = HttpUtility.UrlEncode(combinedPath.Replace("\\", "\\\\"), Encoding.UTF8);*/ // -- 팀장님 도움
-
-                            // 기본적인 정보는 한번 담고 
-                            if (cnt == 0)
+                            if (cnt == 0) // 객체들 중 처음이면
                             {
                                 tcmsIfLastReport.InfId = await satiNumGenerator();
                                 tcmsIfLastReport.InfDt = DateTime.Today;
-
                                 tcmsIfLastReport.CompLoginKey = compObj.TcmsLoginKey;
                                 tcmsIfLastReport.BaLoginKey = baObj.TcmsLoginKey;
                                 tcmsIfLastReport.MentorLoginKey = mentorObj.TcmsLoginKey;
-
                                 tcmsIfLastReport.NumSn = numSn;
                                 tcmsIfLastReport.SubNumSn = subNumSn;
-
                                 tcmsIfLastReport.ConCode = conCodes;
-                                //tcmsIfLastReport.File1 = absFilePath;
                                 tcmsIfLastReport.File1 = combinedPath;
-
                                 tcmsIfLastReportService.Insert(tcmsIfLastReport);
                                 tcmsIfLastReportService.SaveDbContext();
                             }
                             else
                             {
-                                // update 해야 함
-                                // compSn, baSn, mentorSn, conCode을 이용하여 조회 해서 file 2부터 update
                                 var tcmsIfLastReportObjAfr = await tcmsIfLastReportService.getTcmsIfLastReportInfo(compObj.TcmsLoginKey, baObj.TcmsLoginKey, mentorObj.TcmsLoginKey, conCodes);
 
                                 if (tcmsIfLastReportObj.Count > 0)
@@ -588,10 +547,93 @@ namespace BizOneShot.Light.Web.Areas.Mentor.Controllers
                             cnt++;
                         }
 
+                        #region oh yoon code
+                        //foreach (var file in files)
+                        //{
+                        //    var fileHelper = new FileHelper();
+
+                        //    var rootFilePath = ConfigurationManager.AppSettings["RootFilePath"];
+                        //    var savedFileName = (fileHelper.GetUploadFileName(file)).Replace("&","n"); // ----------------------------------------------------------------------------------------------
+
+                        //    var folderNm = compInfo.ToString() + mentorKey.ToString() + numSn.ToString() + subNumSn.ToString() + conCodeBy.ToString();
+                        //    var subDirectoryPath = Path.Combine(FileType.DeepenReport.ToString(), DateTime.Now.Year.ToString(), DateTime.Now.Month.ToString(), folderNm.ToString());
+
+                        //    var directoryPath = Path.Combine(rootFilePath, subDirectoryPath);
+                        //    var absFilePath = directoryPath + "//" + savedFileName;                // 심화보고서 최종 제출 URL
+
+                        //    string fileNm = savedFileName;
+                        //    string filePath = subDirectoryPath;
+                        //    //fileNm = fileNm.Replace("&", "%26");                                   // & 문제 해결하기
+                        //    //filePath = filePath.Replace("&", "%26");
+                        //    //string fileNm2 = HttpUtility.UrlEncode(fileNm);
+                        //    //string filePath2 = HttpUtility.UrlEncode(filePath);
+                        //    fileNm = HttpUtility.UrlEncode(fileNm, Encoding.UTF8);
+                        //    filePath = filePath.Replace("\\", "/");
+                        //    filePath = HttpUtility.UrlEncode(filePath, Encoding.UTF8);
+
+                        //    var combinedPath = Global.VCURLDOWN + "fileNm=" + fileNm + "%26filePath=" + Path.Combine(filePath, fileNm);
+                        //    /*combinedPath = HttpUtility.UrlEncode(combinedPath.Replace("\\", "\\\\"), Encoding.UTF8);*/ // -- 팀장님 도움
+
+                        //    if (cnt == 0)
+                        //    {
+                        //        tcmsIfLastReport.InfId = await satiNumGenerator();
+                        //        tcmsIfLastReport.InfDt = DateTime.Today;
+
+                        //        tcmsIfLastReport.CompLoginKey = compObj.TcmsLoginKey;
+                        //        tcmsIfLastReport.BaLoginKey = baObj.TcmsLoginKey;
+                        //        tcmsIfLastReport.MentorLoginKey = mentorObj.TcmsLoginKey;
+
+                        //        tcmsIfLastReport.NumSn = numSn;
+                        //        tcmsIfLastReport.SubNumSn = subNumSn;
+
+                        //        tcmsIfLastReport.ConCode = conCodes;
+                        //        //tcmsIfLastReport.File1 = absFilePath;
+                        //        tcmsIfLastReport.File1 = combinedPath;
+
+                        //        tcmsIfLastReportService.Insert(tcmsIfLastReport);
+                        //        tcmsIfLastReportService.SaveDbContext();
+                        //    }
+                        //    else // 그 다음 회 부터
+                        //    {
+                        //        // update 해야 함
+                        //        // compSn, baSn, mentorSn, conCode을 이용하여 조회 해서 file 2부터 update
+                        //        var tcmsIfLastReportObjAfr = await tcmsIfLastReportService.getTcmsIfLastReportInfo(compObj.TcmsLoginKey, baObj.TcmsLoginKey, mentorObj.TcmsLoginKey, conCodes);
+
+                        //        if (tcmsIfLastReportObj.Count > 0)
+                        //        {
+                        //            if (cnt == 1)
+                        //            {
+                        //                tcmsIfLastReportObjAfr[0].File2 = combinedPath;
+                        //                //tcmsIfLastReportObjAfr[0].File2 = absFilePath;
+                        //                tcmsIfLastReportService.SaveDbContext();
+                        //            }
+                        //            else if (cnt == 2)
+                        //            {
+                        //                tcmsIfLastReportObjAfr[0].File3 = combinedPath;
+                        //                //tcmsIfLastReportObjAfr[0].File3 = absFilePath;
+                        //                tcmsIfLastReportService.SaveDbContext();
+                        //            }
+                        //            else if (cnt == 3)
+                        //            {
+                        //                tcmsIfLastReportObjAfr[0].File4 = combinedPath;
+                        //                //tcmsIfLastReportObjAfr[0].File4 = absFilePath;
+                        //                tcmsIfLastReportService.SaveDbContext();
+                        //            }
+                        //            else if (cnt == 4)
+                        //            {
+                        //                tcmsIfLastReportObjAfr[0].File5 = combinedPath;
+                        //                //tcmsIfLastReportObjAfr[0].File5 = absFilePath;
+                        //                tcmsIfLastReportService.SaveDbContext();
+                        //            }
+                        //        }
+                        //    }
+                        //    cnt++;
+                        //}
+                        #endregion
                     }
                     else
                     {
-                        // file 이 null 일경우 조회해서 insert
+                        // file 이 null 일경우 조회해서 insert -> 즉 최종제출 하러 왔는데 새로 파일을 추가한 케이스가 아니라면
                         var scMentoringTotalReport2 = await _scMentoringTotalReportService.GetMentoringTotalReportById(totalReportSn);
 
                         var listscFileInfo2 = scMentoringTotalReport.ScMentoringTrFileInfoes.Select(mtfi => mtfi.ScFileInfo).Where(fi => fi.Status == "N");
@@ -599,15 +641,12 @@ namespace BizOneShot.Light.Web.Areas.Mentor.Controllers
                         var rootFilePath = ConfigurationManager.AppSettings["RootFilePath"];
 
                         var listFileContent2 =
-                           Mapper.Map<List<FileContent>>(listscFileInfo2);
+                           Mapper.Map<List<FileContent>>(listscFileInfo2); // fileContent list에는 우리가 원하는 filesn이 있다.
 
                         // 다운로드 가능한 링크
                         var fullPath = rootFilePath + listFileContent2[0].FilePath;
                         var fileNm1 = HttpUtility.UrlEncode(listFileContent2[0].FileNm, Encoding.UTF8);
-                        var filePath1 = HttpUtility.UrlEncode(listFileContent2[0].FilePath, Encoding.UTF8);
-
-                        var combinedPath1 = Global.VCURLDOWN + "fileNm=" + fileNm1 + "%26filePath=" + filePath1;
-                        /*combinedPath1 = HttpUtility.UrlEncode(combinedPath1.Replace("\\", "\\\\"), Encoding.UTF8);*/ // -- 팀장님 도움
+                        var combinedPath1 = Global.VCURLDOWN + "fileSn=" + listFileContent2[0].FileSn + "%26fileNm=" + fileNm1;
 
                         tcmsIfLastReport.InfId = await satiNumGenerator();
                         tcmsIfLastReport.RegDt = scMentoringTotalReport2.RegDt;
@@ -627,93 +666,43 @@ namespace BizOneShot.Light.Web.Areas.Mentor.Controllers
                         if (listFileContent2.Count == 2)
                         {
                             var fileNm2 = HttpUtility.UrlEncode(listFileContent2[1].FileNm, Encoding.UTF8);
-                            var filePath2 = HttpUtility.UrlEncode(listFileContent2[1].FilePath, Encoding.UTF8);
-
-                            var combinedPath2 = Global.VCURLDOWN + "fileNm=" + fileNm2 + "%26filePath=" + filePath2;
-                            //combinedPath2 = HttpUtility.UrlEncode(combinedPath2.Replace("\\", "\\\\"), Encoding.UTF8);
-                            //var fullPath2 = rootFilePath + listFileContent2[1].FilePath;
+                            var combinedPath2 = Global.VCURLDOWN + "fileSn=" + listFileContent2[1].FileSn + "%26fileNm=" + fileNm2;
                             tcmsIfLastReport.File2 = combinedPath2;
-
                         }
                         else if(listFileContent2.Count == 3)
                         {
                             var fileNm2 = HttpUtility.UrlEncode(listFileContent2[1].FileNm, Encoding.UTF8);
-                            var filePath2 = HttpUtility.UrlEncode(listFileContent2[1].FilePath, Encoding.UTF8);
-
                             var fileNm3 = HttpUtility.UrlEncode(listFileContent2[2].FileNm, Encoding.UTF8);
-                            var filePath3 = HttpUtility.UrlEncode(listFileContent2[2].FilePath, Encoding.UTF8);
-
-                            var combinedPath2 = Global.VCURLDOWN + "fileNm=" + fileNm2 + "%26filePath=" + filePath2;
-                            //combinedPath2 = HttpUtility.UrlEncode(combinedPath2.Replace("\\", "\\\\"), Encoding.UTF8);
-                            //var fullPath2 = rootFilePath + listFileContent2[1].FilePath;
+                            var combinedPath2 = Global.VCURLDOWN + "fileSn=" + listFileContent2[1].FileSn + "%26fileNm=" + fileNm2;
                             tcmsIfLastReport.File2 = combinedPath2;
-
-                            var combinedPath3 = Global.VCURLDOWN + "fileNm=" + fileNm3 + "%26filePath=" + filePath3;
-                            //combinedPath3 = HttpUtility.UrlEncode(combinedPath3.Replace("\\", "\\\\"), Encoding.UTF8);
-                            //var fullPath3 = rootFilePath + listFileContent2[2].FilePath;
+                            var combinedPath3 = Global.VCURLDOWN + "fileSn=" + listFileContent2[2].FileSn + "%26fileNm=" + fileNm3;
                             tcmsIfLastReport.File3 = combinedPath3;
-
                         }
                         else if (listFileContent2.Count == 4)
                         {
                             var fileNm2 = HttpUtility.UrlEncode(listFileContent2[1].FileNm, Encoding.UTF8);
-                            var filePath2 = HttpUtility.UrlEncode(listFileContent2[1].FilePath, Encoding.UTF8);
-
                             var fileNm3 = HttpUtility.UrlEncode(listFileContent2[2].FileNm, Encoding.UTF8);
-                            var filePath3 = HttpUtility.UrlEncode(listFileContent2[2].FilePath, Encoding.UTF8);
-
                             var fileNm4 = HttpUtility.UrlEncode(listFileContent2[3].FileNm, Encoding.UTF8);
-                            var filePath4 = HttpUtility.UrlEncode(listFileContent2[3].FilePath, Encoding.UTF8);
-
-                            var combinedPath2 = Global.VCURLDOWN + "fileNm=" + fileNm2 + "%26filePath=" + filePath2;
-                            //combinedPath2 = HttpUtility.UrlEncode(combinedPath2.Replace("\\", "\\\\"), Encoding.UTF8);
-                            //var fullPath2 = rootFilePath + listFileContent2[1].FilePath;
+                            var combinedPath2 = Global.VCURLDOWN + "fileSn=" + listFileContent2[1].FileSn + "%26fileNm=" + fileNm2;
                             tcmsIfLastReport.File2 = combinedPath2;
-
-                            var combinedPath3 = Global.VCURLDOWN + "fileNm=" + fileNm3 + "%26filePath=" + filePath3;
-                            //combinedPath3 = HttpUtility.UrlEncode(combinedPath3.Replace("\\", "\\\\"), Encoding.UTF8);
-                            //var fullPath3 = rootFilePath + listFileContent2[2].FilePath;
+                            var combinedPath3 = Global.VCURLDOWN + "fileSn=" + listFileContent2[2].FileSn + "%26fileNm=" + fileNm3;
                             tcmsIfLastReport.File3 = combinedPath3;
-
-                            var combinedPath4 = Global.VCURLDOWN + "fileNm=" + fileNm4 + "%26filePath=" + filePath4;
-                            //combinedPath4 = HttpUtility.UrlEncode(combinedPath4.Replace("\\", "\\\\"), Encoding.UTF8);
-                            //var fullPath4 = rootFilePath + listFileContent2[3].FilePath;
+                            var combinedPath4 = Global.VCURLDOWN + "fileSn=" + listFileContent2[3].FileSn + "%26fileNm=" + fileNm4;
                             tcmsIfLastReport.File4 = combinedPath4;
-
                         }
                         else if (listFileContent2.Count == 5)
                         {
                             var fileNm2 = HttpUtility.UrlEncode(listFileContent2[1].FileNm, Encoding.UTF8);
-                            var filePath2 = HttpUtility.UrlEncode(listFileContent2[1].FilePath, Encoding.UTF8);
-
                             var fileNm3 = HttpUtility.UrlEncode(listFileContent2[2].FileNm, Encoding.UTF8);
-                            var filePath3 = HttpUtility.UrlEncode(listFileContent2[2].FilePath, Encoding.UTF8);
-
                             var fileNm4 = HttpUtility.UrlEncode(listFileContent2[3].FileNm, Encoding.UTF8);
-                            var filePath4 = HttpUtility.UrlEncode(listFileContent2[3].FilePath, Encoding.UTF8);
-
                             var fileNm5 = HttpUtility.UrlEncode(listFileContent2[4].FileNm, Encoding.UTF8);
-                            var filePath5 = HttpUtility.UrlEncode(listFileContent2[4].FilePath, Encoding.UTF8);
-
-
-                            var combinedPath2 = Global.VCURLDOWN + "fileNm=" + fileNm2 + "%26filePath=" + filePath2;
-                            //combinedPath2 = HttpUtility.UrlEncode(combinedPath2.Replace("\\", "\\\\"), Encoding.UTF8);
-                            //var fullPath2 = rootFilePath + listFileContent2[1].FilePath;
+                            var combinedPath2 = Global.VCURLDOWN + "fileSn=" + listFileContent2[1].FileSn + "%26fileNm=" + fileNm2;
                             tcmsIfLastReport.File2 = combinedPath2;
-
-                            var combinedPath3 = Global.VCURLDOWN + "fileNm=" + fileNm3 + "%26filePath=" + filePath3;
-                            //combinedPath3 = HttpUtility.UrlEncode(combinedPath3.Replace("\\", "\\\\"), Encoding.UTF8);
-                            //var fullPath3 = rootFilePath + listFileContent2[2].FilePath;
+                            var combinedPath3 = Global.VCURLDOWN + "fileSn=" + listFileContent2[2].FileSn + "%26fileNm=" + fileNm3;
                             tcmsIfLastReport.File3 = combinedPath3;
-
-                            var combinedPath4 = Global.VCURLDOWN + "fileNm=" + fileNm4 + "%26filePath=" + filePath4;
-                            //combinedPath4 = HttpUtility.UrlEncode(combinedPath4.Replace("\\", "\\\\"), Encoding.UTF8);
-                            //var fullPath4 = rootFilePath + listFileContent2[3].FilePath;
+                            var combinedPath4 = Global.VCURLDOWN + "fileSn=" + listFileContent2[3].FileSn + "%26fileNm=" + fileNm4;
                             tcmsIfLastReport.File4 = combinedPath4;
-
-                            var combinedPath5 = Global.VCURLDOWN + "fileNm=" + fileNm5 + "%26filePath=" + filePath5;
-                            //combinedPath4 = HttpUtility.UrlEncode(combinedPath4.Replace("\\", "\\\\"), Encoding.UTF8);
-                            //var fullPath4 = rootFilePath + listFileContent2[3].FilePath;
+                            var combinedPath5 = Global.VCURLDOWN + "fileSn=" + listFileContent2[4].FileSn + "%26fileNm=" + fileNm5;
                             tcmsIfLastReport.File5 = combinedPath5;
                         }
                         tcmsIfLastReportService.Insert(tcmsIfLastReport);
@@ -726,7 +715,6 @@ namespace BizOneShot.Light.Web.Areas.Mentor.Controllers
                     if (cnt == 0)
                     {
                         var status = sendLastReport(tcmsIfLastReport);
-
                         if (status == "S")
                         {
                             tcmsIfLastReport.InsertYn = "S";
@@ -747,7 +735,6 @@ namespace BizOneShot.Light.Web.Areas.Mentor.Controllers
                     else
                     {
                         var status = sendLastReport(tcmsIfLastReportObjAfr2[0]);
-
                         if (status == "S")
                         {
                             tcmsIfLastReportObjAfr2[0].InsertYn = "S";
@@ -763,7 +750,6 @@ namespace BizOneShot.Light.Web.Areas.Mentor.Controllers
                             tcmsIfLastReport.InsertYn = "D";
                             tcmsIfLastReportService.SaveDbContext();
                         }
-
                     }
 
                 }
@@ -771,7 +757,6 @@ namespace BizOneShot.Light.Web.Areas.Mentor.Controllers
             }
             else
             {
-
                 var scMentoringTotalReport = Mapper.Map<ScMentoringTotalReport>(dataRequestViewModel);
 
                 scMentoringTotalReport.MentorId = mentorId;
@@ -1247,49 +1232,49 @@ namespace BizOneShot.Light.Web.Areas.Mentor.Controllers
                 cookie.Value = httpCookie.Value;
                 httpWebRequest.CookieContainer.Add(cookie);
             }
+            #region 주석 10-11
+            //var file1 = tcmsIfLastReport.File1;
+            //var file2 = tcmsIfLastReport.File2;
+            //var file3 = tcmsIfLastReport.File3;
+            //var file4 = tcmsIfLastReport.File4;
+            //var file5 = tcmsIfLastReport.File5;
 
-            var file1 = tcmsIfLastReport.File1;
-            var file2 = tcmsIfLastReport.File2;
-            var file3 = tcmsIfLastReport.File3;
-            var file4 = tcmsIfLastReport.File4;
-            var file5 = tcmsIfLastReport.File5;
 
+            //if (tcmsIfLastReport.File1 != null)
+            //{
 
-            if (tcmsIfLastReport.File1 != null)
-            {
+            //    file1 = tcmsIfLastReport.File1.Replace("\\", "/");
 
-                file1 = tcmsIfLastReport.File1.Replace("\\", "/");
+            //}
 
-            }
+            //if (tcmsIfLastReport.File2 != null)
+            //{
 
-            if (tcmsIfLastReport.File2 != null)
-            {
+            //    file2 = tcmsIfLastReport.File2.Replace("\\", "/");
 
-                file2 = tcmsIfLastReport.File2.Replace("\\", "/");
+            //}
 
-            }
+            //if (tcmsIfLastReport.File3 != null)
+            //{
 
-            if (tcmsIfLastReport.File3 != null)
-            {
+            //    file3 = tcmsIfLastReport.File3.Replace("\\", "/");
 
-                file3 = tcmsIfLastReport.File3.Replace("\\", "/");
+            //}
 
-            }
+            //if (tcmsIfLastReport.File4 != null)
+            //{
 
-            if (tcmsIfLastReport.File4 != null)
-            {
+            //    file4 = tcmsIfLastReport.File4.Replace("\\", "/");
 
-                file4 = tcmsIfLastReport.File4.Replace("\\", "/");
+            //}
 
-            }
+            //if(tcmsIfLastReport.File5 != null)
+            //{
 
-            if(tcmsIfLastReport.File5 != null)
-            {
+            //    file5 = tcmsIfLastReport.File5.Replace("\\", "/");
 
-                file5 = tcmsIfLastReport.File5.Replace("\\", "/");
-
-            }
-          
+            //}
+            #endregion
 
             using (var requestStream = httpWebRequest.GetRequestStream())
             {
@@ -1303,11 +1288,11 @@ namespace BizOneShot.Light.Web.Areas.Mentor.Controllers
                     SubNumSn = tcmsIfLastReport.SubNumSn,
                     ConCode = tcmsIfLastReport.ConCode,
 
-                    File1 = file1,
-                    File2 = file2,
-                    File3 = file3,
-                    File4 = file4,
-                    File5 = file5,
+                    File1 = tcmsIfLastReport.File1,
+                    File2 = tcmsIfLastReport.File2,
+                    File3 = tcmsIfLastReport.File3,
+                    File4 = tcmsIfLastReport.File4,
+                    File5 = tcmsIfLastReport.File5,
 
                     regDt = rdt,
                     InfDt = idt

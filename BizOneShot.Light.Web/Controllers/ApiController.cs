@@ -36,6 +36,8 @@ namespace BizOneShot.Light.Web.Controllers
         private readonly ITcmsIfLastReportService _tcmsIfLastReportService;
         private readonly ITcmsIfSurveyService _tcmsIfSurveyService;
 
+        private readonly IScFileInfoService _scFileInfoService;
+
         // GET: Api
         public ActionResult Index()
         {
@@ -52,7 +54,9 @@ namespace BizOneShot.Light.Web.Controllers
           IQuesCompInfoService _quesCompInfoService,
 
           ITcmsIfLastReportService _tcmsIfLastReportService,
-          ITcmsIfSurveyService _tcmsIfSurveyService
+          ITcmsIfSurveyService _tcmsIfSurveyService,
+
+          IScFileInfoService _scFileInfoService
         )
         {
             this._vcIfTableService = _vcIfTableService;
@@ -64,6 +68,8 @@ namespace BizOneShot.Light.Web.Controllers
 
             this._tcmsIfLastReportService = _tcmsIfLastReportService;
             this._tcmsIfSurveyService = _tcmsIfSurveyService;
+
+            this._scFileInfoService = _scFileInfoService;
         }
 
         // 데이터 넣기 전에 DB정립 필요
@@ -2082,7 +2088,22 @@ namespace BizOneShot.Light.Web.Controllers
 
         public void DownloadWithFileSn(string fileSn)
         {
-             
+            var scFileInfoObj = _scFileInfoService.getFileInfoByFileSnNA(int.Parse(fileSn));
+
+            string fileNm = scFileInfoObj.FileNm;
+            string filePath = scFileInfoObj.FilePath;
+
+            var files = new List<FileContent>();
+            string archiveName = fileNm;
+
+            var file = new FileContent
+            {
+                FileNm = fileNm,
+                FilePath = filePath
+            };
+            files.Add(file);
+
+            new FileHelper().DownloadFile(files, archiveName);
         }
     }
 }
