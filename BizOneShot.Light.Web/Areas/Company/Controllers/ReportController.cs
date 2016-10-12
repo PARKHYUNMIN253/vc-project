@@ -2555,6 +2555,22 @@ namespace BizOneShot.Light.Web.Areas.Company.Controllers
                 if (management == null)
                 {
                     var QuesOgranAnalMgmt = Mapper.Map<QuesOgranAnalysis>(orgCheck01ViewModel.Management);
+                    if(QuesOgranAnalMgmt.OfficerCount == null)
+                    {
+                        QuesOgranAnalMgmt.OfficerCount = 0;
+                    }
+                    if (QuesOgranAnalMgmt.ChiefCount == null)
+                    {
+                        QuesOgranAnalMgmt.ChiefCount = 0;
+                    }
+                    if (QuesOgranAnalMgmt.StaffCount == null)
+                    {
+                        QuesOgranAnalMgmt.StaffCount = 0;
+                    }
+                    if (QuesOgranAnalMgmt.BeginnerCount == null)
+                    {
+                        QuesOgranAnalMgmt.BeginnerCount = 0;
+                    }
                     QuesOgranAnalMgmt.QuestionSn = questionSn;
                     QuesOgranAnalMgmt.DeptCd = "M";
                     QuesOgranAnalMgmt.RegDt = DateTime.Now;
@@ -2579,6 +2595,22 @@ namespace BizOneShot.Light.Web.Areas.Company.Controllers
                 if (produce == null)
                 {
                     var QuesOgranAnalProd = Mapper.Map<QuesOgranAnalysis>(orgCheck01ViewModel.Produce);
+                    if (QuesOgranAnalProd.OfficerCount == null)
+                    {
+                        QuesOgranAnalProd.OfficerCount = 0;
+                    }
+                    if (QuesOgranAnalProd.ChiefCount == null)
+                    {
+                        QuesOgranAnalProd.ChiefCount = 0;
+                    }
+                    if (QuesOgranAnalProd.StaffCount == null)
+                    {
+                        QuesOgranAnalProd.StaffCount = 0;
+                    }
+                    if (QuesOgranAnalProd.BeginnerCount == null)
+                    {
+                        QuesOgranAnalProd.BeginnerCount = 0;
+                    }
                     QuesOgranAnalProd.QuestionSn = questionSn;
                     QuesOgranAnalProd.DeptCd = "P";
                     QuesOgranAnalProd.RegDt = DateTime.Now;
@@ -2603,6 +2635,22 @@ namespace BizOneShot.Light.Web.Areas.Company.Controllers
                 if (rnd == null)
                 {
                     var QuesOgranAnalRnd = Mapper.Map<QuesOgranAnalysis>(orgCheck01ViewModel.RND);
+                    if (QuesOgranAnalRnd.OfficerCount == null)
+                    {
+                        QuesOgranAnalRnd.OfficerCount = 0;
+                    }
+                    if (QuesOgranAnalRnd.ChiefCount == null)
+                    {
+                        QuesOgranAnalRnd.ChiefCount = 0;
+                    }
+                    if (QuesOgranAnalRnd.StaffCount == null)
+                    {
+                        QuesOgranAnalRnd.StaffCount = 0;
+                    }
+                    if (QuesOgranAnalRnd.BeginnerCount == null)
+                    {
+                        QuesOgranAnalRnd.BeginnerCount = 0;
+                    }
                     QuesOgranAnalRnd.QuestionSn = questionSn;
                     QuesOgranAnalRnd.DeptCd = "R";
                     QuesOgranAnalRnd.RegDt = DateTime.Now;
@@ -2627,6 +2675,22 @@ namespace BizOneShot.Light.Web.Areas.Company.Controllers
                 if (salse == null)
                 {
                     var QuesOgranAnalSalse = Mapper.Map<QuesOgranAnalysis>(orgCheck01ViewModel.Salse);
+                    if (QuesOgranAnalSalse.OfficerCount == null)
+                    {
+                        QuesOgranAnalSalse.OfficerCount = 0;
+                    }
+                    if (QuesOgranAnalSalse.ChiefCount == null)
+                    {
+                        QuesOgranAnalSalse.ChiefCount = 0;
+                    }
+                    if (QuesOgranAnalSalse.StaffCount == null)
+                    {
+                        QuesOgranAnalSalse.StaffCount = 0;
+                    }
+                    if (QuesOgranAnalSalse.BeginnerCount == null)
+                    {
+                        QuesOgranAnalSalse.BeginnerCount = 0;
+                    }
                     QuesOgranAnalSalse.QuestionSn = questionSn;
                     QuesOgranAnalSalse.DeptCd = "S";
                     QuesOgranAnalSalse.RegDt = DateTime.Now;

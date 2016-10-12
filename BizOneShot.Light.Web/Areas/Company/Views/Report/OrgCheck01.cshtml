@@ -63,14 +63,68 @@
         }
 
         if ($('#CorrectValue').val() == sum.toString()) {
+            //makeZero();
             $('#submitType').val(submitType);
             $('#mainForm').submit();
         }
         else {
             alert('입력하신 총 인원 수가 상이합니다\n입력된 값을 확인하고 재입력해주세요'+'\n\n'+'조직만족도에서 입력된 총 인원수 : '+$('#CorrectValue').val()+'\n'+'현재 입력한 총 인원수 : '+sum.toString());
         }
-
     }
+
+    //function makeZero() {
+    //    if ($('#Management_OfficerCount').val() == null) {
+    //        $('#Management_OfficerCount').val("0");
+    //    }
+    //    if ($('#Management_ChiefCount').val() == null) {
+    //        $('#Management_ChiefCount').val("0");
+    //    }
+    //    if ($('#Management_StaffCount').val() == null) {
+    //        $('#Management_StaffCount').val("0");
+    //    }
+    //    if ($('#Management_BeginnerCount').val() == null) {
+    //        $('#Management_BeginnerCount').val("0");
+    //    }
+
+    //    if ($('#Produce_OfficerCount').val() == null) {
+    //        $('#Produce_OfficerCount').val("0");
+    //    }
+    //    if ($('#Produce_ChiefCount').val() == null) {
+    //        $('#Produce_ChiefCount').val("0");
+    //    }
+    //    if ($('#Produce_StaffCount').val() == null) {
+    //        $('#Produce_StaffCount').val("0");
+    //    }
+    //    if ($('#Produce_BeginnerCount').val() == null) {
+    //        $('#Produce_BeginnerCount').val("0");
+    //    }
+
+    //    if ($('#RND_OfficerCount').val() == null) {
+    //        $('#RND_OfficerCount').val("0");
+    //    }
+    //    if ($('#RND_ChiefCount').val() == null) {
+    //        $('#RND_ChiefCount').val("0");
+    //    }
+    //    if ($('#RND_StaffCount').val() == null) {
+    //        $('#RND_StaffCount').val("0");
+    //    }
+    //    if ($('#RND_BeginnerCount').val() == null) {
+    //        $('#RND_BeginnerCount').val("0");
+    //    }
+
+    //    if ($('#Salse_OfficerCount').val() == null) {
+    //        $('#Salse_OfficerCount').val("0");
+    //    }
+    //    if ($('#Salse_ChiefCount').val() == null) {
+    //        $('#Salse_ChiefCount').val("0");
+    //    }
+    //    if ($('#Salse_StaffCount').val() == null) {
+    //        $('#Salse_StaffCount').val("0");
+    //    }
+    //    if ($('#Salse_BeginnerCount').val() == null) {
+    //        $('#Salse_BeginnerCount').val("0");
+    //    }
+    //}
 </script>
 
 <div class="tcms">
