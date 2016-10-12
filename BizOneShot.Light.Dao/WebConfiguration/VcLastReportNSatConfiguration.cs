@@ -45,11 +45,11 @@ namespace BizOneShot.Light.Dao.WebConfiguration
             Property(x => x.BaSn).HasColumnName("BA_SN").IsRequired().HasColumnType("int");
             Property(x => x.ConCode).HasColumnName("CON_CODE").IsOptional().HasColumnType("nvarchar").HasMaxLength(5);
             Property(x => x.SatisfactionGrade).HasColumnName("SATISFACTION_GRADE").IsOptional().HasColumnType("int");
-            Property(x => x.File1).HasColumnName("FILE_1").IsOptional().HasColumnType("nvarchar").HasMaxLength(255);
-            Property(x => x.File2).HasColumnName("FILE_2").IsOptional().HasColumnType("nvarchar").HasMaxLength(255);
-            Property(x => x.File3).HasColumnName("FILE_3").IsOptional().HasColumnType("nvarchar").HasMaxLength(255);
-            Property(x => x.File4).HasColumnName("FILE_4").IsOptional().HasColumnType("nvarchar").HasMaxLength(255);
-            Property(x => x.File5).HasColumnName("FILE_5").IsOptional().HasColumnType("nvarchar").HasMaxLength(255);
+            Property(x => x.File1).HasColumnName("FILE_1").IsOptional().HasColumnType("nvarchar").HasMaxLength(1500);
+            Property(x => x.File2).HasColumnName("FILE_2").IsOptional().HasColumnType("nvarchar").HasMaxLength(1500);
+            Property(x => x.File3).HasColumnName("FILE_3").IsOptional().HasColumnType("nvarchar").HasMaxLength(1500);
+            Property(x => x.File4).HasColumnName("FILE_4").IsOptional().HasColumnType("nvarchar").HasMaxLength(1500);
+            Property(x => x.File5).HasColumnName("FILE_5").IsOptional().HasColumnType("nvarchar").HasMaxLength(1500);
             Property(x => x.RegDt).HasColumnName("REG_DT").IsOptional().HasColumnType("datetime");
             Property(x => x.ConStatus).HasColumnName("CON_STATUS").IsOptional().IsFixedLength().IsUnicode(false).HasColumnType("char").HasMaxLength(1);
             Property(x => x.TotalReportSn).HasColumnName("TOTAL_REPORT_SN").IsOptional().HasColumnType("int");
