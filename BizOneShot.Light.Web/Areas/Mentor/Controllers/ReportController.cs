@@ -433,12 +433,7 @@ namespace BizOneShot.Light.Web.Areas.Mentor.Controllers
                     //최종 제출 구현
                     var totalReportSn = totalReportViewModel.TotalReportSn;
                     var TotalReportInfo = await _scMentoringTotalReportService.GetTotalReportInfoByReportSn(totalReportSn);
-
-
                     // total_report_sn을 조회 하여 vc_last_report_n_sat에 insert
-
-                    
-
                     var b = Mapper.Map<ScMentoringTotalReport>(TotalReportInfo);
                     int result2 = await _scMentoringTotalReportService.SaveDbContextAsync();
 
@@ -491,22 +486,24 @@ namespace BizOneShot.Light.Web.Areas.Mentor.Controllers
                             if (fileCnt == 1)
                             {
                                 deepenReport.File1 = combinedPath;
-                            }else if(fileCnt == 2 )
+                            }
+                            else if(fileCnt == 2 )
                             {
                                 deepenReport.File2 = combinedPath;
-                            }else if(fileCnt == 3)
+                            }
+                            else if(fileCnt == 3)
                             {
                                 deepenReport.File3 = combinedPath;
-                            }else if(fileCnt == 4)
+                            }
+                            else if(fileCnt == 4)
                             {
                                 deepenReport.File4 = combinedPath;
-                            }else if(fileCnt == 5)
+                            }
+                            else if(fileCnt == 5)
                             {
                                 deepenReport.File5 = combinedPath;
                             }
-
                             fileCnt++;
-
                         }
 
                     }
@@ -848,7 +845,6 @@ namespace BizOneShot.Light.Web.Areas.Mentor.Controllers
                     {
                         if (file != null)
                         {
-
                             var fileHelper = new FileHelper();
 
                             var savedFileName = fileHelper.GetUploadFileName(file);
@@ -962,8 +958,6 @@ namespace BizOneShot.Light.Web.Areas.Mentor.Controllers
 
                     if (files != null)
                     {
-
-
                         foreach (var file in files)
                         {
 
@@ -977,9 +971,7 @@ namespace BizOneShot.Light.Web.Areas.Mentor.Controllers
 
                             var directoryPath = Path.Combine(rootFilePath, subDirectoryPath);
                             var absFilePath = directoryPath + "//" + savedFileName;                // 심화보고서 최종 제출 URL
-
-
-
+                            
                             // 기본적인 정보는 한번 담고 
                             if (cnt == 0)
                             {
@@ -999,49 +991,36 @@ namespace BizOneShot.Light.Web.Areas.Mentor.Controllers
 
                                 tcmsIfLastReportService.Insert(tcmsIfLastReport);
                                 tcmsIfLastReportService.SaveDbContext();
-
                             }
                             else
                             {
 
                                 // update 해야 함
                                 // compSn, baSn, mentorSn, conCode을 이용하여 조회 해서 file 2부터 update
-
-
                                if(tcmsIfLastReportObj.Count > 0)
                                 {
-
                                     if (cnt == 1)
                                     {
 
                                         tcmsIfLastReportObj[0].File2 = absFilePath;
                                         tcmsIfLastReportService.SaveDbContext();
-
                                     }
                                     else if (cnt == 2)
                                     {
-
                                         tcmsIfLastReportObj[0].File3 = absFilePath;
                                         tcmsIfLastReportService.SaveDbContext();
-
                                     }
                                     else if (cnt == 3)
                                     {
-
                                         tcmsIfLastReportObj[0].File4 = absFilePath;
                                         tcmsIfLastReportService.SaveDbContext();
-
                                     }
                                     else if (cnt == 4)
                                     {
-
                                         tcmsIfLastReportObj[0].File5 = absFilePath;
                                         tcmsIfLastReportService.SaveDbContext();
-
                                     }
-
                                 }
-
                             }
                             cnt++;
                         }
@@ -1281,49 +1260,6 @@ namespace BizOneShot.Light.Web.Areas.Mentor.Controllers
                 cookie.Value = httpCookie.Value;
                 httpWebRequest.CookieContainer.Add(cookie);
             }
-            #region 주석 10-11
-            //var file1 = tcmsIfLastReport.File1;
-            //var file2 = tcmsIfLastReport.File2;
-            //var file3 = tcmsIfLastReport.File3;
-            //var file4 = tcmsIfLastReport.File4;
-            //var file5 = tcmsIfLastReport.File5;
-
-
-            //if (tcmsIfLastReport.File1 != null)
-            //{
-
-            //    file1 = tcmsIfLastReport.File1.Replace("\\", "/");
-
-            //}
-
-            //if (tcmsIfLastReport.File2 != null)
-            //{
-
-            //    file2 = tcmsIfLastReport.File2.Replace("\\", "/");
-
-            //}
-
-            //if (tcmsIfLastReport.File3 != null)
-            //{
-
-            //    file3 = tcmsIfLastReport.File3.Replace("\\", "/");
-
-            //}
-
-            //if (tcmsIfLastReport.File4 != null)
-            //{
-
-            //    file4 = tcmsIfLastReport.File4.Replace("\\", "/");
-
-            //}
-
-            //if(tcmsIfLastReport.File5 != null)
-            //{
-
-            //    file5 = tcmsIfLastReport.File5.Replace("\\", "/");
-
-            //}
-            #endregion
 
             using (var requestStream = httpWebRequest.GetRequestStream())
             {
@@ -1369,7 +1305,6 @@ namespace BizOneShot.Light.Web.Areas.Mentor.Controllers
             {
                 return "E";
             }
-
         }
 
 
@@ -1746,26 +1681,18 @@ namespace BizOneShot.Light.Web.Areas.Mentor.Controllers
         // 반복적으로 Thread가 돌면서 메소드를 실행
         public void runMethod()
         {
-            
             while (true)
             {
-
                 var beginTime = DateTime.Now;
-
                 // 실행 시킬 메소드 
                 reSendingData();
-
                 var duration = DateTime.Now.Subtract(beginTime);
-
                 var sleepDuration = (int)(25 - duration.TotalHours);
-
                 if( 0 < sleepDuration )
                 {
                     Thread.Sleep(sleepDuration);
                 }
-
             }
-
         }
 
         // TCMS_IF_LAST_REPORT에서 INSERT_YN이 E 이거나 NULL인 값들만 체크해서 재연계 하는 METHOD 구현

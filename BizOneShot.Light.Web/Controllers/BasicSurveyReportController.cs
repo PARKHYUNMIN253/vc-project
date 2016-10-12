@@ -1057,7 +1057,7 @@ namespace BizOneShot.Light.Web.Controllers
                         viewModel.Productivity.Divisor = Math.Round(Convert.ToDouble(totalEmp.D452), 0);
                         viewModel.Productivity.Result = (viewModel.Productivity.Divisor == 0) ? 0 : Math.Truncate(viewModel.Productivity.Dividend / viewModel.Productivity.Divisor);
                         viewModel.Productivity.Company = viewModel.Productivity.Result;
-                        viewModel.Productivity.AvgSMCompany = regCavDetail.CavLp; //중소기업평균 노동생산성
+                        viewModel.Productivity.AvgSMCompany = Math.Round(Convert.ToDecimal(regCavDetail.CavLp / 1000),1); //중소기업평균 노동생산성
 
                         viewModel.Activity.Dividend = Math.Truncate(Convert.ToDouble(sboFinacialIndexT.CurrentSale.Value / 1000));
                         viewModel.Activity.Divisor = Math.Truncate(Convert.ToDouble(sboFinacialIndexT.TotalAsset.Value / 1000));

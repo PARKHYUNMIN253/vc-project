@@ -3696,6 +3696,7 @@ namespace BizOneShot.Light.Web.Areas.Company.Controllers
                 _VcSatCheckService.SaveDbContext();     // saveDbContext
 
                 lastReportObj.SatisfactionGrade = calcSatisfaction(insertObj);
+                lastReportObj.ConStatus = "C";
                 _VcLastReportNSatService.SaveDbContext(); // Save
                 #endregion
 

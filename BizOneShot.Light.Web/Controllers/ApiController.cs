@@ -1397,14 +1397,12 @@ namespace BizOneShot.Light.Web.Controllers
         //    return statusModel.status;
         //}
 
-
-        // 최종보고서 재전송
+        // TCMS_IF_LAST_REPORT RESENDER
+        // 최종보고서 재전송 
         public void reSendingData()
         {
-
             // TCMS_IF_LAST_REPORT테이블에서 객체 가져오는 부분
             var tcmsIfLastReportObj = _tcmsIfLastReportService.unAsyncGetTcmsIfLastReportInfo();
-
             // STATUS가 E or NULL일 경우 재전송 하는 부분
             foreach (var obj in tcmsIfLastReportObj)
             {
@@ -1423,79 +1421,6 @@ namespace BizOneShot.Light.Web.Controllers
                         obj.InsertYn = "S";
                         _tcmsIfLastReportService.SaveDbContext();
                     }
-
-                    #region BEFOREDEVELOP REGION----
-                    // 동일한 데이터의 재전송 횟수 count check
-                    //var resendCnt = _tcmsIfLastReportService.getResendObj(obj.CompLoginKey ?? default(int),
-                    //                                                     obj.BaLoginKey ?? default(int),
-                    //                                                     obj.MentorLoginKey ?? default(int),
-                    //                                                     obj.NumSn,
-                    //                                                     obj.SubNumSn,
-                    //                                                     obj.ConCode);
-
-                    //// status check 후 재연계 
-                    //var statusCheck = reSendLastReport(obj);
-
-                    //if (statusCheck == "D")
-                    //{
-                    //    // 두번째 재연계
-                    //    var reStatus = reSendLastReport(obj);
-
-                    //    if (reStatus == "S")
-                    //    {
-                    //        // 재연계 성공시
-                    //        obj.InsertYn = "S";
-                    //        _tcmsIfLastReportService.SaveDbContext();
-
-                    //    }else if (reStatus == "E")
-                    //    {
-                    //        obj.InsertYn = "E";
-                    //        _tcmsIfLastReportService.SaveDbContext();
-                    //    }else if (reStatus == "D")
-                    //    {
-
-                    //        var reStatusSec = reSendLastReport(obj);
-                    //        if(reStatusSec == "S")
-                    //        {
-                    //            // 두번째 재연계 성공시
-                    //            obj.InsertYn = "S";
-                    //            _tcmsIfLastReportService.SaveDbContext();
-                    //        }else if(reStatusSec == "E")
-                    //        {
-                    //            obj.InsertYn = "E";
-                    //            _tcmsIfLastReportService.SaveDbContext();
-                    //        }else if(reStatusSec == "D")
-                    //        {
-                    //            obj.InsertYn = "D";
-                    //            _tcmsIfLastReportService.SaveDbContext();
-                    //        }
-
-                    //    }
-
-                    //}
-                    //else if (statusCheck == "S")
-                    //{
-
-                    //    // 재전송 실패 하여 1회 다시 재전송 시도
-                    //    obj.InsertYn = "S";
-                    //    _tcmsIfLastReportService.SaveDbContext();
-
-                    //}
-
-
-
-
-
-
-
-                    //// count가 3번까지만 연계 그후로는 넣지 않는다
-                    //if (cnt > 3)
-                    //{
-                    //    reSendLastReport(obj);
-                    //}
-
-                    //cnt++;
-                    #endregion
                 }
                 else if (obj.InsertYn == "T") // 재전송 두 번째
                 {
@@ -1514,7 +1439,8 @@ namespace BizOneShot.Light.Web.Controllers
                 }
             }
         }
-
+    
+        // TCMS_IF_SURVEY RESENDER
         // 만족도 조사 재전송
         public async void reSendingData2()
         {
@@ -1557,14 +1483,18 @@ namespace BizOneShot.Light.Web.Controllers
 
         public string reSendLastReport(TcmsIfLastReport tcmsIfLastReport)
         {
-
             HttpContext.Response.AppendHeader("Access-Control-Allow-Origin", "*");
             string result = "";
             string backSlash = "";
 
+            string rdt = String.Format("{0:yyyy-MM-dd hh:mm:ss}", tcmsIfLastReport.RegDt);
+            string idt = String.Format("{0:yyyy-MM-dd hh:mm:ss}", tcmsIfLastReport.InfDt);
             StatusModel statusModel = new StatusModel();
 
-            var httpWebRequest = (HttpWebRequest)WebRequest.Create("http://tcms.igarim.com/Api/tcms_if_last_report.php");
+            var a = tcmsIfLastReport.RegDt;
+            var b = tcmsIfLastReport.InfDt;
+
+            var httpWebRequest = (HttpWebRequest)WebRequest.Create(Global.TCMSTESTGATE + "Api/tcms_if_last_report.php");
             //httpWebRequest.Accept = "application/json";
             httpWebRequest.ContentType = "application/x-www-form-urlencoded";
             httpWebRequest.Method = "POST";
@@ -1595,14 +1525,14 @@ namespace BizOneShot.Light.Web.Controllers
                     SubNumSn = tcmsIfLastReport.SubNumSn,
                     ConCode = tcmsIfLastReport.ConCode,
 
-                    File1 = tcmsIfLastReport.File1.Replace("\\", "/"),
-                    File2 = tcmsIfLastReport.File2.Replace("\\", "/"),
-                    File3 = tcmsIfLastReport.File3.Replace("\\", "/"),
-                    File4 = tcmsIfLastReport.File4.Replace("\\", "/"),
-                    File5 = tcmsIfLastReport.File5.Replace("\\", "/"),
+                    File1 = tcmsIfLastReport.File1,
+                    File2 = tcmsIfLastReport.File2,
+                    File3 = tcmsIfLastReport.File3,
+                    File4 = tcmsIfLastReport.File4,
+                    File5 = tcmsIfLastReport.File5,
 
-                    regDt = tcmsIfLastReport.RegDt.ToString(),
-                    InfDt = tcmsIfLastReport.InfDt.ToString()
+                    regDt = rdt,
+                    InfDt = idt
                 });
                 backSlash = jsont.Replace("\\", "");
                 byte[] ba = Encoding.UTF8.GetBytes("json=" + backSlash);
@@ -1611,16 +1541,89 @@ namespace BizOneShot.Light.Web.Controllers
                 requestStream.Flush();
                 requestStream.Close();
             }
-            var httpResponse = (HttpWebResponse)httpWebRequest.GetResponse();
-            using (var streamReader = new StreamReader(httpResponse.GetResponseStream()))
+            try
             {
-                JavaScriptSerializer js = new JavaScriptSerializer();
-                result = streamReader.ReadToEnd();
-                string[] rstSplit = result.Split('\n');
-                statusModel = (StatusModel)js.Deserialize(rstSplit[1], typeof(StatusModel));
+                var httpResponse = (HttpWebResponse)httpWebRequest.GetResponse();
+                using (var streamReader = new StreamReader(httpResponse.GetResponseStream()))
+                {
+                    JavaScriptSerializer js = new JavaScriptSerializer();
+                    result = streamReader.ReadToEnd();
+                    string[] rptSplit = result.Split('\n');
+                    statusModel = (StatusModel)js.Deserialize(rptSplit[1], typeof(StatusModel));
+                }
+                return statusModel.status;
             }
-            return statusModel.status;
+            catch (Exception e)
+            {
+                return "E";
+            }
         }
+
+        //public string reSendLastReport76(TcmsIfLastReport tcmsIfLastReport)
+        //{
+        //    HttpContext.Response.AppendHeader("Access-Control-Allow-Origin", "*");
+        //    string result = "";
+        //    string backSlash = "";
+
+        //    StatusModel statusModel = new StatusModel();
+
+        //    var httpWebRequest = (HttpWebRequest)WebRequest.Create("http://tcms.igarim.com/Api/tcms_if_last_report.php");
+        //    //httpWebRequest.Accept = "application/json";
+        //    httpWebRequest.ContentType = "application/x-www-form-urlencoded";
+        //    httpWebRequest.Method = "POST";
+        //    httpWebRequest.CookieContainer = new CookieContainer();
+        //    HttpCookieCollection cookies = Request.Cookies;
+        //    for (int i = 0; i < cookies.Count; i++)
+        //    {
+        //        HttpCookie httpCookie = cookies.Get(i);
+        //        Cookie cookie = new Cookie();
+        //        cookie.Domain = httpWebRequest.RequestUri.Host;
+        //        cookie.Expires = httpCookie.Expires;
+        //        cookie.Name = httpCookie.Name;
+        //        cookie.Path = httpCookie.Path;
+        //        cookie.Secure = httpCookie.Secure;
+        //        cookie.Value = httpCookie.Value;
+        //        httpWebRequest.CookieContainer.Add(cookie);
+        //    }
+
+        //    using (var requestStream = httpWebRequest.GetRequestStream())
+        //    {
+        //        string jsont = new JavaScriptSerializer().Serialize(new
+        //        {
+        //            InfId = tcmsIfLastReport.InfId,
+        //            CompLoginKey = tcmsIfLastReport.CompLoginKey,
+        //            BaLoginKey = tcmsIfLastReport.BaLoginKey,
+        //            MentorLoginKey = tcmsIfLastReport.MentorLoginKey,
+        //            NumSn = tcmsIfLastReport.NumSn,
+        //            SubNumSn = tcmsIfLastReport.SubNumSn,
+        //            ConCode = tcmsIfLastReport.ConCode,
+
+        //            File1 = tcmsIfLastReport.File1.Replace("\\", "/"),
+        //            File2 = tcmsIfLastReport.File2.Replace("\\", "/"),
+        //            File3 = tcmsIfLastReport.File3.Replace("\\", "/"),
+        //            File4 = tcmsIfLastReport.File4.Replace("\\", "/"),
+        //            File5 = tcmsIfLastReport.File5.Replace("\\", "/"),
+
+        //            regDt = tcmsIfLastReport.RegDt.ToString(),
+        //            InfDt = tcmsIfLastReport.InfDt.ToString()
+        //        });
+        //        backSlash = jsont.Replace("\\", "");
+        //        byte[] ba = Encoding.UTF8.GetBytes("json=" + backSlash);
+
+        //        requestStream.Write(ba, 0, ba.Length);
+        //        requestStream.Flush();
+        //        requestStream.Close();
+        //    }
+        //    var httpResponse = (HttpWebResponse)httpWebRequest.GetResponse();
+        //    using (var streamReader = new StreamReader(httpResponse.GetResponseStream()))
+        //    {
+        //        JavaScriptSerializer js = new JavaScriptSerializer();
+        //        result = streamReader.ReadToEnd();
+        //        string[] rstSplit = result.Split('\n');
+        //        statusModel = (StatusModel)js.Deserialize(rstSplit[1], typeof(StatusModel));
+        //    }
+        //    return statusModel.status;
+        //}
 
         public string sendSatisfaction(TcmsIfSurvey tcmsIfSurvey)
         {
@@ -1629,7 +1632,7 @@ namespace BizOneShot.Light.Web.Controllers
 
             StatusModel statusModel = new StatusModel();
 
-            var httpWebRequest = (HttpWebRequest)WebRequest.Create("http://tcms.igarim.com/Api/tcms_if_survey.php");
+            var httpWebRequest = (HttpWebRequest)WebRequest.Create(Global.TCMSTESTGATE + "Api/tcms_if_survey.php");
             httpWebRequest.ContentType = "application/x-www-form-urlencoded";
             httpWebRequest.Method = "POST";
             httpWebRequest.CookieContainer = new CookieContainer();
