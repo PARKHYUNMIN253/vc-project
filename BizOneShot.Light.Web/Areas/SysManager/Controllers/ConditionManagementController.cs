@@ -85,6 +85,7 @@ namespace BizOneShot.Light.Web.Areas.SysManager.Controllers
                         {
                             selectCompViews[i].SatSn = lastreport.SatSn;
                             selectCompViews[i].SatisfactionGrade = lastreport.SatisfactionGrade ?? default(int);
+                            selectCompViews[i].ConStatus = lastreport.ConStatus;
                         }
                     }
 
@@ -146,6 +147,7 @@ namespace BizOneShot.Light.Web.Areas.SysManager.Controllers
                         {
                             selectCompViews[i].SatSn = lastreport.SatSn;
                             selectCompViews[i].SatisfactionGrade = lastreport.SatisfactionGrade ?? default(int);
+                            selectCompViews[i].ConStatus = lastreport.ConStatus;
                         }
                     }
 

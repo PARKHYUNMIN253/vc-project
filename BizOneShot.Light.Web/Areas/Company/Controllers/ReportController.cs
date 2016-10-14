@@ -3969,8 +3969,8 @@ namespace BizOneShot.Light.Web.Areas.Company.Controllers
                     Text02 = tcmsIfSurvey.Text02,
                     InfDt = dtc
                 });
-                backSlash = jsont.Replace("\\", "");
-                byte[] ba = Encoding.UTF8.GetBytes("json=" + backSlash);
+                //backSlash = jsont.Replace("\\", "");
+                byte[] ba = Encoding.UTF8.GetBytes("json=" + jsont);
 
                 requestStream.Write(ba, 0, ba.Length);
                 requestStream.Flush();

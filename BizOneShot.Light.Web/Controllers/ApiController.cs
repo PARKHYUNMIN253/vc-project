@@ -1494,7 +1494,7 @@ namespace BizOneShot.Light.Web.Controllers
             var a = tcmsIfLastReport.RegDt;
             var b = tcmsIfLastReport.InfDt;
 
-            var httpWebRequest = (HttpWebRequest)WebRequest.Create(Global.TCMSTESTGATE + "Api/tcms_if_last_report.php");
+            var httpWebRequest = (HttpWebRequest)WebRequest.Create(Global.TCMSGATE + "Api/tcms_if_last_report.php");
             //httpWebRequest.Accept = "application/json";
             httpWebRequest.ContentType = "application/x-www-form-urlencoded";
             httpWebRequest.Method = "POST";
@@ -1632,7 +1632,7 @@ namespace BizOneShot.Light.Web.Controllers
 
             StatusModel statusModel = new StatusModel();
 
-            var httpWebRequest = (HttpWebRequest)WebRequest.Create(Global.TCMSTESTGATE + "Api/tcms_if_survey.php");
+            var httpWebRequest = (HttpWebRequest)WebRequest.Create(Global.TCMSGATE + "Api/tcms_if_survey.php");
             httpWebRequest.ContentType = "application/x-www-form-urlencoded";
             httpWebRequest.Method = "POST";
             httpWebRequest.CookieContainer = new CookieContainer();
@@ -1693,8 +1693,8 @@ namespace BizOneShot.Light.Web.Controllers
                     Text02 = tcmsIfSurvey.Text02,
                     InfDt = dtc
                 });
-                backSlash = jsont.Replace("\\", "");
-                byte[] ba = Encoding.UTF8.GetBytes("json=" + backSlash);
+                //backSlash = jsont.Replace("\\", "");
+                byte[] ba = Encoding.UTF8.GetBytes("json=" + jsont);
 
                 requestStream.Write(ba, 0, ba.Length);
                 requestStream.Flush();
