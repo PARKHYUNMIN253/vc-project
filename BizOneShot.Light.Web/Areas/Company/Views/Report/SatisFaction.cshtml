@@ -29,22 +29,93 @@
         $('.vc_title_01').addClass('on');    // 보고서 label
         $('.a_label03').addClass('on');      // 보고서 내부 메뉴 label (기초경영역량 문진표)
 
-        $('#mainForm').bind('submit', function() {
-            $("input:radio").each(function () {
-                var name = $(this).attr("id");
-                if($("[id="+name+"]:checked").length != 1) {
-                    alert("선택항목이 누락되었습니다.\n 모두 선택하고 완료해주세요");
-                    return false;
-                }
+        //$('#mainForm').bind('submit', function() {
+        //    $("input:radio").each(function () {
+        //        var name = $(this).attr("id");
+        //        if($("[id="+name+"]:checked").length != 1) {
+        //            alert("선택항목이 누락되었습니다.\n 모두 선택하고 완료해주세요");
+        //            return false;
+        //        }
 
-                if(!$('#Text01').val() || !$('#Text02').val())
-                {
-                    alert("문항 A 또는 B에 답변해주세요");
-                    return false;
-                }
-            });
-        });
+        //        if(!$('#Text01').val() || !$('#Text02').val())
+        //        {
+        //            alert("문항 A 또는 B에 답변해주세요");
+        //            return false;
+        //        }
+        //    });
+        //});
     });
+
+    function goSubmit()
+    {
+        var errcnt = 0;
+        var bool = true;
+        if ($(":radio[id='Check01']:checked").length != 1){
+            errcnt++;
+        } if ($(":radio[id='Check02']:checked").length != 1) {
+            errcnt++;
+        } if ($(":radio[id='Check03']:checked").length != 1) {
+            errcnt++;
+        } if ($(":radio[id='Check04']:checked").length != 1) {
+            errcnt++;
+        } if ($(":radio[id='Check05']:checked").length != 1) {
+            errcnt++;
+        } if ($(":radio[id='Check06']:checked").length != 1) {
+            errcnt++;
+        } if ($(":radio[id='Check07']:checked").length != 1) {
+            errcnt++;
+        } if ($(":radio[id='Check08']:checked").length != 1) {
+            errcnt++;
+        } if ($(":radio[id='Check09']:checked").length != 1) {
+            errcnt++;
+        } if ($(":radio[id='Check10']:checked").length != 1) {
+            errcnt++;
+        } if ($(":radio[id='Check11']:checked").length != 1) {
+            errcnt++;
+        } if ($(":radio[id='Check12']:checked").length != 1) {
+            errcnt++;
+        } if ($(":radio[id='Check13']:checked").length != 1) {
+            errcnt++;
+        } if ($(":radio[id='Check14']:checked").length != 1) {
+            errcnt++;
+        } if ($(":radio[id='Check15']:checked").length != 1) {
+            errcnt++;
+        } if ($(":radio[id='Check16']:checked").length != 1) {
+            errcnt++;
+        } if ($(":radio[id='Check17']:checked").length != 1) {
+            errcnt++;
+        } if ($(":radio[id='Check18']:checked").length != 1) {
+            errcnt++;
+        } if ($(":radio[id='Check19']:checked").length != 1) {
+            errcnt++;
+        } if ($(":radio[id='Check20']:checked").length != 1) {
+            errcnt++;
+        }
+
+        if (errcnt > 0)
+        {
+            alert("선택항목이 누락되었습니다.\n 모두 선택하고 완료해주세요");
+            errcnt = 0;
+            return false;
+        }
+
+        if ($(":radio[id='Check21']:checked").length != 1 || $(":radio[id='Check22']:checked").length != 1) {
+            alert("기타의견 - A. 사업 적정 지원 희망기간 및 규모를 선택해주세요");
+            return false;
+        }
+
+        if (!$('#Text01').val()) {
+            alert("기타의견 - A. 지원규모 텍스트를 작성해주세요");
+            return false;
+        }
+
+        if ($(":radio[id='Check23']:checked").length != 1 || $(":radio[id='Check24']:checked").length != 1) {
+            alert("기타의견 - B. 향후 지원 의사, 의향없음 선택사유를 선택해주세요");
+            return false;
+        }
+ 
+        $('#mainForm').submit();
+    }
 </script>
 
 <div class="tcms">
@@ -591,7 +662,7 @@
                         </td>
                     </tr>
                     <tr>
-                        <td class="td_left">2. "의향 없음" 선택 사유</td>
+                        <td class="td_left">2. "의향 없음" 선택 사유 (지원의사 없을경우 의향 없음)</td>
                         <td class="td_none" colspan="5">
                             <div class="td_half">@Html.RadioButtonFor(model => model.Check24, "1")</div>
                             <div class="td_half">@Html.RadioButtonFor(model => model.Check24, "2")</div>
@@ -619,7 +690,7 @@
 
             <div id="btnwrap_sub" style="float:right;">
                 <div class="rightwrap">
-                    <button type="submit" class="btn_big red rightmargin" value="저장" onclick="if (confirm('만족도 조사를 완료하시겠습니까?')) location.href='@Url.Action("DeepenReportList", "Report")'">저장</button>
+                    <button type="button" class="btn_big red rightmargin" value="저장" onclick="if (confirm('만족도 조사를 완료하시겠습니까?')) goSubmit()">저장</button>
                     <button type="button" class="btn_big gray right" value="취소" onclick="if (confirm('작성을 취소하고 목록으로 돌아가시겠습니까?')) location.href='@Url.Action("DeepenReportList", "Report")'">취소</button>
                 </div>
             </div><!--btnwrap//-->
