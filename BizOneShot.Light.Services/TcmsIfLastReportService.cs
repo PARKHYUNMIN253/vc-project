@@ -12,7 +12,7 @@ namespace BizOneShot.Light.Services
     public interface ITcmsIfLastReportService : IBaseService
     {
         Task<IList<TcmsIfLastReport>> getTcmsIfSurvey();
-        Task<TcmsIfLastReport> getTcmsIfSurveyByInfId(string infId);
+        Task<TcmsIfLastReport> getTcmsIfLastReportByInfId(string infId);
         void Insert(TcmsIfLastReport tcmsIfLastReport);
 
         Task<IList<TcmsIfLastReport>> getTcmsIfLastReportInfo(int compKey, int baKey, int mentorKey, string conCode);
@@ -40,9 +40,9 @@ namespace BizOneShot.Light.Services
             return await tcmsIfLastReportRepository.getTcmsIfSurvey();
         }
 
-        public async Task<TcmsIfLastReport> getTcmsIfSurveyByInfId(string infId)
+        public async Task<TcmsIfLastReport> getTcmsIfLastReportByInfId(string infId)
         {
-            return await tcmsIfLastReportRepository.getTcmsIfSurveyByInfId(infId);
+            return await tcmsIfLastReportRepository.getTcmsIfLastReportByInfId(infId);
         }
 
         public void Insert(TcmsIfLastReport tcmsIfLastReport)

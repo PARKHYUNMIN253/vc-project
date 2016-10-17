@@ -15,7 +15,7 @@ namespace BizOneShot.Light.Dao.Repositories
     {
         Task<IList<TcmsIfLastReport>> getTcmsIfSurvey();
         void Insert(TcmsIfLastReport tcmsIfLastReport);
-        Task<TcmsIfLastReport> getTcmsIfSurveyByInfId(string infId);
+        Task<TcmsIfLastReport> getTcmsIfLastReportByInfId(string infId);
 
         // file들의 절대경로를 update 하기 위해서 조회
         Task<IList<TcmsIfLastReport>> getTcmsIfLastReportInfo(int compKey, int baKey, int mentorKey, string conCode);
@@ -39,7 +39,7 @@ namespace BizOneShot.Light.Dao.Repositories
             return await DbContext.TcmsIfLastReports.ToListAsync();
         }
 
-        public async Task<TcmsIfLastReport> getTcmsIfSurveyByInfId(string infId)
+        public async Task<TcmsIfLastReport> getTcmsIfLastReportByInfId(string infId)
         {
             return await DbContext.TcmsIfLastReports.Where(tis => tis.InfId == infId).SingleOrDefaultAsync();
         }

@@ -1481,6 +1481,78 @@ namespace BizOneShot.Light.Web.Controllers
             }
         }
 
+        public async void resendingLastReportOne(string infId) // 하나의 연계될 데이터만 집어서 연계
+        {
+            var tcmsIfLastReportOne = await _tcmsIfLastReportService.getTcmsIfLastReportByInfId(infId);
+
+            if (tcmsIfLastReportOne.InsertYn == "E" || tcmsIfLastReportOne.InsertYn == null)
+            {
+                var firstStatus = reSendLastReport(tcmsIfLastReportOne);
+
+                if (firstStatus == "E")
+                {
+                    tcmsIfLastReportOne.InsertYn = "T";
+                    _tcmsIfLastReportService.SaveDbContext();
+                }
+                else
+                {
+                    tcmsIfLastReportOne.InsertYn = "S";
+                    _tcmsIfLastReportService.SaveDbContext();
+                }
+            }
+            else if (tcmsIfLastReportOne.InsertYn == "T") // 재전송 두 번째
+            {
+                var secondStatus = reSendLastReport(tcmsIfLastReportOne);
+
+                if (secondStatus == "E")
+                {
+                    tcmsIfLastReportOne.InsertYn = "F"; // 세 번째 최종 실패
+                    _tcmsIfLastReportService.SaveDbContext();
+                }
+                else
+                {
+                    tcmsIfLastReportOne.InsertYn = "S";
+                    _tcmsIfLastReportService.SaveDbContext();
+                }
+            }
+        }
+
+        public async void resendingSurvey(string infId)
+        {
+            var tcmsIfSurveyOne = await _tcmsIfSurveyService.getTcmsIfSurveyByInfId(infId);
+
+            if (tcmsIfSurveyOne.InsertYn == null || tcmsIfSurveyOne.InsertYn == "E")
+            {
+                var firstStatus = sendSatisfaction(tcmsIfSurveyOne);
+
+                if (firstStatus == "E")
+                {
+                    tcmsIfSurveyOne.InsertYn = "T";
+                    _tcmsIfSurveyService.SaveDbContext();
+                }
+                else
+                {
+                    tcmsIfSurveyOne.InsertYn = "S";
+                    _tcmsIfSurveyService.SaveDbContext();
+                }
+            }
+            else if (tcmsIfSurveyOne.InsertYn == "T")
+            {
+                var secondStatus = sendSatisfaction(tcmsIfSurveyOne);
+
+                if (secondStatus == "E")
+                {
+                    tcmsIfSurveyOne.InsertYn = "F";
+                    _tcmsIfSurveyService.SaveDbContext();
+                }
+                else
+                {
+                    tcmsIfSurveyOne.InsertYn = "S";
+                    _tcmsIfSurveyService.SaveDbContext();
+                }
+            }
+        }
+
         public string reSendLastReport(TcmsIfLastReport tcmsIfLastReport)
         {
             HttpContext.Response.AppendHeader("Access-Control-Allow-Origin", "*");
