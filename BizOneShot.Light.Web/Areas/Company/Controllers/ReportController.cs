@@ -3972,6 +3972,7 @@ namespace BizOneShot.Light.Web.Areas.Company.Controllers
                 //backSlash = jsont.Replace("\\", "");
                 byte[] ba = Encoding.UTF8.GetBytes("json=" + jsont);
 
+
                 requestStream.Write(ba, 0, ba.Length);
                 requestStream.Flush();
                 requestStream.Close();

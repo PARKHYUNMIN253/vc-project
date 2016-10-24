@@ -364,9 +364,6 @@
     <Compile Include="WebModels\SyDareDbInfo.cs">
       <DependentUpon>Models.tt</DependentUpon>
     </Compile>
-    <Compile Include="WebModels\sys_DatabaseFirewallRule.cs">
-      <DependentUpon>Models.tt</DependentUpon>
-    </Compile>
     <Compile Include="WebModels\TcmsCompStatusSelectView.cs">
       <DependentUpon>Models.tt</DependentUpon>
     </Compile>

@@ -66,7 +66,6 @@ namespace BizOneShot.Light.Dao.WebConfiguration
         public DbSet<ScReqDocFile> ScReqDocFiles { get; set; } // SC_REQ_DOC_FILE
         public DbSet<ScUsrResume> ScUsrResumes { get; set; } // SC_USR_RESUME
         public DbSet<SyDareDbInfo> SyDareDbInfoes { get; set; } // SY_DARE_DB_INFO
-        public DbSet<sys_DatabaseFirewallRule> sys_DatabaseFirewallRules { get; set; } // database_firewall_rules
         public DbSet<TcmsCompStatusSelectView> TcmsCompStatusSelectViews { get; set; } // TCMS_COMP_STATUS_SELECT_VIEW
         public DbSet<TcmsIfLastReport> TcmsIfLastReports { get; set; } // TCMS_IF_LAST_REPORT
         public DbSet<TcmsIfSurvey> TcmsIfSurveys { get; set; } // TCMS_IF_SURVEY
@@ -162,7 +161,6 @@ namespace BizOneShot.Light.Dao.WebConfiguration
             modelBuilder.Configurations.Add(new ScReqDocFileConfiguration());
             modelBuilder.Configurations.Add(new ScUsrResumeConfiguration());
             modelBuilder.Configurations.Add(new SyDareDbInfoConfiguration());
-            modelBuilder.Configurations.Add(new sys_DatabaseFirewallRuleConfiguration());
             modelBuilder.Configurations.Add(new TcmsCompStatusSelectViewConfiguration());
             modelBuilder.Configurations.Add(new TcmsIfLastReportConfiguration());
             modelBuilder.Configurations.Add(new TcmsIfSurveyConfiguration());
@@ -233,7 +231,6 @@ namespace BizOneShot.Light.Dao.WebConfiguration
             modelBuilder.Configurations.Add(new ScReqDocFileConfiguration(schema));
             modelBuilder.Configurations.Add(new ScUsrResumeConfiguration(schema));
             modelBuilder.Configurations.Add(new SyDareDbInfoConfiguration(schema));
-            modelBuilder.Configurations.Add(new sys_DatabaseFirewallRuleConfiguration(schema));
             modelBuilder.Configurations.Add(new TcmsCompStatusSelectViewConfiguration(schema));
             modelBuilder.Configurations.Add(new TcmsIfLastReportConfiguration(schema));
             modelBuilder.Configurations.Add(new TcmsIfSurveyConfiguration(schema));

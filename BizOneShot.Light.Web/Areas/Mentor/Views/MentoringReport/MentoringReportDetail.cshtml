@@ -218,6 +218,8 @@
                 @*<button type="button" class="btn_big red float_left mentoring_print" value="출력" onclick="alert('차후 오픈 예정 입니다.')">출력</button>*@
                 @*<a href="@Url.Action("ModifyMentoringReport","MentoringReport", new { reportSn = Model.ReportSn })" class="btn_a mint rightmargin" title="수정">수정</a>*@
                 <a href="@Url.Action("MentoringReportList","MentoringReport", new {BizWorkYear= @ViewBag.SelectParam.BizWorkYear, BizWorkSn = @ViewBag.SelectParam.BizWorkSn, CompSn = @ViewBag.SelectParam.CompSn })" class="btn_a gray mentoring_list">목록</a>
+                <a href="@Url.Action("DeleteMentoringReport","MentoringReport", new {reportSn = @ViewBag.ReportSn})" class="btn_a gray mentoring_list">삭제</a>
+                
             </div>
         </div><!--btnwrap_sub//-->
 

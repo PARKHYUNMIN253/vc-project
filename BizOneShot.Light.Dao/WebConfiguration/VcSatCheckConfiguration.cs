@@ -43,8 +43,6 @@ namespace BizOneShot.Light.Dao.WebConfiguration
             Property(x => x.Check03).HasColumnName("CHECK03").IsOptional().IsFixedLength().IsUnicode(false).HasColumnType("char").HasMaxLength(1);
             Property(x => x.Check04).HasColumnName("CHECK04").IsOptional().IsFixedLength().IsUnicode(false).HasColumnType("char").HasMaxLength(1);
             Property(x => x.Check05).HasColumnName("CHECK05").IsOptional().IsFixedLength().IsUnicode(false).HasColumnType("char").HasMaxLength(1);
-            Property(x => x.RegDt).HasColumnName("REG_DT").IsOptional().HasColumnType("datetime");
-            Property(x => x.UdpDt).HasColumnName("UDP_DT").IsOptional().HasColumnType("datetime");
             Property(x => x.Check06).HasColumnName("CHECK06").IsOptional().IsFixedLength().IsUnicode(false).HasColumnType("char").HasMaxLength(1);
             Property(x => x.Check07).HasColumnName("CHECK07").IsOptional().IsFixedLength().IsUnicode(false).HasColumnType("char").HasMaxLength(1);
             Property(x => x.Check08).HasColumnName("CHECK08").IsOptional().IsFixedLength().IsUnicode(false).HasColumnType("char").HasMaxLength(1);
@@ -62,10 +60,11 @@ namespace BizOneShot.Light.Dao.WebConfiguration
             Property(x => x.Check20).HasColumnName("CHECK20").IsOptional().IsFixedLength().IsUnicode(false).HasColumnType("char").HasMaxLength(1);
             Property(x => x.Check21).HasColumnName("CHECK21").IsOptional().IsFixedLength().IsUnicode(false).HasColumnType("char").HasMaxLength(1);
             Property(x => x.Check22).HasColumnName("CHECK22").IsOptional().IsFixedLength().IsUnicode(false).HasColumnType("char").HasMaxLength(1);
-            Property(x => x.Text01).HasColumnName("TEXT01").IsOptional().HasColumnType("nvarchar").HasMaxLength(150);
-            Property(x => x.Text02).HasColumnName("TEXT02").IsOptional().HasColumnType("nvarchar").HasMaxLength(150);
             Property(x => x.Check23).HasColumnName("CHECK23").IsOptional().IsFixedLength().IsUnicode(false).HasColumnType("char").HasMaxLength(1);
             Property(x => x.Check24).HasColumnName("CHECK24").IsOptional().IsFixedLength().IsUnicode(false).HasColumnType("char").HasMaxLength(1);
+            Property(x => x.Text01).HasColumnName("TEXT01").IsOptional().HasColumnType("nvarchar").HasMaxLength(150);
+            Property(x => x.Text02).HasColumnName("TEXT02").IsOptional().HasColumnType("nvarchar").HasMaxLength(150);
+            Property(x => x.RegDt).HasColumnName("REG_DT").IsOptional().HasColumnType("datetime");
             InitializePartial();
         }
         partial void InitializePartial();

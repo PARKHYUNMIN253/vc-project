@@ -29,8 +29,6 @@ namespace BizOneShot.Light.Models.WebModels
         public string Check03 { get; set; } // CHECK03
         public string Check04 { get; set; } // CHECK04
         public string Check05 { get; set; } // CHECK05
-        public DateTime? RegDt { get; set; } // REG_DT
-        public DateTime? UdpDt { get; set; } // UDP_DT
         public string Check06 { get; set; } // CHECK06
         public string Check07 { get; set; } // CHECK07
         public string Check08 { get; set; } // CHECK08
@@ -48,10 +46,11 @@ namespace BizOneShot.Light.Models.WebModels
         public string Check20 { get; set; } // CHECK20
         public string Check21 { get; set; } // CHECK21
         public string Check22 { get; set; } // CHECK22
-        public string Text01 { get; set; } // TEXT01
-        public string Text02 { get; set; } // TEXT02
         public string Check23 { get; set; } // CHECK23
         public string Check24 { get; set; } // CHECK24
+        public string Text01 { get; set; } // TEXT01
+        public string Text02 { get; set; } // TEXT02
+        public DateTime? RegDt { get; set; } // REG_DT
     }
 
 }

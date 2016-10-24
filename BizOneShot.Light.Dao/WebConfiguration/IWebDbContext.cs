@@ -66,7 +66,6 @@ namespace BizOneShot.Light.Dao.WebConfiguration
         DbSet<ScReqDocFile> ScReqDocFiles { get; set; } // SC_REQ_DOC_FILE
         DbSet<ScUsrResume> ScUsrResumes { get; set; } // SC_USR_RESUME
         DbSet<SyDareDbInfo> SyDareDbInfoes { get; set; } // SY_DARE_DB_INFO
-        DbSet<sys_DatabaseFirewallRule> sys_DatabaseFirewallRules { get; set; } // database_firewall_rules
         DbSet<TcmsCompStatusSelectView> TcmsCompStatusSelectViews { get; set; } // TCMS_COMP_STATUS_SELECT_VIEW
         DbSet<TcmsIfLastReport> TcmsIfLastReports { get; set; } // TCMS_IF_LAST_REPORT
         DbSet<TcmsIfSurvey> TcmsIfSurveys { get; set; } // TCMS_IF_SURVEY

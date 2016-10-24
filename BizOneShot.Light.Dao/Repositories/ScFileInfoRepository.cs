@@ -16,6 +16,8 @@ namespace BizOneShot.Light.Dao.Repositories
     {
         Task<ScFileInfo> getFileInfoByFileSn(int fileSn);
         ScFileInfo getFileInfoByFileSnNA(int fileSn);
+
+        Task<IList<ScFileInfo>> getFileInfoByFileSnList(int fileSn);
     }
 
     public class ScFileInfoRepository : RepositoryBase<ScFileInfo>, IScFileInfoRepository
@@ -33,6 +35,11 @@ namespace BizOneShot.Light.Dao.Repositories
         public ScFileInfo getFileInfoByFileSnNA(int fileSn)
         {
             return DbContext.ScFileInfoes.Where(obj => obj.FileSn == fileSn).Single();
+        }
+
+        public async Task<IList<ScFileInfo>> getFileInfoByFileSnList(int fileSn)
+        {
+            return await DbContext.ScFileInfoes.Where(obj => obj.FileSn == fileSn).ToListAsync();
         }
     }
 }

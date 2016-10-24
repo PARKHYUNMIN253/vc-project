@@ -1538,8 +1538,8 @@ namespace BizOneShot.Light.Web.Controllers
             }
             else if (tcmsIfSurveyOne.InsertYn == "T")
             {
-                var secondStatus = sendSatisfaction(tcmsIfSurveyOne);
 
+                var secondStatus = sendSatisfaction(tcmsIfSurveyOne);
                 if (secondStatus == "E")
                 {
                     tcmsIfSurveyOne.InsertYn = "F";
@@ -1566,7 +1566,7 @@ namespace BizOneShot.Light.Web.Controllers
             var a = tcmsIfLastReport.RegDt;
             var b = tcmsIfLastReport.InfDt;
 
-            var httpWebRequest = (HttpWebRequest)WebRequest.Create(Global.TCMSGATE + "Api/tcms_if_last_report.php");
+            var httpWebRequest = (HttpWebRequest)WebRequest.Create(Global.TCMSTESTGATE + "Api/tcms_if_last_report.php");
             //httpWebRequest.Accept = "application/json";
             httpWebRequest.ContentType = "application/x-www-form-urlencoded";
             httpWebRequest.Method = "POST";
@@ -1704,7 +1704,7 @@ namespace BizOneShot.Light.Web.Controllers
 
             StatusModel statusModel = new StatusModel();
 
-            var httpWebRequest = (HttpWebRequest)WebRequest.Create(Global.TCMSGATE + "Api/tcms_if_survey.php");
+            var httpWebRequest = (HttpWebRequest)WebRequest.Create(Global.TCMSTESTGATE + "Api/tcms_if_survey.php");
             httpWebRequest.ContentType = "application/x-www-form-urlencoded";
             httpWebRequest.Method = "POST";
             httpWebRequest.CookieContainer = new CookieContainer();

@@ -39,6 +39,9 @@ namespace BizOneShot.Light.Web.Areas.Mentor.Controllers
         private readonly IVcMentorMappingService _vcMentorMappingService;
         // add Loy 20160726 멘토링 일지 관련 추가
         private readonly IVcCompInfoService _vcCompInfoService;
+        // add Loy : delete Mentoring report
+        private readonly IScFileInfoService _scFileInfoService;
+
 
         public MentoringReportController(IScCompMappingService scCompMappingService
             , IScMentorMappingService scMentorMappingService
@@ -50,7 +53,8 @@ namespace BizOneShot.Light.Web.Areas.Mentor.Controllers
             , IProcMngService procMngService
             , IScUsrService vcUsrService
             , IVcMentorMappingService vcMentorMappingService
-            , IVcCompInfoService _vcCompInfoService)
+            , IVcCompInfoService _vcCompInfoService
+            , IScFileInfoService _scFileInfoService)
         {
             this._scCompMappingService = scCompMappingService;
             this._scMentorMappingService = scMentorMappingService;
@@ -64,6 +68,8 @@ namespace BizOneShot.Light.Web.Areas.Mentor.Controllers
             this._vcMentorMappingService = vcMentorMappingService;
 
             this._vcCompInfoService = _vcCompInfoService;
+
+            this._scFileInfoService = _scFileInfoService;
         }
 
         [HttpPost]
@@ -444,6 +450,7 @@ namespace BizOneShot.Light.Web.Areas.Mentor.Controllers
 
             //검색조건 유지를 위해
             ViewBag.SelectParam = selectParam;
+            ViewBag.ReportSn = reportViewModel.ReportSn;
 
             return View(reportViewModel);
         }
@@ -755,6 +762,59 @@ namespace BizOneShot.Light.Web.Areas.Mentor.Controllers
             }
 
             return Json(request);
+
+        }
+
+        // 멘토링 리포트 삭제하는 method
+        public async Task<ActionResult> DeleteMentoringReport(int reportSn)
+        {
+            // 삭제하고자 하는 파일의 path 조회
+            var rootFilePath = ConfigurationManager.AppSettings["RootFilePath"];
+
+            // 삭제하고자하는 멘토링 일지 조회
+            var scMentoringReport = await _scMentoringReportService.GetMentoringReportById(reportSn);
+            // 삭제 하는 프로세스
+
+            // 삭제하고자하는 멘토링 파일 정보 조회
+            var scMentoringReportFileInfo = await _scMentoringFileInfoService.GetMentoringFileInfo(reportSn);
+            // 삭제 하는 프로세스
+
+            // scMentoringReportFileInfo에서 FileSn
+            foreach (var file in scMentoringReportFileInfo)
+            {
+                var scFileInfo = await _scFileInfoService.getFileInfoByFileSnList(file.FileSn);
+
+                var filePath = file.ScFileInfo.FilePath;
+                // 삭제 하는 프로세스
+
+                var fullPath = rootFilePath + filePath;
+
+                // 파일이 존재유무 확인
+                if (System.IO.File.Exists(fullPath))
+                {
+
+                    try
+                    {
+
+                        // 파일이 존재할때 삭제
+                        System.IO.File.Delete(fullPath);
+
+                    }
+                    catch (System.IO.IOException e)
+                    {
+                        // 존재하지 않을 경우 예외처리
+
+                    }
+
+                }
+
+            }
+
+
+           
+            
+
+            return RedirectToAction("MentoringReportList", "MentoringReport");
 
         }
     }

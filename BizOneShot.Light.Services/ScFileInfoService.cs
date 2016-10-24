@@ -3,6 +3,7 @@ using System.Threading.Tasks;
 using BizOneShot.Light.Dao.Infrastructure;
 using BizOneShot.Light.Dao.Repositories;
 using BizOneShot.Light.Models.WebModels;
+using System.Collections.Generic;
 
 namespace BizOneShot.Light.Services
 {
@@ -11,6 +12,8 @@ namespace BizOneShot.Light.Services
         void ModifyFileInfo(ScFileInfo scFileInfo);
         Task<ScFileInfo> getFileInfoByFileSn(int fileSn);
         ScFileInfo getFileInfoByFileSnNA(int fileSn);
+
+        Task<IList<ScFileInfo>> getFileInfoByFileSnList(int fileSn);
     }
 
 
@@ -39,6 +42,11 @@ namespace BizOneShot.Light.Services
         {
             scFileInfoRepository.Update(scFileInfo);
         }
+        public async Task<IList<ScFileInfo>> getFileInfoByFileSnList(int fileSn)
+        {
+            return await scFileInfoRepository.getFileInfoByFileSnList(fileSn);
+        }
+
 
         #region SaveDbContext
 
