@@ -14,6 +14,9 @@ namespace BizOneShot.Light.Services
         ScFileInfo getFileInfoByFileSnNA(int fileSn);
 
         Task<IList<ScFileInfo>> getFileInfoByFileSnList(int fileSn);
+
+        // 멘토링 일지 파일 삭제
+        int deleteMentoringReport(int fileSn);
     }
 
 
@@ -47,6 +50,12 @@ namespace BizOneShot.Light.Services
             return await scFileInfoRepository.getFileInfoByFileSnList(fileSn);
         }
 
+        public int deleteMentoringReport(int fileSn)
+        {
+            var deleteFile = scFileInfoRepository.deleteMentoringReport(fileSn);
+
+            return deleteFile;
+        }
 
         #region SaveDbContext
 

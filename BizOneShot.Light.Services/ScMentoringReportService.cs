@@ -50,6 +50,9 @@ namespace BizOneShot.Light.Services
             int startMonth, int endYear, int endMonth);
 
         Task<IList<ScMentoringReport>> getMentoringReportListById(string mentorId);
+
+        // 멘토링일지 파일 삭제
+        int deleteMentoringReport(int reportSn);
     }
 
     public class ScMentoringReportService : IScMentoringReportService
@@ -288,6 +291,13 @@ namespace BizOneShot.Light.Services
             }
 
             scMentoringReportRepository.Update(scMentoringReport);
+        }
+
+        public int deleteMentoringReport(int reportSn)
+        {
+            var deleteFile = scMentoringReportRepository.deleteMentoringReport(reportSn);
+
+            return deleteFile;
         }
 
         #region SaveDbContext

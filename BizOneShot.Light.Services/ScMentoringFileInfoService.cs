@@ -9,6 +9,10 @@ namespace BizOneShot.Light.Services
     public interface IScMentoringFileInfoService : IBaseService
     {
         Task<IList<ScMentoringFileInfo>> GetMentoringFileInfo(int reportSn);
+
+        // 멘토링일지 관련 파일 삭제
+        int deleteMentoringReport(int reportSn);
+        
     }
 
 
@@ -31,6 +35,14 @@ namespace BizOneShot.Light.Services
                 await
                     scMentoringFileInfoRepository.GetMentoringFileInfo(
                         mtfi => mtfi.ReportSn == reportSn && mtfi.ScFileInfo.Status == "N");
+        }
+
+
+        public int deleteMentoringReport(int reportSn)
+        {
+            var deleteFile = scMentoringFileInfoRepository.deleteMentoringReport(reportSn);
+
+            return deleteFile;
         }
 
         #region SaveDbContext

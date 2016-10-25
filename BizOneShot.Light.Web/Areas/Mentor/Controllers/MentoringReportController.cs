@@ -177,8 +177,8 @@ namespace BizOneShot.Light.Web.Areas.Mentor.Controllers
             else
             {
                 return View();
-            }                
-            
+            }
+
             //// 추가 블록 끝...
             //SqlParameter loginId = new SqlParameter("LOGIN_ID", Session[Global.LoginID].ToString());
             //object[] parameters = new object[] { loginId };
@@ -195,7 +195,7 @@ namespace BizOneShot.Light.Web.Areas.Mentor.Controllers
             //SelectList compListSelect = new SelectList(compDropDown, "CompSn", "CompNm");
 
             //ViewBag.SelectCompList = compListSelect;
-            
+
 
             //// 매핑 되어있지 않은 Mentor는 compSn이 없기때문에 우선은 단순 View만 보여줌
             //if(compList.Count > 0)
@@ -455,50 +455,7 @@ namespace BizOneShot.Light.Web.Areas.Mentor.Controllers
             return View(reportViewModel);
         }
 
-        //public async Task<ActionResult> ModifyMentoringReport(int reportSn)
-        //{
-        //    ViewBag.LeftMenu = Global.MentoringReport;
-
-        //    var mentorId = Session[Global.LoginID].ToString();
-
-        //    //사업 DropDown List Data
-        //    var bizWorkDropDown = await MakeBizWork(mentorId, 0);
-        //    SelectList bizList = new SelectList(bizWorkDropDown, "BizWorkSn", "BizWorkNm");
-        //    ViewBag.SelectBizWorkList = bizList;
-
-        //    //기업 DropDwon List Data
-        //    var compInfoDropDown = await MakeBizComp(mentorId, 0, 0);
-        //    SelectList compInfoList = new SelectList(compInfoDropDown, "CompSn", "CompNm");
-        //    ViewBag.SelectCompInfoList = compInfoList;
-
-
-        //    //실제 데이터
-        //    var scMentoringReport = await _scMentoringReportService.GetMentoringReportById(reportSn);
-
-        //    //멘토링 사진
-        //    var listscMentoringImageInfo = scMentoringReport.ScMentoringFileInfoes.Where(mtfi => mtfi.Classify == "P").Select(mtfi => mtfi.ScFileInfo).Where(fi => fi.Status == "N");
-
-        //    //사진추가
-        //    var listMentoringPhotoView =
-        //      Mapper.Map<List<FileContent>>(listscMentoringImageInfo);
-
-        //    //첨부파일
-        //    var listscFileInfo = scMentoringReport.ScMentoringFileInfoes.Where(mtfi => mtfi.Classify == "A").Select(mtfi => mtfi.ScFileInfo).Where(fi => fi.Status == "N");
-
-        //    var listFileContentView =
-        //       Mapper.Map<List<FileContent>>(listscFileInfo);
-
-        //    //멘토링 상세 매핑
-        //    var reportViewModel =
-        //       Mapper.Map<MentoringReportViewModel>(scMentoringReport);
-
-        //    //멘토링상세뷰에 파일정보 추가
-        //    reportViewModel.FileContents = listFileContentView;
-        //    reportViewModel.MentoringPhoto = listMentoringPhotoView;
-
-        //    return View(reportViewModel);
-        //}
-
+        
 
         [HttpPost]
         [ValidateAntiForgeryToken]
@@ -729,7 +686,7 @@ namespace BizOneShot.Light.Web.Areas.Mentor.Controllers
         }
         #endregion
 
-         public async Task<ActionResult> CompList(string curPage)
+        public async Task<ActionResult> CompList(string curPage)
         {
 
             ViewBag.naviLeftMenu = Global.MentoringReport;
@@ -773,13 +730,22 @@ namespace BizOneShot.Light.Web.Areas.Mentor.Controllers
 
             // 삭제하고자하는 멘토링 일지 조회
             var scMentoringReport = await _scMentoringReportService.GetMentoringReportById(reportSn);
-            // 삭제 하는 프로세스
 
             // 삭제하고자하는 멘토링 파일 정보 조회
             var scMentoringReportFileInfo = await _scMentoringFileInfoService.GetMentoringFileInfo(reportSn);
-            // 삭제 하는 프로세스
 
-            // scMentoringReportFileInfo에서 FileSn
+            // scMentoring_report_file 삭제
+            _scMentoringFileInfoService.deleteMentoringReport(reportSn);
+
+
+            // scMentoring_report 삭제
+            _scMentoringReportService.deleteMentoringReport(reportSn);
+
+
+            // sc_file_info 삭제 하는 프로세스
+            string[] fullPathList = new string[3];
+            int cnt = 0;
+
             foreach (var file in scMentoringReportFileInfo)
             {
                 var scFileInfo = await _scFileInfoService.getFileInfoByFileSnList(file.FileSn);
@@ -789,33 +755,71 @@ namespace BizOneShot.Light.Web.Areas.Mentor.Controllers
 
                 var fullPath = rootFilePath + filePath;
 
-                // 파일이 존재유무 확인
-                if (System.IO.File.Exists(fullPath))
-                {
+                fullPathList[cnt] = fullPath;
 
-                    try
-                    {
+                _scFileInfoService.deleteMentoringReport(file.FileSn);
 
-                        // 파일이 존재할때 삭제
-                        System.IO.File.Delete(fullPath);
-
-                    }
-                    catch (System.IO.IOException e)
-                    {
-                        // 존재하지 않을 경우 예외처리
-
-                    }
-
-                }
+                cnt++;
 
             }
 
-
-           
-            
+            // 실제로 존재하는 파일 삭제
+            if(fullPathList.Length != 0)
+            {
+                foreach(var file in fullPathList)
+                {
+                    if (System.IO.File.Exists(file))
+                    {
+                        try
+                        {
+                            // 파일이 존재할때 삭제
+                            System.IO.File.Delete(file);
+                        }
+                        catch (System.IO.IOException e)
+                        {
+                            // 존재하지 않을 경우 예외처리
+                        }
+                    }
+                }
+            }
 
             return RedirectToAction("MentoringReportList", "MentoringReport");
 
         }
+
+        // 수정하는 page
+        public async Task<ActionResult> ModifyMentoringReport(int reportSn)
+        {
+            ViewBag.LeftMenu = Global.MentoringReport;
+
+            var mentorId = Session[Global.LoginID].ToString();
+
+            //실제 데이터
+            var scMentoringReport = await _scMentoringReportService.GetMentoringReportById(reportSn);
+
+            //멘토링 사진
+            var listscMentoringImageInfo = scMentoringReport.ScMentoringFileInfoes.Where(mtfi => mtfi.Classify == "P").Select(mtfi => mtfi.ScFileInfo).Where(fi => fi.Status == "N");
+
+            //사진추가
+            var listMentoringPhotoView =
+              Mapper.Map<List<FileContent>>(listscMentoringImageInfo);
+
+            //첨부파일
+            var listscFileInfo = scMentoringReport.ScMentoringFileInfoes.Where(mtfi => mtfi.Classify == "A").Select(mtfi => mtfi.ScFileInfo).Where(fi => fi.Status == "N");
+
+            var listFileContentView =
+               Mapper.Map<List<FileContent>>(listscFileInfo);
+
+            //멘토링 상세 매핑
+            var reportViewModel =
+               Mapper.Map<MentoringReportViewModel>(scMentoringReport);
+
+            //멘토링상세뷰에 파일정보 추가
+            reportViewModel.FileContents = listFileContentView;
+            reportViewModel.MentoringPhoto = listMentoringPhotoView;
+
+            return View(reportViewModel);
+        }
+
     }
 }

@@ -18,6 +18,10 @@ namespace BizOneShot.Light.Dao.Repositories
         ScFileInfo getFileInfoByFileSnNA(int fileSn);
 
         Task<IList<ScFileInfo>> getFileInfoByFileSnList(int fileSn);
+
+        // 멘토링 일지 삭제
+        int deleteMentoringReport(int fileSn);
+
     }
 
     public class ScFileInfoRepository : RepositoryBase<ScFileInfo>, IScFileInfoRepository
@@ -40,6 +44,14 @@ namespace BizOneShot.Light.Dao.Repositories
         public async Task<IList<ScFileInfo>> getFileInfoByFileSnList(int fileSn)
         {
             return await DbContext.ScFileInfoes.Where(obj => obj.FileSn == fileSn).ToListAsync();
+        }
+
+        public int deleteMentoringReport(int fileSn)
+        {
+            var commandString =
+                string.Format("DELETE FROM SC_FILE_INFO where FILE_SN='" + fileSn + "'");
+
+            return DbContext.Database.ExecuteSqlCommand(commandString);
         }
     }
 }

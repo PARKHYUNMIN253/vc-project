@@ -40,6 +40,9 @@ namespace BizOneShot.Light.Dao.Repositories
             int startMonth, int endYear, int endMonth);
 
         Task<IList<ScMentoringReport>> getScMentoringReportListById(string mentorId);
+
+        // 멘토링 일지 삭제
+        int deleteMentoringReport(int reportSn);
     }
 
 
@@ -270,5 +273,13 @@ namespace BizOneShot.Light.Dao.Repositories
         }
 
         //MentoringStatsByMentorCompGroupModel
+
+        public int deleteMentoringReport(int reportSn)
+        {
+            var commandString =
+         string.Format("DELETE FROM SC_MENTORING_REPORT where REPORT_SN='" + reportSn + "'");
+
+            return DbContext.Database.ExecuteSqlCommand(commandString);
+        }
     }
 }
