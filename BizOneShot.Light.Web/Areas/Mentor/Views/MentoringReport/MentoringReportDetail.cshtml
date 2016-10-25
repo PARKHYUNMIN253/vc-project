@@ -219,6 +219,7 @@
                 @*<a href="@Url.Action("ModifyMentoringReport","MentoringReport", new { reportSn = Model.ReportSn })" class="btn_a mint rightmargin" title="수정">수정</a>*@
                 <a href="@Url.Action("MentoringReportList","MentoringReport", new {BizWorkYear= @ViewBag.SelectParam.BizWorkYear, BizWorkSn = @ViewBag.SelectParam.BizWorkSn, CompSn = @ViewBag.SelectParam.CompSn })" class="btn_a gray mentoring_list">목록</a>
                 <a href="@Url.Action("DeleteMentoringReport","MentoringReport", new {reportSn = @ViewBag.ReportSn})" class="btn_a gray mentoring_list">삭제</a>
+                <a href="@Url.Action("ModifyMentoringReport","MentoringReport", new {reportSn = @ViewBag.ReportSn})" class="btn_a mint rightmargin" title="수정">수정</a>
                 
             </div>
         </div><!--btnwrap_sub//-->
