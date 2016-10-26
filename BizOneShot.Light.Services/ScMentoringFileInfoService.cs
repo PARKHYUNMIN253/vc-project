@@ -12,6 +12,9 @@ namespace BizOneShot.Light.Services
 
         // 멘토링일지 관련 파일 삭제
         int deleteMentoringReport(int reportSn);
+
+        // 멘토링일지 수정관련 파일 삭제
+        int deleteMentoringReportEdit(int reportSn, int fileSn);
         
     }
 
@@ -41,6 +44,13 @@ namespace BizOneShot.Light.Services
         public int deleteMentoringReport(int reportSn)
         {
             var deleteFile = scMentoringFileInfoRepository.deleteMentoringReport(reportSn);
+
+            return deleteFile;
+        }
+        
+        public int deleteMentoringReportEdit(int reportSn, int fileSn)
+        {
+            var deleteFile = scMentoringFileInfoRepository.deleteMentoringReportEdit(reportSn, fileSn);
 
             return deleteFile;
         }

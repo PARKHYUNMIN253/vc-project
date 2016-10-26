@@ -15,6 +15,9 @@ namespace BizOneShot.Light.Dao.Repositories
 
         // 멘토링관련 파일 삭제
         int deleteMentoringReport(int reportSn);
+
+        // 멘토링일지 수정관련 파일 삭제
+        int deleteMentoringReportEdit(int reportSn, int fileSn);
     }
 
 
@@ -35,6 +38,13 @@ namespace BizOneShot.Light.Dao.Repositories
         public int deleteMentoringReport(int reportSn)
         {
             var commandString = string.Format("DELETE FROM SC_MENTORING_FILE_INFO where REPORT_SN='" + reportSn + "'");
+
+            return DbContext.Database.ExecuteSqlCommand(commandString);
+        }
+
+        public int deleteMentoringReportEdit(int reportSn, int fileSn)
+        {
+            var commandString = string.Format("DELETE FROM SC_MENTORING_FILE_INFO where REPORT_SN='" + reportSn + "' and FILE_SN='"+ fileSn + "'");
 
             return DbContext.Database.ExecuteSqlCommand(commandString);
         }

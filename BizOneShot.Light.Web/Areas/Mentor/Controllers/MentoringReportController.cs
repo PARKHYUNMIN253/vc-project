@@ -748,7 +748,7 @@ namespace BizOneShot.Light.Web.Areas.Mentor.Controllers
             var listMentoringPhotoView =
               Mapper.Map<List<FileContent>>(listscMentoringImageInfo);
 
-            if(listMentoringPhotoView.Count == 1)
+            if (listMentoringPhotoView.Count == 1)
             {
                 ViewBag.Photo01 = listMentoringPhotoView[0].FileNm;
             }
@@ -757,8 +757,8 @@ namespace BizOneShot.Light.Web.Areas.Mentor.Controllers
                 ViewBag.Photo01 = listMentoringPhotoView[0].FileNm;
                 ViewBag.Photo02 = listMentoringPhotoView[1].FileNm;
             }
-            
-            
+
+
 
             //첨부파일
             var listscFileInfo = scMentoringReport.ScMentoringFileInfoes.Where(mtfi => mtfi.Classify == "A").Select(mtfi => mtfi.ScFileInfo).Where(fi => fi.Status == "N");
@@ -766,7 +766,7 @@ namespace BizOneShot.Light.Web.Areas.Mentor.Controllers
             var listFileContentView =
                Mapper.Map<List<FileContent>>(listscFileInfo);
 
-            if(listFileContentView.Count != 0)
+            if (listFileContentView.Count != 0)
             {
                 ViewBag.FileNm = listFileContentView[0].FileNm;
             }
@@ -812,7 +812,7 @@ namespace BizOneShot.Light.Web.Areas.Mentor.Controllers
             scMentoringReport.UpdId = dataRequestViewModel.MentorId;
             scMentoringReport.UpdDt = DateTime.Now;
 
-          
+
 
             var scMentoringReportFileInfo = await _scMentoringFileInfoService.GetMentoringFileInfo(dataRequestViewModel.ReportSn);
 
@@ -820,64 +820,115 @@ namespace BizOneShot.Light.Web.Areas.Mentor.Controllers
 
             // sc_file_info 삭제 하는 프로세스
             string[] fullPathList = new string[3];
+            int[] fileListByDelete = new int[3];
             int cnt = 0;
 
+            foreach (var fileInfo in scMentoringReportFileInfo)
+            {
+                var scFileInfo = await _scFileInfoService.getFileInfoByFileSnList(fileInfo.FileSn);
+
+                var filePathInfo = fileInfo.ScFileInfo.FilePath;
+                // 삭제 하는 프로세스
+
+                var fullPath = rootFilePath + filePathInfo;
+
+                fullPathList[cnt] = fullPath;
+                fileListByDelete[cnt] = fileInfo.FileSn;
+
+
+                cnt++;
+
+            }
 
 
             // 실제로 존재하는 파일 삭제
             int cnt2 = 0;
             if (fullPathList.Length != 0)
             {
-                foreach (var filePath in fullPathList)
+
+                try
                 {
-                    if (System.IO.File.Exists(filePath))
+                    // 기존의 파일과 새로등록한파일이 다를경우 기존의 파일 삭제
+                    var originFile = "";
+                    var newFile = "";
+                    var c = 0;
+
+                    foreach (var fileCheck in scMentoringReportFileInfo)
                     {
-                        try
+                        originFile = fileCheck.ScFileInfo.FileNm;
+                        var c2 = 0;
+                        foreach (var fileNew in files)
                         {
-                            // 기존의 파일과 새로등록한파일이 다를경우 기존의 파일 삭제
-                            var originFile = "";
-                            var newFile = "";
-                            foreach(var fileCheck in scMentoringReportFileInfo)
+                            if (fileNew != null)
                             {
-                                originFile = fileCheck.ScFileInfo.FileNm;
-                                foreach(var fileNew in files)
+                                // 첫번째 파일 비교
+                                if (c == 0 && fileCheck.Classify == "P" && c2 == 0)
                                 {
                                     newFile = fileNew.FileName;
-                                    if(originFile != newFile)
+
+                                    if (originFile != newFile)
                                     {
-                                        foreach (var fileInfo in scMentoringReportFileInfo)
-                                        {
-                                            var scFileInfo = await _scFileInfoService.getFileInfoByFileSnList(fileInfo.FileSn);
+                                        //_scFileInfoService.deleteMentoringReport(fileCheck.FileSn);
 
-                                            var filePathInfo = fileInfo.ScFileInfo.FilePath;
-                                            // 삭제 하는 프로세스
+                                        // scMentoring_report 삭제
+                                        _scMentoringFileInfoService.deleteMentoringReportEdit(dataRequestViewModel.ReportSn, fileListByDelete[0]);
 
-                                            var fullPath = rootFilePath + filePathInfo;
+                                        System.IO.File.Delete(fullPathList[0]);
 
-                                            fullPathList[cnt] = fullPath;
+                                    }
 
-                                            _scFileInfoService.deleteMentoringReport(fileInfo.FileSn);
+                                }
+                                else if (c == 1 && fileCheck.Classify == "P" && c2 == 1)
+                                {
 
-                                            // scMentoring_report 삭제
-                                            _scMentoringFileInfoService.deleteMentoringReport(dataRequestViewModel.ReportSn);
+                                    newFile = fileNew.FileName;
 
-                                            cnt++;
+                                    if (originFile != newFile)
+                                    {
+                                        //_scFileInfoService.deleteMentoringReport(fileCheck.FileSn);
 
-                                        }
-                                        System.IO.File.Delete(filePath);
+                                        // scMentoring_report 삭제
+                                        _scMentoringFileInfoService.deleteMentoringReportEdit(dataRequestViewModel.ReportSn, fileListByDelete[1]);
+
+                                        System.IO.File.Delete(fullPathList[1]);
+
+                                    }
+
+                                }
+                                else if (c == 2 && fileCheck.Classify == "A" && c2 == 2)
+                                {
+
+                                    newFile = fileNew.FileName;
+
+                                    if (originFile != newFile)
+                                    {
+                                        //_scFileInfoService.deleteMentoringReport(fileCheck.FileSn);
+
+                                        // scMentoring_report 삭제
+                                        _scMentoringFileInfoService.deleteMentoringReportEdit(dataRequestViewModel.ReportSn, fileListByDelete[2]);
+
+                                        System.IO.File.Delete(fullPathList[2]);
+
                                     }
                                 }
-                            }
 
-                            
+                            }
+                            c2++;
                         }
-                        catch (System.IO.IOException e)
-                        {
-                            // 존재하지 않을 경우 예외처리
-                        }
+
+                        c++;
+
                     }
-                    cnt2++;
+
+
                 }
+                catch (System.IO.IOException e)
+                {
+                    // 존재하지 않을 경우 예외처리
+                }
+
+                cnt2++;
+
             }
 
             // 새로운 첨부파일 업로드

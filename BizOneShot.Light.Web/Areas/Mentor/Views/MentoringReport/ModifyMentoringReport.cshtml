@@ -281,7 +281,8 @@
                                         @if (ViewBag.Photo01 != null)
                                         {
                                             @*<span type="text" class="padding_left10">@ViewBag.Photo01</span>*@
-                                            <input type="text" readonly="readonly" class="padding_left10" value="@ViewBag.Photo01"  onchange="return get_imagename(this)" />
+                                            @*<input type="text" readonly="readonly" class="padding_left10" value="@ViewBag.Photo01"  onchange="return get_imagename(this)" />*@
+                                              <input type="text" readonly="readonly" class="file search01 border1" id="file_photo01" value="@ViewBag.Photo01" onchange="return get_imagename(this)" />
                                         }
                                         else
                                         {
@@ -304,7 +305,8 @@
                                         
                                         @if (ViewBag.Photo02 != null)
                                         {
-                                            <input type="text" readonly="readonly" class="padding_left10" value="@ViewBag.Photo02" onchange="return get_imagename(this)" />
+                                            @*<input type="text" readonly="readonly" class="padding_left10" value="@ViewBag.Photo02" onchange="return get_imagename(this)" />*@
+                                            <input type="text" readonly="readonly" class="file search01 border1" id="file_photo02" value="@ViewBag.Photo02" onchange="return get_imagename(this)" />
                                         }
                                         else
                                         {
@@ -353,7 +355,8 @@
 
                                         @if (ViewBag.FileNm != null)
                                         {
-                                            <input type="text" readonly="readonly" class="padding_left10" value="@ViewBag.FileNm" onchange="return get_filename(this)" />
+                                            @*<input type="text" readonly="readonly" class="padding_left10" value="@ViewBag.FileNm" onchange="return get_filename(this)" />*@
+                                            <input type="text" readonly="readonly" class="file search01 border1" value="@ViewBag.FileNm" onchange="return get_filename(this)" />
                                         }
                                         else
                                         {
