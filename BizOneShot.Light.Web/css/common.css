@@ -1198,3 +1198,22 @@ select.w101p { width: 96.4%; height: 28px; border: 1px solid #dbdbdb; margin-lef
 .height_complete {
     height: 957px !important;
 }
+
+.mentoring_edit_input {
+    width : 430px;
+    margin-top: 4px;
+}
+
+.magin_rignt5{
+    margin-right: 5px;
+}
+
+.magin_rignt4{
+    margin-right: 4px;
+}    
+
+.mentoring_edit_input2 {
+    width : 429px;
+    margin-top: 4px;
+}
+

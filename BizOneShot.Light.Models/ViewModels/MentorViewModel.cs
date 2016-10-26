@@ -324,6 +324,8 @@ namespace BizOneShot.Light.Models.ViewModels
         public string SubNumSnNm { get; set; }
         public string ConCode { get; set; }
         public int TcmsLoginKey { get; set; }
+
+        public string DeleteSn { get; set; }
     }
 
     public class TcmsMentoringReportViewModel

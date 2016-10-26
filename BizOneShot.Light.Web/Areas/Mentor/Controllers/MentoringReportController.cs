@@ -751,12 +751,19 @@ namespace BizOneShot.Light.Web.Areas.Mentor.Controllers
             if (listMentoringPhotoView.Count == 1)
             {
                 ViewBag.Photo01 = listMentoringPhotoView[0].FileNm;
+
+                ViewBag.FileSn01 = listMentoringPhotoView[0].FileSn;
             }
             else if (listMentoringPhotoView.Count == 2)
             {
                 ViewBag.Photo01 = listMentoringPhotoView[0].FileNm;
                 ViewBag.Photo02 = listMentoringPhotoView[1].FileNm;
+
+
+                ViewBag.FileSn01 = listMentoringPhotoView[0].FileSn;
+                ViewBag.FileSn02 = listMentoringPhotoView[1].FileSn;
             }
+
 
 
 
@@ -769,6 +776,7 @@ namespace BizOneShot.Light.Web.Areas.Mentor.Controllers
             if (listFileContentView.Count != 0)
             {
                 ViewBag.FileNm = listFileContentView[0].FileNm;
+                ViewBag.FileSn03 = listFileContentView[0].FileSn;
             }
 
             //멘토링 상세 매핑
@@ -786,7 +794,7 @@ namespace BizOneShot.Light.Web.Areas.Mentor.Controllers
         // 멘토링 수정후 제출
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<ActionResult> ModifyMentoringReport(MentoringReportViewModel dataRequestViewModel, string deleteFileSns, IEnumerable<HttpPostedFileBase> files)
+        public async Task<ActionResult> ModifyMentoringReport(MentoringReportViewModel dataRequestViewModel, string deleteFileSns, IEnumerable<HttpPostedFileBase> files, string DeleteSn)
         {
             ViewBag.LeftMenu = Global.MentoringReport;
 
@@ -816,7 +824,14 @@ namespace BizOneShot.Light.Web.Areas.Mentor.Controllers
 
             var scMentoringReportFileInfo = await _scMentoringFileInfoService.GetMentoringFileInfo(dataRequestViewModel.ReportSn);
 
-
+            //삭제파일 상태 업데이트
+            if (!string.IsNullOrEmpty(deleteFileSns.Trim()))
+            {
+                foreach (var deleteFileSn in deleteFileSns.Split(',').AsEnumerable())
+                {
+                    scMentoringReport.ScMentoringFileInfoes.Select(mtfi => mtfi.ScFileInfo).Where(fi => fi.FileSn == int.Parse(deleteFileSn)).FirstOrDefault().Status = "D";
+                }
+            }
 
             // sc_file_info 삭제 하는 프로세스
             string[] fullPathList = new string[3];
@@ -835,6 +850,22 @@ namespace BizOneShot.Light.Web.Areas.Mentor.Controllers
                 fullPathList[cnt] = fullPath;
                 fileListByDelete[cnt] = fileInfo.FileSn;
 
+                if(fileListByDelete[cnt] != null)
+                {
+                    if (cnt == 0)
+                    {
+                        ViewBag.FileSn01 = fileListByDelete[0] = fileInfo.FileSn;
+                    }
+                    else if (cnt == 1)
+                    {
+                        ViewBag.FileSn02 = fileListByDelete[1] = fileInfo.FileSn;
+                    }
+                    else if (cnt == 2)
+                    {
+                        ViewBag.FileSn03 = fileListByDelete[2] = fileInfo.FileSn;
+                    }
+
+                }
 
                 cnt++;
 
@@ -857,64 +888,70 @@ namespace BizOneShot.Light.Web.Areas.Mentor.Controllers
                     {
                         originFile = fileCheck.ScFileInfo.FileNm;
                         var c2 = 0;
-                        foreach (var fileNew in files)
+
+                        if(files != null)
                         {
-                            if (fileNew != null)
+                            foreach (var fileNew in files)
                             {
-                                // 첫번째 파일 비교
-                                if (c == 0 && fileCheck.Classify == "P" && c2 == 0)
+                                if (fileNew != null)
                                 {
-                                    newFile = fileNew.FileName;
-
-                                    if (originFile != newFile)
+                                    // 첫번째 파일 비교
+                                    if (c == 0 && fileCheck.Classify == "P" && c2 == 0)
                                     {
-                                        //_scFileInfoService.deleteMentoringReport(fileCheck.FileSn);
+                                        newFile = fileNew.FileName;
 
-                                        // scMentoring_report 삭제
-                                        _scMentoringFileInfoService.deleteMentoringReportEdit(dataRequestViewModel.ReportSn, fileListByDelete[0]);
+                                        if (originFile != newFile)
+                                        {
+                                            //_scFileInfoService.deleteMentoringReport(fileCheck.FileSn);
 
-                                        System.IO.File.Delete(fullPathList[0]);
+                                            // scMentoring_report 삭제
+                                            _scMentoringFileInfoService.deleteMentoringReportEdit(dataRequestViewModel.ReportSn, fileListByDelete[0]);
 
+                                            System.IO.File.Delete(fullPathList[0]);
+
+                                        }
+
+                                    }
+                                    else if (c == 1 && fileCheck.Classify == "P" && c2 == 1)
+                                    {
+
+                                        newFile = fileNew.FileName;
+
+                                        if (originFile != newFile)
+                                        {
+                                            //_scFileInfoService.deleteMentoringReport(fileCheck.FileSn);
+
+                                            // scMentoring_report 삭제
+                                            _scMentoringFileInfoService.deleteMentoringReportEdit(dataRequestViewModel.ReportSn, fileListByDelete[1]);
+
+                                            System.IO.File.Delete(fullPathList[1]);
+
+                                        }
+
+                                    }
+                                    else if (c == 2 && fileCheck.Classify == "A" && c2 == 2)
+                                    {
+
+                                        newFile = fileNew.FileName;
+
+                                        if (originFile != newFile)
+                                        {
+                                            //_scFileInfoService.deleteMentoringReport(fileCheck.FileSn);
+
+                                            // scMentoring_report 삭제
+                                            _scMentoringFileInfoService.deleteMentoringReportEdit(dataRequestViewModel.ReportSn, fileListByDelete[2]);
+
+                                            System.IO.File.Delete(fullPathList[2]);
+
+                                        }
                                     }
 
                                 }
-                                else if (c == 1 && fileCheck.Classify == "P" && c2 == 1)
-                                {
-
-                                    newFile = fileNew.FileName;
-
-                                    if (originFile != newFile)
-                                    {
-                                        //_scFileInfoService.deleteMentoringReport(fileCheck.FileSn);
-
-                                        // scMentoring_report 삭제
-                                        _scMentoringFileInfoService.deleteMentoringReportEdit(dataRequestViewModel.ReportSn, fileListByDelete[1]);
-
-                                        System.IO.File.Delete(fullPathList[1]);
-
-                                    }
-
-                                }
-                                else if (c == 2 && fileCheck.Classify == "A" && c2 == 2)
-                                {
-
-                                    newFile = fileNew.FileName;
-
-                                    if (originFile != newFile)
-                                    {
-                                        //_scFileInfoService.deleteMentoringReport(fileCheck.FileSn);
-
-                                        // scMentoring_report 삭제
-                                        _scMentoringFileInfoService.deleteMentoringReportEdit(dataRequestViewModel.ReportSn, fileListByDelete[2]);
-
-                                        System.IO.File.Delete(fullPathList[2]);
-
-                                    }
-                                }
-
+                                c2++;
                             }
-                            c2++;
+
                         }
+                        
 
                         c++;
 
