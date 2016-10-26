@@ -717,6 +717,7 @@ namespace BizOneShot.Light.Web.Areas.Mentor.Controllers
         {
             ViewBag.naviLeftMenu = Global.MentoringReport;
 
+
             ViewBag.reportSn = reportSn;
 
             var mentorId = Session[Global.LoginID].ToString();
@@ -751,7 +752,7 @@ namespace BizOneShot.Light.Web.Areas.Mentor.Controllers
             {
                 ViewBag.Photo01 = listMentoringPhotoView[0].FileNm;
             }
-            else
+            else if (listMentoringPhotoView.Count == 2)
             {
                 ViewBag.Photo01 = listMentoringPhotoView[0].FileNm;
                 ViewBag.Photo02 = listMentoringPhotoView[1].FileNm;
@@ -811,53 +812,75 @@ namespace BizOneShot.Light.Web.Areas.Mentor.Controllers
             scMentoringReport.UpdId = dataRequestViewModel.MentorId;
             scMentoringReport.UpdDt = DateTime.Now;
 
-            // scMentoring_report 삭제
-            _scMentoringFileInfoService.deleteMentoringReport(dataRequestViewModel.ReportSn);
+          
 
             var scMentoringReportFileInfo = await _scMentoringFileInfoService.GetMentoringFileInfo(dataRequestViewModel.ReportSn);
+
+
 
             // sc_file_info 삭제 하는 프로세스
             string[] fullPathList = new string[3];
             int cnt = 0;
 
-            foreach (var file in scMentoringReportFileInfo)
-            {
-                var scFileInfo = await _scFileInfoService.getFileInfoByFileSnList(file.FileSn);
 
-                var filePath = file.ScFileInfo.FilePath;
-                // 삭제 하는 프로세스
-
-                var fullPath = rootFilePath + filePath;
-
-                fullPathList[cnt] = fullPath;
-
-                _scFileInfoService.deleteMentoringReport(file.FileSn);
-
-                cnt++;
-
-            }
 
             // 실제로 존재하는 파일 삭제
+            int cnt2 = 0;
             if (fullPathList.Length != 0)
             {
-                foreach (var file in fullPathList)
+                foreach (var filePath in fullPathList)
                 {
-                    if (System.IO.File.Exists(file))
+                    if (System.IO.File.Exists(filePath))
                     {
                         try
                         {
-                            // 파일이 존재할때 삭제
-                            System.IO.File.Delete(file);
+                            // 기존의 파일과 새로등록한파일이 다를경우 기존의 파일 삭제
+                            var originFile = "";
+                            var newFile = "";
+                            foreach(var fileCheck in scMentoringReportFileInfo)
+                            {
+                                originFile = fileCheck.ScFileInfo.FileNm;
+                                foreach(var fileNew in files)
+                                {
+                                    newFile = fileNew.FileName;
+                                    if(originFile != newFile)
+                                    {
+                                        foreach (var fileInfo in scMentoringReportFileInfo)
+                                        {
+                                            var scFileInfo = await _scFileInfoService.getFileInfoByFileSnList(fileInfo.FileSn);
+
+                                            var filePathInfo = fileInfo.ScFileInfo.FilePath;
+                                            // 삭제 하는 프로세스
+
+                                            var fullPath = rootFilePath + filePathInfo;
+
+                                            fullPathList[cnt] = fullPath;
+
+                                            _scFileInfoService.deleteMentoringReport(fileInfo.FileSn);
+
+                                            // scMentoring_report 삭제
+                                            _scMentoringFileInfoService.deleteMentoringReport(dataRequestViewModel.ReportSn);
+
+                                            cnt++;
+
+                                        }
+                                        System.IO.File.Delete(filePath);
+                                    }
+                                }
+                            }
+
+                            
                         }
                         catch (System.IO.IOException e)
                         {
                             // 존재하지 않을 경우 예외처리
                         }
                     }
+                    cnt2++;
                 }
             }
 
-            //첨부파일
+            // 새로운 첨부파일 업로드
             if (files != null)
             {
                 var fileHelper = new FileHelper();
