@@ -215,12 +215,14 @@
         </table>
         <div id="btnwrap_sub">
             <div class="rightwrap">
+
                 @*<button type="button" class="btn_big red float_left mentoring_print" value="출력" onclick="alert('차후 오픈 예정 입니다.')">출력</button>*@
                 @*<a href="@Url.Action("ModifyMentoringReport","MentoringReport", new { reportSn = Model.ReportSn })" class="btn_a mint rightmargin" title="수정">수정</a>*@
-                <a href="@Url.Action("MentoringReportList","MentoringReport", new {BizWorkYear= @ViewBag.SelectParam.BizWorkYear, BizWorkSn = @ViewBag.SelectParam.BizWorkSn, CompSn = @ViewBag.SelectParam.CompSn })" class="btn_a gray mentoring_list">목록</a>
-                <a href="@Url.Action("DeleteMentoringReport","MentoringReport", new {reportSn = @ViewBag.ReportSn})" class="btn_a gray mentoring_list">삭제</a>
+                <a href="@Url.Action("MentoringReportList","MentoringReport", new {BizWorkYear= @ViewBag.SelectParam.BizWorkYear, BizWorkSn = @ViewBag.SelectParam.BizWorkSn, CompSn = @ViewBag.SelectParam.CompSn })" class="btn_a gray mentoring_list float_left">목록</a>
+
+                <button type="button" class="btn_big right margin_top10 margin_bottom10 red" value="삭제" onclick="if (confirm('지금까지 작성된 내용을 삭제하시겠습니까?')) location.href='@Url.Action("DeleteMentoringReport","MentoringReport", new {reportSn = @ViewBag.ReportSn})'">삭제</button>
                 <a href="@Url.Action("ModifyMentoringReport","MentoringReport", new {reportSn = @ViewBag.ReportSn})" class="btn_a mint rightmargin" title="수정">수정</a>
-                
+
             </div>
         </div><!--btnwrap_sub//-->
 

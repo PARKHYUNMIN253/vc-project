@@ -747,8 +747,17 @@ namespace BizOneShot.Light.Web.Areas.Mentor.Controllers
             var listMentoringPhotoView =
               Mapper.Map<List<FileContent>>(listscMentoringImageInfo);
 
-            ViewBag.Photo01 = listMentoringPhotoView[0].FileNm;
-            ViewBag.Photo02 = listMentoringPhotoView[1].FileNm;
+            if(listMentoringPhotoView.Count == 1)
+            {
+                ViewBag.Photo01 = listMentoringPhotoView[0].FileNm;
+            }
+            else
+            {
+                ViewBag.Photo01 = listMentoringPhotoView[0].FileNm;
+                ViewBag.Photo02 = listMentoringPhotoView[1].FileNm;
+            }
+            
+            
 
             //첨부파일
             var listscFileInfo = scMentoringReport.ScMentoringFileInfoes.Where(mtfi => mtfi.Classify == "A").Select(mtfi => mtfi.ScFileInfo).Where(fi => fi.Status == "N");
@@ -756,7 +765,10 @@ namespace BizOneShot.Light.Web.Areas.Mentor.Controllers
             var listFileContentView =
                Mapper.Map<List<FileContent>>(listscFileInfo);
 
-            ViewBag.FileNm = listFileContentView[0].FileNm;
+            if(listFileContentView.Count != 0)
+            {
+                ViewBag.FileNm = listFileContentView[0].FileNm;
+            }
 
             //멘토링 상세 매핑
             var reportViewModel =
@@ -798,16 +810,6 @@ namespace BizOneShot.Light.Web.Areas.Mentor.Controllers
 
             scMentoringReport.UpdId = dataRequestViewModel.MentorId;
             scMentoringReport.UpdDt = DateTime.Now;
-
-            //삭제파일 상태 업데이트
-
-            //if (!string.IsNullOrEmpty(deleteFileSns.Trim()))
-            //{
-            //    foreach (var deleteFileSn in deleteFileSns.Split(',').AsEnumerable())
-            //    {
-            //        scMentoringReport.ScMentoringFileInfoes.Select(mtfi => mtfi.ScFileInfo).Where(fi => fi.FileSn == int.Parse(deleteFileSn)).FirstOrDefault().Status = "D";
-            //    }
-            //}
 
             // scMentoring_report 삭제
             _scMentoringFileInfoService.deleteMentoringReport(dataRequestViewModel.ReportSn);

@@ -140,7 +140,7 @@
     <div class="tcms">
         <div class="main_top">
             <div class="list_icon"></div>
-            <div class="sub_title">멘토링 일지 등록</div>
+            <div class="sub_title">멘토링 일지 수정</div>
             @RenderPage("~/Areas/Mentor/Views/Shared/_MainTopMenuPartial.cshtml")
         </div>
         @using (Html.BeginForm("ModifyMentoringReport", "MentoringReport", FormMethod.Post, new { area = "Mentor", id = "submit_form", role = "form", enctype = "multipart/form-data" }))
@@ -280,13 +280,14 @@
 
                                         @if (ViewBag.Photo01 != null)
                                         {
-                                            <span type="text" class="file search01 border1">@ViewBag.Photo01</span>
+                                            @*<span type="text" class="padding_left10">@ViewBag.Photo01</span>*@
+                                            <input type="text" readonly="readonly" class="padding_left10" value="@ViewBag.Photo01"  onchange="return get_imagename(this)" />
                                         }
                                         else
                                         {
                                             <input type="text" readonly="readonly" class="file search01 border1" id="file_photo01" title="멘토링 사진 1" />
                                         }
-                                        <button type="button" class="btn_mid gray leftmargin margin_left5" value="찾아보기" onclick="return file_add(this);">찾아보기</button>
+                                        <button type="button" class="btn_mid gray file_delete" value="찾아보기" onclick="return file_add(this);">찾아보기</button>
                                         <em><input type="file" name="files" onchange="return get_imagename(this)" /></em>
                                     </li>
                                 </ul>
@@ -303,13 +304,13 @@
                                         
                                         @if (ViewBag.Photo02 != null)
                                         {
-                                            <span type="text" class="file search01 border1">@ViewBag.Photo02</span>
+                                            <input type="text" readonly="readonly" class="padding_left10" value="@ViewBag.Photo02" onchange="return get_imagename(this)" />
                                         }
                                         else
                                         {
                                             <input type="text" readonly="readonly" class="file search01 border1" id="file_photo02" title="멘토링 사진 2" />
                                         }
-                                        <button type="button" class="btn_mid gray leftmargin margin_left5" value="찾아보기" onclick="return file_add(this);">찾아보기</button>
+                                        <button type="button" class="btn_mid gray file_delete" value="찾아보기" onclick="return file_add(this);">찾아보기</button>
                                         <em><input type="file" name="files" onchange="return get_imagename(this)" /></em>
                                     </li>
                                 </ul>
@@ -352,13 +353,13 @@
 
                                         @if (ViewBag.FileNm != null)
                                         {
-                                            <span type="text" class="file search01 border1">@ViewBag.FileNm</span>
+                                            <input type="text" readonly="readonly" class="padding_left10" value="@ViewBag.FileNm" onchange="return get_imagename(this)" />
                                         }
                                         else
                                         {
-                                            <input type="text" class="file search01 border1" readonly="readonly" />
+                                            <input type="text" class="padding_left10" readonly="readonly" />
                                         }
-                                        <button type="button" class="btn_mid gray leftmargin margin_left margin_left5" value="찾아보기" onclick="return file_add(this);">찾아보기</button>
+                                        <button type="button" class="btn_mid gray file_delete margin_left5" value="찾아보기" onclick="return file_add(this);">찾아보기</button>
                                         @*<button type="button" class="file_add" value="파일추가" onclick="return file_inpput_add(this);"></button>
                                             <button type="button" class="file_del" value="파일삭제" onclick="return file_inpput_remove(this);"></button>*@
                                         <em><input type="file" name="files" id="files" onchange="return get_filename(this);" /></em>
