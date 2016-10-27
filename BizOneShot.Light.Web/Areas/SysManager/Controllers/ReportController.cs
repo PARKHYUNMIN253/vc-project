@@ -97,7 +97,7 @@ namespace BizOneShot.Light.Web.Areas.SysManager.Controllers
             {
                 for (int i = 0; i < nCheckArray.Length; i++)
                 {
-                    var obj = await vcMentorMappingService.GetCompSnForTcms(Convert.ToString(listPageView[i].CompSn), Convert.ToString(listPageView[i].BaSn), listPageView[i].NumSn, listPageView[i].SubNumSn, listPageView[i].ConCode);
+                    var obj = await vcMentorMappingService.GetMentorSnForTcms(Convert.ToString(listPageView[i].CompSn), Convert.ToString(listPageView[i].BaSn), listPageView[i].NumSn, listPageView[i].SubNumSn, listPageView[i].WriteYn);
                     if (obj == null)
                     {
                         nCheckArray[i] = null;
