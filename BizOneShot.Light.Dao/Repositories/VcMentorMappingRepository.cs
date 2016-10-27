@@ -29,6 +29,8 @@ namespace BizOneShot.Light.Dao.Repositories
 
         // 기업 conCode 매핑 홧인
         Task<IList<VcMentorMapping>> checkCompConCodeMapping(int compSn, string conCode);
+
+        Task<VcMentorMapping> GetmentorSnForTcms(string compSn, string baSn, string numSn, string subSn, string writeYn);
     }
 
 
@@ -118,6 +120,15 @@ namespace BizOneShot.Light.Dao.Repositories
                 .Where(bw => bw.CompSn == compSn)
                 .Where(bw => bw.ConCode == conCode)
                 .ToListAsync();
+        }
+
+        public async Task<VcMentorMapping> GetmentorSnForTcms(string compSn, string baSn, string numSn, string subSn, string writeYn)
+        {
+            var convertCompSn = int.Parse(compSn);
+            var convertBaSn = int.Parse(baSn);
+
+            return await DbContext.VcMentorMappings
+                .Where(mm => mm.CompSn == convertCompSn && mm.BaSn == convertBaSn && mm.NumSn == numSn && mm.SubNumSn == subSn && mm.WriteYn == writeYn).SingleOrDefaultAsync();
         }
     }
 }

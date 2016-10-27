@@ -31,6 +31,8 @@ namespace BizOneShot.Light.Services
         // 매핑 확인
         Task<IList<VcMentorMapping>> checkCompConCodeMapping(int compSn, string conCode);
 
+        Task<VcMentorMapping> GetMentorSnForTcms(string compSn, string baSn, string numSn, string subSn, string writeYn);
+
     }
 
     public class VcMentorMappingService : IVcMentorMappingService
@@ -104,6 +106,11 @@ namespace BizOneShot.Light.Services
         public async Task<IList<VcMentorMapping>> checkCompConCodeMapping(int compSn, string conCode)
         {
             return await vcMentorMappingRepository.checkCompConCodeMapping(compSn, conCode);
+        }
+
+        public async Task<VcMentorMapping> GetMentorSnForTcms(string compSn, string baSn, string numSn, string subSn, string writeYn)
+        {
+            return await vcMentorMappingRepository.GetmentorSnForTcms(compSn, baSn, numSn, subSn, writeYn);
         }
 
 
