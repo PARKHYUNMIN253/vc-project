@@ -151,7 +151,7 @@
                                 <button type="button" class="btn_mid lightgray leftmargin" value="찾아보기" onclick="return file_add(this);">찾아보기</button>
                                 <button type="button" class="file_add" value="파일추가" onclick="return file_inpput_add(this);"></button>
                                 <button type="button" class="file_del" value="파일삭제" onclick="return file_inpput_remove(this);"></button>
-                                <em><input type="file" name="files" onchange="return get_filename(this)" /></em>
+                                <em><input type="file" name="files" onchange="return get_filename(this);" /></em>
                             </li>
                         </ul>
                     </div>
@@ -162,12 +162,10 @@
                             <ul id="ulExitFiles">
                                 @foreach (var item in Model.ManualFiles)
                                 {
-
                                     <li>
                                         <span class="btn_span">@item.FileNm</span>
                                         <button type="button" class="btn_mid gray btn_left" value="@item.FileSn" onclick="delete_file(@item.FileSn); return file_inpput_remove2(this);">삭제하기</button>
                                     </li>
-
                                 }
                             </ul>
                         </div>
