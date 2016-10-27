@@ -880,103 +880,103 @@ namespace BizOneShot.Light.Web.Areas.Mentor.Controllers
 
 
             // 실제로 존재하는 파일 삭제
-            int cnt2 = 0;
-            if (fullPathList.Length != 0)
-            {
-                try
-                {
-                    // 기존의 파일과 새로등록한파일이 다를경우 기존의 파일 삭제
-                    var originFile = "";
-                    var newFile = "";
-                    var c = 0;
+            //int cnt2 = 0;
+            //if (fullPathList.Length != 0)
+            //{
+            //    try
+            //    {
+            //        // 기존의 파일과 새로등록한파일이 다를경우 기존의 파일 삭제
+            //        var originFile = "";
+            //        var newFile = "";
+            //        var c = 0;
 
-                    foreach (var fileCheck in scMentoringReportFileInfo)
-                    {
-                        originFile = fileCheck.ScFileInfo.FileNm;
-                        var c2 = 0;
+            //        foreach (var fileCheck in scMentoringReportFileInfo)
+            //        {
+            //            originFile = fileCheck.ScFileInfo.FileNm;
+            //            var c2 = 0;
 
-                        if(files != null)
-                        {
-                            foreach (var fileNew in files)
-                            {
-                                if (fileNew != null)
-                                {
-                                    // 첫번째 파일 비교
-                                    if (c == 0 && fileCheck.Classify == "P" && c2 == 0 && checkFileCntA == "A")
-                                    {
-                                        //if (scMentoringReportFileInfo[1].Classify == "P" && scMentoringReportFileInfo[0].ScFileInfo.FileNm)
-                                        //{
+            //            if(files != null)
+            //            {
+            //                foreach (var fileNew in files)
+            //                {
+            //                    if (fileNew != null)
+            //                    {
+            //                        // 첫번째 파일 비교
+            //                        if (c == 0 && fileCheck.Classify == "P" && c2 == 0 && checkFileCntA == "A")
+            //                        {
+            //                            //if (scMentoringReportFileInfo[1].Classify == "P" && scMentoringReportFileInfo[0].ScFileInfo.FileNm)
+            //                            //{
 
-                                        //}
-                                        newFile = fileNew.FileName;
+            //                            //}
+            //                            newFile = fileNew.FileName;
 
-                                        if (originFile != newFile)
-                                        {
-                                            //_scFileInfoService.deleteMentoringReport(fileCheck.FileSn);
+            //                            if (originFile != newFile)
+            //                            {
+            //                                //_scFileInfoService.deleteMentoringReport(fileCheck.FileSn);
 
-                                            // scMentoring_report 삭제
-                                            _scMentoringFileInfoService.deleteMentoringReportEdit(dataRequestViewModel.ReportSn, fileListByDelete[0]);
+            //                                // scMentoring_report 삭제
+            //                                _scMentoringFileInfoService.deleteMentoringReportEdit(dataRequestViewModel.ReportSn, fileListByDelete[0]);
 
-                                            System.IO.File.Delete(fullPathList[0]);
+            //                                System.IO.File.Delete(fullPathList[0]);
 
-                                        }
+            //                            }
 
-                                    }
-                                    else if (c == 1 && fileCheck.Classify == "P" && c2 == 1 && checkFileCntB == "B")
-                                    {
+            //                        }
+            //                        else if (c == 1 && fileCheck.Classify == "P" && c2 == 1 && checkFileCntB == "B")
+            //                        {
 
-                                        newFile = fileNew.FileName;
+            //                            newFile = fileNew.FileName;
 
-                                        if (originFile != newFile)
-                                        {
-                                            //_scFileInfoService.deleteMentoringReport(fileCheck.FileSn);
+            //                            if (originFile != newFile)
+            //                            {
+            //                                //_scFileInfoService.deleteMentoringReport(fileCheck.FileSn);
 
-                                            // scMentoring_report 삭제
-                                            _scMentoringFileInfoService.deleteMentoringReportEdit(dataRequestViewModel.ReportSn, fileListByDelete[1]);
+            //                                // scMentoring_report 삭제
+            //                                _scMentoringFileInfoService.deleteMentoringReportEdit(dataRequestViewModel.ReportSn, fileListByDelete[1]);
 
-                                            System.IO.File.Delete(fullPathList[1]);
+            //                                System.IO.File.Delete(fullPathList[1]);
 
-                                        }
+            //                            }
 
-                                    }
-                                    else if (fileCheck.Classify == "A" && checkFileCntC== "C")
-                                    {
+            //                        }
+            //                        else if (fileCheck.Classify == "A" && checkFileCntC== "C")
+            //                        {
 
-                                        newFile = fileNew.FileName;
+            //                            newFile = fileNew.FileName;
 
-                                        if (originFile != newFile)
-                                        {
-                                            //_scFileInfoService.deleteMentoringReport(fileCheck.FileSn);
+            //                            if (originFile != newFile)
+            //                            {
+            //                                //_scFileInfoService.deleteMentoringReport(fileCheck.FileSn);
 
-                                            // scMentoring_report 삭제
-                                            _scMentoringFileInfoService.deleteMentoringReportEdit(dataRequestViewModel.ReportSn, fileListByDelete[2]);
+            //                                // scMentoring_report 삭제
+            //                                _scMentoringFileInfoService.deleteMentoringReportEdit(dataRequestViewModel.ReportSn, fileListByDelete[2]);
 
-                                            System.IO.File.Delete(fullPathList[2]);
+            //                                System.IO.File.Delete(fullPathList[2]);
 
-                                        }
-                                    }
+            //                            }
+            //                        }
 
-                                }
-                                c2++;
-                            }
+            //                    }
+            //                    c2++;
+            //                }
 
-                        }
+            //            }
                         
 
-                        c++;
+            //            c++;
 
-                    }
+            //        }
 
 
-                }
-                catch (System.IO.IOException e)
-                {
-                    // 존재하지 않을 경우 예외처리
-                }
+            //    }
+            //    catch (System.IO.IOException e)
+            //    {
+            //        // 존재하지 않을 경우 예외처리
+            //    }
 
-                cnt2++;
+            //    cnt2++;
 
-            }
+            //}
 
             // 새로운 첨부파일 업로드
             if (files != null)
