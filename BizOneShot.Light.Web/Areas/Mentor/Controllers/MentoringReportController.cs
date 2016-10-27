@@ -668,7 +668,7 @@ namespace BizOneShot.Light.Web.Areas.Mentor.Controllers
 
 
             // sc_file_info 삭제 하는 프로세스
-            string[] fullPathList = new string[3];
+            string[] fullPathList = new string[10];
             int cnt = 0;
 
             foreach (var file in scMentoringReportFileInfo)
@@ -794,7 +794,7 @@ namespace BizOneShot.Light.Web.Areas.Mentor.Controllers
         // 멘토링 수정후 제출
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<ActionResult> ModifyMentoringReport(MentoringReportViewModel dataRequestViewModel, string deleteFileSns, IEnumerable<HttpPostedFileBase> files, string DeleteSn)
+        public async Task<ActionResult> ModifyMentoringReport(MentoringReportViewModel dataRequestViewModel, string deleteFileSns, IEnumerable<HttpPostedFileBase> files, string checkFileCntA, string checkFileCntB, string checkFileCntC)
         {
             ViewBag.LeftMenu = Global.MentoringReport;
 
@@ -834,8 +834,8 @@ namespace BizOneShot.Light.Web.Areas.Mentor.Controllers
             }
 
             // sc_file_info 삭제 하는 프로세스
-            string[] fullPathList = new string[3];
-            int[] fileListByDelete = new int[3];
+            string[] fullPathList = new string[10];
+            int[] fileListByDelete = new int[10];
             int cnt = 0;
 
             foreach (var fileInfo in scMentoringReportFileInfo)
@@ -866,6 +866,13 @@ namespace BizOneShot.Light.Web.Areas.Mentor.Controllers
                     }
 
                 }
+                if(fileInfo.ScFileInfo.Status == "D")
+                {
+                    _scMentoringFileInfoService.deleteMentoringReportEdit(dataRequestViewModel.ReportSn, fileListByDelete[cnt]);
+
+                    System.IO.File.Delete(fullPathList[cnt]);
+
+                }
 
                 cnt++;
 
@@ -876,7 +883,6 @@ namespace BizOneShot.Light.Web.Areas.Mentor.Controllers
             int cnt2 = 0;
             if (fullPathList.Length != 0)
             {
-
                 try
                 {
                     // 기존의 파일과 새로등록한파일이 다를경우 기존의 파일 삭제
@@ -896,8 +902,12 @@ namespace BizOneShot.Light.Web.Areas.Mentor.Controllers
                                 if (fileNew != null)
                                 {
                                     // 첫번째 파일 비교
-                                    if (c == 0 && fileCheck.Classify == "P" && c2 == 0)
+                                    if (c == 0 && fileCheck.Classify == "P" && c2 == 0 && checkFileCntA == "A")
                                     {
+                                        //if (scMentoringReportFileInfo[1].Classify == "P" && scMentoringReportFileInfo[0].ScFileInfo.FileNm)
+                                        //{
+
+                                        //}
                                         newFile = fileNew.FileName;
 
                                         if (originFile != newFile)
@@ -912,7 +922,7 @@ namespace BizOneShot.Light.Web.Areas.Mentor.Controllers
                                         }
 
                                     }
-                                    else if (c == 1 && fileCheck.Classify == "P" && c2 == 1)
+                                    else if (c == 1 && fileCheck.Classify == "P" && c2 == 1 && checkFileCntB == "B")
                                     {
 
                                         newFile = fileNew.FileName;
@@ -929,7 +939,7 @@ namespace BizOneShot.Light.Web.Areas.Mentor.Controllers
                                         }
 
                                     }
-                                    else if (c == 2 && fileCheck.Classify == "A" && c2 == 2)
+                                    else if (fileCheck.Classify == "A" && checkFileCntC== "C")
                                     {
 
                                         newFile = fileNew.FileName;

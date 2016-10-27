@@ -185,6 +185,32 @@
 
     };
 
+    //var array4 = [];
+    function checkFileCntFuncA() {
+        
+        $("#checkFileCntA").val('A');
+
+        alert("TEST.");
+
+    };
+
+    function checkFileCntFuncB() {
+
+        $("#checkFileCntB").val('B');
+
+        alert("TEST.");
+
+    };
+
+    function checkFileCntFuncC() {
+
+        $("#checkFileCntC").val('C');
+
+        alert("TEST.");
+
+    };
+
+
 
 
 </script>
@@ -203,6 +229,10 @@
             @Html.ValidationSummary(true, "", new { @class = "text-danger" })
             @Html.Hidden("reportSn", ViewBag.reportSn as string)
             @Html.Hidden("deleteFileSns", "", new { @id = "deleteFileSns", @name = "deleteFileSns" })
+            @Html.Hidden("checkFileCntA", "", new { @id = "checkFileCntA", @name = "checkFileCntA" })
+            @Html.Hidden("checkFileCntB", "", new { @id = "checkFileCntB", @name = "checkFileCntB" })
+            @Html.Hidden("checkFileCntC", "", new { @id = "checkFileCntC", @name = "checkFileCntC" })
+
             <div calss="tablewrap">
 
 
@@ -338,7 +368,7 @@
                                             @*<input type="text" readonly="readonly" class="padding_left10" value="@ViewBag.Photo01"  onchange="return get_imagename(this)" />*@
 
                                             <input type="text" readonly="readonly" class="file search01 border1 mentoring_edit_input" id="file_photo01" value="@ViewBag.Photo01" onchange="return get_imagename(this)" /> 
-                                            <button type="button" class="btn_mid gray file_delete " value="찾아보기" onclick="return file_add(this);">추가</button>
+                                            <button type="button" class="btn_mid gray file_delete " value="찾아보기" onclick="checkFileCntFuncA(); return file_add(this);">추가</button>
                                             <button type="button" class="btn_mid gray file_delete magin_rignt4" value="@ViewBag.FileSn01" onclick="delete_file(@ViewBag.FileSn01); return ">삭제</button>
                                             <em><input type="file" name="files" id="files" onchange="return get_imagename(this);" /></em>
                                         }
@@ -366,7 +396,7 @@
                                         {
                                             @*<input type="text" readonly="readonly" class="padding_left10" value="@ViewBag.Photo02" onchange="return get_imagename(this)" />*@
                                             <input type="text" readonly="readonly" class="file search01 border1 mentoring_edit_input " id="file_photo02" value="@ViewBag.Photo02" onchange="return get_imagename(this)" />
-                                            <button type="button" class="btn_mid gray file_delete" value="찾아보기" onclick="return file_add(this);">추가</button>
+                                            <button type="button" class="btn_mid gray file_delete" value="찾아보기" onclick="checkFileCntFuncB(); return file_add(this);">추가</button>
                                             <button type="button" class="btn_mid gray file_delete magin_rignt4" value="@ViewBag.FileSn02" onclick="delete_file2(@ViewBag.FileSn02); return ">삭제</button>
                                             <em><input type="file" name="files" id="files" onchange="return get_imagename(this);" /></em>
                                         }
@@ -421,7 +451,7 @@
                                         {
                                             @*<input type="text" readonly="readonly" class="padding_left10" value="@ViewBag.FileNm" onchange="return get_filename(this)" />*@
                                             <input type="text" id="file_file" readonly="readonly" class="file search01 border1 mentoring_edit_input2" value="@ViewBag.FileNm" onchange="return get_filename(this)" />
-                                            <button type="button" class="btn_mid gray file_delete " value="찾아보기" onclick="return file_add(this);">추가</button>
+                                            <button type="button" class="btn_mid gray file_delete " value="찾아보기" onclick="checkFileCntFuncC(); return file_add(this);">추가</button>
                                             <button type="button" class="btn_mid gray file_delete magin_rignt5" value="@ViewBag.FileSn03" onclick="delete_file3(@ViewBag.FileSn03); return ">삭제</button>
                                             <em><input type="file" name="files" id="files" onchange="return get_filename(this);" /></em>
 
