@@ -47,6 +47,7 @@
     <Reference Include="System.ComponentModel.DataAnnotations" />
     <Reference Include="System.Core" />
     <Reference Include="System.Data" />
+    <Reference Include="System.Web" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="DareConfiguration\DareDbContext.cs">
@@ -302,6 +303,9 @@
       <DependentUpon>Database.tt</DependentUpon>
     </Compile>
     <Compile Include="WebConfiguration\SyDareDbInfoConfiguration.cs">
+      <DependentUpon>Database.tt</DependentUpon>
+    </Compile>
+    <Compile Include="WebConfiguration\sys_DatabaseFirewallRuleConfiguration.cs">
       <DependentUpon>Database.tt</DependentUpon>
     </Compile>
     <Compile Include="WebConfiguration\TcmsCompStatusSelectViewConfiguration.cs">
