@@ -732,10 +732,14 @@ namespace BizOneShot.Light.Web.Areas.BizManager.Controllers
             var checkBaWriterList = await vcCompInfoService.checkBaWriterList(compSn, baSn, numSn);
             var checkBaWiret = checkBaWriterList.Where(bw => bw.WriteYn == "Y").ToList();
 
-            if(checkBaWiret.Count != 0)
+            // 매핑하고자하는 Mentor와 Comp가 처음 매핑하는건지 ?
+
+            var checkMentorWrite = await vcMentorMappingService.checkMappingList(mentorMapping.CompSn, mentorMapping.BaSn, mentorMapping.MentorSn, mentorMapping.NumSn, mentorMapping.SubNumSn);
+
+            if (checkBaWiret.Count != 0)
             {
                 // BA가 작성 권한이 있다는 이야기
-                if(checkMapping.Count == 0)
+                if(checkMentorWrite.Count == 0)
                 {
                     // 작성 권한이 있는 BA가 첫번째로 할당해주는 멘토에게 작성 권한 부여
                     mentorMapping.WriteYn = "Y";

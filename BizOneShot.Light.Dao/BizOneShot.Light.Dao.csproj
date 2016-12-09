@@ -305,9 +305,6 @@
     <Compile Include="WebConfiguration\SyDareDbInfoConfiguration.cs">
       <DependentUpon>Database.tt</DependentUpon>
     </Compile>
-    <Compile Include="WebConfiguration\sys_DatabaseFirewallRuleConfiguration.cs">
-      <DependentUpon>Database.tt</DependentUpon>
-    </Compile>
     <Compile Include="WebConfiguration\TcmsCompStatusSelectViewConfiguration.cs">
       <DependentUpon>Database.tt</DependentUpon>
     </Compile>
@@ -375,6 +372,9 @@
       <DependentUpon>Database.tt</DependentUpon>
     </Compile>
     <Compile Include="WebConfiguration\VcTcmsInfoConfiguration.cs">
+      <DependentUpon>Database.tt</DependentUpon>
+    </Compile>
+    <Compile Include="WebConfiguration\VcTestCompConfiguration.cs">
       <DependentUpon>Database.tt</DependentUpon>
     </Compile>
     <Compile Include="WebConfiguration\VcUsrInfoConfiguration.cs">

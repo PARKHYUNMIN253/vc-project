@@ -33,6 +33,9 @@ namespace BizOneShot.Light.Services
 
         Task<VcMentorMapping> GetMentorSnForTcms(string compSn, string baSn, string numSn, string subSn, string writeYn);
 
+        // 멘토와 기업 매핑 확인
+        Task<IList<VcMentorMapping>> checkMappingList(int compSn, int baSn, int mentorSn, string numSn, string subNumSn);
+
     }
 
     public class VcMentorMappingService : IVcMentorMappingService
@@ -118,6 +121,11 @@ namespace BizOneShot.Light.Services
         {
             vcMentorMappingRepository.Add(vcMentorMapping);
             SaveDbContext();
+        }
+
+        public async Task<IList<VcMentorMapping>> checkMappingList(int compSn, int baSn, int mentorSn, string numSn, string subNumSn)
+        {
+            return await vcMentorMappingRepository.checkMappingList(compSn, baSn, mentorSn, numSn, subNumSn);
         }
 
         #region saveMethods...

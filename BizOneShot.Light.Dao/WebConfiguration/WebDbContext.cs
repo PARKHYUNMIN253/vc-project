@@ -66,7 +66,6 @@ namespace BizOneShot.Light.Dao.WebConfiguration
         public DbSet<ScReqDocFile> ScReqDocFiles { get; set; } // SC_REQ_DOC_FILE
         public DbSet<ScUsrResume> ScUsrResumes { get; set; } // SC_USR_RESUME
         public DbSet<SyDareDbInfo> SyDareDbInfoes { get; set; } // SY_DARE_DB_INFO
-        public DbSet<sys_DatabaseFirewallRule> sys_DatabaseFirewallRules { get; set; } // database_firewall_rules
         public DbSet<TcmsCompStatusSelectView> TcmsCompStatusSelectViews { get; set; } // TCMS_COMP_STATUS_SELECT_VIEW
         public DbSet<TcmsIfLastReport> TcmsIfLastReports { get; set; } // TCMS_IF_LAST_REPORT
         public DbSet<TcmsIfSurvey> TcmsIfSurveys { get; set; } // TCMS_IF_SURVEY
@@ -90,6 +89,7 @@ namespace BizOneShot.Light.Dao.WebConfiguration
         public DbSet<VcNumMngInfo> VcNumMngInfoes { get; set; } // VC_NUM_MNG_INFO
         public DbSet<VcSatCheck> VcSatChecks { get; set; } // VC_SAT_CHECK
         public DbSet<VcTcmsInfo> VcTcmsInfoes { get; set; } // VC_TCMS_INFO
+        public DbSet<VcTestComp> VcTestComps { get; set; } // VC_TEST_COMP
         public DbSet<VcUsrInfo> VcUsrInfoes { get; set; } // VC_USR_INFO
         
         static WebDbContext()
@@ -162,7 +162,6 @@ namespace BizOneShot.Light.Dao.WebConfiguration
             modelBuilder.Configurations.Add(new ScReqDocFileConfiguration());
             modelBuilder.Configurations.Add(new ScUsrResumeConfiguration());
             modelBuilder.Configurations.Add(new SyDareDbInfoConfiguration());
-            modelBuilder.Configurations.Add(new sys_DatabaseFirewallRuleConfiguration());
             modelBuilder.Configurations.Add(new TcmsCompStatusSelectViewConfiguration());
             modelBuilder.Configurations.Add(new TcmsIfLastReportConfiguration());
             modelBuilder.Configurations.Add(new TcmsIfSurveyConfiguration());
@@ -186,6 +185,7 @@ namespace BizOneShot.Light.Dao.WebConfiguration
             modelBuilder.Configurations.Add(new VcNumMngInfoConfiguration());
             modelBuilder.Configurations.Add(new VcSatCheckConfiguration());
             modelBuilder.Configurations.Add(new VcTcmsInfoConfiguration());
+            modelBuilder.Configurations.Add(new VcTestCompConfiguration());
             modelBuilder.Configurations.Add(new VcUsrInfoConfiguration());
 
             OnModelCreatingPartial(modelBuilder);
@@ -233,7 +233,6 @@ namespace BizOneShot.Light.Dao.WebConfiguration
             modelBuilder.Configurations.Add(new ScReqDocFileConfiguration(schema));
             modelBuilder.Configurations.Add(new ScUsrResumeConfiguration(schema));
             modelBuilder.Configurations.Add(new SyDareDbInfoConfiguration(schema));
-            modelBuilder.Configurations.Add(new sys_DatabaseFirewallRuleConfiguration(schema));
             modelBuilder.Configurations.Add(new TcmsCompStatusSelectViewConfiguration(schema));
             modelBuilder.Configurations.Add(new TcmsIfLastReportConfiguration(schema));
             modelBuilder.Configurations.Add(new TcmsIfSurveyConfiguration(schema));
@@ -257,6 +256,7 @@ namespace BizOneShot.Light.Dao.WebConfiguration
             modelBuilder.Configurations.Add(new VcNumMngInfoConfiguration(schema));
             modelBuilder.Configurations.Add(new VcSatCheckConfiguration(schema));
             modelBuilder.Configurations.Add(new VcTcmsInfoConfiguration(schema));
+            modelBuilder.Configurations.Add(new VcTestCompConfiguration(schema));
             modelBuilder.Configurations.Add(new VcUsrInfoConfiguration(schema));
             return modelBuilder;
         }

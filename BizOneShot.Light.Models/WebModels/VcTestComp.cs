@@ -20,15 +20,19 @@ using System.Threading;
 
 namespace BizOneShot.Light.Models.WebModels
 {
-    // database_firewall_rules
-    public class sys_DatabaseFirewallRule
+    // VC_TEST_COMP
+    public class VcTestComp
     {
-        public int Id { get; set; } // id
-        public string Name { get; set; } // name
-        public string StartIpAddress { get; set; } // start_ip_address
-        public string EndIpAddress { get; set; } // end_ip_address
-        public DateTime CreateDate { get; set; } // create_date
-        public DateTime ModifyDate { get; set; } // modify_date
+        public int CompSn { get; set; } // COMP_SN (Primary key)
+        public string RegistrationNo { get; set; } // REGISTRATION_NO
+        public string CompNm { get; set; } // COMP_NM
+        public string OwnEmail { get; set; } // OWN_EMAIL
+        public string OwnTelNo { get; set; } // OWN_TEL_NO
+        public string OwnNm { get; set; } // OWN_NM
+        public DateTime? RegDt { get; set; } // REG_DT
+        public DateTime? UpdDt { get; set; } // UPD_DT
+        public string LoginId { get; set; } // LOGIN_ID
+        public int TcmsLoginKey { get; set; } // TCMS_LOGIN_KEY
     }
 
 }

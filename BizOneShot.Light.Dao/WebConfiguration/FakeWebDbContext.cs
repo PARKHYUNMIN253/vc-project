@@ -67,7 +67,6 @@ namespace BizOneShot.Light.Dao.WebConfiguration
         public DbSet<ScReqDocFile> ScReqDocFiles { get; set; }
         public DbSet<ScUsrResume> ScUsrResumes { get; set; }
         public DbSet<SyDareDbInfo> SyDareDbInfoes { get; set; }
-        public DbSet<sys_DatabaseFirewallRule> sys_DatabaseFirewallRules { get; set; }
         public DbSet<TcmsCompStatusSelectView> TcmsCompStatusSelectViews { get; set; }
         public DbSet<TcmsIfLastReport> TcmsIfLastReports { get; set; }
         public DbSet<TcmsIfSurvey> TcmsIfSurveys { get; set; }
@@ -91,6 +90,7 @@ namespace BizOneShot.Light.Dao.WebConfiguration
         public DbSet<VcNumMngInfo> VcNumMngInfoes { get; set; }
         public DbSet<VcSatCheck> VcSatChecks { get; set; }
         public DbSet<VcTcmsInfo> VcTcmsInfoes { get; set; }
+        public DbSet<VcTestComp> VcTestComps { get; set; }
         public DbSet<VcUsrInfo> VcUsrInfoes { get; set; }
 
         public FakeWebDbContext()
@@ -135,7 +135,6 @@ namespace BizOneShot.Light.Dao.WebConfiguration
             ScReqDocFiles = new FakeDbSet<ScReqDocFile>();
             ScUsrResumes = new FakeDbSet<ScUsrResume>();
             SyDareDbInfoes = new FakeDbSet<SyDareDbInfo>();
-            sys_DatabaseFirewallRules = new FakeDbSet<sys_DatabaseFirewallRule>();
             TcmsCompStatusSelectViews = new FakeDbSet<TcmsCompStatusSelectView>();
             TcmsIfLastReports = new FakeDbSet<TcmsIfLastReport>();
             TcmsIfSurveys = new FakeDbSet<TcmsIfSurvey>();
@@ -159,6 +158,7 @@ namespace BizOneShot.Light.Dao.WebConfiguration
             VcNumMngInfoes = new FakeDbSet<VcNumMngInfo>();
             VcSatChecks = new FakeDbSet<VcSatCheck>();
             VcTcmsInfoes = new FakeDbSet<VcTcmsInfo>();
+            VcTestComps = new FakeDbSet<VcTestComp>();
             VcUsrInfoes = new FakeDbSet<VcUsrInfo>();
         }
         
